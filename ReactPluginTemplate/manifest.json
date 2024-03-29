@@ -1,0 +1,25 @@
+{
+  "name": "ReactPluginTemplate",
+  "id": "7e6a45e3-4bca-476a-94c5-ad8f6a83c40c",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": {
+    "main":"dist/ui.html",
+    "secondary":"dist/sec.html"
+  },
+  "editorType": ["figma", "figjam", "dev"],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://cdnjs.cloudflare.com",
+      "https://cdn.jsdelivr.net",
+      "https://hub.innohub.space",
+      "https://fonts.gstatic.com",
+      "https://fonts.googleapis.com",
+      "https://unpkg.com"
+    ]
+  },
+  "documentAccess": "dynamic-page",
+  "relaunchButtons": [
+    {"command": "open", "name": "Open React Plugin Template"}
+  ]
+}

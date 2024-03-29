@@ -1,0 +1,24 @@
+{
+    "name": "figma-react-plugin-template",
+    "main": "bootstrap.custom.css",
+    "version": "2.0.1",
+    "description": "external to be used inside the plugin",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/pmc-community/resources.git"
+    },
+    "keywords": [
+        "figma",
+        "pmc"
+    ],
+    "author": "PMC",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/pmc-community/resources/issues"
+    },
+    "homepage": "https://pmc-expert.com/",
+    "dependencies": {}
+}

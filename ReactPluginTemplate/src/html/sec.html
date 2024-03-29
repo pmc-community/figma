@@ -1,0 +1,80 @@
+<div id="figma_plugin_page_container" class="container-fluid">
+    <!-- header -->
+    <nav id="nav-bar" class="navbar navbar-light fixed-top shadow-sm bg-dark px-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" type="button" data-bs-toggle="offcanvas" data-bs-target="#page-menu" >
+                <img src="https://hub.innohub.space/hubfs/ihs-ico-transparent-40.png" alt="" width="20" class="d-inline-block align-text-top" style="margin-right:10px">
+                <span class="text-white font-weight-bold text-sm">Figma React Plugin Template</span>
+            </a>
+            <button class="btn btn-sm btn-outline-secondary">
+                <a class="text-decoration-none text-white" href="https://pmc-expert.com" target="_blank">About us</a>
+            </button>
+        </div>
+    </nav>
+
+    <!-- content -->
+    <div id="content" class="container p-3 mt-5">
+
+        <!-- simple row -->
+        <div class="row">
+            <nav id = "messages" class="navbar navbar-light card p-3 shadow-sm bg-body rounded text-dark">
+                <div class="container-fluid">
+                    <span class="col-6">
+                        <div id="Demo_Root_Div"></div>
+                    </span>
+                    <span>
+                        <button id="back-to-main" class="btn btn-sm btn-outline-secondary">Back to main</button>
+                    </span>
+                </div>
+            </nav>
+            
+        </div>
+
+        <!-- left offcanvas drawer -->
+        <div class="offcanvas offcanvas-start p-3" data-bs-scroll="true" tabindex="-1" id="page-menu" aria-labelledby="page-menu-title">
+            <div class="offcanvas-header">
+                <h2 class="offcanvas-title" id="page-menu-title">Figma React Plugin Template</h2>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <p class="text-sm-left text-dark">Add your content here for the offcanvas page menu. It can be any HTML content or React Component or any combination, but be aware that you cannot use the same React component more than once in each page.</p>
+
+                <!-- React App Component -->
+                <div id ="nav_menu_root_div" class="w-100 text-bg-secondary card h-auto col-5 mt-3"></div>
+                <div class="mt-3" id ="Demo_2_Root_Div"></div>
+            </div>  
+            
+            <div class="offcanvas-footer px-3">
+                <p class="card p-4 text-secondary text-sm-left">Figma React Plugin Template is a project template that can be used to develop complex plugins for Figma using React, Redux and a framework that allows to render React components in any place/page of the plugin. Documentation is available at .... </p>
+                <span id="footer-copyright">Created by </span>
+                <a href="https://pmc-expert.com" target="_blank" class="text-decoration-none">PMC</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- footer -->
+    <footer class="py-4 mt-auto border-top px-3 bg-dark fixed-bottom" >
+        <div>
+            <div class="d-flex flex-column flex-sm-row align-items-center justify-content-sm-between">
+                <div class="me-sm-2 text-white">
+                    <span id="footer-copyright">Created by </span>
+                    <a href="https://pmc-expert.com" target="_blank" class="text-white text-decoration-none">PMC</a>
+                </div>
+                <div class="d-flex ms-sm-2">
+                    <a class="text-decoration-none text-white" href="https://innohub.space/eng/privacy/" target="_blank">Privacy Policy</a>
+                    <div class="mx-1 text-white">|</div>
+                    <a class="text-decoration-none text-white" href="https://innohub.space/eng/terms-of-service/" target="_blank">Terms</a>
+                    <div class="mx-1 text-white">|</div>
+                    <a class="text-decoration-none text-white" href="https://innohub.space/eng/cookie-policy/" target="_blank">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+$('#back-to-main').on('click', () => {
+    parent.postMessage({ pluginMessage: { type: process.env.REACT_NAVIGATE_MAIN } }, '*')
+})
+</script>

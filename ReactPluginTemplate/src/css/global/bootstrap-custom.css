@@ -1,0 +1,10 @@
+/* CUSTOMISE BOOTSTRAP5
+ * Is a better option to customise bootstrap in this way instead of importing sass and changing globals.
+ * This way the output is much lighter, otherwise will be around 300k added to the bundle output.
+ * The max size of all figma plugin files must not exceed 15MB, so is a good thing to spare as much as possible 
+ */
+
+body {
+    font-size:14px;
+    background:#eaeaea;
+}
