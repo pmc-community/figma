@@ -1,8 +1,6 @@
 name: Build and Deploy Documentation
 
-on:
-  push:
-    branches: [doc-content]
+on: workflow_dispatch
 
 jobs:
   build:
