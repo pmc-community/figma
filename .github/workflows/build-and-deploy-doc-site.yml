@@ -2,8 +2,7 @@ name: Build and Deploy Documentation
 
 on:
   push:
-    branches:
-      - doc-content
+    branches: [doc-content]
 
 jobs:
   build:
