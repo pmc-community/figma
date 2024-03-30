@@ -18,7 +18,7 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: '${{ secrets.ACTIONS_DEPLOY_KEY }}'
+          deploy_key: '${{ secrets.ACTIONS_DEPLOY_KEY }}'
           publish_dir: ./site
           tag_name: '${{ steps.prepare_tag.outputs.DEPLOY_TAG_NAME }}'
           tag_message: 'Deployment ${{ github.ref_name }}'
