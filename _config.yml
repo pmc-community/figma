@@ -34,8 +34,8 @@ github_username:  jekyll
 plugins:
   - jekyll-feed
 
-theme: minima
-#theme: just-the-docs
+#theme: minima
+remote_theme: just-the-docs
 
 # Exclude from processing.
 # The following items will not be processed, by default.
