@@ -31,11 +31,11 @@ github_username:  jekyll
 
 # Build settings
 
-plugins:
-  - jekyll-feed
-
 #theme: minima
 theme: just-the-docs
+
+plugins:
+  - jekyll-feed
 
 # Exclude from processing.
 # The following items will not be processed, by default.
