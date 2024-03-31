@@ -105,7 +105,7 @@ $neverDecoratedTextElements: ('a');
 }
 
 .aux-nav {
-    padding-right: $siteTitlePaddingLeft
+    padding-right: $siteHeaderPaddingLeft
 }
 
 .site_logo {
@@ -129,4 +129,8 @@ $neverDecoratedTextElements: ('a');
     height: 60% !important;
     align-self: center;
     padding-left: 20px;
+}
+
+.main-header {
+    margin-left:-1px; //to cover the border
 }

@@ -33,6 +33,7 @@ remote_theme: just-the-docs/just-the-docs@v0.8.0
 
 plugins:
   - jekyll-feed
+  - jekyll-toc
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -56,6 +57,13 @@ plugins:
 aux_links:
   "GitHub":
     - "//github.com/pmc-community/figma"
+  "About us":
+    - "//pmc-expert.com"
 
 # Makes Aux links open in a new tab. Default is false
 aux_links_new_tab: true
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge

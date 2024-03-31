@@ -48,7 +48,10 @@ const customiseTheme = () => {
 
 }
 const formatAuxLinksBtns =() => {
-    $('.aux-nav-list-item').addClass('btn btn-warning btn-sm');
+    $('.aux-nav-list-item').addClass('btn btn-danger btn-sm m-2');
+    $('.aux-nav-list-item:first-child a').addClass('text-light');
+    $('.aux-nav-list-item:last-child').removeClass('btn-danger').addClass('btn-warning');
+    $('.aux-nav-list-item:last-child a').addClass('text-dark');
 }
 
 const setGoToTopBtn = () => {
@@ -66,6 +69,7 @@ const addTopOfPage = () => {
     $('.main-header').prepend('<div id ="ihs_top_of_page"></div>');
 }
 const customiseFooter = () => {
+    $('.site-footer').prepend('<div class="footer_first_row"><a href="https://innohub.space/eng/terms-of-service/" target=_blank>Terms</a> | <a href="https://innohub.space/eng/privacy/" target=_blank>Privacy</a> | <a href="https://innohub.space/eng/cookie-policy/" target=_blank>Cookies</a></div>');
     $('.site-footer').prepend(`<div class="footer_first_row">Copyright ${new Date().getFullYear()}, <a href="https://pmc-expert.com" target=_blank>PMC</a></div>`);
 }
 
