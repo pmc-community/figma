@@ -52,6 +52,7 @@ const customiseTheme = () => {
 const fullContentAreaOnHome = () => {
     const rootUrl = window.location.origin + '/';
     const crtPage = window.location.href;
+    console.log(`o=${rootUrl} c=${crtPage}`)
     if (rootUrl === crtPage) $('.main-content-wrap').css('width','100%');
 }
 
