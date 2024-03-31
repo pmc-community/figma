@@ -22,7 +22,7 @@ $fullWidthElements: ('.site-header', '.search', '.site-footer', '#site-nav');
     }
 }
 
-$weight600Elements: ('.site-header a');
+$weight600Elements: ('.site-header a', 'h1', 'h2');
 @each $element in $weight600Elements {
     #{$element} {
         font-weight:$siteTitleFontWeight;

@@ -45,8 +45,16 @@ const customiseTheme = () => {
     addLogo();
     setGoToTopBtn();
     formatAuxLinksBtns();
+    fullContentAreaOnHome();
 
 }
+
+const fullContentAreaOnHome = () => {
+    const rootUrl = window.location.origin + '/';
+    const crtPage = window.location.href;
+    if (rootUrl === crtPage) $('.main-content-wrap').css('width','100%');
+}
+
 const formatAuxLinksBtns =() => {
     $('.aux-nav-list-item').addClass('btn btn-danger btn-sm m-2');
     $('.aux-nav-list-item:first-child a').addClass('text-light');
