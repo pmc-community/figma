@@ -33,7 +33,6 @@ remote_theme: just-the-docs/just-the-docs@v0.8.0
 
 plugins:
   - jekyll-feed
-  - jekyll-toc
 
 # Exclude from processing.
 # The following items will not be processed, by default.
