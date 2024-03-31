@@ -33,6 +33,7 @@ github_username:  jekyll
 
 #theme: minima
 #theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs@v0.8.0
 
 plugins:
   - jekyll-feed
