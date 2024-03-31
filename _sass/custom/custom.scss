@@ -7,7 +7,7 @@ $alwaysWithDefaultSiteFontElements: ('body');
     }
 }
 
-$siteHeaderElements: ('.site-header', '.site-header a', '.site-title', '.search');
+$siteHeaderElements: ('.site-header', '.site-header a', '.site-title', '.search', '.aux-nav', '.main-header');
 @each $element in $siteHeaderElements {
     #{$element}, #{$element}:hover {
         background: $siteHeaderBackground;
@@ -103,12 +103,30 @@ $neverDecoratedTextElements: ('a');
 .site-title {
     padding-left: $siteTitlePaddingLeft
 }
+
+.aux-nav {
+    padding-right: $siteTitlePaddingLeft
+}
+
 .site_logo {
     width:25px
 }
 
-.main-header {
-    position:sticky;
-    top:0;
-    z-index:999
+#ihs_go_to_top_btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 30px;
+    cursor:pointer;
+}
+
+.aux-nav .aux-nav-list-item {
+    height: 60% !important;
+    align-self: center;
+}
+
+.search {
+    height: 60% !important;
+    align-self: center;
+    padding-left: 20px;
 }

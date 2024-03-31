@@ -1,6 +1,85 @@
+/* SOME UTILITIES */
+// check if an element is on screen
+$.fn.is_on_screen = function () {
+    var win = $(window);
+    var viewport = {
+        top: win.scrollTop(),
+        left: win.scrollLeft()
+    };
+    viewport.right = viewport.left + win.width();
+    viewport.bottom = viewport.top + win.height();
+
+    var bounds;
+    bounds = this.offset();
+    bounds.right = bounds.left + this.outerWidth();
+    bounds.bottom = bounds.top + this.outerHeight();
+
+    return (!(viewport.right < bounds.left || viewport.left > bounds.right || viewport.bottom < bounds.top || viewport.top > bounds.bottom));
+};
+
+// usage: $().sizeChanged(function(){})
+$.fn.sizeChanged = function (handleFunction) {
+    var element = this;
+    var lastWidth = element.width();
+    var lastHeight = element.height();
+
+    setInterval(function () {
+        if (lastWidth === element.width()&&lastHeight === element.height())
+            return;
+        if (typeof (handleFunction) == 'function') {
+            handleFunction({ width: lastWidth, height: lastHeight },
+                            { width: element.width(), height: element.height() });
+            lastWidth = element.width();
+            lastHeight = element.height();
+        }
+    }, 100);
+    return element;
+};
+
+
+
 const customiseTheme = () => {
+    addTopOfPage ();
+    clearTheUrl();
     customiseFooter();
     addLogo();
+    setGoToTopBtn();
+    formatAuxLinksBtns();
+
+}
+const formatAuxLinksBtns =() => {
+    $('.aux-nav-list-item').addClass('btn btn-warning btn-sm');
+}
+
+const setGoToTopBtn = () => {
+    $('.main').append('<div id="ihs_go_to_top_btn"><img src="/assets/img/goToTop.png" loading="lazy" alt="tick-circle"></div>');
+
+    $('#ihs_go_to_top_btn').click(() => {
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $("#ihs_top_of_page").offset().top
+        }, 300);
+    });
+   
+}        
+
+const addTopOfPage = () => {
+    $('.main-header').prepend('<div id ="ihs_top_of_page"></div>');
+}
+const customiseFooter = () => {
+    $('.site-footer').prepend(`<div class="footer_first_row">Copyright ${new Date().getFullYear()}, <a href="https://pmc-expert.com" target=_blank>PMC</a></div>`);
+}
+
+const addLogo = () => {
+    $('.site-header').prepend('<a href="/"><img class = "site_logo" src="/assets/img/logo.png" /></a>');
+}
+
+const clearTheUrl = () => {
+    $(window).on('scroll', function() {
+        if(window.location.hash) {
+            // remove the hash and keep everything else
+            history.replaceState({}, document.title, location.pathname + location.search);
+        }
+    });
 
     $(window).on('load', function() {
         if(window.location.hash) {
@@ -9,14 +88,4 @@ const customiseTheme = () => {
         }
     });
 
-    //jtd.setTheme("dark")
-}
-
-
-const customiseFooter = () => {
-    $('.site-footer').prepend(`<div class="footer_first_row">Copyright ${new Date().getFullYear()}, <a href="https://pmc-expert.com" target=_blank>PMC</a></div>`);
-}
-
-const addLogo = () => {
-    $('.site-header').prepend('<a href="/"><img class = "site_logo" src="/assets/img/logo.png" /></a>');
 }
