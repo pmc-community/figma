@@ -1,0 +1,40 @@
+// define the custom vars to be used instead of theme defaults
+// as much as possible, custom vars must be based on them defaults
+
+// colors
+$sidebarBackground: $body-background-color;
+$textColor: $body-text-color;
+
+// new font family to be
+$siteFontFamily: 'poppins';
+$siteTitleFontWeight: 600;
+
+$siteHeaderBackground: $purple-200;
+$siteHeaderTextColor: #fff;
+
+// widths
+$fullWidth: 100%;
+$contentAreaWidth: 70%;
+
+// paddings
+$siteHeaderPaddingLeft: map-get($spacers, sp-7);
+$siteHeaderPaddingRight: $siteHeaderPaddingLeft;
+$siteTitlePaddingLeft: 1rem; //because of thelogo
+
+// margins
+$m-10px: 10px;
+
+
+// borders
+@mixin thinBorder {
+    border: $border;
+    border-color: $border-color;
+}
+
+// sidebar config
+$sideBarFixedWidth: 25%;
+$sideBarMinWidth:$sideBarFixedWidth;
+$contentAreaLeftMargin: $sideBarFixedWidth;
+
+// decorations
+$noDecoration: none;
