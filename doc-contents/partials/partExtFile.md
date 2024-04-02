@@ -10,11 +10,14 @@
 <!--- WITH THE EXTERNAL CONTENT DUE TO THE ASYNC NATURE OF HTTP REQUEST --->
 
 <script>
+    const start = `{{ site.startExposedSection }}`;
+    const end = `{{ site.endExposedSection }}`;
+    console.log('part');
     getExternalMDContent (
-        'https://raw.githubusercontent.com/pmc-community/ta-platform/main/README.md', 
-        'after',
-        '',
-        '',
-        '```Markdown content generated from a partial loaded from an external md file```'
+        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
+        'before',
+        start,
+        end,
+        '```Markdown content generated from a part of partial loaded from an external md file```'
     );
 </script>

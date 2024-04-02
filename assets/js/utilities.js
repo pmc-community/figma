@@ -1,5 +1,5 @@
 
-const getExternalMDContent = async (file, position) => {
+const getExternalMDContent = async (file, position, startMarker , endMarker, header) => {
     $(window).on('load', () => {
         $.ajax({
             url: file,
@@ -8,8 +8,25 @@ const getExternalMDContent = async (file, position) => {
             success: async (data) => {
                 const converter = new showdown.Converter();
                 const content = await data;
-                if (position === 'before') $('.main-content-wrap').prepend(converter.makeHtml(content));
-                else $('.main-content-wrap').append(converter.makeHtml(content));
+                goodHeader = typeof header === 'undefined' ? '' : header;
+                let contentSliced = goodHeader + '\n';
+                if (typeof startMarker === 'undefined' ||  typeof endMarker === 'undefined' ) {
+                    contentSliced += content;
+                }
+                else {
+                    if (startMarker === '' || endMarker === '') {
+                        contentSliced += content;
+                    }
+                    else {
+                        const startIndex = content.indexOf(startMarker) + startMarker.length;
+                        const contentA = content.slice(startIndex);
+                        const endIndex = contentA.indexOf(endMarker);
+                        const contentB = contentA.slice(0,endIndex);
+                        contentSliced += contentB;
+                    }
+                }
+                if (position === 'before') $('.main-content-wrap').prepend(converter.makeHtml(contentSliced));
+                else $('.main-content-wrap').append(converter.makeHtml(contentSliced));
                 initPageToc();
             },
             error: async (xhr, status, error) => {
