@@ -277,6 +277,7 @@ DEPENDENCIES
   github-pages (~> 231)
   http_parser.rb (~> 0.6.0)
   jekyll-feed (~> 0.12)
+  jekyll-paginate
   jekyll-toc
   just-the-docs (= 0.8.0)
   tzinfo (>= 1, < 3)

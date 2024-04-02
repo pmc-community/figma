@@ -37,7 +37,6 @@ $.fn.sizeChanged = function (handleFunction) {
 };
 
 
-
 const customiseTheme = () => {
     addTopOfPage ();
     clearTheUrl();
@@ -46,7 +45,16 @@ const customiseTheme = () => {
     setGoToTopBtn();
     formatAuxLinksBtns();
     fullContentAreaOnHome();
+    hidePageTOConHome();
 
+}
+
+const hidePageTOConHome = () => {
+    $(window).on('load', () => {
+        const rootUrl = window.location.origin + '/';
+    const crtPage = window.location.href;
+    if (rootUrl === crtPage) $('#page_toc').hide();
+    });
 }
 
 const fullContentAreaOnHome = () => {
@@ -66,16 +74,17 @@ const formatAuxLinksBtns =() => {
 const setGoToTopBtn = () => {
     $('.main').append('<div id="ihs_go_to_top_btn"><img src="/assets/img/goToTop.png" loading="lazy" alt="tick-circle"></div>');
 
+    // if the header is not fixed, - $('#main-header').height() - 20 can be removed
     $('#ihs_go_to_top_btn').click(() => {
         $([document.documentElement, document.body]).animate({
-            scrollTop: $("#ihs_top_of_page").offset().top
+            scrollTop: $("#ihs_top_of_page").offset().top - $('#main-header').height() - 20
         }, 300);
     });
    
 }        
 
 const addTopOfPage = () => {
-    $('.main-header').prepend('<div id ="ihs_top_of_page"></div>');
+    $('.main-content-wrap').prepend('<div id ="ihs_top_of_page"></div>');
 }
 const customiseFooter = () => {
     $('.site-footer').prepend('<div class="footer_first_row"><a href="https://innohub.space/eng/terms-of-service/" target=_blank>Terms</a> | <a href="https://innohub.space/eng/privacy/" target=_blank>Privacy</a> | <a href="https://innohub.space/eng/cookie-policy/" target=_blank>Cookies</a></div>');
@@ -102,3 +111,14 @@ const clearTheUrl = () => {
     });
 
 }
+  
+  $(window).on('scroll', () => {
+    var hash = window.location.hash;
+    if (hash) {
+        // if the header is not fixed, - $('#main-header').height() - 20 can be removed
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $(hash).offset().top - $('#main-header').height() - 20
+        }, 100);
+    }
+  })
+  
