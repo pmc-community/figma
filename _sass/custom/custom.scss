@@ -125,10 +125,15 @@ $neverDecoratedTextElements: ('a');
     align-self: center;
 }
 
+#docsearch {
+    align-self: center;
+}
+
 .search {
     height: 60% !important;
     align-self: center;
     padding-left: 20px;
+    display:none;
 }
 
 .main-header {
