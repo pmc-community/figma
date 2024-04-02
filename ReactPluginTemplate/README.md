@@ -13,6 +13,7 @@ For using this template follow the steps below:
 
 **We like OOP and classes, so the React App is based on class components, but feel free to use functional components in your development (REDUX stuff was not intensive tested on functional components, but there are no reasons for not performing well)**
 
+<!-- START_EXPOSED_SECTION -->
 # Features
 1. REACT Redux support and boilerplate code are included
 2. Support for multi html pages is included
@@ -22,3 +23,4 @@ For using this template follow the steps below:
 6. Support for .env is included, env variables can be used in the same way everywhere (ui, code.ts, react app/components) with the syntax process.env.<env_var_name>
 7. Support for store persistance in figma.clienStorage is included (be aware of 1MB size restriction of figma.clientStorage )
 8. Support for creating external resources to be loaded in the plugin is included. Scripts, styles, assets can be published on npm to be further used in Figma plugin
+<!-- END_EXPOSED_SECTION -->
