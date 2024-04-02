@@ -133,7 +133,6 @@ $neverDecoratedTextElements: ('a');
     height: 60% !important;
     align-self: center;
     padding-left: 20px;
-    display:none;
 }
 
 .main-header {
@@ -155,10 +154,40 @@ hr {
     z-index:999
 }
 
-ul {
-    list-style: none !important;
-}
-
 .DocSearch-Container {
     background-color: #ffffff00 !important; // to mask the 1px white line between the search modal and the header
+}
+
+#toc_container{
+    position: fixed;
+    left: 1400px;
+    top: 150px;
+    display: none;
+}
+
+
+li::before {
+    content: '' !important;
+    display:none !important;
+    
+}
+
+nav[data-toggle=toc] ul {
+    padding-left:0 !important;
+}
+
+nav[data-toggle=toc] .nav-link+ul {
+    padding-bottom:0 !important;
+    padding-left:5px !important;
+    padding-top:0 !important;
+}
+
+nav[data-toggle=toc] .nav>li>a {
+    padding-left:5px !important;
+    padding-bottom:0 !important;
+    padding-top:0 !important;
+}
+
+nav[data-toggle=toc] .nav>li>a:focus, nav[data-toggle=toc] .nav>li>a:hover {
+    border-left:solid 2px #000 !important
 }

@@ -36,7 +36,27 @@ $.fn.sizeChanged = function (handleFunction) {
     return element;
 };
 
+$(function () {
+    var navSelector = "#toc";
+    var $myNav = $(navSelector);
+    Toc.init($myNav);
+    $("body").scrollspy({
+      target: navSelector,
+    });
+  });
 
+/* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
+$(window).on('scroll', () => {
+var hash = window.location.hash;
+if (hash) {
+    // if the header is not fixed, - $('#main-header').height() - 20 can be removed
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $(hash).offset().top - $('#main-header').height() - 20
+    }, 100);
+}
+})
+
+/* LET'S DO SOME WORK */
 const customiseTheme = () => {
     addTopOfPage ();
     clearTheUrl();
@@ -46,7 +66,31 @@ const customiseTheme = () => {
     formatAuxLinksBtns();
     fullContentAreaOnHome();
     hidePageTOConHome();
+    setFullPageToc();
+    handleTocOnWindowsResize();
 
+}
+
+const handleTocOnWindowsResize = () => {
+    $(window).sizeChanged(() => {
+        $('#toc_container').css('top', $('#main-header').height()+25 + 'px').css('left', $('.main-content').width() + $('.side-bar').width() +100 + 'px');
+    });
+}
+
+const setFullPageToc = () => {
+    $(window).on('load', () => {
+        initPageToc();
+    })
+}
+
+const initPageToc = () => {
+    $('#toc').empty();
+    Toc.init({
+        $nav: $("#toc"),
+    });
+    $('#nav[data-toggle=toc] .nav-link.active+ul').css('font-family','poppins');
+    $('#toc_container').css('top', $('#main-header').height()+25 + 'px').css('left', $('.main-content').width() + $('.side-bar').width() +100 + 'px');
+    $('#toc_container').show();
 }
 
 const hidePageTOConHome = () => {
@@ -111,14 +155,5 @@ const clearTheUrl = () => {
     });
 
 }
-  
-  $(window).on('scroll', () => {
-    var hash = window.location.hash;
-    if (hash) {
-        // if the header is not fixed, - $('#main-header').height() - 20 can be removed
-        $([document.documentElement, document.body]).animate({
-            scrollTop: $(hash).offset().top - $('#main-header').height() - 20
-        }, 100);
-    }
-  })
+
   
