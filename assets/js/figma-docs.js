@@ -47,13 +47,14 @@ $(function () {
 
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 $(window).on('scroll', () => {
-var hash = window.location.hash;
-if (hash) {
-    // if the header is not fixed, - $('#main-header').height() - 20 can be removed
-    $([document.documentElement, document.body]).animate({
-        scrollTop: $(hash).offset().top - $('#main-header').height() - 20
-    }, 100);
-}
+    var hash = window.location.hash;
+    if (hash) {
+        // if the header is not fixed, - $('#main-header').height() - 20 can be removed
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $(hash).offset().top - $('#main-header').height() - 20
+        }, 100);
+    }
+
 })
 
 /* LET'S DO SOME WORK */
@@ -68,7 +69,69 @@ const customiseTheme = () => {
     hidePageTOConHome();
     setFullPageToc();
     handleTocOnWindowsResize();
+    handleTocDuplicates();
+}
 
+/* HERE ARE THE FUNCTIONS */
+const hashFromString = (string) => {
+    const regex = /#(.*)/;
+    const match = string.match(regex);
+    const hash = match ? match[1] : null;
+    return hash;
+}
+
+const handleTocDuplicates = () => {
+
+    $(document).ready( () => {
+        document.addEventListener('page_toc_loaded', tocLoaderHandler);
+    });
+    
+    const tocLoaderHandler = () => {
+        let tocKeys = [];
+        let tocElements = [];
+        let tocElementsDuplicates = [];
+        let duplicates = [];
+        $('#toc li a').each(function() {
+            tocKeys.push($(this).attr('href'));
+            tocElements.push(this);
+        })
+        duplicates = arrayDuplicates(tocKeys);
+        
+        duplicates.forEach((duplicate)=>{
+            tocElements.forEach((element) => {
+                if ($(element).attr('href')===duplicate)
+                    tocElementsDuplicates.push(element);
+            })
+        });
+        
+        if (tocElementsDuplicates.length === 0 ) {}
+        else {
+            let keyIndex = 1;
+
+            tocElementsDuplicates.forEach(function(element) {
+                console.log('index:' + keyIndex);
+                let anchor = hashFromString($(element).attr('href'));
+
+                // change the href of the toc item
+                $(element).attr('href','#'+anchor+'_'+keyIndex);
+
+                // change the id of the first anchor
+                // first anchor = target for the toc item above
+                $('#'+anchor).attr('id', anchor + '_' + keyIndex);
+                keyIndex ++;
+
+            });
+    
+        }
+    }
+}
+
+const arrayDuplicates = (arr) => {
+    const counts = _.countBy(arr);
+    const duplicates = _.pickBy(counts, count => count > 1);
+    const duplicateValues = _.keys(duplicates);
+    console.log(duplicateValues);
+    return duplicateValues;
 }
 
 const handleTocOnWindowsResize = () => {
@@ -90,7 +153,11 @@ const initPageToc = () => {
     });
     $('#nav[data-toggle=toc] .nav-link.active+ul').css('font-family','poppins');
     $('#toc_container').css('top', $('#main-header').height()+25 + 'px').css('left', $('.main-content').width() + $('.side-bar').width() +100 + 'px');
+    $('#toc li a').addClass('fw-normal text-black');
+    //$('#toc li').addClass('py-1');
+    //$('#toc li a').addClass('active border-0');
     $('#toc_container').show();
+    document.dispatchEvent(new CustomEvent('page_toc_loaded'));
 }
 
 const hidePageTOConHome = () => {

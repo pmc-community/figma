@@ -178,16 +178,36 @@ nav[data-toggle=toc] ul {
 
 nav[data-toggle=toc] .nav-link+ul {
     padding-bottom:0 !important;
-    padding-left:5px !important;
+    padding-left:0px !important;
     padding-top:0 !important;
 }
 
 nav[data-toggle=toc] .nav>li>a {
-    padding-left:5px !important;
+   
     padding-bottom:0 !important;
     padding-top:0 !important;
 }
 
 nav[data-toggle=toc] .nav>li>a:focus, nav[data-toggle=toc] .nav>li>a:hover {
     border-left:solid 2px #000 !important
+}
+
+nav[data-toggle=toc] .nav-link.active, nav[data-toggle=toc] .nav-link.active:focus, nav[data-toggle=toc] .nav-link.active:hover {
+    font-weight:500;
+    
+}
+
+nav[data-toggle=toc] .nav>li>a {
+    color:#000 !important
+}
+
+#toc {
+    padding:10px;
+    
+}
+#toc_container {
+    padding:10px;
+    border-left:1px dotted #eaeaea;
+    border-top:1px dotted #eaeaea;
+    border-radius:10px
 }

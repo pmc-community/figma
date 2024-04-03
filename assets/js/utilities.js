@@ -28,6 +28,11 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
                 if (position === 'before') $('.main-content-wrap').prepend(converter.makeHtml(contentSliced));
                 else $('.main-content-wrap').append(converter.makeHtml(contentSliced));
                 initPageToc();
+                
+                if (position === 'before') {
+                    $('#ihs_top_of_page').remove;
+                    addTopOfPage();
+                }
             },
             error: async (xhr, status, error) => {
                 console.error("Error fetching file:", error);
@@ -46,7 +51,6 @@ const  updateAlgoliaIndex = (newData) => {
 
     // Add or update records in the index
     index.saveObjects([{"1":1},{"2":2}],{ autoGenerateObjectIDIfNotExist: true }).then(({ objectIDs }) => {
-        console.log('ix1', objectIDs);
         // Optionally, refresh Instant Search UI
         InstantSearch.refresh();
     }).catch(error => {
