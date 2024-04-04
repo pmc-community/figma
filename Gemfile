@@ -1,5 +1,16 @@
 source "https://rubygems.org"
+
+# a good idea is to use a newer version of Jekyll
+# HEADS UP!
+# CHECK THE MAXIMUM JEKYLL VERSION ACCEPTED BY GITHUB PAGES (IF THE SITE IS DEPLOYED IN GHP)
+# AS OF APRIL 2024, THIS IS 3.9.5
+#gem "jekyll", "~> 4.2.0"
+
+# HEADS UP!
+# JTD 0.8.0 IS THE MAXIMUM THEME VERSION WORKING WITH GHP
 gem "just-the-docs", "0.8.0"
+
+# THIS IS THEL LAST VERSION OF GHP AS OF APRIL 2024
 gem "github-pages", "~> 231", group: :jekyll_plugins
 
 # If you have any plugins, put them here!
@@ -22,3 +33,6 @@ gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 
 gem "webrick", "~> 1.8"
+
+gem "sassy-strings"
+

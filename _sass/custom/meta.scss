@@ -1,0 +1,84 @@
+/* HEADS UP!
+ * here we define all objects as mixins and we use them in the main or
+ * component scss files
+*/
+
+@import 'custom-vars.scss';
+
+// content area
+@mixin contentArea ($contentAreaId) {
+    #{$contentAreaId} {
+        margin-left: $contentAreaMarginLeft !important;
+        max-width: 100%;
+    }
+
+    #{$contentAreaId}-content-wrap {
+        width:$contentAreaWidth;
+    }
+}
+
+// go to top button
+@mixin goToTopBtn($btnID) {
+    #{$btnID} {
+        position: $pos-fixed;
+        bottom: $m-20px;
+        right: $m-20px;
+        width: $s-30px;
+        cursor: $c-pointer;
+    }
+}
+
+// page toc
+// toc_container = the container containing the page toc
+// toc = the actually toc
+
+@mixin toc($tocBase) {
+    
+    #{$tocBase} {
+        padding: $tocPadding;
+    }
+    
+    #{$tocBase}_container {
+        position: $tocContainerPosition;
+        display: $tocContainerInitialView;
+        padding: $tocContainerPadding;
+        border-left: $tocContainerBorderLeft;
+        border-top: $tocContainerBorderTop;
+        border-bottom: $tocContainerBorderBottom;
+        border-right: $tocContainerBorderRight;
+        border-radius:$tocContainerBorderRadius
+    }
+}
+
+@mixin tocItem($tocBase) {
+    nav[data-toggle=#{$tocBase}] {
+        padding-left:$tocNavPaddingLeft !important;
+    }
+
+    nav[data-toggle=#{$tocBase}] .nav-link+ul {
+        padding-bottom:$tocNavNestedULPaddingBottm !important;
+        padding-left:$tocNavNestedULPaddingLeft !important;
+        padding-top:$tocNavNestedULPaddingTop !important;
+    }
+
+    nav[data-toggle=#{$tocBase}] .nav>li>a {
+   
+        padding-bottom:$tocItemLinkPaddingBottom !important;
+        padding-top:$tocItemLinkPaddingTop !important;
+    }
+
+    nav[data-toggle=#{$tocBase}] .nav>li>a:focus, nav[data-toggle=#{$tocBase}] .nav>li>a:hover {
+        border-left:$tocItemLinkBorderLeftOnActive !important
+    }
+
+    nav[data-toggle=#{$tocBase}] .nav-link.active, nav[data-toggle=#{$tocBase}] .nav-link.active:focus, nav[data-toggle=#{$tocBase}] .nav-link.active:hover {
+        font-weight:$tocFontWeight;
+        
+    }
+    
+    nav[data-toggle=#{$tocBase}] .nav>li>a {
+        color:$tocFontColor !important
+    }
+    
+}
+

@@ -1,4 +1,4 @@
-/* SOME UTILITIES */
+/* SOME UTILITIES ADDED TO JQUERY*/
 // check if an element is on screen
 $.fn.is_on_screen = function () {
     var win = $(window);
@@ -46,13 +46,16 @@ $(function () {
   });
 
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
+// take care of fixed header when scrolling to target, if the case
 $(window).on('scroll', () => {
+
+    // handle fixed header scroll
     var hash = window.location.hash;
     if (hash) {
         // if the header is not fixed, - $('#main-header').height() - 20 can be removed
         $([document.documentElement, document.body]).animate({
             scrollTop: $(hash).offset().top - $('#main-header').height() - 20
-        }, 100);
+        }, 0);
     }
 
 })
@@ -184,14 +187,23 @@ const formatAuxLinksBtns =() => {
 
 const setGoToTopBtn = () => {
     $('.main').append('<div id="ihs_go_to_top_btn"><img src="/assets/img/goToTop.png" loading="lazy" alt="tick-circle"></div>');
+    hideWhenNotNeeded();
 
+    // should be declared as function, arrow function wont work
+    function hideWhenNotNeeded() {
+        if ( $('#ihs_top_of_page').is_on_screen() ) $('#ihs_go_to_top_btn').hide();
+        else $('#ihs_go_to_top_btn').show();
+    }
+    
     // if the header is not fixed, - $('#main-header').height() - 20 can be removed
-    $('#ihs_go_to_top_btn').click(() => {
+    function goToTarget() {
         $([document.documentElement, document.body]).animate({
             scrollTop: $("#ihs_top_of_page").offset().top - $('#main-header').height() - 20
-        }, 300);
-    });
-   
+        }, 100);
+    }
+
+    $('#ihs_go_to_top_btn').click(() => {goToTarget();});
+    $(window).on('scroll', () =>{hideWhenNotNeeded();});
 }        
 
 const addTopOfPage = () => {

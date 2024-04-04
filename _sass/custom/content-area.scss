@@ -1,0 +1,9 @@
+// vars
+$contentAreaWidth: $sz-70p !default;
+$contentAreaMaxWidth: $sz-full !default;
+$contentAreaMarginLeft: $sideBarFixedWidth !default;
+
+@import 'meta.scss';
+
+$content: '.main';
+@include contentArea($content);

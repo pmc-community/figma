@@ -1,0 +1,21 @@
+@import 'custom-vars.scss';
+
+$sideBarElementsAlignedLeftElements: ('.site-header', '.site-footer', '#site-nav' );
+@each $element in $sideBarElementsAlignedLeftElements {
+    #{$element} {
+        padding-left: $siteHeaderPaddingLeft;
+    }
+}
+
+$sideBarRightPaddingElements: ('.nav-list');
+@each $element in $sideBarRightPaddingElements {
+    #{$element} {
+        padding-right: $siteHeaderPaddingRight;
+    }
+}
+
+.side-bar {
+    width: $sideBarFixedWidth;
+    min-width: $sideBarMinWidth;
+}
+

@@ -1,4 +1,21 @@
-@import './custom-vars.scss';
+/* HEADS UP!
+ * AS OF APRIL 2024, @use RULES CANNOT BE USED WHEN DEPLOYING TO GHP
+ * BECAUSE GHP DOES NOT SUPPORT THE MINIMUM JEKYLL VERSION (4.X.X) WHICH
+ * CAN PROCESS @use SASS RULES
+*/
+
+/* HEADS UP!
+ * here we define only general rules, component rules are in theit own
+ * scss file and imported here
+*/
+
+@import 'custom-vars.scss';
+@import 'side-bar.scss';
+@import 'header.scss';
+@import 'footer.scss';
+@import 'page-toc.scss';
+@import 'content-area.scss';
+@import 'meta.scss';
 
 $alwaysWithDefaultSiteFontElements: ('body');
 @each $element in $alwaysWithDefaultSiteFontElements {
@@ -7,25 +24,18 @@ $alwaysWithDefaultSiteFontElements: ('body');
     }
 }
 
-$siteHeaderElements: ('.site-header', '.site-header a', '.site-title', '.search', '.aux-nav', '.main-header');
-@each $element in $siteHeaderElements {
-    #{$element}, #{$element}:hover {
-        background: $siteHeaderBackground;
-    }
-}
-
 $fullWidthElements: ('.site-header', '.search', '.site-footer', '#site-nav');
 @each $element in $fullWidthElements {
     #{$element} {
-        width:$fullWidth;
-        max-width:$fullWidth;
+        width:$sz-full;
+        max-width:$sz-full;
     }
 }
 
-$weight600Elements: ('.site-header a', 'h1', 'h2');
+$weight600Elements: ('.site-header a', 'h1', 'h2', 'h3', 'h4');
 @each $element in $weight600Elements {
     #{$element} {
-        font-weight:$siteTitleFontWeight;
+        font-weight:$f-semiBold;
     }
 }
 
@@ -43,24 +53,10 @@ $alwaysBlackTextElements: ('body', 'p');
     }
 }
 
-$sideBarElementsAlignedLeftElements: ('.site-header', '.site-footer', '#site-nav' );
-@each $element in $sideBarElementsAlignedLeftElements {
-    #{$element} {
-        padding-left: $siteHeaderPaddingLeft;
-    }
-}
-
 $alwaysBodyBackgroundColorElements: ('.side-bar');
 @each $element in $alwaysBodyBackgroundColorElements {
     #{$element} {
         background: $sidebarBackground;
-    }
-}
-
-$sideBarRightPaddingElements: ('.nav-list');
-@each $element in $sideBarRightPaddingElements {
-    #{$element} {
-        padding-right: $siteHeaderPaddingRight;
     }
 }
 
@@ -74,140 +70,16 @@ $thinBorderTopElements: ('.site-footer');
 $neverDecoratedTextElements: ('a');
 @each $element in $neverDecoratedTextElements {
     #{$element}, #{$element}:hover {
-        text-decoration: $noDecoration !important;
+        text-decoration: $dec-none !important;
     }
 }
 
-
-
-// configure fix width left sidebar
-.side-bar {
-    width: $sideBarFixedWidth;
-    min-width: $sideBarMinWidth;
+$hiddenElements: ('hr', 'li::before');
+@each $element in $hiddenElements {
+        #{$element} {
+            display:$d-hidden;
+        }
 }
 
-.main {
-    margin-left: $contentAreaLeftMargin;
-    max-width: inherit;
-}
-
-.footer_first_row {
-    margin-bottom:$m-10px
-}
-
-.main-content-wrap {
-    width:$contentAreaWidth;
-}
-
-
-.site-title {
-    padding-left: $siteTitlePaddingLeft
-}
-
-.aux-nav {
-    padding-right: $siteHeaderPaddingLeft
-}
-
-.site_logo {
-    width:25px
-}
-
-#ihs_go_to_top_btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 30px;
-    cursor:pointer;
-}
-
-.aux-nav .aux-nav-list-item {
-    height: 65% !important;
-    align-self: center;
-}
-
-#docsearch {
-    align-self: center;
-}
-
-.search {
-    height: 60% !important;
-    align-self: center;
-    padding-left: 20px;
-}
-
-.main-header {
-    margin-left:-1px; //to cover the border
-    justify-content: flex-end; // if algolia is active, otherwise should be removed
-}
-
-hr {
-    display:none
-}
-
-#page_toc {
-    align-self:center
-}
-
-#main-header {
-    position:sticky;
-    top:0;
-    z-index:999
-}
-
-.DocSearch-Container {
-    background-color: #ffffff00 !important; // to mask the 1px white line between the search modal and the header
-}
-
-#toc_container{
-    position: fixed;
-    left: 1400px;
-    top: 150px;
-    display: none;
-}
-
-
-li::before {
-    content: '' !important;
-    display:none !important;
-    
-}
-
-nav[data-toggle=toc] ul {
-    padding-left:0 !important;
-}
-
-nav[data-toggle=toc] .nav-link+ul {
-    padding-bottom:0 !important;
-    padding-left:0px !important;
-    padding-top:0 !important;
-}
-
-nav[data-toggle=toc] .nav>li>a {
-   
-    padding-bottom:0 !important;
-    padding-top:0 !important;
-}
-
-nav[data-toggle=toc] .nav>li>a:focus, nav[data-toggle=toc] .nav>li>a:hover {
-    border-left:solid 2px #000 !important
-}
-
-nav[data-toggle=toc] .nav-link.active, nav[data-toggle=toc] .nav-link.active:focus, nav[data-toggle=toc] .nav-link.active:hover {
-    font-weight:500;
-    
-}
-
-nav[data-toggle=toc] .nav>li>a {
-    color:#000 !important
-}
-
-#toc {
-    padding:10px;
-    
-}
-#toc_container {
-    padding:10px;
-    border-left:1px dotted #eaeaea;
-    border-top:1px dotted #eaeaea;
-    border-radius:10px
-}
+$btnID: '#ihs_go_to_top_btn';
+@include goToTopBtn($btnID);
