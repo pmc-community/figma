@@ -1,7 +1,4 @@
-// importing the vars because we kind of need them
-@import 'custom-vars.scss';
-
-// define vars
+// PAGE TOC SETTINGS
 // general
 $tocFontWeight: $f-medium !default;
 $tocFontColor: $c-black !default;
@@ -28,11 +25,9 @@ $tocNavNestedULPaddingBottm: $p-0px !default;
 $tocItemLinkPaddingTop: $p-0px !default;
 $tocItemLinkPaddingBottom: $p-0px !default;
 $tocItemLinkBorderLeftOnActive: $b-Sol2pxBlack !default;
+@import 'side-bar.scss';
 
-
-// importing the mixins with vars already defined
-@import 'meta.scss';
-
+// STYLE PAGE TOC
 $tocBase: 'toc';
 $toc: '#'+$tocBase;
 @include toc($toc);

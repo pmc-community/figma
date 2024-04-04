@@ -82,3 +82,85 @@
     
 }
 
+// sidebar
+@mixin sidebar($sidebarContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, $sidebarLogo) {
+    
+    #{$sidebarContainer} {
+        width: $sidebarWidth;
+        min-width: $sidebarMinWidth;
+    }
+
+    @each $element in $sidebarElements {
+        #{$element} {
+            padding-left: $sidebarPaddingToAlignElementsLeft;
+        }
+    }
+
+    @each $element in $sidebarContentList {
+        #{$element} {
+            padding-right: $sidebarPaddingRight;
+        }
+    }
+
+    #{$sidebarCustomFooter} #footer_first_row {
+        margin-bottom:$sidebarFooterFirstRowMarginBottom;
+    }
+
+    #{$sidebarTitle} {
+        padding-left: $sidebarTitlePaddingLeft;
+    }
+
+    #{$sidebarLogo} {
+        width:$sidebarLogoSize;
+    }
+
+}
+
+// header above the content
+
+@mixin headerAboveContent($siteHeaderElements) {
+    
+    // set the background
+    @each $element in map-get($siteHeaderElements, elementsForBackground) {
+        #{$element}, #{$element}:hover {
+            background: $headerBackground;
+        }
+    }
+
+    // make the header sicky
+    #{map-get($siteHeaderElements, stickyElement)} {
+        position:$stickyElementPosition;
+        top:$stickyElementTopOffset;
+        z-index:$stickyElementZIndex;
+        margin-left:$correctionMargin;
+        justify-content: $elementsPositionInHeader; 
+    }
+
+    // style aux links container and links
+    #{map-get($siteHeaderElements, auxLinksContainer)} {
+        padding-right: $auxContainerPaddingRight;
+    }
+
+    #{map-get($siteHeaderElements, auxLinksItem)} {
+        height: $auxItemHeightToFitInHeader !important;
+        align-self: $auxItemVerticalAlignment;
+    }
+
+    // style algolia search button and contaner
+    #{map-get($siteHeaderElements, algoliaSearchBtn)} {
+        align-self: $algoliaSearchBtnVerticalAlignment;
+    }
+
+    #{map-get($siteHeaderElements, algoliaSearchBox)} {
+        background-color: $algoliaOverlay !important;
+    }
+
+    // style the default theme search (if available)
+    #{map-get($siteHeaderElements, defaultSearch)} {
+        height: $defaultSearchHeightToFitInHeader !important;
+        align-self: $defaultSearchVerticalAlignment;
+        padding-left: $defaultSearchPaddingLeft;
+    }
+}
+
+

@@ -7,6 +7,7 @@ $sidebarBackground: $body-background-color;
 $textColor: $body-text-color;
 $c-neutral: #eaeaea;
 $c-black: #000;
+$c-transparent: #00000000;
 
 // font family to be poppins
 $siteFontFamily: 'poppins';
@@ -23,22 +24,26 @@ $s-20px: 20px;
 $s-10px: 10px;
 $s-30px: 30px;
 
-// sizes, widths
+// sizes, widths, heights
 $sz-full: 100%;
 $sz-70p: 70%;
 $sz-20p: 20%;
+$sz-25px: 25px;
+$sz-h-65p: 65%;
+$sz-h-60p: 60%;
 
 
 // paddings
-$siteHeaderPaddingLeft: map-get($spacers, sp-7);
-$siteHeaderPaddingRight: $siteHeaderPaddingLeft;
-$siteTitlePaddingLeft: 1rem; //because of the logo
 $p-10px: 10px;
+$p-20px: 20px;
 $p-0px:0px;
+$p-1rem:1rem;
 
 // margins
 $m-10px: $s-10px;
 $m-20px: $s-20px;
+$m-top0px: 0;
+$m-corr-1px: -1px;
 
 // borders
 @mixin thinBorder {
@@ -62,15 +67,26 @@ $contentAreaWidth: $sz-70p;
 $sideBarFixedWidth: $sz-20p;
 $sideBarMinWidth:$sideBarFixedWidth;
 $contentAreaLeftMargin: $sideBarFixedWidth;
+$siteHeaderPaddingLeft: map-get($spacers, sp-7);
+$siteHeaderPaddingRight: $siteHeaderPaddingLeft;
+$siteTitlePaddingLeft: $p-1rem; //because of the logo
 
 // decorations
 $dec-none: none;
 
 // positions
 $pos-fixed: fixed;
+$pos-sticky: sticky;
 
 // cursors
 $c-pointer: pointer;
 
 // display
 $d-hidden: none;
+
+// z-index
+$z-max: 999;
+
+// alignment
+$al-h-left: flex-end;
+$al-v-center: center;
