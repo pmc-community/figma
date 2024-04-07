@@ -21,8 +21,8 @@ jobs:
 
       - name: Clear jekyll-site-template.git history
         run: |
-          git config user.name "florinhoinarescu"
-          git config user.email "florin_hoinarescu@yahoo.com"
+          git config --global user.name "florinhoinarescu"
+          git config --global user.email "florin_hoinarescu@yahoo.com"
           cd temp-repo
           rm -rf *
           git commit -m "Remove all files"
