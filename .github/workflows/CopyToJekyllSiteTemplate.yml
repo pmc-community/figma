@@ -22,6 +22,6 @@ jobs:
       - name: Push changes to destination repository
         run: |
           git config user.email "florin-hoinarescu@yahoo.com"
-          git config user.name "florinhoinarscu"
+          git config user.name "florinhoinarescu"
           git pull --rebase git@github.com:pmc-community/jekyll-site-template.git
           git push git@github.com:pmc-community/jekyll-site-template.git HEAD:refs/heads/main --force
