@@ -1,0 +1,73 @@
+{
+  "name": "react-plugin-template",
+  "version": "1.0.0",
+  "description": "Your Figma Plugin",
+  "main": "./dist/code.js",
+  "scripts": {
+    "build": "npm run build:prebuild && webpack && npm run build:clean_after_build> /dev/null",
+    "build:prebuild": "node ./tools/.prebuild.js",
+    "build:clean_after_build": "rm -r ./src/html/build",
+    "watch": "npm run build -- --watch",
+    "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
+    "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix ."
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "@figma/eslint-plugin-figma-plugins": "*",
+    "@figma/plugin-typings": "*",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "css-loader": "^6.10.0",
+    "eslint": "^8.54.0",
+    "style-loader": "^3.3.4",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.2",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@figma/figma-plugins/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "root": true,
+    "rules": {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.2.2",
+    "crypto-browserify": "^3.12.0",
+    "dotenv": "^16.4.5",
+    "dotenv-webpack": "^8.0.1",
+    "html-inline-script-webpack-plugin": "^3.2.1",
+    "html-webpack-inline-source-plugin": "^0.0.10",
+    "html-webpack-plugin": "^5.6.0",
+    "jquery": "^3.7.1",
+    "lodash": "^4.17.21",
+    "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.10.2",
+    "react-dom": "^18.2.0",
+    "react-redux": "^9.1.0",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
+    "ts-node": "^10.9.2"
+  }
+}

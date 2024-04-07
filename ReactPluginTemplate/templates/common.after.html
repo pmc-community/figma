@@ -1,0 +1,64 @@
+ <!--- COMMON CODE FOR PLUGIN HTML TO BE APPENDED --->
+ <!-- resizable plugin window --->
+ 
+ <style> #sizer-container{
+   height: 100%;
+   padding: 16px;
+   
+ }
+ #corner{
+   position: fixed;
+   right: 1px;
+   bottom: 2px;
+   cursor: nwse-resize;
+   z-index:9999999
+   
+ }
+</style>
+<div id="sizer-container">
+  <svg id="corner" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 0V16H0L16 0Z" fill="white"/>
+    <path d="M6.22577 16H3L16 3V6.22576L6.22577 16Z" fill="#8C8C8C"/>
+    <path d="M11.8602 16H8.63441L16 8.63441V11.8602L11.8602 16Z" fill="#8C8C8C"/>
+  </svg>
+</div>
+<script>
+  const corner = document.getElementById('corner');
+  function resizeWindow(e) {
+    const size = {
+      w: Math.max(50,Math.floor(e.clientX+5)),
+      h: Math.max(50,Math.floor(e.clientY+5))
+    };
+    parent.postMessage( { pluginMessage: { type: process.env.REACT_RESIZE_PLUGIN_WINDOW, size: size }}, '*');
+  }
+  corner.onpointerdown = (e)=>{
+    corner.onpointermove = resizeWindow;
+    corner.setPointerCapture(e.pointerId);
+  };
+  corner.onpointerup = (e)=>{
+    corner.onpointermove = null;
+    corner.releasePointerCapture(e.pointerId);
+  };
+</script>
+<!--- end resizable plugin window --->
+
+<!---- MARKER FOR CUSTOM STYLES ---->
+<style>
+/* styles from src/css/global/bootstrap-custom.css */
+/* CUSTOMISE BOOTSTRAP5
+ * Is a better option to customise bootstrap in this way instead of importing sass and changing globals.
+ * This way the output is much lighter, otherwise will be around 300k added to the bundle output.
+ * The max size of all figma plugin files must not exceed 15MB, so is a good thing to spare as much as possible 
+ */
+body {
+    font-size:14px;
+    background:#eaeaea;
+}
+/* styles from src/css/global/test.css */
+/* only to show how to split styles in files */
+h1, h2, h3, h4 {
+    font-size: 16px;
+}
+</style>
+<!---- END CUSTOM STYLES ---->
+<!--- END APPENDED COMMON CODE FOR PLUGIN HTML FILES --->

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module":"NodeNext",
+    "moduleResolution":"nodenext",
+    "jsx": "react",
+    "allowSyntheticDefaultImports":true,
+    "removeComments": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@figma",
+    ],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js"]
+}
