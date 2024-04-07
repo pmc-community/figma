@@ -24,7 +24,7 @@ jobs:
           git config --global user.name "florinhoinarescu"
           git config --global user.email "florin_hoinarescu@yahoo.com"
           cd temp-repo
-          rm -rf *
+          git rm -r --ignore-unmatch .
           git commit -m "Remove all files"
           git push git@github.com:pmc-community/jekyll-site-template.git HEAD:refs/heads/main --force
     
