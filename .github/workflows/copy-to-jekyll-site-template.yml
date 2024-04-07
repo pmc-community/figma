@@ -13,7 +13,7 @@ jobs:
         with:
           repository: pmc-community/figma
           ref: gh-pages
-          token: ${{ secrets.TOKEN_TO_JEKYLL_SITE_TEMPLATE }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push changes to destination repository
         uses: ad-m/github-push-action@master
