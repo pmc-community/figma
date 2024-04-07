@@ -79,7 +79,7 @@ $neverDecoratedTextElements: ('a');
     }
 }
 
-$hiddenElements: ('hr', 'li::before');
+$hiddenElements: ('hr');
 @each $element in $hiddenElements {
         #{$element} {
             display:$d-hidden;

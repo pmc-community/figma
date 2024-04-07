@@ -18,7 +18,7 @@
 
 <script>
     getExternalMDContent (
-        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/READMEx.md', 
+        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
         'after',
         'fullFile',
         'fullFile',

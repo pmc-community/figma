@@ -62,6 +62,7 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = () => {
+    addExtraPaddingToContentArea();
     addTopOfPage ();
     clearTheUrl();
     customiseFooter();
@@ -73,9 +74,64 @@ const customiseTheme = () => {
     setFullPageToc();
     handleTocOnWindowsResize();
     handleTocDuplicates();
+    setTheTheme();
+    addSwitchThemeIcon();
 }
 
 /* HERE ARE THE FUNCTIONS */
+
+const addExtraPaddingToContentArea = () => {
+    $('.main-content main').addClass('px-5');
+}
+
+const addSwitchThemeIcon = () => {
+    $(window).on('load', () => {
+        $('.aux-nav-list').prepend('<img id="themeSwitcher" class="themeSwitcher mx-2" style="width: 30px; height: 30px;align-self: center; cursor:pointer" src="/assets/img/icon-dark-mode-100.png" />');
+
+        $('#themeSwitcher').on('click', () => {
+            console.log('here');
+            let themeCookie = Cookies.get('JTDThemeCookie');
+            if (typeof themeCookie === 'undefined') Cookies.set('JTDThemeCookie',0);
+            themeCookie = Cookies.get('JTDThemeCookie');
+            if (themeCookie === '0' ) Cookies.set('JTDThemeCookie',1);
+            else Cookies.set('JTDThemeCookie',0);
+            setTheTheme();
+            themeCookie = Cookies.get('JTDThemeCookie');
+            if (themeCookie === '0' ) applyColorSchemaCorrections('light');
+            else applyColorSchemaCorrections('dark');;
+
+        });
+
+    });
+    
+}
+
+const applyColorSchemaCorrections = (theme) => {
+    if (theme === 'light' ) {
+        $('body').css('background','#fff');
+        $('body, p, ul li, ol li, li a').css('color', '#000');
+    }
+    else {
+        $('body').css('background','#27262b');
+        $('body, p, ul li, ol li, li a').css('color', '#fff');
+    }
+}
+
+const setTheTheme = () => {
+    let themeCookie = Cookies.get('JTDThemeCookie');
+    if (typeof themeCookie === 'undefined') Cookies.set('JTDThemeCookie',0);
+    themeCookie = Cookies.get('JTDThemeCookie');
+    if (themeCookie === '0' ) {
+        jtd.setTheme('light');
+        applyColorSchemaCorrections('light');
+    }
+    else {
+        jtd.setTheme('dark');
+        applyColorSchemaCorrections('dark');
+    }
+}
+
+
 const hashFromString = (string) => {
     const regex = /#(.*)/;
     const match = string.match(regex);

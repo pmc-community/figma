@@ -77,7 +77,11 @@
     }
     
     nav[data-toggle=#{$tocBase}] .nav>li>a {
-        color:$tocFontColor !important
+        color:$tocFontColor
+    }
+
+    nav[data-toggle=#{$tocBase}] .nav>li::before {
+        display:$tocItemSymbolBeforeLiTagVisibility;
     }
     
 }

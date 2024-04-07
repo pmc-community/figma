@@ -36,8 +36,8 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
                 if(!whereID) contentPlaceholder = `<div id=${contentPlaceholderID}><div>`;
 
                 constContentPosition = typeof position === 'undefined' || position === '' ? 'after' : position;
-                if (constContentPosition === 'before') $('.main-content-wrap').prepend(contentPlaceholder);
-                if (constContentPosition === 'after') $('.main-content-wrap').append(contentPlaceholder);
+                if (constContentPosition === 'before') $('.main-content main').prepend(contentPlaceholder);
+                if (constContentPosition === 'after') $('.main-content main').append(contentPlaceholder);
                 
                 $(`#${contentPlaceholderID}`).html(contentSliced);
 
