@@ -20,4 +20,4 @@ jobs:
           git push destination HEAD:main
         env:
           SOURCE_REPO_TOKEN: ${{ secrets.TOKEN_TO_JEKYLL_SITE_TEMPLATE }}
-          DESTINATION_REPO_TOKEN: ${{ secrets.DEPLOY_FROM_FIGMA_GH_PAGES }}
+          DESTINATION_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
