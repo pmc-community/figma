@@ -11,8 +11,8 @@ jobs:
       - name: Checkout source repository
         uses: actions/checkout@v4
         with:
-          repository: username/sourceRepo
-          ref: branchX
+          repository: pmc-community/figma
+          ref: gh-pages
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
