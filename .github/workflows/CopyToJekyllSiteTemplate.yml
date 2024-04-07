@@ -21,4 +21,5 @@ jobs:
 
       - name: Push changes to destination repository
         run: |
+          git pull git@github.com:pmc-community/jekyll-site-template.git
           git push git@github.com:pmc-community/jekyll-site-template.git HEAD:refs/heads/main
