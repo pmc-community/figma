@@ -7,7 +7,6 @@ permalink: /intro/
 testMd: '[![](https://img.shields.io/badge/Delivery-As%20A%20Service-ff6200?style=for-the-badge&logo=react)](#)'
 ---
 
-test from figmares doc site
 <!-- START_EXPOSED_SECTION -->
 {{ page.testMd }}
 
