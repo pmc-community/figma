@@ -16,7 +16,7 @@ badgeWithText: '[![](https://img.shields.io/badge/Delivery-As%20A%20Service-ff62
             <div id = "react-plugin-template" class="card h-auto col-5 shadow-sm m-2 p-3  bg-body rounded">
                 <div class="h-100 align-top mb-2">
                     <h2 class="text-center">React Plugin Template</h2>
-                    {% capture markdown_content %} {{ site.siteTestBadge }}  {% endcapture %} {{ site.siteTestBadge | markdownify }}
+                    {% capture markdown_content %} {{ site.siteVars.siteTestBadge }}  {% endcapture %} {{ site.siteVars.siteTestBadge | markdownify }}
                 </div>
                 <div class="h-100 align-top">
                     <p class="align-middle px-4 py-2 mt-auto card text-secondary border-0">This template contains what is needed to develop complex Figma plugins, based on React. Full support for mult-pages and multi-component. It is not a react app, it allows to embedd react components anywhere in the plugin pages. It also has full support for React Redux, including the whole boilerplate code. In short, you can build very complex things without being concerned about the framework and being focused on what you want to achieve.</p>

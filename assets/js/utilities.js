@@ -1,6 +1,18 @@
+uuid = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        // eslint-disable-next-line
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
-const getExternalMDContent = async (file, position, startMarker , endMarker, header) => {
+const getExternalMDContent = async (file, position, startMarker , endMarker, header, whereID, whoCalled) => {
     $(window).on('load', () => {
+        // prevent returning unwanted quantity of content
+        if (typeof startMarker === 'undefined' ||  typeof endMarker === 'undefined' ) return;
+        if (startMarker.trim() === '' && endMarker.trim() === '') return;
+        
+        // getting the content from external md
         $.ajax({
             url: file,
             method: "GET",
@@ -10,32 +22,41 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
                 const content = await data;
                 goodHeader = typeof header === 'undefined' ? '' : header;
                 let contentSliced = goodHeader + '\n';
-                if (typeof startMarker === 'undefined' ||  typeof endMarker === 'undefined' ) {
-                    contentSliced += content;
-                }
-                else {
-                    if (startMarker === '' || endMarker === '') {
-                        contentSliced += content;
-                    }
-                    else {
-                        const startIndex = content.indexOf(startMarker) + startMarker.length;
-                        const contentA = content.slice(startIndex);
-                        const endIndex = contentA.indexOf(endMarker);
-                        const contentB = contentA.slice(0,endIndex);
-                        contentSliced += contentB;
-                    }
-                }
-                if (position === 'before') $('.main-content-wrap').prepend(converter.makeHtml(contentSliced));
-                else $('.main-content-wrap').append(converter.makeHtml(contentSliced));
+                const startIndex = startMarker === 'fullFile' || endMarker === 'fullFile' ? 0 : content.indexOf(startMarker) + startMarker.length;
+                const contentA = content.slice(startIndex);
+                const endIndex = contentA.indexOf(endMarker);
+                const contentB = contentA.slice(0,endIndex);
+                contentSliced += contentB;
+
+                contentSliced = converter.makeHtml(contentSliced);
+
+                let contentPlaceholder = '';
+
+                const contentPlaceholderID = whereID ? whereID : uuid();
+                if(!whereID) contentPlaceholder = `<div id=${contentPlaceholderID}><div>`;
+
+                constContentPosition = typeof position === 'undefined' || position === '' ? 'after' : position;
+                if (constContentPosition === 'before') $('.main-content-wrap').prepend(contentPlaceholder);
+                if (constContentPosition === 'after') $('.main-content-wrap').append(contentPlaceholder);
+                
+                $(`#${contentPlaceholderID}`).html(contentSliced);
+
+                // refresh the ToC
                 initPageToc();
                 
+                // move the top of page where it should be
                 if (position === 'before') {
-                    $('#ihs_top_of_page').remove;
+                    $('#ihs_top_of_page').remove();
                     addTopOfPage();
                 }
             },
             error: async (xhr, status, error) => {
-                console.error("Error fetching file:", error);
+                toast = new bootstrap.Toast($('.toast'));
+                $('.toast-body').html('Error loading external content. Details in console ...');
+                toast.show();
+                const placeholder = position === 'before' || position === 'after' ? 'N/A for this position' : whereID;
+                console.error(`Error fetching file: ${file}\nStatus: ${status} / ${xhr.responseText}\nPosition: ${position}\nPlaceholder: ${placeholder}\nOrigin: ${whoCalled}`,error
+                );
             }
         });
     })   

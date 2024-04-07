@@ -56,10 +56,12 @@ $alwaysBlackTextElements: ('body', 'p');
     }
 }
 
-$alwaysBodyBackgroundColorElements: ('.side-bar');
-@each $element in $alwaysBodyBackgroundColorElements {
-    #{$element} {
-        background: $sidebarBackground;
+$alwaysBodyBackgroundColorElements: (); // '.side-bar' if you want the sidebar to have the same background as the content area
+@if (length($alwaysBodyBackgroundColorElements)>0) {
+    @each $element in $alwaysBodyBackgroundColorElements {
+        #{$element} {
+            background: $sidebarBackground;
+        }
     }
 }
 

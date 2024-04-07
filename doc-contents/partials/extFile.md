@@ -18,10 +18,12 @@
 
 <script>
     getExternalMDContent (
-        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
+        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/READMEx.md', 
         'after',
+        'fullFile',
+        'fullFile',
+        '```Markdown content generated from a partial which loads from a full external md file and place the content at the bottom of the content area```',
         '',
-        '',
-        '```Markdown content generated from a partial loaded from an external md file```'
+        '{{ page.path }}'
     );
 </script>

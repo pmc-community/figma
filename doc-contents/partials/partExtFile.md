@@ -21,13 +21,13 @@
 --->
 
 <script>
-    const start = `{{ site.startExposedSection }}`;
-    const end = `{{ site.endExposedSection }}`;
     getExternalMDContent (
         'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
         'before',
-        start,
-        end,
-        '```Markdown content generated from a part of partial loaded from an external md file```'
+        '{{ site.siteConfig.extContentMarkers.startExposedSection }}',
+        '{{ site.siteConfig.extContentMarkers.endExposedSection }}',
+        '```Markdown content generated from a part of partial which loads a part from an external md file and place it on top of the content area```',
+        '',
+        '{{ page.path }}'
     );
 </script>

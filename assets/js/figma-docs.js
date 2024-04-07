@@ -112,7 +112,6 @@ const handleTocDuplicates = () => {
             let keyIndex = 1;
 
             tocElementsDuplicates.forEach(function(element) {
-                console.log('index:' + keyIndex);
                 let anchor = hashFromString($(element).attr('href'));
 
                 // change the href of the toc item
@@ -133,7 +132,6 @@ const arrayDuplicates = (arr) => {
     const counts = _.countBy(arr);
     const duplicates = _.pickBy(counts, count => count > 1);
     const duplicateValues = _.keys(duplicates);
-    console.log(duplicateValues);
     return duplicateValues;
 }
 
