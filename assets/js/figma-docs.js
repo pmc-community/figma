@@ -62,6 +62,8 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = () => {
+    $('body').hide(); // to avoid flickering the page withot styles before loading in dark mode
+    setTheTheme();
     addExtraPaddingToContentArea();
     addTopOfPage ();
     clearTheUrl();
@@ -73,9 +75,9 @@ const customiseTheme = () => {
     hidePageTOConHome();
     setFullPageToc();
     handleTocOnWindowsResize();
-    handleTocDuplicates();
-    setTheTheme();
+    handleTocDuplicates();  
     addSwitchThemeIcon();
+    $(document).ready(()=>{$('body').show();}); // to avoid flickering the page withot styles before loading in dark mode
 }
 
 /* HERE ARE THE FUNCTIONS */
@@ -123,16 +125,16 @@ const setTheTheme = () => {
     let themeCookie = Cookies.get('JTDThemeCookie');
     if (typeof themeCookie === 'undefined') Cookies.set('JTDThemeCookie',0);
     themeCookie = Cookies.get('JTDThemeCookie');
-    if (themeCookie === '0' ) jtd.setTheme('light');
-    else jtd.setTheme('dark');    
+    if (Cookies.get('JTDThemeCookie') === '0' ) { 
+        jtd.setTheme('light'); 
+        applyColorSchemaCorrections('light'); 
+    }
+    else { 
+        jtd.setTheme('dark'); 
+        applyColorSchemaCorrections('dark'); 
+    }
 
-    $(window).on('load', () => {
-        themeCookie = Cookies.get('JTDThemeCookie');
-        if (themeCookie === '0' ) applyColorSchemaCorrections('light');
-        else applyColorSchemaCorrections('dark');
-    });
 }
-
 
 const hashFromString = (string) => {
     const regex = /#(.*)/;

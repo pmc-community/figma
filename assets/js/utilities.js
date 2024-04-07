@@ -13,6 +13,7 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
         if (startMarker.trim() === '' && endMarker.trim() === '') return;
         
         // getting the content from external md
+        // comments in the form of '<!- comment ... ->' are ignored when converting from md to hmml
         $.ajax({
             url: file,
             method: "GET",
@@ -22,9 +23,9 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
                 const content = await data;
                 goodHeader = typeof header === 'undefined' ? '' : header;
                 let contentSliced = goodHeader + '\n';
-                const startIndex = startMarker === 'fullFile' || endMarker === 'fullFile' ? 0 : content.indexOf(startMarker) + startMarker.length;
+                const startIndex = startMarker === 'fullFile' ? 0 : content.indexOf(startMarker) + startMarker.length;
                 const contentA = content.slice(startIndex);
-                const endIndex = contentA.indexOf(endMarker);
+                const endIndex = endMarker === 'fullFile' ? contentA.length+1 : contentA.indexOf(endMarker) ;
                 const contentB = contentA.slice(0,endIndex);
                 contentSliced += contentB;
 
