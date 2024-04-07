@@ -15,8 +15,9 @@ jobs:
           ref: gh-pages
 
       - name: Push changes to destination repository
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.DEPLOY_FROM_FIGMA_GH_PAGES }}
-          branch: main
-          repository: pmc-community/jekyll-site-template
+        run: |
+          git remote add destination https://github.com/pmc-community/jekyll-site-template
+          git push destination HEAD:branchMain
+        env:
+          SOURCE_REPO_TOKEN: ${{ secrets.TOKEN_TO_JEKYLL_SITE_TEMPLATE }}
+          DESTINATION_REPO_TOKEN: ${{ secrets.DEPLOY_FROM_FIGMA_GH_PAGES }}
