@@ -24,4 +24,4 @@ jobs:
           git remote add destination git@github.com:pmc-community/jekyll-site-template.git
           git checkout main
           git rm -rf .
-          git push -u origin gh-pages
+          git push destination HEAD:refs/heads/main
