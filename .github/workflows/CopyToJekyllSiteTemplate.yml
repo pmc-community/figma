@@ -22,10 +22,10 @@ jobs:
       - name: Clear jekyll-site-template.git history
         run: |
           cd temp-repo
-          git checkout main
+          rm -rf *
+          git commit -m "Remove all files"
           git config user.name "florinhoinarescu"
           git config user.email "florin_hoinarescu@yahoo.com"
-          git commit --allow-empty -m "Clear repository history"
           git push git@github.com:pmc-community/jekyll-site-template.git HEAD:refs/heads/main --force
     
       - name: Checkout source repository
