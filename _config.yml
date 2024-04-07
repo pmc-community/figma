@@ -50,3 +50,7 @@ siteConfig:
   extContentMarkers:
     startExposedSection: '<!-- START_EXPOSED_SECTION -->'
     endExposedSection: '<!-- END_EXPOSED_SECTION -->'
+
+# heading anchors must be false because it generates a weird effect of showing huge blue anchors 
+# when loading the page and until the page is loaded. nevertheless, page ToC is good and enough
+heading_anchors: false

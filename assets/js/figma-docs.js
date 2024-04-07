@@ -86,7 +86,7 @@ const addExtraPaddingToContentArea = () => {
 
 const addSwitchThemeIcon = () => {
     $(window).on('load', () => {
-        $('.aux-nav-list').prepend('<img id="themeSwitcher" class="themeSwitcher mx-2" style="width: 30px; height: 30px;align-self: center; cursor:pointer" src="/assets/img/icon-dark-mode-100.png" />');
+        $('.aux-nav-list').prepend('<img id="themeSwitcher" class="themeSwitcher mx-2" src="/assets/img/icon-dark-mode-100.png" />');
 
         $('#themeSwitcher').on('click', () => {
             console.log('here');
@@ -107,6 +107,8 @@ const addSwitchThemeIcon = () => {
 }
 
 const applyColorSchemaCorrections = (theme) => {
+    // jtd forgets to change some colors when switching from light to dark and back
+    // the following colors are valid only for the default dark and light schemas
     if (theme === 'light' ) {
         $('body').css('background','#fff');
         $('body, p, ul li, ol li, li a').css('color', '#000');
@@ -121,14 +123,14 @@ const setTheTheme = () => {
     let themeCookie = Cookies.get('JTDThemeCookie');
     if (typeof themeCookie === 'undefined') Cookies.set('JTDThemeCookie',0);
     themeCookie = Cookies.get('JTDThemeCookie');
-    if (themeCookie === '0' ) {
-        jtd.setTheme('light');
-        applyColorSchemaCorrections('light');
-    }
-    else {
-        jtd.setTheme('dark');
-        applyColorSchemaCorrections('dark');
-    }
+    if (themeCookie === '0' ) jtd.setTheme('light');
+    else jtd.setTheme('dark');    
+
+    $(window).on('load', () => {
+        themeCookie = Cookies.get('JTDThemeCookie');
+        if (themeCookie === '0' ) applyColorSchemaCorrections('light');
+        else applyColorSchemaCorrections('dark');
+    });
 }
 
 
@@ -181,6 +183,10 @@ const handleTocDuplicates = () => {
             });
     
         }
+
+        const themeCookie = Cookies.get('JTDThemeCookie');
+        if (themeCookie === '0' ) applyColorSchemaCorrections('light');
+        else applyColorSchemaCorrections('dark');
     }
 }
 
@@ -211,8 +217,6 @@ const initPageToc = () => {
     $('#nav[data-toggle=toc] .nav-link.active+ul').css('font-family','poppins');
     $('#toc_container').css('top', $('#main-header').height()+25 + 'px').css('left', $('.main-content').width() + $('.side-bar').width() +100 + 'px');
     $('#toc li a').addClass('fw-normal text-black');
-    //$('#toc li').addClass('py-1');
-    //$('#toc li a').addClass('active border-0');
     $('#toc_container').show();
     document.dispatchEvent(new CustomEvent('page_toc_loaded'));
 }

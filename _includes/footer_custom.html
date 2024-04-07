@@ -20,3 +20,13 @@
     </div>
   </div>
 </div>
+
+{% if site.github %}
+  {% assign hosting_platform = "GitHub Pages" %}
+{% elsif site.netlify %}
+  {% assign hosting_platform = "Netlify" %}
+{% else %}
+  {% assign hosting_platform = "Unknown" %}
+{% endif %}
+
+<p>This site is hosted on {{ hosting_platform }}.</p>

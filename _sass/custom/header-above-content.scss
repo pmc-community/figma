@@ -14,6 +14,11 @@ $defaultSearchHeightToFitInHeader: $sz-h-60p;
 $defaultSearchVerticalAlignment: $al-v-center;
 $defaultSearchPaddingLeft:$p-20px;
 
+$themeSwitcherWidth: $s-30px;
+$themeSwitcherHeight: $themeSwitcherWidth;
+$themeSwitcherVerticalAlignement: $al-v-center;
+$themeSwitcherCursor: $c-pointer;
+
 @import 'meta.scss';
 
 // STYLE HEADER ABOVE THE CONTENT
@@ -24,7 +29,8 @@ $siteHeaderElements: (
     auxLinksItem: '.aux-nav .aux-nav-list-item',
     algoliaSearchBtn: '#docsearch',
     algoliaSearchBox: '.DocSearch-Container',
-    defaultSearch: '.search' //may be not active if site search is with algolia. (de)activation in _config.yml
+    defaultSearch: '.search', //may be not active if site search is with algolia. (de)activation in _config.yml
+    themeSwitcher: '#themeSwitcher'
     
 );
 

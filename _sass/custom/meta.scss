@@ -165,6 +165,13 @@
         align-self: $defaultSearchVerticalAlignment;
         padding-left: $defaultSearchPaddingLeft;
     }
+
+    #{map-get($siteHeaderElements, themeSwitcher)} {
+        width: $themeSwitcherWidth; 
+        height: $themeSwitcherHeight;
+        align-self: $themeSwitcherVerticalAlignement; 
+        cursor: $themeSwitcherCursor;
+    }
 }
 
 
