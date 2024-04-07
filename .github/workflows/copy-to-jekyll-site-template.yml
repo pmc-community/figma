@@ -1,9 +1,7 @@
 name: Copy gh-pages to jekyll-site-template repo
 
 on:
-  push:
-    branches:
-      - gh-pages
+  workflow_dispatch:
 
 jobs:
   copy-branch:
