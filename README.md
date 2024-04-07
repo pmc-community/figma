@@ -1,1 +1,1 @@
-Documentation site for Figma Resources
+Figma Resources
