@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.PRIVATE_KEY_TO_DEPLOY_TO_JEKYLL_SITE_TEMPLATE }}
       
       - name: Clone jekyll-site-template
         run: git clone git@github.com:pmc-community/jekyll-site-template.git temp-repo
@@ -28,11 +33,6 @@ jobs:
         with:
           repository: pmc-community/figma
           ref: gh-pages
-
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.PRIVATE_KEY_TO_DEPLOY_TO_JEKYLL_SITE_TEMPLATE }}
 
       - name: Push changes to destination repository
         run: |
