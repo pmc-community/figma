@@ -11,8 +11,8 @@ jobs:
       - name: Checkout source repository
         uses: actions/checkout@v4
         with:
-          repository: username/sourceRepo
-          ref: branchX
+          repository: pmc-community/figma
+          ref: gh-pages
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -21,7 +21,7 @@ jobs:
 
       - name: Push changes to destination repository
         run: |
-          git remote add destination git@github.com:pmc-community/jekyll-site-template.git
-          git fetch origin
-          git merge origin/main
-          git push -f origin main
+          git config user.email "florin-hoinarescu@yahoo.com"
+          git config user.name "florinhoinarescu"
+          git pull --rebase git@github.com:pmc-community/jekyll-site-template.git
+          git push git@github.com:pmc-community/jekyll-site-template.git HEAD:refs/heads/main --force
