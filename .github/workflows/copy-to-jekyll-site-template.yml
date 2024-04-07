@@ -19,5 +19,4 @@ jobs:
           git remote add destination https://github.com/pmc-community/jekyll-site-template.git
           git push destination HEAD:main
         env:
-          SOURCE_REPO_TOKEN: ${{ secrets.READ_GH_PAGES }}
-          DESTINATION_REPO_TOKEN: ${{ secrets.WRITE_TO_JEKYLL_SITE_TEMPLATE }}
+          SOURCE_REPO_TOKEN: ${{ secrets.PRIVATE_KETY_TO_DEPLOY_TO_JEKYLL_SITE_TEMPLATE }}
