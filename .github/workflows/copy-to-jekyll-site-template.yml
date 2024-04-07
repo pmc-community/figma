@@ -22,7 +22,8 @@ jobs:
       - name: Push changes to destination repository
         run: |
           git remote add destination git@github.com:pmc-community/jekyll-site-template.git
-          git push --force origin gh-pages
+          git checkout gh-pages
+          git push --force origin main
 
 
 
