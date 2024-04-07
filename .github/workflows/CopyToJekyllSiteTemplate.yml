@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Clone jekyll-site-template
-        run: git clone https://github.com/pmc-community/jekyll-site-template.git temp-repo
+        run: git clone git@github.com:pmc-community/jekyll-site-template.git temp-repo
 
       - name: Clear jekyll-site-template.git history
         run: |
