@@ -22,4 +22,5 @@ jobs:
       - name: Push changes to destination repository
         run: |
           git remote add destination git@github.com:pmc-community/jekyll-site-template.git
+          git fsck
           git push git@github.com:pmc-community/jekyll-site-template.git gh-pages:main --force
