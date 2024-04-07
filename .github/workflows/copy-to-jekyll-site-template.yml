@@ -1,0 +1,25 @@
+name: Copy gh-pages to jekyll-site-template repo
+
+on:
+  push:
+    branches:
+      - gh-pages
+
+jobs:
+  copy-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v2
+        with:
+          repository: pmc-community/figma
+          ref: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push changes to destination repository
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.DEPLOY_FROM_FIGMA_GH_PAGES }}
+          branch: main
+          repository: pmc-community/jekyll-site-template
