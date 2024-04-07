@@ -1,21 +1,25 @@
-name: Copy to Jekyll Site Template
+name: Copy gh-pages to jekyll-site-template repo
 
 on:
   push:
     branches:
-      - gh-pages # Specify the source branch you want to copy
+      - gh-pages
 
 jobs:
-  repo-sync:
+  copy-branch:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-    - name: repo-sync
-      uses: repo-sync/github-sync@v2
-      with:
-        source_repo: "pmc-community/figma"
-        source_branch: "pmc-community/jekyll-site-template"
-        destination_branch: "main"
-        github_token: ${{ secrets.TOKEN_TO_JEKYLL_SITE_TEMPLATE }}
+      - name: Checkout source repository
+        uses: actions/checkout@v2
+        with:
+          repository: pmc-community/figma
+          ref: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push changes to destination repository
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.DEPLOY_FROM_FIGMA_GH_PAGES }}
+          branch: main
+          repository: pmc-community/jekyll-site-template
