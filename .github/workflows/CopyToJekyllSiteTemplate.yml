@@ -8,6 +8,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Clone jekyll-site-template
+        run: git clone https://github.com/pmc-community/jekyll-site-template.git temp-repo
+
+      - name: Clear jekyll-site-template.git history
+        run: |
+          cd temp-repo
+          git checkout main
+          git config user.name "GitHub Actions"
+          git config user.email "<>"
+          git commit --allow-empty -m "Clear repository history"
+          git push --force origin main
+    
       - name: Checkout source repository
         uses: actions/checkout@v4
         with:
@@ -21,7 +36,7 @@ jobs:
 
       - name: Push changes to destination repository
         run: |
-          git config user.email "florin-hoinarescu@yahoo.com"
-          git config user.name "florinhoinarescu"
+          git config user.email "GitHub Actions"
+          git config user.name "<>"
           git pull --rebase git@github.com:pmc-community/jekyll-site-template.git
           git push git@github.com:pmc-community/jekyll-site-template.git HEAD:refs/heads/main --force
