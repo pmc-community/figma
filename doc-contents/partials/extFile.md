@@ -24,6 +24,6 @@
         'fullFile',
         '```Markdown content generated from a partial which loads from a full external md file and place the content at the bottom of the content area```',
         '',
-        '{{ page.path }}'
+        'doc-contents/partials/extFile.md'
     );
 </script>

@@ -28,6 +28,6 @@
         '{{ site.siteConfig.extContentMarkers.endExposedSection }}',
         '```Markdown content generated from a part of partial which loads a part from an external md file and place it on top of the content area```',
         '',
-        '{{ page.path }}'
+        'doc-contents/partials/partExtFile.md'
     );
 </script>
