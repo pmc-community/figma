@@ -18,8 +18,8 @@ jobs:
         run: |
           cd temp-repo
           git checkout main
-          git config user.name "GitHub Actions"
-          git config user.email "<>"
+          git config user.name "florinhoinarescu"
+          git config user.email "florin_hoinarescu@yahoo.com"
           git commit --allow-empty -m "Clear repository history"
           git push --force origin main
     
@@ -36,7 +36,7 @@ jobs:
 
       - name: Push changes to destination repository
         run: |
-          git config user.email "GitHub Actions"
-          git config user.name "<>"
+          git config user.email "florinhoinarescu"
+          git config user.name "florin_hoinarescu@yahoo.com"
           git pull --rebase git@github.com:pmc-community/jekyll-site-template.git
           git push git@github.com:pmc-community/jekyll-site-template.git HEAD:refs/heads/main --force
