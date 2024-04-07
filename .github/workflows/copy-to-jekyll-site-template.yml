@@ -18,7 +18,7 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.PRIVATE_KETY_TO_DEPLOY_TO_JEKYLL_SITE_TEMPLATE }}
+          ssh-private-key: ${{ secrets.PRIVATE_KEY_TO_DEPLOY_TO_JEKYLL_SITE_TEMPLATE }}
 
       - name: Push changes to destination repository
         run: |
