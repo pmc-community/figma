@@ -1,50 +1,3 @@
-/* SOME UTILITIES ADDED TO JQUERY*/
-// check if an element is on screen
-$.fn.is_on_screen = function () {
-    var win = $(window);
-    var viewport = {
-        top: win.scrollTop(),
-        left: win.scrollLeft()
-    };
-    viewport.right = viewport.left + win.width();
-    viewport.bottom = viewport.top + win.height();
-
-    var bounds;
-    bounds = this.offset();
-    bounds.right = bounds.left + this.outerWidth();
-    bounds.bottom = bounds.top + this.outerHeight();
-
-    return (!(viewport.right < bounds.left || viewport.left > bounds.right || viewport.bottom < bounds.top || viewport.top > bounds.bottom));
-};
-
-// usage: $().sizeChanged(function(){})
-$.fn.sizeChanged = function (handleFunction) {
-    var element = this;
-    var lastWidth = element.width();
-    var lastHeight = element.height();
-
-    setInterval(function () {
-        if (lastWidth === element.width()&&lastHeight === element.height())
-            return;
-        if (typeof (handleFunction) == 'function') {
-            handleFunction({ width: lastWidth, height: lastHeight },
-                            { width: element.width(), height: element.height() });
-            lastWidth = element.width();
-            lastHeight = element.height();
-        }
-    }, 100);
-    return element;
-};
-
-$(function () {
-    var navSelector = "#toc";
-    var $myNav = $(navSelector);
-    Toc.init($myNav);
-    $("body").scrollspy({
-      target: navSelector,
-    });
-  });
-
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case
 $(window).on('scroll', () => {
@@ -62,7 +15,6 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = () => {
-    $('body').hide(); // to avoid flickering the page withot styles before loading in dark mode
     setTheTheme();
     addExtraPaddingToContentArea();
     addTopOfPage ();
@@ -77,7 +29,6 @@ const customiseTheme = () => {
     handleTocOnWindowsResize();
     handleTocDuplicates();  
     addSwitchThemeIcon();
-    $(document).ready(()=>{$('body').show();}); // to avoid flickering the page withot styles before loading in dark mode
 }
 
 /* HERE ARE THE FUNCTIONS */
@@ -109,6 +60,7 @@ const addSwitchThemeIcon = () => {
 }
 
 const applyColorSchemaCorrections = (theme) => {
+
     // jtd forgets to change some colors when switching from light to dark and back
     // the following colors are valid only for the default dark and light schemas
     if (theme === 'light' ) {

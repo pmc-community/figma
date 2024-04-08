@@ -1,3 +1,52 @@
+/* SOME UTILITIES ADDED TO JQUERY*/
+// check if an element is on screen
+$.fn.is_on_screen = function () {
+    var win = $(window);
+    var viewport = {
+        top: win.scrollTop(),
+        left: win.scrollLeft()
+    };
+    viewport.right = viewport.left + win.width();
+    viewport.bottom = viewport.top + win.height();
+
+    var bounds;
+    bounds = this.offset();
+    bounds.right = bounds.left + this.outerWidth();
+    bounds.bottom = bounds.top + this.outerHeight();
+
+    return (!(viewport.right < bounds.left || viewport.left > bounds.right || viewport.bottom < bounds.top || viewport.top > bounds.bottom));
+};
+
+// usage: $().sizeChanged(function(){})
+$.fn.sizeChanged = function (handleFunction) {
+    var element = this;
+    var lastWidth = element.width();
+    var lastHeight = element.height();
+
+    setInterval(function () {
+        if (lastWidth === element.width()&&lastHeight === element.height())
+            return;
+        if (typeof (handleFunction) == 'function') {
+            handleFunction({ width: lastWidth, height: lastHeight },
+                            { width: element.width(), height: element.height() });
+            lastWidth = element.width();
+            lastHeight = element.height();
+        }
+    }, 100);
+    return element;
+};
+
+// init page toc
+$(function () {
+    var navSelector = "#toc";
+    var $myNav = $(navSelector);
+    Toc.init($myNav);
+    $("body").scrollspy({
+      target: navSelector,
+    });
+  });
+
+// gnerate uuid
 uuid = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         // eslint-disable-next-line
@@ -6,6 +55,7 @@ uuid = () => {
     });
 }
 
+// read external contens between markers
 const getExternalMDContent = async (file, position, startMarker , endMarker, header, whereID, whoCalled) => {
     $(window).on('load', () => {
         // prevent returning unwanted quantity of content
