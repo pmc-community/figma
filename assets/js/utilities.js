@@ -36,6 +36,7 @@ $.fn.sizeChanged = function (handleFunction) {
     return element;
 };
 
+ 
 // init page toc
 $(function () {
     var navSelector = "#toc";
@@ -45,6 +46,13 @@ $(function () {
       target: navSelector,
     });
   });
+
+const removeChildrenExceptFirst = (nodeSelector) => {
+    var $node = $(nodeSelector);
+    var $children = $node.children();
+    var $childrenToRemove = $children.not(':first-child');
+    $childrenToRemove.remove();
+}
 
 // gnerate uuid
 uuid = () => {
@@ -112,8 +120,7 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
         });
     })   
 }
-
-// NOT USED
+/* NOT USED
 const  updateAlgoliaIndex = (newData) => {
     // Initialize Algolia client
     const client = algoliasearch('xxxx', 'xxxxx');
@@ -129,3 +136,4 @@ const  updateAlgoliaIndex = (newData) => {
         console.error('Error updating index:', error);
     });
 }
+*/

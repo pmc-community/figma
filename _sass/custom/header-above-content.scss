@@ -14,10 +14,13 @@ $defaultSearchHeightToFitInHeader: $sz-h-60p;
 $defaultSearchVerticalAlignment: $al-v-center;
 $defaultSearchPaddingLeft:$p-20px;
 
-$themeSwitcherWidth: $s-30px;
+$themeSwitcherWidth: $sz-35px;
 $themeSwitcherHeight: $themeSwitcherWidth;
 $themeSwitcherVerticalAlignement: $al-v-center;
 $themeSwitcherCursor: $c-pointer;
+$themeSwitcherBorder:$b-SolThinNeutral;
+$themeStwitcherPadding: $p-5px;
+$themeSwitcherBorderRadius: $brad-50p;
 
 @import 'meta.scss';
 

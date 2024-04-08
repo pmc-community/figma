@@ -15,6 +15,7 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = () => {
+    $('body').css('visibility','hidden'); // to avoid the fast display of unstyled page before styles are loaded and applied
     setTheTheme();
     addExtraPaddingToContentArea();
     addTopOfPage ();
@@ -29,6 +30,10 @@ const customiseTheme = () => {
     handleTocOnWindowsResize();
     handleTocDuplicates();  
     addSwitchThemeIcon();
+    $(document).ready(() => {
+        removeChildrenExceptFirst ('#toc'); // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
+        $('body').css('visibility','visible');
+    });
 }
 
 /* HERE ARE THE FUNCTIONS */
@@ -96,12 +101,10 @@ const hashFromString = (string) => {
 }
 
 const handleTocDuplicates = () => {
-
-    $(document).ready( () => {
-        document.addEventListener('page_toc_loaded', tocLoaderHandler);
-    });
     
     const tocLoaderHandler = () => {
+        Toc.init({$nav: $("#toc")});
+
         let tocKeys = [];
         let tocElements = [];
         let tocElementsDuplicates = [];
@@ -137,11 +140,15 @@ const handleTocDuplicates = () => {
             });
     
         }
-
+        
         const themeCookie = Cookies.get('JTDThemeCookie');
         if (themeCookie === '0' ) applyColorSchemaCorrections('light');
         else applyColorSchemaCorrections('dark');
+        
+        $('#toc_container').show();
     }
+
+    document.addEventListener('page_toc_loaded', tocLoaderHandler);
 }
 
 const arrayDuplicates = (arr) => {
@@ -160,18 +167,17 @@ const handleTocOnWindowsResize = () => {
 const setFullPageToc = () => {
     $(window).on('load', () => {
         initPageToc();
-    })
+    });
 }
 
 const initPageToc = () => {
     $('#toc').empty();
-    Toc.init({
-        $nav: $("#toc"),
-    });
+    //$('#toc').remove();
+    //$('#toc_container').append('<nav id="toc" data-toggle="toc"><ul class="nav navbar-nav">');
+    //Toc.init({$nav: $("#toc")});
     $('#nav[data-toggle=toc] .nav-link.active+ul').css('font-family','poppins');
     $('#toc_container').css('top', $('#main-header').height()+25 + 'px').css('left', $('.main-content').width() + $('.side-bar').width() +100 + 'px');
     $('#toc li a').addClass('fw-normal text-black');
-    $('#toc_container').show();
     document.dispatchEvent(new CustomEvent('page_toc_loaded'));
 }
 
