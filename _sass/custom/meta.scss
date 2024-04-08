@@ -87,7 +87,7 @@
 }
 
 // sidebar
-@mixin sidebar($sidebarContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, $sidebarLogo) {
+@mixin sidebar($sidebarContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, $sidebarLogo, $sideBarFooter) {
     
     #{$sidebarContainer} {
         width: $sidebarWidth;
@@ -116,6 +116,10 @@
 
     #{$sidebarLogo} {
         width:$sidebarLogoSize;
+    }
+
+    #{$sideBarFooter} {
+        border-top:$sidebarFooterBorderTop;
     }
 
 }

@@ -16,7 +16,7 @@
 @import 'page-toc.scss';
 @import 'content-area.scss';
 
-// this should be last import because compoent's settings are set in the imports above
+// this should be last import because component's settings are set in the imports above
 @import 'meta.scss';
 
 // GENERAL STYLES
@@ -24,6 +24,13 @@ $alwaysWithDefaultSiteFontElements: ('body');
 @each $element in $alwaysWithDefaultSiteFontElements {
     #{$element} {
         font-family: $siteFontFamily !important;
+    }
+}
+
+$alwaysWithBaseFontSize: ('body');
+@each $element in $alwaysWithBaseFontSize {
+    #{$element} {
+        font-size: $fs-body !important;
     }
 }
 
@@ -62,13 +69,6 @@ $alwaysBodyBackgroundColorElements: (); // '.side-bar' if you want the sidebar t
         #{$element} {
             background: $sidebarBackground;
         }
-    }
-}
-
-$thinBorderTopElements: ('.site-footer');
-@each $element in $thinBorderTopElements {
-    #{$element} {
-        @include thinBorder;
     }
 }
 

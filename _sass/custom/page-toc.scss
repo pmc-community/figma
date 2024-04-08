@@ -1,3 +1,4 @@
+@import 'custom-vars.scss';
 // PAGE TOC SETTINGS
 // general
 $tocFontWeight: $f-medium !default;
@@ -26,7 +27,7 @@ $tocItemSymbolBeforeLiTagVisibility: $d-hidden !default;
 $tocItemLinkPaddingTop: $p-0px !default;
 $tocItemLinkPaddingBottom: $p-0px !default;
 $tocItemLinkBorderLeftOnActive: $b-Sol2pxBlack !default;
-@import 'side-bar.scss';
+@import 'meta.scss';
 
 // STYLE PAGE TOC
 $tocBase: 'toc';

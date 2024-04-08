@@ -36,7 +36,6 @@ $.fn.sizeChanged = function (handleFunction) {
     return element;
 };
 
- 
 // init page toc
 $(function () {
     var navSelector = "#toc";

@@ -12,13 +12,6 @@ $(window).on('scroll', () => {
     }
 })
 
-$('.DocSearch-Dropdown').on('click', () => {
-    clearTheUrl();
-    const rootUrl = window.location.origin + '/';
-    const crtPage = window.location.href;
-    if (rootUrl === crtPage) $('#toc_container').hide();
-})
-
 /* LET'S DO SOME WORK */
 const customiseTheme = () => {
     $('body').css('visibility','hidden'); // to avoid the fast display of unstyled page before styles are loaded and applied
@@ -53,7 +46,6 @@ const addSwitchThemeIcon = () => {
         $('.aux-nav-list').prepend('<img id="themeSwitcher" class="themeSwitcher mx-2" src="/assets/img/icon-dark-mode-100.png" />');
 
         $('#themeSwitcher').on('click', () => {
-            console.log('here');
             let themeCookie = Cookies.get('JTDThemeCookie');
             if (typeof themeCookie === 'undefined') Cookies.set('JTDThemeCookie',0);
             themeCookie = Cookies.get('JTDThemeCookie');
@@ -71,16 +63,17 @@ const addSwitchThemeIcon = () => {
 }
 
 const applyColorSchemaCorrections = (theme) => {
-
     // jtd forgets to change some colors when switching from light to dark and back
     // the following colors are valid only for the default dark and light schemas
     if (theme === 'light' ) {
         $('body').css('background','#fff');
         $('body, p, ul li, ol li, li a').css('color', '#000');
+        $('.site-footer').css('border-top', '1px solid #eeebee');
     }
     else {
         $('body').css('background','#27262b');
-        $('body, p, ul li, ol li, li a').css('color', '#fff');
+        $('body, p, ul li, ol li, li a').css('color', '#dee2e6');
+        $('.site-footer').css('border-top', '1px solid #44434d')
     }
 }
 
@@ -198,7 +191,6 @@ const hidePageTOConHome = () => {
 const fullContentAreaOnHome = () => {
     const rootUrl = window.location.origin + '/';
     const crtPage = window.location.href;
-    console.log(`o=${rootUrl} c=${crtPage}`)
     if (rootUrl === crtPage) $('.main-content-wrap').css('width','100%');
 }
 
@@ -234,6 +226,7 @@ const addTopOfPage = () => {
     $('.main-content-wrap').prepend('<div id ="ihs_top_of_page"></div>');
 }
 const customiseFooter = () => {
+    $('.site-footer').html('');
     $('.site-footer').prepend('<div class="footer_first_row"><a href="https://innohub.space/eng/terms-of-service/" target=_blank>Terms</a> | <a href="https://innohub.space/eng/privacy/" target=_blank>Privacy</a> | <a href="https://innohub.space/eng/cookie-policy/" target=_blank>Cookies</a></div>');
     $('.site-footer').prepend(`<div class="footer_first_row">Copyright ${new Date().getFullYear()}, <a href="https://pmc-expert.com" target=_blank>PMC</a></div>`);
 }
