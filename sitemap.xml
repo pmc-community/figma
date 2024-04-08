@@ -21,5 +21,13 @@ permalink: /sitemap.xml
     <priority>0.5</priority>
   </url>
   {% endunless %}
+  {% unless page.url contains 'doc-contents/general' %}
+  <url>
+    <loc>{{ site.url }}{{ page.url }}</loc>
+    <lastmod>{{ page.last_modified_at | date_to_xmlschema }}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  {% endunless %}
   {% endfor %}
 </urlset>
