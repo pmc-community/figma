@@ -50,6 +50,13 @@ siteConfig:
   extContentMarkers:
     startExposedSection: '<!-- START_EXPOSED_SECTION -->'
     endExposedSection: '<!-- END_EXPOSED_SECTION -->'
+  algoliaSearch:
+    appId: 'LU8ABE5OK9'
+    apiKey: '93c6d0120f05c7d6a1fe3136c0122626'
+    indexName: 'figmares-innohub'
+    container: '#docsearch'
+    debug: false
+    maxResultsPerGroup: 20
 
 # heading anchors must be false because it generates a weird effect of showing huge blue anchors 
 # when loading the page and until the page is loaded. nevertheless, page ToC is good and enough

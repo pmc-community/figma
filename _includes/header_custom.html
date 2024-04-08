@@ -1,18 +1,18 @@
+<!--- HEADS UP!!!
+  ALGOLIA SEARCH CONFIG IS IN _config.yml
+  CHANGE IT TO TH RIGHT ONE, OTHERWISE SEARCH HITS WILL REDIRECT TO figmares.innohub.space
+--->
 <!--- Algolia search --->
+
 <div id="docsearch" class="pr-3"></div>
 <script type="text/javascript">
   docsearch({
-
-    appId: "LU8ABE5OK9",
-
-    apiKey: "93c6d0120f05c7d6a1fe3136c0122626",
-
-    indexName: "figmares-innohub",
-
-    container: '#docsearch',
-
-    debug: false 
-
+    appId: '{{ site.siteConfig.algoliaSearch.appId }}',
+    apiKey: '{{ site.siteConfig.algoliaSearch.apiKey }}',
+    indexName: '{{ site.siteConfig.algoliaSearch.indexName }}',
+    container: '{{ site.siteConfig.algoliaSearch.container }}',
+    debug: {{ site.siteConfig.algoliaSearch.debug }},
+    maxResultsPerGroup: {{ site.siteConfig.algoliaSearch.maxResultsPerGroup }}
   });
 </script>
 

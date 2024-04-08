@@ -10,7 +10,13 @@ $(window).on('scroll', () => {
             scrollTop: $(hash).offset().top - $('#main-header').height() - 20
         }, 0);
     }
+})
 
+$('.DocSearch-Dropdown').on('click', () => {
+    clearTheUrl();
+    const rootUrl = window.location.origin + '/';
+    const crtPage = window.location.href;
+    if (rootUrl === crtPage) $('#toc_container').hide();
 })
 
 /* LET'S DO SOME WORK */
@@ -184,8 +190,8 @@ const initPageToc = () => {
 const hidePageTOConHome = () => {
     $(window).on('load', () => {
         const rootUrl = window.location.origin + '/';
-    const crtPage = window.location.href;
-    if (rootUrl === crtPage) $('#page_toc').hide();
+        const crtPage = window.location.href;
+        if (rootUrl === crtPage) $('#toc_container').hide();
     });
 }
 
