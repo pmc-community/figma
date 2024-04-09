@@ -5,9 +5,11 @@ $(window).on('scroll', () => {
     // handle fixed header scroll
     var hash = window.location.hash;
     if (hash) {
-        // if the header is not fixed, - $('#main-header').height() - 20 can be removed
+        // if the header is not fixed, 
+        // -$(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll 
+        // can be removed
         $([document.documentElement, document.body]).animate({
-            scrollTop: $(hash).offset().top - $('#main-header').height() - 20
+            scrollTop: $(hash).offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
         }, 0);
     }
 })
@@ -24,14 +26,22 @@ const customiseTheme = () => {
     setGoToTopBtn();
     formatAuxLinksBtns();
     fullContentAreaOnHome();
-    hidePageTOConHome();
+    hidePageTOCOnHome();
+    hideFeedbackFormOnHome();
     setFullPageToc();
     handleTocOnWindowsResize();
     handleTocDuplicates();  
     addSwitchThemeIcon();
     $(document).ready(() => {
-        removeChildrenExceptFirst ('#toc'); // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
-        $('body').css('visibility','visible');
+        // last checks on page toc
+        if($(`${settings.pageToc.toc} ul`).children('li').length >0)
+            // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
+            removeChildrenExceptFirst (settings.pageToc.toc); 
+        else
+            // no need to have pge toc on screen if there is nothing to see there
+            $(settings.pageToc.tocContainer).remove();
+
+        $('body').css('visibility','visible');        
     });
 }
 
@@ -43,16 +53,17 @@ const addExtraPaddingToContentArea = () => {
 
 const addSwitchThemeIcon = () => {
     $(window).on('load', () => {
-        $('.aux-nav-list').prepend('<img id="themeSwitcher" class="themeSwitcher mx-2" src="/assets/img/icon-dark-mode-100.png" />');
+        if (settings.themeSwitch.append) $(settings.themeSwitch.btnContainer).append(settings.themeSwitch.btnContent);
+        else $(settings.themeSwitch.btnContainer).prepend(settings.themeSwitch.btnContent);
 
-        $('#themeSwitcher').on('click', () => {
-            let themeCookie = Cookies.get('JTDThemeCookie');
-            if (typeof themeCookie === 'undefined') Cookies.set('JTDThemeCookie',0);
-            themeCookie = Cookies.get('JTDThemeCookie');
-            if (themeCookie === '0' ) Cookies.set('JTDThemeCookie',1);
-            else Cookies.set('JTDThemeCookie',0);
+        $(settings.themeSwitch.btnId).on('click', () => {
+            let themeCookie = Cookies.get(settings.themeSwitch.cookie);
+            if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { secure: true, sameSite: 'strict' });
+            themeCookie = Cookies.get(settings.themeSwitch.cookie);
+            if (themeCookie === '0' ) Cookies.set(settings.themeSwitch.cookie,1, { secure: true, sameSite: 'strict' });
+            else Cookies.set(settings.themeSwitch.cookie,0);
             setTheTheme();
-            themeCookie = Cookies.get('JTDThemeCookie');
+            themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (themeCookie === '0' ) applyColorSchemaCorrections('light');
             else applyColorSchemaCorrections('dark');;
 
@@ -64,24 +75,23 @@ const addSwitchThemeIcon = () => {
 
 const applyColorSchemaCorrections = (theme) => {
     // jtd forgets to change some colors when switching from light to dark and back
-    // the following colors are valid only for the default dark and light schemas
     if (theme === 'light' ) {
-        $('body').css('background','#fff');
-        $('body, p, ul li, ol li, li a').css('color', '#000');
-        $('.site-footer').css('border-top', '1px solid #eeebee');
+        $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.light);
+        $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.light);
+        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.light);
     }
     else {
-        $('body').css('background','#27262b');
-        $('body, p, ul li, ol li, li a').css('color', '#dee2e6');
-        $('.site-footer').css('border-top', '1px solid #44434d')
+        $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.dark);
+        $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.dark);
+        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark)
     }
 }
 
 const setTheTheme = () => {
-    let themeCookie = Cookies.get('JTDThemeCookie');
-    if (typeof themeCookie === 'undefined') Cookies.set('JTDThemeCookie',0);
-    themeCookie = Cookies.get('JTDThemeCookie');
-    if (Cookies.get('JTDThemeCookie') === '0' ) { 
+    let themeCookie = Cookies.get(settings.themeSwitch.cookie);
+    if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { secure: true, sameSite: 'strict' });
+    themeCookie = Cookies.get(settings.themeSwitch.cookie);
+    if (Cookies.get(settings.themeSwitch.cookie) === '0' ) { 
         jtd.setTheme('light'); 
         applyColorSchemaCorrections('light'); 
     }
@@ -92,23 +102,16 @@ const setTheTheme = () => {
 
 }
 
-const hashFromString = (string) => {
-    const regex = /#(.*)/;
-    const match = string.match(regex);
-    const hash = match ? match[1] : null;
-    return hash;
-}
-
 const handleTocDuplicates = () => {
     
     const tocLoaderHandler = () => {
-        Toc.init({$nav: $("#toc")});
+        Toc.init({$nav: $(settings.pageToc.toc)});
 
         let tocKeys = [];
         let tocElements = [];
         let tocElementsDuplicates = [];
         let duplicates = [];
-        $('#toc li a').each(function() {
+        $(`${settings.pageToc.toc} li a`).each(function() {
             tocKeys.push($(this).attr('href'));
             tocElements.push(this);
         })
@@ -140,26 +143,27 @@ const handleTocDuplicates = () => {
     
         }
         
-        const themeCookie = Cookies.get('JTDThemeCookie');
+        const themeCookie = Cookies.get(settings.themeSwitch.cookie);
         if (themeCookie === '0' ) applyColorSchemaCorrections('light');
         else applyColorSchemaCorrections('dark');
         
-        $('#toc_container').show();
+        $(settings.pageToc.tocContainer).show();
     }
 
-    document.addEventListener('page_toc_loaded', tocLoaderHandler);
-}
-
-const arrayDuplicates = (arr) => {
-    const counts = _.countBy(arr);
-    const duplicates = _.pickBy(counts, count => count > 1);
-    const duplicateValues = _.keys(duplicates);
-    return duplicateValues;
+    document.addEventListener(settings.pageToc.tocLoadedEvent , tocLoaderHandler);
 }
 
 const handleTocOnWindowsResize = () => {
     $(window).sizeChanged(() => {
-        $('#toc_container').css('top', $('#main-header').height()+25 + 'px').css('left', $('.main-content').width() + $('.side-bar').width() +100 + 'px');
+        $(settings.pageToc.tocContainer)
+            .css(
+                'top', 
+                $(settings.headerAboveContent.headerID).height() + settings.pageToc.desktop.offsetFromHeader + 'px'
+            )
+            .css(
+                'left', 
+                $(settings.pageToc.desktop.referenceContainer).width() + $(settings.pageToc.desktop.leftSideBar).width() + settings.pageToc.desktop.offsetFromReferenceContainer + 'px'
+            );
     });
 }
 
@@ -170,21 +174,34 @@ const setFullPageToc = () => {
 }
 
 const initPageToc = () => {
-    $('#toc').empty();
-    //$('#toc').remove();
-    //$('#toc_container').append('<nav id="toc" data-toggle="toc"><ul class="nav navbar-nav">');
-    //Toc.init({$nav: $("#toc")});
-    $('#nav[data-toggle=toc] .nav-link.active+ul').css('font-family','poppins');
-    $('#toc_container').css('top', $('#main-header').height()+25 + 'px').css('left', $('.main-content').width() + $('.side-bar').width() +100 + 'px');
-    $('#toc li a').addClass('fw-normal text-black');
-    document.dispatchEvent(new CustomEvent('page_toc_loaded'));
+    $(settings.pageToc.toc).empty();
+    $(`#nav[data-toggle=${settings.pageToc.toc.substring(1)}] .nav-link.active+ul`).css('font-family','poppins');
+    $(settings.pageToc.tocContainer)
+        .css(
+            'top', 
+            $(settings.headerAboveContent.headerID).height() + settings.pageToc.desktop.offsetFromHeader + 'px'
+        )
+        .css(
+            'left', 
+            $(settings.pageToc.desktop.referenceContainer).width() + $(settings.pageToc.desktop.leftSideBar).width() + settings.pageToc.desktop.offsetFromReferenceContainer + 'px'
+        );
+    $(`${settings.pageToc.toc} li a`).addClass('fw-normal text-black');
+    document.dispatchEvent(new CustomEvent(settings.pageToc.tocLoadedEvent));
 }
 
-const hidePageTOConHome = () => {
+const hidePageTOCOnHome = () => {
     $(window).on('load', () => {
         const rootUrl = window.location.origin + '/';
         const crtPage = window.location.href;
-        if (rootUrl === crtPage) $('#toc_container').hide();
+        if (rootUrl === crtPage) $(settings.pageToc.tocContainer).hide();
+    });
+}
+
+const hideFeedbackFormOnHome = () => {
+   $(window).on('load', () => {
+        const rootUrl = window.location.origin + '/';
+        const crtPage = window.location.href;
+        if (rootUrl !== crtPage) $('#docFeedbackForm').show();
     });
 }
 
@@ -195,6 +212,7 @@ const fullContentAreaOnHome = () => {
 }
 
 const formatAuxLinksBtns =() => {
+    //  no need to use site vars here since the selectors cannot be changed, being set by JTD theme
     $('.aux-nav-list-item').addClass('btn btn-danger btn-sm m-2');
     $('.aux-nav-list-item:first-child a').addClass('text-light');
     $('.aux-nav-list-item:last-child').removeClass('btn-danger').addClass('btn-warning');
@@ -202,37 +220,39 @@ const formatAuxLinksBtns =() => {
 }
 
 const setGoToTopBtn = () => {
-    $('.main').append('<div id="ihs_go_to_top_btn"><img src="/assets/img/goToTop.png" loading="lazy" alt="tick-circle"></div>');
+    $(settings.goToTopBtn.btnContainer).append(settings.goToTopBtn.content);
     hideWhenNotNeeded();
 
     // should be declared as function, arrow function wont work
     function hideWhenNotNeeded() {
-        if ( $('#ihs_top_of_page').is_on_screen() ) $('#ihs_go_to_top_btn').hide();
-        else $('#ihs_go_to_top_btn').show();
+        if ( $(settings.goToTopBtn.topOfPageId).is_on_screen() ) $(settings.goToTopBtn.btnId).hide();
+        else $(settings.goToTopBtn.btnId).show();
     }
     
-    // if the header is not fixed, - $('#main-header').height() - 20 can be removed
+    // if the header is not fixed, - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll can be removed
     function goToTarget() {
         $([document.documentElement, document.body]).animate({
-            scrollTop: $("#ihs_top_of_page").offset().top - $('#main-header').height() - 20
+            scrollTop: $(settings.goToTopBtn.topOfPageId).offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
         }, 100);
     }
 
-    $('#ihs_go_to_top_btn').click(() => {goToTarget();});
+    $(settings.goToTopBtn.btnId).click(() => {goToTarget();});
     $(window).on('scroll', () =>{hideWhenNotNeeded();});
 }        
 
 const addTopOfPage = () => {
-    $('.main-content-wrap').prepend('<div id ="ihs_top_of_page"></div>');
+    $(settings.goToTopBtn.topOfPageContainer).prepend(settings.goToTopBtn.topOfPageMarker);
 }
 const customiseFooter = () => {
-    $('.site-footer').html('');
-    $('.site-footer').prepend('<div class="footer_first_row"><a href="https://innohub.space/eng/terms-of-service/" target=_blank>Terms</a> | <a href="https://innohub.space/eng/privacy/" target=_blank>Privacy</a> | <a href="https://innohub.space/eng/cookie-policy/" target=_blank>Cookies</a></div>');
-    $('.site-footer').prepend(`<div class="footer_first_row">Copyright ${new Date().getFullYear()}, <a href="https://pmc-expert.com" target=_blank>PMC</a></div>`);
+    $(settings.siteFooter.container).html('');
+
+    settings.siteFooter.rows.forEach(row => {
+        $(settings.siteFooter.container).prepend(row.content); 
+    });
 }
 
 const addLogo = () => {
-    $('.site-header').prepend('<a href="/"><img class = "site_logo" src="/assets/img/logo.png" /></a>');
+    $(settings.headerAboveSideBar.container).prepend(settings.headerAboveSideBar.logo);
 }
 
 const clearTheUrl = () => {
@@ -251,5 +271,3 @@ const clearTheUrl = () => {
     });
 
 }
-
-  

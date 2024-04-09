@@ -1,3 +1,4 @@
+
 /* HEADS UP!
  * AS OF APRIL 2024, @use RULES CANNOT BE USED WHEN DEPLOYING TO GHP
  * BECAUSE GHP DOES NOT SUPPORT THE MINIMUM JEKYLL VERSION (4.X.X) WHICH
@@ -72,6 +73,15 @@ $alwaysBodyBackgroundColorElements: (); // '.side-bar' if you want the sidebar t
     }
 }
 
+$alwaysTransparentBackgroundColorElements: ('.feedbackFormClass');
+@if (length($alwaysTransparentBackgroundColorElements)>0) {
+    @each $element in $alwaysTransparentBackgroundColorElements {
+        #{$element} {
+            background: $c-transparent;
+        }
+    }
+}
+
 $neverDecoratedTextElements: ('a');
 @each $element in $neverDecoratedTextElements {
     #{$element}, #{$element}:hover {
@@ -79,7 +89,7 @@ $neverDecoratedTextElements: ('a');
     }
 }
 
-$hiddenElements: ('hr');
+$hiddenElements: ('hr', '#docFeedbackForm');
 @each $element in $hiddenElements {
         #{$element} {
             display:$d-hidden;

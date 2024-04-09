@@ -38,12 +38,12 @@ $.fn.sizeChanged = function (handleFunction) {
 
 // init page toc
 $(function () {
-    var navSelector = "#toc";
+    var navSelector = settings.pageToc.toc;
     var $myNav = $(navSelector);
     Toc.init($myNav);
-    $("body").scrollspy({
-      target: navSelector,
-    });
+    // check if there is something in the ToC, if empty, the scrollspy raise errors in console
+    // page toc will be further removed from page when the page loads
+    if ($(`${settings.pageToc.toc} ul`).children('li').length > 0 ) $(settings.pageToc.scrollSpyBase).scrollspy({target: navSelector,});
   });
 
 const removeChildrenExceptFirst = (nodeSelector) => {
@@ -60,6 +60,20 @@ uuid = () => {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
+}
+
+const hashFromString = (string) => {
+    const regex = /#(.*)/;
+    const match = string.match(regex);
+    const hash = match ? match[1] : null;
+    return hash;
+}
+
+const arrayDuplicates = (arr) => {
+    const counts = _.countBy(arr);
+    const duplicates = _.pickBy(counts, count => count > 1);
+    const duplicateValues = _.keys(duplicates);
+    return duplicateValues;
 }
 
 // read external contens between markers
@@ -94,8 +108,8 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
                 if(!whereID) contentPlaceholder = `<div id=${contentPlaceholderID}><div>`;
 
                 constContentPosition = typeof position === 'undefined' || position === '' ? 'after' : position;
-                if (constContentPosition === 'before') $('.main-content main').prepend(contentPlaceholder);
-                if (constContentPosition === 'after') $('.main-content main').append(contentPlaceholder);
+                if (constContentPosition === 'before') $(settings.externalContent.containerToIncludeExternalContent).prepend(contentPlaceholder);
+                if (constContentPosition === 'after') $(settings.externalContent.containerToIncludeExternalContent).append(contentPlaceholder);
                 
                 $(`#${contentPlaceholderID}`).html(contentSliced);
 
@@ -104,7 +118,7 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
                 
                 // move the top of page where it should be
                 if (position === 'before') {
-                    $('#ihs_top_of_page').remove();
+                    $(settings.goToTopBtn.topOfPageId).remove();
                     addTopOfPage();
                 }
             },

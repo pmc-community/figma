@@ -2,9 +2,19 @@
 layout: page
 title: Introduction
 permalink: /intro/
+has_children: true
+
+# set thsi if another ordering is needed for child pages, otherwise will be based on title
+# nav_order: 2
+
+# do not auto generate a ToC for child pages
+has_toc: false
 
 # used as {{page.testMd}}
 testMd: '[![](https://img.shields.io/badge/Delivery-As%20A%20Service-ff6200?style=for-the-badge&logo=react)](#)'
+
+# to be always the first page if the site (we use numerical nav_order)
+nav_order: 1
 ---
 
 test update
