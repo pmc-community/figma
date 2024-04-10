@@ -98,7 +98,7 @@ const getExternalMDContent = async (file, position, startMarker , endMarker, hea
                 const contentA = content.slice(startIndex);
                 const endIndex = endMarker === 'fullFile' ? contentA.length+1 : contentA.indexOf(endMarker) ;
                 const contentB = contentA.slice(0,endIndex);
-                contentSliced += contentB;
+                contentSliced += contentB + '\n';
 
                 contentSliced = converter.makeHtml(contentSliced);
 

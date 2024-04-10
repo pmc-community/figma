@@ -37,18 +37,20 @@ const customiseTheme = () => {
         if($(`${settings.pageToc.toc} ul`).children('li').length >0)
             // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
             removeChildrenExceptFirst (settings.pageToc.toc); 
-        else
-            // no need to have pge toc on screen if there is nothing to see there
-            $(settings.pageToc.tocContainer).remove();
-
-        $('body').css('visibility','visible');        
+        else 
+            // no need to have page toc on screen if there is nothing to see there
+            $(settings.pageToc.tocContainer).hide();
+        
+        // just to mask the flicker a little, but a preloader should be here
+        setTimeout( () => {$('body').css('visibility','visible');}, 300)
+                
     });
 }
 
 /* HERE ARE THE FUNCTIONS */
 
 const addExtraPaddingToContentArea = () => {
-    $('.main-content main').addClass('px-5');
+    $(settings.layouts.contentArea.contentContainer).addClass(settings.layouts.contentArea.desktop.padding);
 }
 
 const addSwitchThemeIcon = () => {
@@ -143,11 +145,12 @@ const handleTocDuplicates = () => {
     
         }
         
+        // apply color schema corrections on updated page toc
         const themeCookie = Cookies.get(settings.themeSwitch.cookie);
         if (themeCookie === '0' ) applyColorSchemaCorrections('light');
         else applyColorSchemaCorrections('dark');
         
-        $(settings.pageToc.tocContainer).show();
+        if($(`${settings.pageToc.toc} ul`).children('li').length >0) $(settings.pageToc.tocContainer).show();
     }
 
     document.addEventListener(settings.pageToc.tocLoadedEvent , tocLoaderHandler);
@@ -208,7 +211,7 @@ const hideFeedbackFormOnHome = () => {
 const fullContentAreaOnHome = () => {
     const rootUrl = window.location.origin + '/';
     const crtPage = window.location.href;
-    if (rootUrl === crtPage) $('.main-content-wrap').css('width','100%');
+    if (rootUrl === crtPage) $(settings.layouts.contentArea.mainContainer).css('width', settings.layouts.contentArea.desktop.widthOnHome);
 }
 
 const formatAuxLinksBtns =() => {

@@ -27,6 +27,9 @@ remote_theme: just-the-docs/just-the-docs@v0.8.0 # it works only with remote_the
 #   - vendor/gems/
 #   - vendor/ruby/
 
+exclude:
+  - tools/
+
 aux_links:
   "GitHub":
     - "//github.com/pmc-community/figma"
@@ -42,13 +45,12 @@ search_enabled: false
 ga_tracking: G-T86D5YQ5WF # ihs
 ga_tracking_anonymize_ip: true
 
-# site vars (nested)
+# site vars
 siteVars:
   siteTestBadge: '[![](https://img.shields.io/badge/System%20Analysis-YES-1478B6?style=for-the-badge&logo=react)](#)'
   siteTestVar: site test variable
 
 # site configuration
-# content markers
 siteConfig:
   extContentMarkers:
     startExposedSection: '<!-- START_EXPOSED_SECTION -->'
@@ -112,6 +114,13 @@ siteConfig:
   headerAboveSideBar:
     logo: '<a href=\"/\"><img class = \"site_logo\" src=\"/assets/img/logo.png\" /></a>'
     container: '.site-header'
+  layouts:
+    contentArea:
+      mainContainer: '.main-content-wrap'
+      contentContainer: '.main-content main'
+      desktop:
+        padding: 'px-5'
+        widthOnHome: '100%'
 
 
 
@@ -122,8 +131,12 @@ heading_anchors: false
 # define the folder where jekyll will look for collection, otherwise will look in the root folder
 collections_dir: doc-contents
 
+# MARKER COLLECTIONS START
 collections:
   collection-1:
+    permalink: "/:collection/:path"
+    output: true
+  collection-2:
     permalink: "/:collection/:path"
     output: true
 
@@ -133,3 +146,10 @@ just_the_docs:
     collection-1:
       name: Collection One
       nav_fold: true
+    collection-2:
+      name: Collection Two
+      nav_fold: true
+# MARKER COLLECTIONS END
+
+parent_dir_path: ../
+
