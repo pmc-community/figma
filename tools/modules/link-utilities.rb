@@ -1,4 +1,5 @@
 require_relative 'file-utilities'
+require 'net/http'
 
 module LinkUtilities
 
@@ -35,8 +36,34 @@ module LinkUtilities
     def self.filterLinksToGetInternalOnly(links)
         links.each do |key, value|
             if value.is_a?(Array)
-              value.reject! { |element| element.start_with?("https://") }
-              links[key] = value
+                value.reject! { |element| 
+                    element.start_with?("https://") || 
+                    element.start_with?("http://")
+                }
+            links[key] = value
+            end
+        end
+        return links
+    end
+
+    def self.check_valid_uri(uri)
+        uri = "http://#{uri}" unless uri.start_with?("http://", "https://")
+        begin
+            parsed_uri = URI.parse(uri)
+            return 0
+        rescue URI::InvalidURIError
+            return 1
+        end
+    end
+
+    def self.filterLinksToGetExternalOnly(links)
+        links.each do |key, value|
+            if value.is_a?(Array)
+              filtered_values = value.select do |element|
+                uri = URI.parse(element) rescue nil
+                uri&.scheme && uri&.host
+              end
+              links[key] = filtered_values.uniq
             end
         end
         return links
@@ -77,6 +104,55 @@ module LinkUtilities
             end
         end
         return brokenLinks
+    end
+
+    def self.checkExternalLinks(elp)
+        brokenLinks = 0
+        elp.each do |file, links|
+            puts "ckecking #{file}"
+            linkPos = 0
+            links.each do |link|
+                linkCheck = check_link(link)
+                linkPos += 1
+                if (linkCheck == 1)
+                    brokenLinks +=1
+                    result = "#{file}: Broken link: #{link}"
+                    Globals.putsColText(Globals::YELLOW, " - #{result}")
+                    FileUtilities.write_file("#{Globals::ROOT_DIR}/tools/checks/broken-external-links.log", "#{result}\n")
+                end
+            end
+        end
+        return brokenLinks
+    end
+
+    def self.check_link(url)
+        begin
+            uri = URI.parse(url)
+            raise URI::InvalidURIError unless uri.host
+
+            # Prefix URL with http:// if no scheme is provided
+            uri = URI.parse("http://#{url}") if uri.scheme.nil?
+
+            # Create an HTTP request and follow redirects
+            response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https', read_timeout: 10) do |http|
+                http.request(Net::HTTP::Get.new(uri))
+            end
+
+            # Check if the response code indicates success (2xx)
+            if response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPRedirection)
+                # "The link #{url} is not broken."
+                return 0
+            else
+                # "The link #{url} is broken. Response code: #{response.code}"
+                return 1
+            end
+        rescue URI::InvalidURIError
+            # "#{url} is not a valid URI."
+            return 1
+        rescue SocketError, Net::OpenTimeout, Net::ReadTimeout => e
+            # "Error: #{e.message}. The link #{url} could not be checked."
+            return 1
+        end
     end
 
 end

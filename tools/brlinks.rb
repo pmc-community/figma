@@ -15,7 +15,6 @@ Globals.putsColText(Globals::PURPLE,"HEADS UP!!! Only files containing internal 
 FileUtilities.clear_or_create_file("#{Globals::ROOT_DIR}/tools/checks/broken-internal-links.log")
 
 sitePermalinks = LinkUtilities.getPermalinks(site_dir).uniq
-#puts sitePermalinks
 
 originalLinksInPages = LinkUtilities.filterEmptyKeys(
     LinkUtilities.filterLinksToGetInternalOnly(

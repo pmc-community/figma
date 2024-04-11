@@ -5,3 +5,6 @@ ruby tools/brinclude.rb doc-contents true
 
 # checking for broken internal links
 ruby tools/brlinks.rb doc-contents false
+
+# checking for broken external links
+ruby tools/brextlinks.rb doc-contents false
