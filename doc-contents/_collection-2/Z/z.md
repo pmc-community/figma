@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Collection-2/Z
-permalink: /collection-2/x/z
+permalink: /collection-2/Z/z/
 
 parent: Collection-2/X
 ---
@@ -14,6 +14,8 @@ This is a file from a collection
 
 ## External content
 This file loads some external content from another repo and place it inline.
+
+[Link to file in different folder](/pwc/){: .btn .btn-green }
 
 <script>
     getExternalMDContent (

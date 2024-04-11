@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# checking for broken include or include_relative tags
+ruby tools/brinclude.rb doc-contents true
+
+# checking for broken internal links
+ruby tools/brlinks.rb doc-contents false

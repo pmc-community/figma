@@ -1,5 +1,4 @@
-# my_module.rb
-module Utilities
+module ColUtilities
     def self.getCollections(directory)
         folders = Dir.entries(directory).select do |entry|
           File.directory?(File.join(directory, entry)) && entry.start_with?("_")
@@ -58,7 +57,7 @@ class Collection
         @jekyllCol = onJekyllCol
         @filesNo = filesNo
         @dir  = collectionDir
-        @status = setStatus(@storageName, @filesNo, @dir)
+        @status = setStatus(@storageName, @filesNo, @dir, @themeCol, @jekyllCol)
     end
 
     # access to status prop should be defined because we want to get the status as <class_instance>.status
@@ -67,7 +66,13 @@ class Collection
         @status
     end
 
-    def setStatus(storageColName, noOfFiles, colDir)
-        return storageColName + " " + noOfFiles.to_s + " " + colDir
+    def setStatus(storageColName, noFiles, colDir, themeCol, jekyllCol)
+        status = {}
+        status["colName"] = storageColName
+        status["colNoFiles"] = noFiles
+        status["colDir"] = colDir
+        status["checkInTheme"] = themeCol.count(storageColName)
+        status["checkInJekyll"] = jekyllCol.count(storageColName)
+        return status
     end    
 end

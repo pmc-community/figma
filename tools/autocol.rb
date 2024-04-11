@@ -1,5 +1,5 @@
 require 'yaml'
-require_relative 'modules/utilities'
+require_relative 'modules/col-utilities'
 
 
 puts "\e[H\e[2J" # clear the console
@@ -9,9 +9,9 @@ wDir = File.expand_path('..', __dir__)
 
 puts "\e[35mLooking for collections on: \e[0m"
 
-onStorageCollections = Utilities.getOnStorageCollections(wDir)
-jtdCollections = Utilities.getYMLSection(wDir + '/_config.yml','just_the_docs')['collections'].keys
-jekyllCollections = Utilities.getYMLSection(wDir + '/_config.yml','collections').keys
+onStorageCollections = ColUtilities.getOnStorageCollections(wDir)
+jtdCollections = ColUtilities.getYMLSection(wDir + '/_config.yml','just_the_docs')['collections'].keys
+jekyllCollections = ColUtilities.getYMLSection(wDir + '/_config.yml','collections').keys
 
 # this converts to lowercase
 # puts "Storage:\t" + onStorageCollections.sort_by(&:downcase).join('; ')
@@ -20,6 +20,6 @@ puts "Theme:\t\t" + jtdCollections.sort.join('; ')
 puts "Jekyll:\t\t" + jekyllCollections.sort.join('; ')
 
 puts "\e[35m\nChecking collections ... \e[0m"
-Utilities.checkCollections(wDir, onStorageCollections, jtdCollections, jekyllCollections)
+ColUtilities.checkCollections(wDir, onStorageCollections, jtdCollections, jekyllCollections)
 
 puts "\e[32m\nEND AUTO COLLECTION\n-----------------------\n\e[0m"

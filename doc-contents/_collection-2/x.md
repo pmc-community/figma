@@ -19,9 +19,8 @@ HEADS UP!
 WATCH OUT THE LIMITATIONS FOR LOADING CONTENT FROM ANOTHER FILE, THE SOURCE FILE MUST BE BELOW THE DESTINATION FILE IN THE FOLDER STRUCTURE.
 OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE AND USE getExternalMDContent(...) FUNCTION. 
 ```
-{% assign file = "Y/y.md" %}
 {% capture included_content %}
-    {% include_relative {{ file }} %}
+    {% include_relative Y/y.md %}
 {% endcapture %}
 
 {% include siteIncludes/utilities.liquid fileContent=included_content %}
