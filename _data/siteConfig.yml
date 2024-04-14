@@ -68,4 +68,9 @@ layouts:
       desktop:
         padding: 'px-5'
         widthOnHome: '100%'
-
+toBeRemovedAfterLoad:
+  - "script": # selector for the element to be removed, in the form of tag, .class, #id
+    - "externalContent" # each selector[siteAttr = ...] will be removed
+  - "h1":
+    - "testAttr"
+    - "testAttr_1"

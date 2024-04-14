@@ -77,7 +77,7 @@ const arrayDuplicates = (arr) => {
 }
 
 // read external contens between markers
-const getExternalMDContent = async (file, position, startMarker , endMarker, header, whereID, whoCalled) => {
+const getExternalContent = async (file, position, startMarker , endMarker, header, whereID, whoCalled) => {
     $(window).on('load', () => {
         // prevent returning unwanted quantity of content
         if (typeof startMarker === 'undefined' ||  typeof endMarker === 'undefined' ) return;

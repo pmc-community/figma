@@ -7,6 +7,8 @@ module Globals
     GREEN = "\e\n[32m"
     PURPLE = "\e[35m"
     RED = "\e[31m"
+    BACK_1_ROW = "\e[1A"
+    ARROW_RIGHT = "\u2192"
 
     # Spinner character sequence
     CHARS = %w(- \\ | /)
@@ -14,8 +16,11 @@ module Globals
     # removing last 15 chars '/tools/modules/'
     ROOT_DIR = __dir__[0..-15]
 
-    # _config.yml
-    CONFIG_YML = "#{ROOT_DIR}/_config.yml" 
+    # config files
+    CONFIG_YML = "#{ROOT_DIR}/_config.yml"
+    SITECONFIG_YML = "#{ROOT_DIR}/_data/siteConfig.yml"
+    PAGECONFIG_YML = "#{ROOT_DIR}/_data/pageConfig.yml"
+    LOG_FILE = "#{ROOT_DIR}/tools/checks/check.log"
     
     def self.putsColText(col, text)
         puts col + text + RESET
@@ -36,7 +41,8 @@ module Globals
     end
 
     def self.removeSlashesFromArrayElements(ar)
-        modified_ar = ar.map do |element|
+        # ignore nil elements, otherwise error will be raised
+        modified_ar = ar.compact.map do |element|
             # Modify the element here
             modified_element = removeFirstAndLastSlash(element)
             # Return the modified element
@@ -70,12 +76,12 @@ module Globals
         string =~ pattern
     end
 
-    def self.find_value_in_yaml(yaml_file, path)
+    def self.find_value_in_yaml(yaml_file, path, excludePath)
         config = YAML.load_file(yaml_file)
-        keys = path.split(".")
-        value = ""
+        keys = path.sub(excludePath, '').split(".")
+        value = "not_found"
         keys.reduce(config) do |hash, key|
-          value = hash[key] if hash.is_a?(Hash)
+          value = hash.is_a?(Hash)? hash[key] : "not_found:#{yaml_file}"
         end
         return value
     end

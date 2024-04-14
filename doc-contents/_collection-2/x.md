@@ -32,7 +32,7 @@ Using jtd classes
 Markdown content loaded from another md file from the same collection.
 HEADS UP!
 WATCH OUT THE LIMITATIONS FOR LOADING CONTENT FROM ANOTHER FILE, THE SOURCE FILE MUST BE BELOW THE DESTINATION FILE IN THE FOLDER STRUCTURE.
-OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE AND USE getExternalMDContent(...) FUNCTION. 
+OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE AND USE getExternalContent(...) FUNCTION. 
 ```
 {% capture included_content %}
     {% include_relative Y/y.md %}
@@ -41,8 +41,8 @@ OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE A
 {% include siteIncludes/utilities.liquid fileContent=included_content %}
 {{ file_content_result }}
 
-<script>
-    getExternalMDContent (
+<script siteAttr = "externalContent">
+    getExternalContent (
         'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
         'before',
         '{{ site.data.siteConfig.extContentMarkers.startExposedSection }}',

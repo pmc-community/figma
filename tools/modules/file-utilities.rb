@@ -23,7 +23,7 @@ module FileUtilities
     end
 
     # Function to check and report missing includes
-    def self.check_includes(source, content, base_dir)
+    def self.check_includes(source, content, base_dir, silent)
         result = ""
         brokeIncludes = 0
         content.scan(/\{% include(?:_relative)? (.*) %}/) do |match|
@@ -32,7 +32,7 @@ module FileUtilities
             if (file_extension != ".liquid")
                 unless file_exists?(file_path, base_dir)
                     result = "#{source}: Missing include: #{file_path} (in #{base_dir})"
-                    Globals.putsColText(Globals::YELLOW, " - #{result}")
+                    Globals.putsColText(Globals::YELLOW, " - #{result}") if !silent
                     write_file("#{Globals::ROOT_DIR}/tools/checks/broken-includes.log", "#{result}\n")
                     brokeIncludes += 1
                 end
@@ -40,7 +40,7 @@ module FileUtilities
                 unless File.exist?("#{Globals::ROOT_DIR}/_includes/"+file_path)
                     fileName = File.basename(("#{Globals::ROOT_DIR}/_includes/"+file_path))
                     result = "#{source}: Missing include: #{fileName} (in #{Globals::ROOT_DIR}/_includes/#{file_path})"
-                    Globals.putsColText(Globals::YELLOW, " - #{result}")
+                    Globals.putsColText(Globals::YELLOW, " - #{result}") if !silent
                     write_file("#{Globals::ROOT_DIR}/tools/checks/broken-includes.log", "#{result}\n")
                     brokeIncludes += 1
                 end

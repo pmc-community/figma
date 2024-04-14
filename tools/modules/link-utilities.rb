@@ -86,17 +86,17 @@ module LinkUtilities
         return object
     end
 
-    def self.checkInternalLinks(olp, spl)
+    def self.checkInternalLinks(olp, spl, silent)
         brokenLinks = 0
         olp.each do |file, links|
-            puts "ckecking #{file}"
+            puts "ckecking #{file}" if !silent
             linkPos = 0
             links.each do |link|
                 linkToCheck = Globals.removeFirstAndLastSlash(link)
                 found_value = spl.find { |value| value == linkToCheck }
                 if (!found_value)
                     result = "#{file}: Broken link: #{link}"
-                    Globals.putsColText(Globals::YELLOW, " - #{result}")
+                    Globals.putsColText(Globals::YELLOW, " - #{result}") if !silent
                     FileUtilities.write_file("#{Globals::ROOT_DIR}/tools/checks/broken-internal-links.log", "#{result}\n")
                     brokenLinks += 1
                 end
@@ -106,10 +106,10 @@ module LinkUtilities
         return brokenLinks
     end
 
-    def self.checkExternalLinks(elp)
+    def self.checkExternalLinks(elp, silent)
         brokenLinks = 0
         elp.each do |file, links|
-            puts "ckecking #{file}"
+            puts "ckecking #{file}" if !silent
             linkPos = 0
             links.each do |link|
                 linkCheck = 0
@@ -121,7 +121,7 @@ module LinkUtilities
                 if (linkCheck == 1)
                     brokenLinks +=1
                     result = "#{file}: Broken link: #{link}"
-                    Globals.putsColText(Globals::YELLOW, " - #{result}")
+                    Globals.putsColText(Globals::YELLOW, " - #{result}") if !silent
                     FileUtilities.write_file("#{Globals::ROOT_DIR}/tools/checks/broken-external-links.log", "#{result}\n")
                 end
             end

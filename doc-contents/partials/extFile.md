@@ -16,8 +16,8 @@
     BECAUSE YOU WILL NOT BE ABLE TO DO IT ON CLIENT SIDE WITHOUT EXPOSING PASSWORD OR KEYS 
 --->
 
-<script>
-    getExternalMDContent (
+<script siteAttr = "externalContent">
+    getExternalContent (
         'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
         'after',
         'fullFile',

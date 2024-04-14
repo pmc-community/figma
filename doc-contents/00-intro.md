@@ -17,6 +17,11 @@ testMd: '[![](https://img.shields.io/badge/Delivery-As%20A%20Service-ff6200?styl
 nav_order: 1
 ---
 
+{{ site.data.pageConfig["/intro/"].prop1 }}
+
+<h1 siteAttr="testAttr">Will be removed after load</h1>
+<h1 siteAttr="testAttr_1">This will be removed too after load</h1>
+
 test update
 
 <!-- START_EXPOSED_SECTION -->

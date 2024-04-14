@@ -3,7 +3,7 @@ require 'pp'
 
 module ExtContentUtilities
     def self.findCallsForExternalContent(site_dir)
-        function_call_regex = /getExternalMDContent\s*\(\s*(['"])(.*?)\1\s*,\s*(['"])(.*?)\3\s*,\s*(['"])(.*?)\5\s*,\s*(['"])(.*?)\7\s*,\s*(['"])(.*?)\9\s*,\s*(['"])(.*?)\11\s*,\s*(['"])(.*?)\13\s*\)/
+        function_call_regex = /getExternalContent\s*\(\s*(['"])(.*?)\1\s*,\s*(['"])(.*?)\3\s*,\s*(['"])(.*?)\5\s*,\s*(['"])(.*?)\7\s*,\s*(['"])(.*?)\9\s*,\s*(['"])(.*?)\11\s*,\s*(['"])(.*?)\13\s*\)/
       
         results = {}
         Find.find(site_dir) do |path|
@@ -29,7 +29,7 @@ module ExtContentUtilities
     def self.replaceLiquidTags(value, yaml_file)
       value.gsub(/\{\{\s*site.data\.([^\s}]+)\s*\}\}/) do |match|
         yaml_path = $1
-        yaml_value = Globals.find_value_in_yaml(yaml_file, yaml_path)
+        yaml_value = Globals.find_value_in_yaml(yaml_file, yaml_path,"siteConfig.")
         yaml_value.nil? ? match : yaml_value
       end
     end

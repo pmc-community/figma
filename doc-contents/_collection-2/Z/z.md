@@ -17,8 +17,12 @@ This file loads some external content from another repo and place it inline.
 
 [Link to file in different folder](/pwc/){: .btn .btn-green }
 
-<script>
-    getExternalMDContent (
+<!--- HEADS UP!
+    siteAttr = "externalContent" will force the removal of the script tag after loading page 
+    This should be the normal approach since the script will be totally useless after loading page 
+--->
+<script siteAttr = "externalContent">
+    getExternalContent (
         'https://raw.githubusercontent.com/pmc-community/business-booster/main/LICENSE', 
         'inline',
         'fullFile',
@@ -29,8 +33,8 @@ This file loads some external content from another repo and place it inline.
     );
 </script>
 
-<script>
-    getExternalMDContent (
+<script siteAttr = "externalContent">
+    getExternalContent (
         'https://raw.githubusercontent.com/pmc-community/business-booster/main/LICENSE_XXX', 
         'after',
         'fullFile',

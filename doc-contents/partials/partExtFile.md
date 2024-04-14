@@ -20,8 +20,8 @@
     OTHERWISE THEY MAY BE NOT PASSED CORRECTLY 
 --->
 
-<script>
-    getExternalMDContent (
+<script siteAttr = "externalContent">
+    getExternalContent (
         'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
         'before',
         '{{ site.data.siteConfig.extContentMarkers.startExposedSection }}',

@@ -43,11 +43,26 @@ const customiseTheme = () => {
         
         // just to mask the flicker a little, but a preloader should be here
         setTimeout( () => {$('body').css('visibility','visible');}, 300)
+
+        // remove some elements
+        removeUselessElements();
                 
     });
 }
 
 /* HERE ARE THE FUNCTIONS */
+const removeUselessElements = () => {
+    const elements = settings.toBeRemovedAfterLoad;
+    elements.forEach( element => {
+       const selector  = Object.keys(element)[0];
+       const attributes = element[selector];
+       attributes.forEach(attribute => {
+        $(`${selector}[siteAttr = ${attribute}]`).remove();
+       });
+    } );
+     // refresh page ToC as some removed elements may be headings
+    initPageToc();
+}
 
 const addExtraPaddingToContentArea = () => {
     $(settings.layouts.contentArea.contentContainer).addClass(settings.layouts.contentArea.desktop.padding);
