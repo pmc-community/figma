@@ -9,8 +9,11 @@ fi
 # init log
 ruby tools/log-init.rb
 
+# checking permalinks
+ruby tools/permalinks.rb  doc-contents true $silent
+
 # checking for broken include or include_relative tags
-ruby tools/brinclude.rb doc-contents true $silent
+ruby tools/brinclude.rb doc-contents false $silent
 
 # checking for broken internal links
 ruby tools/brlinks.rb doc-contents false $silent

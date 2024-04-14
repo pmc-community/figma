@@ -86,4 +86,10 @@ module Globals
         return value
     end
 
+    def self.getArrayDuplicates(ar)
+        occurrences = Hash.new(0)
+        ar.each { |element| occurrences[element] += 1 }
+        duplicates = occurrences.select { |_, count| count > 1 }.keys
+        return duplicates
+    end
 end
