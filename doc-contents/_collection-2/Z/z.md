@@ -29,4 +29,16 @@ This file loads some external content from another repo and place it inline.
     );
 </script>
 
+<script>
+    getExternalMDContent (
+        'https://raw.githubusercontent.com/pmc-community/business-booster/main/LICENSE_XXX', 
+        'after',
+        'fullFile',
+        'fullFile',
+        '```Markdown content generated from a part of partial which loads a part from an external md file and place it inline```\n',
+        'test_inline_external_content-1',
+        'doc-contents/_collection-2/Z/z.md'
+    );
+</script>
+
 <!-- END_EXPOSED_SECTION -->

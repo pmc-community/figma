@@ -8,3 +8,6 @@ ruby tools/brlinks.rb doc-contents false
 
 # checking for broken external links
 ruby tools/brextlinks.rb doc-contents false
+
+# checking for broken external content
+ruby tools/brextcontent.rb doc-contents false

@@ -112,7 +112,11 @@ module LinkUtilities
             puts "ckecking #{file}"
             linkPos = 0
             links.each do |link|
-                linkCheck = check_link(link)
+                linkCheck = 0
+                Globals.show_spinner do
+                    linkCheck = check_link(link)
+                end
+                print "\b" # clear whatever spinner character is visible
                 linkPos += 1
                 if (linkCheck == 1)
                     brokenLinks +=1

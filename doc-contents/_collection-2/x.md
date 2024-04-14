@@ -13,6 +13,21 @@ Own markdown content.
 ```
 This the content directly typed in {{ page.title }}.
 
+<h1 class="bd-callout bd-callout-warning">Using bootstrap classes</h1>
+<p class ="p-5 bg-success-subtle border border-successsubtle rounded text-dark" >
+This is one good inline external link to https://pmc-expert.com and one good inline internal link to /collection-2/Z/z/. These are no tconverted into a tags, so will be not checked by broken llinks utilities.
+</p>
+
+{: .highlight .p-5 }
+Using jtd classes 
+
+| head1        | head two          | three |
+|:-------------|:------------------|:------|
+| ok           | good swedish fish | nice  |
+| out of stock | good and plenty   | nice  |
+| ok           | good `oreos`              |
+| ok           | good `zoute` drop | yumm  |
+
 ```
 Markdown content loaded from another md file from the same collection.
 HEADS UP!
