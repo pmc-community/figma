@@ -27,7 +27,7 @@ module ExtContentUtilities
     end
 
     def self.replaceLiquidTags(value, yaml_file)
-      value.gsub(/\{\{\s*site\.([^\s}]+)\s*\}\}/) do |match|
+      value.gsub(/\{\{\s*site.data\.([^\s}]+)\s*\}\}/) do |match|
         yaml_path = $1
         yaml_value = Globals.find_value_in_yaml(yaml_file, yaml_path)
         yaml_value.nil? ? match : yaml_value

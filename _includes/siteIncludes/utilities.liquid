@@ -20,8 +20,8 @@ FUNCTION TO EXTRACT A PART FROM MD FILE BETWEEN START AND END MARKERS
 it uses standard START AND END MARKERS, for easy usage
 Usage: {% include siteIncludes/utilities.liquid fileContent="value1" %}
 {% endcomment %}
-    {% assign fileContent_start_marker = site.siteConfig.extContentMarkers.startExposedSection %}
-    {% assign fileContent_end_marker = site.siteConfig.extContentMarkers.endExposedSection %}
+    {% assign fileContent_start_marker = site.data.siteConfig.extContentMarkers.startExposedSection %}
+    {% assign fileContent_end_marker = site.data.siteConfig.extContentMarkers.endExposedSection %}
     {% if  fileContent_start_marker == '' or fileContent_end_marker == '' %}
         {% comment %} to prevent rendering unwanted content {% endcomment %}
         {% assign file_content_result = '' %}

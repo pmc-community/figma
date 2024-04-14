@@ -1,5 +1,5 @@
 <script>
-  const settings = JSON.parse('{{ site.siteConfig }}'.replaceAll(/=>/g,':'));
+  const settings = JSON.parse('{{ site.data.siteConfig }}'.replaceAll(/=>/g,':'));
   console.log(settings);
 
 </script>
@@ -12,12 +12,12 @@
 <div id="docsearch" class="pr-3"></div>
 <script type="text/javascript">
   docsearch({
-    appId: '{{ site.siteConfig.algoliaSearch.appId }}',
-    apiKey: '{{ site.siteConfig.algoliaSearch.apiKey }}',
-    indexName: '{{ site.siteConfig.algoliaSearch.indexName }}',
-    container: '{{ site.siteConfig.algoliaSearch.container }}',
-    debug: {{ site.siteConfig.algoliaSearch.debug }},
-    maxResultsPerGroup: {{ site.siteConfig.algoliaSearch.maxResultsPerGroup }}
+    appId: '{{ site.data.siteConfig.algoliaSearch.appId }}',
+    apiKey: '{{ site.data.siteConfig.algoliaSearch.apiKey }}',
+    indexName: '{{ site.data.siteConfig.algoliaSearch.indexName }}',
+    container: '{{ site.data.siteConfig.algoliaSearch.container }}',
+    debug: {{ site.data.siteConfig.algoliaSearch.debug }},
+    maxResultsPerGroup: {{ site.data.siteConfig.algoliaSearch.maxResultsPerGroup }}
   });
 </script>
 
