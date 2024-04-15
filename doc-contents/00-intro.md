@@ -17,7 +17,7 @@ testMd: '[![](https://img.shields.io/badge/Delivery-As%20A%20Service-ff6200?styl
 nav_order: 1
 ---
 
-Custom tag: {% copyright %}
+Custom tag containing env: {% copyright %}
 
 {{ site.data.pageConfig["/intro/"].prop1 }}
 
