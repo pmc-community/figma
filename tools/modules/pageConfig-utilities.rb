@@ -37,7 +37,7 @@ module PageConfigUtilities
                     variants = sitePermalinks.compact.select { |element| element.include?(permalinkNoSlashes) }
                     variantOptions = {}
                     variants.compact.each do |variant|
-                        variantOptions[variant] = getFileFromPermalink(docsDir, variant)
+                        variantOptions[variant] = FileUtilities.getFileFromPermalink(docsDir, variant)
                     end
                     result = "Permalink \"#{permalink}\" #{Globals::ARROW_RIGHT} Possible match: #{variantOptions}"
                     FileUtilities.write_file("#{Globals::ROOT_DIR}/tools/checks/page-config.log", "#{result}\n")
@@ -45,7 +45,7 @@ module PageConfigUtilities
                 end
             else
                 print (Globals::BACK_1_ROW) if !silent
-                puts "checking #{permalink} #{Globals::ARROW_RIGHT} file: #{getFileFromPermalink(docsDir, permalink)}" if !silent
+                puts "checking #{permalink} #{Globals::ARROW_RIGHT} file: #{FileUtilities.getFileFromPermalink(docsDir, permalink)}" if !silent
             end
         end
         puts "\nPages on site: #{sitePermalinks.length}" if !silent
@@ -58,14 +58,5 @@ module PageConfigUtilities
             FileUtilities.write_file("#{Globals::ROOT_DIR}/tools/checks/page-config.log", "#{summary}\n")
         end
         return pageConfigErrors
-    end
-
-    def self.getFileFromPermalink(docsDir, permalink)
-        Find.find(docsDir) do |path|
-            next unless File.file?(path) && (path.end_with?('.html') || path.end_with?('.md'))
-            front_matter, _ = File.read(path).split('---')[1..2]
-            page_data = YAML.safe_load(front_matter)
-            return path if page_data && page_data['permalink'] == permalink
-        end
     end
 end

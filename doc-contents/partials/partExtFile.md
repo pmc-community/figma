@@ -1,4 +1,4 @@
-<!--- 
+<!--
     HEADS UP!!!
     IN THE SCRIPT BELOW, THE SYNTAX MUST BE 100% STRICT:
         EACH LINE MUST END WITH ';'
@@ -18,7 +18,7 @@
     HEADS UP!!!
     ANY PARAMETERS TO BE PASSED TO JS FUNCTIONS MUST BE INITIALIZED BEFORE CALLING THE FUNCTION
     OTHERWISE THEY MAY BE NOT PASSED CORRECTLY 
---->
+-->
 
 <script siteAttr = "externalContent">
     getExternalContent (

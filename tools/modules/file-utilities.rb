@@ -48,4 +48,14 @@ module FileUtilities
         end
         return brokeIncludes
     end
+
+    def self.getFileFromPermalink(docsDir, permalink)
+        Find.find(docsDir) do |path|
+            next unless File.file?(path) && (path.end_with?('.html') || path.end_with?('.md'))
+            front_matter, _ = File.read(path).split('---')[1..2]
+            page_data = front_matter ? YAML.safe_load(front_matter) : ""
+            return path if page_data && page_data['permalink'] == permalink
+        end
+       
+    end
 end

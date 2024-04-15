@@ -3,6 +3,7 @@ require 'yaml'
 
 module Globals
     RESET = "\e[0m"
+    WHITE = "\e[37m"
     YELLOW = "\e[33m"
     GREEN = "\e\n[32m"
     PURPLE = "\e[35m"

@@ -74,3 +74,4 @@ toBeRemovedAfterLoad:
   - "h1":
     - "testAttr"
     - "testAttr_1"
+marker404: "site-this-is-404-page" # should be allocated as id to one element in 404.html

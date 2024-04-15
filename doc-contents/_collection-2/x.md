@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Collection-2/X
-permalink: /collection-2/x/
+permalink: collection-2/Z/z/
 has_children: true
 has_toc: false
 ---

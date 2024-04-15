@@ -40,7 +40,7 @@ $.fn.sizeChanged = function (handleFunction) {
 $(function () {
     var navSelector = settings.pageToc.toc;
     var $myNav = $(navSelector);
-    Toc.init($myNav);
+    if ($(`#${settings.marker404}`).length === 0) Toc.init($myNav);
     // check if there is something in the ToC, if empty, the scrollspy raise errors in console
     // page toc will be further removed from page when the page loads
     if ($(`${settings.pageToc.toc} ul`).children('li').length > 0 ) $(settings.pageToc.scrollSpyBase).scrollspy({target: navSelector,});

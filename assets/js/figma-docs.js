@@ -33,19 +33,22 @@ const customiseTheme = () => {
     handleTocDuplicates();  
     addSwitchThemeIcon();
     $(document).ready(() => {
-        // last checks on page toc
-        if($(`${settings.pageToc.toc} ul`).children('li').length >0)
-            // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
-            removeChildrenExceptFirst (settings.pageToc.toc); 
-        else 
-            // no need to have page toc on screen if there is nothing to see there
-            $(settings.pageToc.tocContainer).hide();
-        
+        if ($(`#${settings.marker404}`).length > 0) $(settings.pageToc.tocContainer).remove();
+        else {
+            // last checks on page toc
+            if($(`${settings.pageToc.toc} ul`).children('li').length >0)
+                // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
+                removeChildrenExceptFirst (settings.pageToc.toc); 
+            else 
+                // no need to have page toc on screen if there is nothing to see there
+                $(settings.pageToc.tocContainer).hide();
+
+            // remove some elements
+            removeUselessElements();
+        }
+
         // just to mask the flicker a little, but a preloader should be here
         setTimeout( () => {$('body').css('visibility','visible');}, 300)
-
-        // remove some elements
-        removeUselessElements();
                 
     });
 }
@@ -215,6 +218,14 @@ const hidePageTOCOnHome = () => {
     });
 }
 
+const hidePageTOCOn404 = () => {
+    $(window).on('load', () => {
+        console.log('here')
+        $(settings.pageToc.tocContainer).hide();
+    })
+   
+}
+
 const hideFeedbackFormOnHome = () => {
    $(window).on('load', () => {
         const rootUrl = window.location.origin + '/';
@@ -261,6 +272,7 @@ const setGoToTopBtn = () => {
 const addTopOfPage = () => {
     $(settings.goToTopBtn.topOfPageContainer).prepend(settings.goToTopBtn.topOfPageMarker);
 }
+
 const customiseFooter = () => {
     $(settings.siteFooter.container).html('');
 
