@@ -33,6 +33,12 @@ theme: just-the-docs
 exclude:
   - tools/
   - check
+  - test
+  - netlify.toml
+  - cname
+  - license
+  - readme.md
+
 
 aux_links:
   "GitHub":
