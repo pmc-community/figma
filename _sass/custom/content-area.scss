@@ -8,3 +8,4 @@ $contentAreaMarginLeft: $sideBarFixedWidth !default;
 // STYLE CONTENT AREA
 $content: '.main';
 @include contentArea($content);
+

@@ -8,8 +8,8 @@ baseurl: "/"
 url: "https://figmares.innohub.space" # the base hostname & protocol for the site
 
 # Build settings
-#theme: just-the-docs
-remote_theme: just-the-docs/just-the-docs@v0.8.0 # it works only with remote_theme. as of April 2024, v0.8.0 is the latest that works
+theme: just-the-docs
+#remote_theme: just-the-docs/just-the-docs@v0.8.0 # it works only with remote_theme. as of April 2024, v0.8.0 is the latest that works
 
 #plugins:
 #  - jekyll-feed # activate only if the site has posts

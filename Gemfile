@@ -4,14 +4,14 @@ source "https://rubygems.org"
 # HEADS UP!
 # CHECK THE MAXIMUM JEKYLL VERSION ACCEPTED BY GITHUB PAGES (IF THE SITE IS DEPLOYED IN GHP)
 # AS OF APRIL 2024, THIS IS 3.9.5
-#gem "jekyll", "~> 4.2.0"
+gem "jekyll", "~> 4.3.3"
 
 # HEADS UP!
 # JTD 0.8.0 IS THE MAXIMUM THEME VERSION WORKING WITH GHP
-gem "just-the-docs", "0.8.0"
+gem "just-the-docs"
 
 # THIS IS THEL LAST VERSION OF GHP AS OF APRIL 2024
-gem "github-pages", "~> 231", group: :jekyll_plugins
+#gem "github-pages", "~> 231", group: :jekyll_plugins
 
 # If you have any plugins, put them here!
 #group :jekyll_plugins do
@@ -33,4 +33,5 @@ gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 
 gem "webrick", "~> 1.8"
+gem 'jekyll-sass-converter', '2.0.0'
 
