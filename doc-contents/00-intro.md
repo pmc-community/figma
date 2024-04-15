@@ -17,6 +17,8 @@ testMd: '[![](https://img.shields.io/badge/Delivery-As%20A%20Service-ff6200?styl
 nav_order: 1
 ---
 
+{% copyright %}
+
 {{ site.data.pageConfig["/intro/"].prop1 }}
 
 <h1 siteAttr="testAttr">Will be removed after load</h1>

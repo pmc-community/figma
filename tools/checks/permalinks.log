@@ -1,4 +1,2 @@
-1 permalink(s) duplicate(s) found
-For normalized permalink "collection-2/Z/z" → {"/collection-2/Z/z/"=>"doc-contents/_collection-2/Z/z.md", "collection-2/Z/z/"=>"doc-contents/_collection-2/x.md"}
-Inconsistent pattern for permalink "collection-2/Z/z/" → doc-contents/_collection-2/x.md; Consider to use: "/collection-2/Z/z/"
+Inconsistent pattern for permalink "collection-2/X/x/" → doc-contents/_collection-2/x.md; Consider to use: "/collection-2/X/x/"
 Inconsistent pattern for permalink "/test" → doc-contents/test.html; Consider to use: "/test/"
