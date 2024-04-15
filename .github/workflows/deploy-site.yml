@@ -61,4 +61,6 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
+        env:
+          TEST_VAL: ${{ secrets.TEST_VAL}}
         uses: actions/deploy-pages@v4
