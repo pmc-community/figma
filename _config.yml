@@ -35,9 +35,9 @@ exclude:
   - check
   - test
   - netlify.toml
-  - cname
-  - license
-  - readme.md
+  - CNAME
+  - LICENSE
+  - README.md
 
 
 aux_links:
