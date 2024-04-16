@@ -1,5 +1,6 @@
 require 'dotenv'
 require_relative '../tools/modules/globals'
+require_relative 'modules/testModule'
 
 Dotenv.load
 
@@ -13,7 +14,7 @@ module Jekyll
           super
         end
         def render(context)
-          "#{ENV["TEST_VAL"]} &copy; #{Time.now.year} #{Globals::ROOT_DIR}"
+          "#{ENV["TEST_VAL"]} &copy; #{Time.now.year} * #{TestModule.getValue()}"
         end
       end
     end
