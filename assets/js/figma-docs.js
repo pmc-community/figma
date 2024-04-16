@@ -78,10 +78,10 @@ const addSwitchThemeIcon = () => {
 
         $(settings.themeSwitch.btnId).on('click', () => {
             let themeCookie = Cookies.get(settings.themeSwitch.cookie);
-            if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { secure: true, sameSite: 'strict' });
+            if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
             themeCookie = Cookies.get(settings.themeSwitch.cookie);
-            if (themeCookie === '0' ) Cookies.set(settings.themeSwitch.cookie,1, { secure: true, sameSite: 'strict' });
-            else Cookies.set(settings.themeSwitch.cookie,0);
+            if (themeCookie === '0' ) Cookies.set(settings.themeSwitch.cookie,1, { expires:365 , secure: true, sameSite: 'strict' });
+            else Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
             setTheTheme();
             themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (themeCookie === '0' ) applyColorSchemaCorrections('light');
@@ -109,7 +109,7 @@ const applyColorSchemaCorrections = (theme) => {
 
 const setTheTheme = () => {
     let themeCookie = Cookies.get(settings.themeSwitch.cookie);
-    if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { secure: true, sameSite: 'strict' });
+    if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
     themeCookie = Cookies.get(settings.themeSwitch.cookie);
     if (Cookies.get(settings.themeSwitch.cookie) === '0' ) { 
         jtd.setTheme('light'); 
