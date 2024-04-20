@@ -51,6 +51,8 @@ jobs:
           # IN DEV, THESE ARE VALUES DEFINED IN .ENV
           # IN PROD, THESE ARE ACTION SECRETS
           TEST_VAL: ${{ secrets.TEST_VAL}}
+          JEKYLL_ACCESS_TOKEN: ${{secrets.JEKYLL_ACCESS_TOKEN}}
+          JEKYLL_GIT_USER: ${{secrets.JEKYLL_GIT_USER}}
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3

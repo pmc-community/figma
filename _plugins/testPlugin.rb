@@ -1,4 +1,5 @@
 require 'dotenv'
+require 'json'
 require_relative '../tools/modules/globals'
 require_relative 'modules/testModule'
 
@@ -7,18 +8,36 @@ Dotenv.load
 
 module Jekyll
   
-    module Tags
-      class CopyrightTag < Liquid::Tag
+    module TestPlugin
+      class TestCustomTag < Liquid::Tag
   
-        def initialize(tag_name, text, context)
+        def initialize(tag_name, input, context)
           super
+          @input = input
         end
+
         def render(context)
-          "#{ENV["TEST_VAL"]} &copy; #{Time.now.year} * #{TestModule.getValue()}"
+          
+          param1 = ""
+          param2 = ""
+          begin
+            if( !@input.nil? && !@input.empty? )
+              jdata = JSON.parse(@input)
+              if( jdata.key?("param1") )
+                param1 = jdata["param1"].strip
+              end
+              if( jdata.key?("param2") )
+                param2 = jdata["param2"].strip
+              end
+            end
+            rescue
+          end
+  
+          "#{ENV["TEST_VAL"]} &copy; #{Time.now.year} #{Globals::ROOT_DIR} * #{Dir.pwd} * #{TestModule.getValue()} * #{param1} * #{param2}"
         end
       end
     end
   end
   
-  Liquid::Template.register_tag('copyright', Jekyll::Tags::CopyrightTag)
+  Liquid::Template.register_tag('customTag', Jekyll::TestPlugin::TestCustomTag)
   
