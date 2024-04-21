@@ -33,7 +33,7 @@ module Jekyll
             rescue
           end
   
-          "#{ENV["TEST_VAL"]} &copy; #{Time.now.year} #{Globals::ROOT_DIR} * #{Dir.pwd} * #{TestModule.getValue()} * #{param1} * #{param2}"
+          "#{ENV["TEST_VAL"]} &copy; #{Time.now.year} #{Globals::DOCS_DIR} * #{Dir.pwd} * #{TestModule.getValue()} * #{param1} * #{param2}"
         end
       end
     end

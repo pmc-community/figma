@@ -16,6 +16,7 @@ module Globals
 
     # removing last 15 chars '/tools/modules/'
     ROOT_DIR = __dir__[0..-15]
+    DOCS_DIR = "#{ROOT_DIR}/doc-contents"
 
     # config files
     CONFIG_YML = "#{ROOT_DIR}/_config.yml"
@@ -93,4 +94,9 @@ module Globals
         duplicates = occurrences.select { |_, count| count > 1 }.keys
         return duplicates
     end
+
+    def self.removeFrontMatter(content)
+        return content.gsub(/^---.*?---\n/m, '')
+    end
+
 end
