@@ -10,6 +10,7 @@ parent: Collection-2/X
 # General
 This is a file from a collection
 
+<!-- START MARKER 1 -->
 <div id="test_inline_external_content-1"></div>
 
 ## External content
@@ -32,6 +33,7 @@ This file loads some external content from another repo and place it inline.
         'doc-contents/_collection-2/Z/z.md'
     );
 </script>
+<!-- END MARKER 1 -->
 
 <script siteAttr = "externalContent">
     getExternalContent (
