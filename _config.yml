@@ -83,6 +83,6 @@ just_the_docs:
 # MARKER COLLECTIONS END
 
 # sitemap.xml shoul not be cleaned after site build
-keep_files:
-  - sitemap.xml
+#keep_files:
+#  - sitemap.xml
 
