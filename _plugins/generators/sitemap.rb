@@ -52,7 +52,7 @@ module Jekyll
 
       # Write sitemap.xml file
       siteMapFrontMatter = "---\nlayout: null\npermalink: /sitemap.xml\n---\n"
-      File.write(File.join("./_site/", 'sitemap.xml'),sitemap_content)
+      File.write(File.join("#{Globals::ROOT_DIR}/_site/", 'sitemap.xml'),sitemap_content)
     end
 
     def generate_sitemap_entry(page)
