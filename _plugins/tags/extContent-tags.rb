@@ -1,10 +1,18 @@
+# CUSTOM LIQUID TAGS TO INCLUDE CONTENT FROM EXTERNAL SOURCES
+# EXTERNAL SOURCES = 
+#   - PUBLIC/PRIVATE GITHUB REPOS
+#   - OTHER FILES FROM THE SAME SITE 
+
 require 'json'
-require_relative '../tools/modules/content-utilities'
+require_relative '../../tools/modules/content-utilities'
 
 module Jekyll
 
     module ExtContent
-      
+        
+        # external repo =  any GitHub repo (public or private) to which the site can have access using a personal access token
+        # calls to public repos are also authenticated in order to extend the limit 
+        # (although the GitHub doc is not clear, it seems that there is a limit oh ~5000 calls to raw api/hour/IP)
         class ExternalRepoContent < Liquid::Tag
   
             def initialize(tag_name, input, context)
@@ -23,6 +31,9 @@ module Jekyll
             end
         end
 
+        # MM = Multi Markers
+        # multiple pairs od start and end markers can be passed to the tag
+        # the tag will concatenate the markups between each pair, including or exluding the markers
         class ExternalRepoContentMM < Liquid::Tag
   
             def initialize(tag_name, input, context)
@@ -41,6 +52,8 @@ module Jekyll
             end
         end
 
+        # external site content = any md file in the same site, regardles to its position in the site structure
+        # it overcomes the limitation of Jekyll include_relative tag whch does not accept full file paths or ../.. syntax
         class ExternalSiteContent < Liquid::Tag
   
             def initialize(tag_name, input, context)
@@ -59,6 +72,9 @@ module Jekyll
             end
         end
 
+        # MM = Multi Markers
+        # multiple pairs od start and end markers can be passed to the tag
+        # the tag will concatenate the markups between each pair, including or exluding the markers
         class ExternalSiteContentMM < Liquid::Tag
   
             def initialize(tag_name, input, context)

@@ -1,7 +1,7 @@
 require 'dotenv'
 require 'json'
-require_relative '../tools/modules/globals'
-require_relative 'modules/testModule'
+require_relative '../../tools/modules/globals'
+require_relative '../modules/testModule'
 
 Dotenv.load
 

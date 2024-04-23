@@ -17,6 +17,7 @@ module Globals
     # removing last 15 chars '/tools/modules/'
     ROOT_DIR = __dir__[0..-15]
     DOCS_DIR = "#{ROOT_DIR}/doc-contents"
+    DOCS_ROOT = "doc-contents"
 
     # config files
     CONFIG_YML = "#{ROOT_DIR}/_config.yml"

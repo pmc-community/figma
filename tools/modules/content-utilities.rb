@@ -35,8 +35,7 @@ module ContentUtilities
                 markdown_content = markdown_content + file_info["end_marker"]
             end
 
-            html_content = Kramdown::Document.new(markdown_content).to_html
-            return html_content
+            return file_info["markdown"] ? markdown_content : Kramdown::Document.new(markdown_content).to_html
         else
             return "Error: #{response.code} - #{response.message} - #{raw_url}"
         end
@@ -71,7 +70,7 @@ module ContentUtilities
             end
             theContent += content
         end
-        return Kramdown::Document.new(theContent).to_html
+        return file_info["markdown"] ? theContent : Kramdown::Document.new(theContent).to_html
     end
 
     def self.getExternalSiteContent(file_info)
@@ -98,7 +97,7 @@ module ContentUtilities
                 content = content + file_info["end_marker"]
             end
             
-            return Kramdown::Document.new(content).to_html
+            return file_info["markdown"] ? content : Kramdown::Document.new(content).to_html
           else
             return "Error getting file: #{file_info["file_path"]}"
         end
@@ -125,7 +124,7 @@ module ContentUtilities
             end
             theContent += content
         end
-        return Kramdown::Document.new(theContent).to_html
+        return file_info["markdown"] ? theContent : Kramdown::Document.new(theContent).to_html
 
     end
 

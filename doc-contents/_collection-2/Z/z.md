@@ -4,6 +4,8 @@ title: Collection-2/Z
 permalink: /collection-2/Z/z/
 
 parent: Collection-2/X
+
+categories: [general, intro]
 ---
 
 <!-- START_EXPOSED_SECTION -->
