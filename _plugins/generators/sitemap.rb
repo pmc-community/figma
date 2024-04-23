@@ -1,4 +1,5 @@
 require 'yaml'
+require_relative "../../tools/modules/globals"
 
 module Jekyll
   class SitemapGenerator < Generator
@@ -6,7 +7,8 @@ module Jekyll
     priority :lowest
 
     def generate(site)
-      doc_contents_dir = File.join(site.source, 'doc-contents')
+      doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
+      
       sitemap = []
 
       # Recursively iterate through the doc-contents folder and its subfolders
@@ -49,7 +51,8 @@ module Jekyll
       XML
 
       # Write sitemap.xml file
-      File.write(File.join(site.dest, 'sitemap.xml'), sitemap_content)
+      siteMapFrontMatter = "---\nlayout: null\npermalink: /sitemap.xml\n---\n"
+      File.write(File.join("./_site/", 'sitemap.xml'),sitemap_content)
     end
 
     def generate_sitemap_entry(page)
@@ -62,6 +65,6 @@ module Jekyll
           </url>
         XML
       end
-      
+
   end
 end
