@@ -25,8 +25,6 @@ tags: [tag1, tag2]
 <h1 siteAttr="testAttr">Will be removed after load</h1>
 <h1 siteAttr="testAttr_1">This will be removed too after load</h1>
 
-test update
-
 <!-- START_EXPOSED_SECTION -->
 {{ page.testMd }}
 

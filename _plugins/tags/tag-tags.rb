@@ -2,8 +2,8 @@ require 'json'
 
 module Jekyll
 
-    module Categories
-        class CatList < Liquid::Tag
+    module Tags
+        class TagList < Liquid::Tag
   
             def initialize(tag_name, input, context)
                 super
@@ -17,11 +17,11 @@ module Jekyll
                     end
                     rescue
                 end
-                context.registers[:site].data["category_list"]
+                context.registers[:site].data["tag_list"]
             end
         end
     end
 end
   
-Liquid::Template.register_tag('CatList', Jekyll::Categories::CatList)
+Liquid::Template.register_tag('TagList', Jekyll::Tags::TagList)
   

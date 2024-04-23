@@ -1,35 +1,48 @@
+require_relative "../../tools/modules/globals"
 
 module Jekyll
-
     class PageListGenerator < Generator
-        priority :high
-        
-        def generate(site)
-            page_urls = []
-            doc_contents_dir = File.join(site.source, 'doc-contents')
-            generate_page_list(doc_contents_dir, page_urls)
-            site.data['page_urls_json'] = page_urls.to_json
-        end
+      safe true
+      priority :high
 
-        private
+      # HEADS UP!!!
+      # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE
+      # THE FILE IS siteConfig.yml AND IS LOCATED IN _data FOLDER
+      # content.index(site.data["siteConfig"]["marker404"])
+  
+      def generate(site)
+        doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
+        documents = []
+  
+        Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
+            
+          # HEADS UP!!!
+          # CONTENT MAY CONTAIN LIQUID TAGS WHICH ARE NOT YET REPLACED WITH VALUES 
+          # AT THE TIME WHEN THIS PLUGIN RUNS, SO IS NOT ADVISABLE TO BE USED IN THE PLUGIN LOGIC 
+          content = File.read(file_path)
+          front_matter = {}
+          if content =~ /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
+            front_matter = YAML.load(Regexp.last_match[1])
+          end
+  
+          title = front_matter['title']
+          permalink = front_matter['permalink']
+          categories = front_matter['categories']
+          tags = front_matter['tags']
+  
+          document_data = {
+            'title' => title,
+            'permalink' => permalink,
+            'categories' => categories || [],
+            'tags' => tags || []
+          } 
+          
+          documents << document_data if front_matter != {} && !file_path.index("404")
+        end  
+        site.data['page_list'] = documents.to_json
+      end
 
-        def generate_page_list(dir, page_urls)
-            Dir.foreach(dir) do |entry|
-                next if entry == '.' || entry == '..'
-
-                full_path = File.join(dir, entry)
-                if File.directory?(full_path)
-                    generate_page_list(full_path, page_urls)
-                elsif File.extname(entry) == '.md' && valid_front_matter?(full_path)
-                    page_urls << full_path.sub("#{Dir.getwd}/", '')
-                end
-            end
-        end
-
-        def valid_front_matter?(file_path)
-            content = File.read(file_path)
-            !!content.match(/^\s*---\s*\n.*?\n?(\s*---\s*$\n?)/m)
-        end
-    end  
-
-end
+    end
+    
+  end
+  

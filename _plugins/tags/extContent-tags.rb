@@ -97,9 +97,9 @@ module Jekyll
 
 end
   
-  Liquid::Template.register_tag('ExternalRepoContent', Jekyll::ExtContent::ExternalRepoContent)
-  Liquid::Template.register_tag('ExternalRepoContentMM', Jekyll::ExtContent::ExternalRepoContentMM)
+Liquid::Template.register_tag('ExternalRepoContent', Jekyll::ExtContent::ExternalRepoContent)
+Liquid::Template.register_tag('ExternalRepoContentMM', Jekyll::ExtContent::ExternalRepoContentMM)
 
-  Liquid::Template.register_tag('ExternalSiteContent', Jekyll::ExtContent::ExternalSiteContent)
-  Liquid::Template.register_tag('ExternalSiteContentMM', Jekyll::ExtContent::ExternalSiteContentMM)
+Liquid::Template.register_tag('ExternalSiteContent', Jekyll::ExtContent::ExternalSiteContent)
+Liquid::Template.register_tag('ExternalSiteContentMM', Jekyll::ExtContent::ExternalSiteContentMM)
   
