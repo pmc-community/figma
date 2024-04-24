@@ -48,7 +48,7 @@ const customiseTheme = () => {
         }
 
         // just to mask the flicker a little, but a preloader should be here
-        setTimeout( () => {$('body').css('visibility','visible');}, 300)
+        setTimeout( () => {$('body').css('visibility','visible');}, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
                 
     });
 }
@@ -77,6 +77,7 @@ const addSwitchThemeIcon = () => {
         else $(settings.themeSwitch.btnContainer).prepend(settings.themeSwitch.btnContent);
 
         $(settings.themeSwitch.btnId).on('click', () => {
+            $('body').css('visibility','hidden');
             let themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
             themeCookie = Cookies.get(settings.themeSwitch.cookie);
@@ -86,7 +87,7 @@ const addSwitchThemeIcon = () => {
             themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (themeCookie === '0' ) applyColorSchemaCorrections('light');
             else applyColorSchemaCorrections('dark');;
-
+            setTimeout( () => {$('body').css('visibility','visible');}, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
         });
 
     });

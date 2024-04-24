@@ -82,7 +82,3 @@ just_the_docs:
       nav_fold: true
 # MARKER COLLECTIONS END
 
-# sitemap.xml shoul not be cleaned after site build
-#keep_files:
-#  - sitemap.xml
-

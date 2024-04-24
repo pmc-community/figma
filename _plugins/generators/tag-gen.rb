@@ -33,4 +33,42 @@ module Jekyll
     end
   end
 
+  class TagDetailsGenerator < Generator
+    priority :normal
+    def generate(site)
+      tagsDetails = getTagsDetails(site.data["tag_list"], site.data['page_list'])
+      #puts categoriesDetails
+      site.data["tags_details"] = tagsDetails
+    end
+
+    private
+
+    def getTagsDetails(tagList, pageList)
+      tList = JSON.parse(tagList)
+      pList = JSON.parse(pageList)
+      tagPages = {}
+      tList.each do |tag|
+        tagPagesNum = 0
+        tagPage = {"pages"=>[]}
+        pList.each do |page|
+          pageObj = {}
+          pageArr = []
+          if page["tags"].any? { |element| element == tag }
+            tagPagesNum +=1
+            tagPage["numPages"] = tagPagesNum
+            pageObj["title"] = page["title"]
+            pageObj["permalink"] = page["permalink"]
+            pageArr = tagPage["pages"]
+            pageArr << pageObj if pageObj
+            tagPage["pages"] = pageArr
+          end
+        end
+        tagPages[tag] = tagPage if tagPage != {"pages":[]}
+      end
+      return tagPages
+
+    end
+
+  end
+
 end

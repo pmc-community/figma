@@ -26,7 +26,7 @@ colSchemaCorrections:
   backgroundColorOnElementsAffected:
     light: '#fff'
     dark: '#27262b'
-  elementsWithTextAffected: 'body, p, ul li, ol li, li a'
+  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h2'
   textColorOnElementsAffected:
     light: '#000'
     dark: '#dee2e6'
@@ -34,6 +34,7 @@ colSchemaCorrections:
   borderTopOnElementsAffected:
     light: '1px solid #eeebee'
     dark: '1px solid #44434d'
+  hideBodyUntilLoadTimeout: 200
 goToTopBtn:
   btnContainer: '.main'
   # don't forget to escape double quotes

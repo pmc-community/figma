@@ -4,7 +4,7 @@ require_relative "../../tools/modules/globals"
 module Jekyll
 
   class CategoryListGenerator < Generator
-    priority :normal
+    priority :high
     def generate(site)
       categories = extract_categories(Globals::DOCS_DIR)
 
@@ -33,6 +33,46 @@ module Jekyll
       content = File.read(file_path)
       !!content.match(/^\s*---\s*\n.*?\n?(\s*---\s*$\n?)/m)
     end
+  end
+
+  class CategoryDetailsGenerator < Generator
+    priority :normal
+    def generate(site)
+      categoriesDetails = getCategoriesDetails(site.data["category_list"], site.data['page_list'])
+      #puts categoriesDetails
+      site.data["categories_details"] = categoriesDetails
+    end
+
+    private
+
+    def getCategoriesDetails(catList, pageList)
+      #puts JSON.parse(catList).class
+      #puts JSON.parse(pageList).class
+      cList = JSON.parse(catList)
+      pList = JSON.parse(pageList)
+      catPages = {}
+      cList.each do |category|
+        catPagesNum = 0
+        catPage = {"pages"=>[]}
+        pList.each do |page|
+          pageObj = {}
+          pageArr = []
+          if page["categories"].any? { |element| element == category }
+            catPagesNum +=1
+            catPage["numPages"] = catPagesNum
+            pageObj["title"] = page["title"]
+            pageObj["permalink"] = page["permalink"]
+            pageArr = catPage["pages"]
+            pageArr << pageObj if pageObj
+            catPage["pages"] = pageArr
+          end
+        end
+        catPages[category] = catPage if catPage != {"pages":[]}
+      end
+      return catPages
+
+    end
+
   end
 
 end

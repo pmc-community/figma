@@ -16,6 +16,7 @@ Jekyll::Hooks.register :site, :after_init do |site|
         if content =~ /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
             begin
                 front_matter = YAML.load(Regexp.last_match[1])
+                front_matter = {} if !front_matter["permalink"]
             rescue
                 front_matter = {} if !front_matter.is_a?(Hash)
             end

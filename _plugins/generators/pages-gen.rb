@@ -37,7 +37,7 @@ module Jekyll
             'tags' => tags || []
           } 
           
-          documents << document_data if front_matter != {} && !file_path.index("404")
+          documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
         end  
         site.data['page_list'] = documents.to_json
       end
