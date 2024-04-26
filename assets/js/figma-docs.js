@@ -27,6 +27,7 @@ const customiseTheme = () => {
     formatAuxLinksBtns();
     fullContentAreaOnHome();
     hidePageTOCOnHome();
+    hidePageTOCOnPage()
     hideFeedbackFormOnHome();
     setFullPageToc();
     handleTocOnWindowsResize();
@@ -221,10 +222,25 @@ const hidePageTOCOnHome = () => {
 
 const hidePageTOCOn404 = () => {
     $(window).on('load', () => {
-        console.log('here')
-        $(settings.pageToc.tocContainer).hide();
-    })
-   
+        $(settings.pageToc.tocContainer).remove();
+        $(settings.layouts.contentArea.mainContainer).css('width','100%')
+    })   
+}
+
+const hidePageTOCOnPage = () => {
+    const urlIncludesItem = (url, items) => {
+        for (let item of items) {
+            if (url.includes(item)) {
+                return true; 
+            }
+        }
+        return false;
+    }
+    const page = window.location.href;
+    if ( urlIncludesItem(page, settings.pageToc.pagesWithoutToc) ) {
+        $(settings.pageToc.tocContainer).remove();
+        $(settings.layouts.contentArea.mainContainer).css('width','100%')
+    }
 }
 
 const hideFeedbackFormOnHome = () => {

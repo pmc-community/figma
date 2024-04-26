@@ -50,10 +50,10 @@ $weight600Elements: ('.site-header a', 'h1', 'h2', 'h3', 'h4');
     }
 }
 
-$alwaysWhiteTextElements: ('.site-header a');
+$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]');
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
-        color: $siteHeaderTextColor; 
+        color: $siteHeaderTextColor !important; 
     }
 }
 
@@ -89,11 +89,18 @@ $neverDecoratedTextElements: ('a');
     }
 }
 
-$hiddenElements: ('hr', '#docFeedbackForm');
+$hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul li::before');
 @each $element in $hiddenElements {
         #{$element} {
             display:$d-hidden;
         }
+}
+
+$alwaysNoBorderBottomElements: ('ul[siteFunction="tagPageItem"]:last-child');
+@each $element in $alwaysNoBorderBottomElements {
+    #{$element} {
+        border-bottom: $b-none !important;
+    }
 }
 
 $btnID: '#ihs_go_to_top_btn';

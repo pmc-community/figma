@@ -22,21 +22,14 @@
 </url>
 
 <url>
-  <loc>http://localhost:4000collection-2/X/x/</loc>
-  <lastmod>2024-04-15</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/ec/</loc>
+  <loc>http://localhost:4000/terms/</loc>
   <lastmod>2024-04-21</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
 </url>
 
 <url>
-  <loc>http://localhost:4000/terms/</loc>
+  <loc>http://localhost:4000/ec/</loc>
   <lastmod>2024-04-21</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
@@ -50,7 +43,7 @@
 </url>
 
 <url>
-  <loc>http://localhost:4000/collection-2/Z/z/</loc>
+  <loc>http://localhost:4000/pwc/</loc>
   <lastmod>2024-04-23</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
@@ -64,29 +57,36 @@
 </url>
 
 <url>
-  <loc>http://localhost:4000/intro/</loc>
-  <lastmod>2024-04-23</lastmod>
+  <loc>http://localhost:4000/categories/</loc>
+  <lastmod>2024-04-24</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
 </url>
 
 <url>
-  <loc>http://localhost:4000/pwc/</loc>
-  <lastmod>2024-04-23</lastmod>
+  <loc>http://localhost:4000/intro/</loc>
+  <lastmod>2024-04-25</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/collection-2/Z/z/</loc>
+  <lastmod>2024-04-26</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000collection-2/X/x/</loc>
+  <lastmod>2024-04-26</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
 </url>
 
 <url>
   <loc>http://localhost:4000/tag-info</loc>
-  <lastmod>2024-04-24</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/categories/</loc>
-  <lastmod>2024-04-24</lastmod>
+  <lastmod>2024-04-26</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
 </url>

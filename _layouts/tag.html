@@ -1,16 +1,21 @@
 ---
 layout: page
 ---
-
 {% comment %}
+
 this is how to handle some arrays which are not recognised by liquid as arrays but as strings
 objects are fine, but simple arrays may be seen as strings
 {% assign tagsArray = site.data.tag_list  | remove: '["' | remove: '"]' | split: '","' %}
+
+or using the custom filter
+{% assign tagsArray= site.data.tag_list  | json_string_to_object %}
+
 {% endcomment %}
 
-<div id="cloud_tag_container">
+<h1 class="container mb-5">Tag cloud</h1>
+<div id="cloud_tag_container" class="container">
     {% for tagItem in site.data.tags_details %}
-        <button siteFunction="tagButton" id="{{ tagItem[0] }}" type="button" class="focus-ring focus-ring-secondary px-3 mr-5 btn btn-sm btn-primary position-relative">
+        <button siteFunction="tagButton" id="{{ tagItem[0] }}" type="button" class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
             {{ tagItem[0] }}
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
                 {{ tagItem[1]["numPages"] }}
@@ -21,15 +26,60 @@ objects are fine, but simple arrays may be seen as strings
 </div>
 
 
-<div id="tag_details">
+<div id="tag_details" class="container my-5 " >
     {% for tagItem in site.data.tags_details %}
-        <div tagReference="{{ tagItem[0] }}" siteFunction="tagDetails" class="d-none">
-            {% for page in tagItem[1]["pages"] %}
-                <li><a href="{{ page.permalink }}">Title = {{ page.title }}</a></li>
-            {% endfor %}
+        <div tagReference="{{ tagItem[0] }}" siteFunction="tagDetails" class="d-none card shadow bg-transparent">
+            <div class="card-header">
+                <span class="fs-6 fw-medium">Pages having tag: {{ tagItem[0] }}</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush bg-transparent">
+                    {% for page in tagItem[1]["pages"] %}
+                        <ul siteFunction="tagPageItem" class="list-group list-group-horizontal rounded-0 border-secondary border-bottom border-opacity-25">
+                            <li class="col-3 fw-normal bg-transparent list-group-item bg-transparent border-0 align-self-center">
+                                <span>{{ page.title }}</span>
+                            </li>
+
+                            <li class="col-3 fw-normal bg-transparent list-group-item bg-transparent border-0 align-self-center">
+                                <div class="btn-group">
+                                    <a 
+                                        siteFunction="tagPageItemLinkToDoc" 
+                                        class="btn btn-danger btn-sm" 
+                                        href="{{ page.permalink }}"
+                                        style="width: 6rem;">
+                                        Read
+                                    </a>
+                                    <button 
+                                        siteFunction="tagPageItemSaveForLaterRead" 
+                                        pageRefPermalink = "{{ page.permalink }}" 
+                                        pageRefTitle="{{ page.title }}" 
+                                        class="btn btn-success btn-sm"
+                                        style="width: 6rem;">
+                                        Save
+                                    </button>
+                                    <button 
+                                        siteFunction="tagPageItemRemoveFromSavedItems" 
+                                        pageRefPermalink = "{{ page.permalink }}" 
+                                        pageRefTitle="{{ page.title }}" 
+                                        class="btn btn-warning btn-sm"
+                                        style="width: 6rem;">
+                                        Remove
+                                    </button>
+                                </div>
+                            </li>
+
+                        </ul>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     {% endfor %}
 </div>
+
+{% comment %}
+    add the content from doc-contents/general/tag-info.html
+{% endcomment %}    
+{{ content }}
 
 <script>
     setTagsSupport();

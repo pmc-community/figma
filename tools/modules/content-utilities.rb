@@ -133,7 +133,7 @@ module ContentUtilities
             return "Start and/or End markers are wrong! Cannot return anything."
         elsif (start_marker == "fullFile" && end_marker == "fullFile")
             return content
-        elsif
+        else
             regex = /#{Regexp.escape(start_marker)}(.*?)#{Regexp.escape(end_marker)}/m
             match_data = content.match(regex)
             if match_data

@@ -2,6 +2,12 @@
 const setTagsSupport = () => {
     setTagButtons();
     showTagDetails(readQueryString());
+
+    // from saved-items.js
+    setSaveForLaterReadStatus();
+    setRemoveFromSavedItemsStatus();
+    setSaveForLaterRead();
+    setRemoveFromSavedItems();
 }
 // work ends here
 
@@ -24,6 +30,7 @@ const showTagDetails = (tag) => {
     if ( !tag ) return
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
     $(`div[siteFunction="tagDetails"][tagReference!="${tag}"]`).addClass('d-none');
+    history.replaceState({}, document.title, window.location.pathname);
 }
 
 

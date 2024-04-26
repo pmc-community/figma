@@ -21,12 +21,14 @@ pageToc:
     offsetFromHeader: 25
     offsetFromReferenceContainer: 100
     leftSideBar: '.side-bar'
+  pagesWithoutToc:
+    - tag-info
 colSchemaCorrections:
   elementsWithBackgroundAffected: 'body'
   backgroundColorOnElementsAffected:
     light: '#fff'
     dark: '#27262b'
-  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h2'
+  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h2, span'
   textColorOnElementsAffected:
     light: '#000'
     dark: '#dee2e6'

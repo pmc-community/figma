@@ -53,8 +53,8 @@ const removeChildrenExceptFirst = (nodeSelector) => {
     $childrenToRemove.remove();
 }
 
-// gnerate uuid
-uuid = () => {
+// generate uuid
+const uuid = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         // eslint-disable-next-line
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -133,20 +133,3 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
         });
     })   
 }
-/* NOT USED
-const  updateAlgoliaIndex = (newData) => {
-    // Initialize Algolia client
-    const client = algoliasearch('xxxx', 'xxxxx');
-    
-    // Initialize index
-    const index = client.initIndex('xxxx');
-
-    // Add or update records in the index
-    index.saveObjects([{"1":1},{"2":2}],{ autoGenerateObjectIDIfNotExist: true }).then(({ objectIDs }) => {
-        // Optionally, refresh Instant Search UI
-        InstantSearch.refresh();
-    }).catch(error => {
-        console.error('Error updating index:', error);
-    });
-}
-*/
