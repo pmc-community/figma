@@ -29,12 +29,14 @@ module Jekyll
           permalink = front_matter['permalink']
           categories = front_matter['categories']
           tags = front_matter['tags']
+          excerpt = front_matter['excerpt']
   
           document_data = {
             'title' => title,
             'permalink' => permalink,
             'categories' => categories || [],
-            'tags' => tags || []
+            'tags' => tags || [],
+            'excerpt' => excerpt || ""
           } 
           
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"

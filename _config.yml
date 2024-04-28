@@ -70,6 +70,9 @@ collections:
   collection-2:
     permalink: "/:collection/:path"
     output: true
+  tools:
+    permalink: "/:collection/:path"
+    output: true
 
 # see https://just-the-docs.com/docs/configuration/#document-collections
 just_the_docs:
@@ -80,5 +83,7 @@ just_the_docs:
     collection-2:
       name: Collection Two
       nav_fold: true
+    tools:
+      name: Tools
+      nav_fold: true
 # MARKER COLLECTIONS END
-

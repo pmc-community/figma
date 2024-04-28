@@ -1,4 +1,3 @@
-
 /* HEADS UP!
  * AS OF APRIL 2024, @use RULES CANNOT BE USED WHEN DEPLOYING TO GHP
  * BECAUSE GHP DOES NOT SUPPORT THE MINIMUM JEKYLL VERSION (4.X.X) WHICH
@@ -9,13 +8,13 @@
  * here we define only general rules, component rules are in their own
  * scss file and imported here
 */
-
 // STYLE COMPONENTS
 @import 'custom-vars.scss';
 @import 'side-bar.scss';
 @import 'header-above-content.scss';
 @import 'page-toc.scss';
 @import 'content-area.scss';
+@import 'tags.scss';
 
 // this should be last import because component's settings are set in the imports above
 @import 'meta.scss';
@@ -57,10 +56,10 @@ $alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToD
     }
 }
 
-$alwaysBlackTextElements: ('body', 'p');
+$alwaysBlackTextElements: ('body', 'li[siteFunction="searchTagListItem"]');
 @each $element in $alwaysBlackTextElements {
     #{$element} {
-        color: $textColor;
+        color: $textColor !important;
     }
 }
 

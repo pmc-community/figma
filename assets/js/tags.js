@@ -1,5 +1,6 @@
 // Let's do some work
 const setTagsSupport = () => {
+    setSearchTag('#tagSearchInput', '#tagSearchResults')
     setTagButtons();
     showTagDetails(readQueryString());
 
@@ -16,14 +17,10 @@ const setTagButtons = () => {
         $('button[siteFunction="tagButton"]').click( function() {
             const selectedTag = $(this).attr('id');
             showTagDetails(selectedTag);
+            setSaveForLaterReadStatus();
+            setRemoveFromSavedItemsStatus();
         } );
     });
-}
-
-const readQueryString = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tag = urlParams.get('tag');
-    return tag;
 }
 
 const showTagDetails = (tag) => {
@@ -33,4 +30,8 @@ const showTagDetails = (tag) => {
     history.replaceState({}, document.title, window.location.pathname);
 }
 
-
+const setSearchTag = (searchInputSelector, searchResultsSelector) => {
+    // from utilities
+    setSearchList(searchInputSelector, searchResultsSelector);
+}
+  

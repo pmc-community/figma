@@ -6,6 +6,8 @@ $c-black: #000;
 $c-transparent: #00000000;
 $c-purple:#4e26af;
 $c-grey:#44434d;
+$c-white: #fff;
+$c-light-grey: #f0f0f0;
 
 // typography
 $siteFontFamily: 'poppins';
@@ -28,6 +30,7 @@ $s-0px:0px;
 $s-5px:5px;
 $s-1rem:1rem;
 $s-neg-1px:-1px;
+$s-neg-5px:-5px;
 
 // sizes, widths, heights
 $sz-full: 100%;
@@ -38,6 +41,8 @@ $sz-h-65p: 65%;
 $sz-h-60p: 60%;
 $sz-30px: 30px;
 $sz-35px: 35px;
+$sz-200px: 200px;
+$sz-300px: 300px;
 
 // paddings
 $p-5px:$s-5px;
@@ -45,6 +50,7 @@ $p-10px: $s-10px;
 $p-20px: $s-20px;
 $p-50px:$s-50px;
 $p-0px:$s-0px;
+$m-0px:$s-0px;
 $p-1rem:$s-1rem;
 
 // margins
@@ -65,8 +71,11 @@ $b-Sol2pxBlack: $b-2px $b-solid $c-black;
 $b-SolThinGrey: $b-thin $b-solid $c-grey;
 $b-none:none;
 
+// border radius
 $brad-10px: 10px;
+$brad-5px: 5px;
 $brad-50p: 50%;
+$brad-0px: 0px;
 
 // content area config
 $contentAreaWidth: $sz-70p;
@@ -85,6 +94,7 @@ $dec-none: none;
 // positions
 $pos-fixed: fixed;
 $pos-sticky: sticky;
+$pos-absolute: absolute;
 
 // cursors
 $c-pointer: pointer;
@@ -98,3 +108,9 @@ $z-max: 999;
 // alignment
 $al-h-left: flex-end;
 $al-v-center: center;
+
+// lists
+$lstyle-none: none;
+
+// overflows
+$ov-auto: auto;

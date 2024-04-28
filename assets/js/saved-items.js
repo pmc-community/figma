@@ -4,8 +4,8 @@ const setRemoveFromSavedItemsStatus = () => {
             permalink: $(this).attr('pageRefPermalink'),
             title: $(this).attr('pageRefTitle')
         }
-        const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-        if (!_.find(savedItems, pageToSave)) $(this).addClass('disabled');
+        const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];        
+        if (!findObjectInArray(pageToSave, savedItems)) $(this).addClass('disabled');
         else $(this).removeClass('disabled')
     });
 }
@@ -17,13 +17,11 @@ const setRemoveFromSavedItems = () => {
             title: $(this).attr('pageRefTitle')
         }
         const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-        if (_.find(savedItems, pageToSave)) {
-            
-            var newArray = _.reject(savedItems, function(obj) {
-                return _.isEqual(obj, pageToSave);
-            });
 
-            localStorage.setItem('savedItems', JSON.stringify(newArray));
+        foundIndex = objectIndexInArray(pageToSave, savedItems);
+        if ( foundIndex !== -1) {
+            const newData = _.without(savedItems, savedItems[foundIndex]);
+            localStorage.setItem('savedItems', JSON.stringify(newData));
             setSaveForLaterReadStatus();
             setRemoveFromSavedItemsStatus();
         }
@@ -37,7 +35,8 @@ const setSaveForLaterReadStatus = () => {
             title: $(this).attr('pageRefTitle')
         }
         const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-        if (_.find(savedItems, pageToSave)) $(this).addClass('disabled');
+
+        if (findObjectInArray(pageToSave, savedItems)) $(this).addClass('disabled');
         else $(this).removeClass('disabled')
     });
 }
@@ -47,10 +46,12 @@ const setSaveForLaterRead = () => {
     $('button[siteFunction="tagPageItemSaveForLaterRead"]').click(function() {
         const pageToSave = {
             permalink: $(this).attr('pageRefPermalink'),
-            title: $(this).attr('pageRefTitle')
+            title: $(this).attr('pageRefTitle'),
+            customTags: []
         }
         const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
-        if (!_.find(savedItems, pageToSave)) {
+
+        if (!findObjectInArray(pageToSave, savedItems)) {
             savedItems.push(pageToSave);
             localStorage.setItem('savedItems', JSON.stringify(savedItems));
             setSaveForLaterReadStatus();

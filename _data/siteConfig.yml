@@ -28,7 +28,7 @@ colSchemaCorrections:
   backgroundColorOnElementsAffected:
     light: '#fff'
     dark: '#27262b'
-  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h2, span'
+  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h1, h2, span'
   textColorOnElementsAffected:
     light: '#000'
     dark: '#dee2e6'
@@ -78,3 +78,4 @@ toBeRemovedAfterLoad:
     - "testAttr"
     - "testAttr_1"
 marker404: "site-this-is-404-page" # should be allocated as id to one element in 404.html
+testColor: "#ff6200"

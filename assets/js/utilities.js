@@ -44,7 +44,7 @@ $(function () {
     // check if there is something in the ToC, if empty, the scrollspy raise errors in console
     // page toc will be further removed from page when the page loads
     if ($(`${settings.pageToc.toc} ul`).children('li').length > 0 ) $(settings.pageToc.scrollSpyBase).scrollspy({target: navSelector,});
-  });
+});
 
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);
@@ -133,3 +133,129 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
         });
     })   
 }
+
+const findObjectInArray = (searchCriteria, objectArray) => {
+    return _.some(objectArray, (obj) => {
+        const matches = Object.entries(searchCriteria).every(([key, value]) => obj[key] === value);
+        return matches;
+      });
+}
+
+const objectIndexInArray = (searchCriteria, objectArray) => {
+    return _.findIndex(objectArray, (obj) => {
+        return Object.entries(searchCriteria).every(([key, value]) => obj[key] === value);
+      });
+}
+
+const readQueryString = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tag = urlParams.get('tag');
+    return tag;
+}
+
+const setSearchList = (searchInputSelector, searchResultsSelector) => {
+    $(document).ready( () => {
+        var $searchInput = $(searchInputSelector);
+        var $searchResults = $(searchResultsSelector);
+
+        $searchResults.css('left', $(searchInputSelector).position().left);
+    
+        $searchInput.on('input', function() {
+        var query = $(this).val().toLowerCase();
+    
+        // Filter the list items based on the search query
+        $searchResults.find('li').each(function() {
+            var $item = $(this);
+            var text = $item.text().toLowerCase();
+            var match = text.includes(query);
+            //$item.toggleClass('selected', match);
+        });
+    
+        // Show or hide the list based on whether there are matching results
+        $searchResults.toggle(query.length > 0);
+        });
+    
+        // Handle click outside search input or search results to hide the list
+        $(document).on('click', function(event) {
+        var $target = $(event.target);
+        if (!$target.closest(`${searchInputSelector}, ${searchResultsSelector}`).length) {
+            $searchResults.hide();
+        }
+        });
+    
+        // Hide search results when pressing escape key
+        $(document).on('keydown', function(event) {
+        if (event.which === 27) { // Escape key
+            $searchResults.hide();
+            $searchInput.val('');
+        }
+        });
+    
+        // Handle keydown events on search input
+        $searchInput.on('keydown', function(event) {
+        var $selected = $searchResults.find('.selected');
+        var $items = $searchResults.find('li');
+    
+        // Handle up arrow key
+        if (event.which === 38) { // Up arrow
+            if ($selected.length) {
+            var $prev = $selected.prev();
+            if ($prev.length) {
+                $selected.removeClass('selected');
+                $prev.addClass('selected');
+                if ($items.filter('.selected').length === 1) {
+                $searchInput.val($prev.text()); // Copy selected value to search input
+                }
+            }
+            } else {
+            $items.last().addClass('selected');
+            $searchInput.val($items.last().text()); // Copy last value to search input
+            }
+            event.preventDefault(); // Prevent scrolling the page
+        }
+    
+        // Handle down arrow key
+        if (event.which === 40) { // Down arrow
+            if ($selected.length) {
+            var $next = $selected.next();
+            if ($next.length) {
+                $selected.removeClass('selected');
+                $next.addClass('selected');
+                if ($items.filter('.selected').length === 1) {
+                $searchInput.val($next.text()); // Copy selected value to search input
+                }
+            }
+            } else {
+            $items.first().addClass('selected');
+            $searchInput.val($items.first().text()); // Copy first value to search input
+            }
+            event.preventDefault(); // Prevent scrolling the page
+        }
+    
+        // Handle enter key
+        if (event.which === 13) { // Enter key
+            if ($selected.length === 1) { // Only if there is a single selected item
+            var selectedValue = $selected.text();
+            $searchInput.val(selectedValue); // Set input value to selected item
+            $searchResults.hide(); // Hide search results
+            event.preventDefault(); // Prevent default behavior (form submission)
+    
+            // Call custom function here
+            showTagDetails(selectedValue);
+            }
+        }
+        });
+    
+        // Handle click on search results item
+        $searchResults.on('click', 'li', function() {
+        var clickedValue = $(this).text();
+        $searchInput.val(clickedValue); // Set input value to clicked item
+        $searchResults.hide(); // Hide search results
+    
+        // Call custom function here
+        showTagDetails(clickedValue);
+        });
+    
+    });
+}
+  

@@ -185,3 +185,51 @@
     }
 }
 
+// tag search
+@mixin tagSearch($tagSearchElements) {
+    #{map-get($tagSearchElements, searchInput)} {
+        width: $tagSearchWidth;
+        padding: $tagSearchInputPadding;
+        background-color: $tagSearchBackground;
+        border: $tagSearchBorders;
+        color: $tagSearchTextColor;
+
+    }
+
+    #{map-get($tagSearchElements, searchResults)} {
+        position: $tagSearchResultsPosition;
+        z-index: $tagSearchResultsZIndex;
+        background-color: $tagSearchBackground;
+        border: $b-none;
+        border-top: $tagSearchBorders;
+        border-bottom: $tagSearchBorders;
+        border-left: $tagSearchBorders;
+        border-right: $tagSearchBorders;
+        width: $tagSearchWidth;
+        padding: $tagSearchResultsPadding;
+        margin: $tagSearchResultsMargin;
+        list-style: $tagSearchResultsListStyle;
+        max-height: $tagSearchResultsMaxHeight;
+        overflow-y: $tagSearchResultsOverflow;
+        display: $tagSearchResultsDefaultDisplay;
+      
+        margin-top: $tagSearchResultsMarginTop;
+        border-radius: $brad-0px $brad-0px $tagSearchResultsBorderBottomRadius $tagSearchResultsBorderBottomRadius;
+        border-top: $tagSearchBorders;
+    }
+
+    #{map-get($tagSearchElements, searchResults)} li {
+        padding: $tagSearchResultsItemPadding;
+        cursor: $tagSearchResultsItemCursor;
+        color: $tagSearchTextColor !important;
+        margin: $tagSearchResultsItemMargin !important;
+    }
+
+    #{map-get($tagSearchElements, searchResults)} li:hover {
+        background-color: $tagSearchResultsItemMarkedBackground;
+    }
+
+    #{map-get($tagSearchElements, searchResults)} li.selected {
+        background-color: $tagSearchResultsItemMarkedBackground;
+    }
+}
