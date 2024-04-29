@@ -258,4 +258,35 @@ const setSearchList = (searchInputSelector, searchResultsSelector) => {
     
     });
 }
-  
+
+const setDataTable = (page, tableSelector) => {
+    $(document).ready(function() {
+        // Initialize DataTable
+        $(tableSelector).DataTable({
+            paging: true, 
+            ordering: true,
+            searching: true,
+            colReorder: true,
+            processing: true,
+            fixedHeader: true,
+            layout: {
+                topStart: {
+                    pageLength: {
+                        menu: [1,2,5, 10, 25, 50]
+                    }
+                }
+            },
+            stateSave: true,
+            stateSaveCallback: function (settings, data) {
+                localStorage.setItem(
+                    `${page}_DataTables_` + settings.sInstance,
+                    JSON.stringify(data)
+                );
+            },
+            stateLoadCallback: function (settings) {
+                return JSON.parse(localStorage.getItem(`${page}_DataTables_` + settings.sInstance));
+            },
+            columns: [null, { searchable: false }, null]
+        });
+    });
+}

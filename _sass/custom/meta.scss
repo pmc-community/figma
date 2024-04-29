@@ -233,3 +233,26 @@
         background-color: $tagSearchResultsItemMarkedBackground;
     }
 }
+
+// data tables
+@mixin dataTable($tableElements) {
+    #{map-get($tableElements, tableWrapper)} {
+        box-shadow: $tableBoxShadow;
+        overflow-x: $tableOverflowX;
+        padding:$tableWrapperPadding;
+    }
+
+    #{map-get($tableElements, paginationButtonLink)} {
+        font-size:$tablePaginationFontSize !important;
+    }
+
+    #{map-get($tableElements, nothingFound)} {
+        background-color:$tableNothingFoundBackground !important;
+        color: $tableNothingFoundTextColor !important       
+    }
+
+    #{map-get($tableElements, tableRow)} {
+        border-color: $tableInnerBorderColor !important;
+          
+    }
+}

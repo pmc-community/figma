@@ -1,6 +1,7 @@
 // Let's do some work
 const setTagsSupport = () => {
-    setSearchTag('#tagSearchInput', '#tagSearchResults')
+    setSearchTag('#tagSearchInput', '#tagSearchResults');
+    setTagDetailsDataTable();
     setTagButtons();
     showTagDetails(readQueryString());
 
@@ -34,4 +35,8 @@ const setSearchTag = (searchInputSelector, searchResultsSelector) => {
     // from utilities
     setSearchList(searchInputSelector, searchResultsSelector);
 }
-  
+
+const setTagDetailsDataTable = () => {
+    setDataTable('TagInfo', 'table[siteFunction="tagDetailsPageTable"]')
+}
+

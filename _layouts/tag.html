@@ -47,45 +47,67 @@ or using the custom filter
                 <span class="fs-6 fw-medium">Pages having tag: {{ tagItem[0] }}</span>
             </div>
             <div class="card-body">
-                <ul class="list-group list-group-flush bg-transparent">
-                    {% for page in tagItem[1]["pages"] %}
-                        <ul siteFunction="tagPageItem" class="list-group list-group-horizontal rounded-0 border-secondary border-bottom border-opacity-25">
+                <table siteFunction="tagDetailsPageTable" class="table table-hover bg-transparent">
+                    <thead>
+                        <tr class="bg-transparent">
+                            <th class="bg-transparent">Page</th>
+                            <th class="bg-transparent">Actions</th>
+                            <th class="bg-transparent">Excerpt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for pageItem in tagItem[1]["pages"] %}
+                                <tr class="bg-transparent">
 
-                            <li class="col-3 fw-normal bg-transparent list-group-item bg-transparent border-0 align-self-center">
-                                <span>{{ page.title }}</span>
-                            </li>
+                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                        <span>{{ pageItem.title }}</span>
+                                    </td>
 
-                            <li class="col-3 fw-normal bg-transparent list-group-item bg-transparent border-0 align-self-center">
-                                <div class="btn-group">
-                                    <a 
-                                        siteFunction="tagPageItemLinkToDoc" 
-                                        class="btn btn-danger btn-sm" 
-                                        href="{{ page.permalink }}"
-                                        style="width: 6rem;">
-                                        Read
-                                    </a>
-                                    <button 
-                                        siteFunction="tagPageItemSaveForLaterRead" 
-                                        pageRefPermalink = "{{ page.permalink }}" 
-                                        pageRefTitle="{{ page.title }}" 
-                                        class="btn btn-success btn-sm"
-                                        style="width: 6rem;">
-                                        Save
-                                    </button>
-                                    <button 
-                                        siteFunction="tagPageItemRemoveFromSavedItems" 
-                                        pageRefPermalink = "{{ page.permalink }}" 
-                                        pageRefTitle="{{ page.title }}" 
-                                        class="btn btn-warning btn-sm"
-                                        style="width: 6rem;">
-                                        Remove
-                                    </button>
-                                </div>
-                            </li>
+                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                        
+                                        <a 
+                                            siteFunction="tagPageItemLinkToDoc" 
+                                            class="btn btn-danger btn-sm" 
+                                            href="{{ pageItem.permalink }}"
+                                            style="width: 6rem;">
+                                            Read
+                                        </a>
 
-                        </ul>
-                    {% endfor %}
-                </ul>
+                                        <button 
+                                            siteFunction="tagPageItemSaveForLaterRead" 
+                                            pageRefPermalink = "{{ pageItem.permalink }}" 
+                                            pageRefTitle="{{ pageItem.title }}" 
+                                            class="btn btn-success btn-sm"
+                                            style="width: 6rem;">
+                                            Save
+                                        </button>
+
+                                        <button 
+                                            siteFunction="tagPageItemRemoveFromSavedItems" 
+                                            pageRefPermalink = "{{ pageItem.permalink }}" 
+                                            pageRefTitle="{{ pageItem.title }}" 
+                                            class="btn btn-warning btn-sm"
+                                            style="width: 6rem;">
+                                            Remove
+                                        </button>
+                                        
+                                    </td>
+
+                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                        <span>
+                                            {% capture permalink_param %}
+                                                {
+                                                    "permalink": "{{pageItem.permalink | escape}}"
+                                                }
+                                            {% endcapture %}
+                                            {% PageExcerpt {{ permalink_param | json_string_to_object }} %}
+                                        </span>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     {% endfor %}
