@@ -28,3 +28,7 @@ nav_order: 1
 {{my_object}}
 
 {% PageExcerpt {{ my_object }} %}
+
+{% PageExcerpt {
+    "permalink":"/collection1/g11/"
+} %}

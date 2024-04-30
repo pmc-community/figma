@@ -5,6 +5,7 @@
 
 require 'json'
 require_relative '../../tools/modules/content-utilities'
+require_relative "../../tools/modules/globals"
 
 module Jekyll
 
@@ -23,9 +24,14 @@ module Jekyll
             def render(context)
                 begin
                     if( !@input.nil? && !@input.empty? )
-                        fileInfo = JSON.parse(@input)
+                        fileInfo = JSON.parse(Liquid::Template.parse(@input).render(context))
                     end
                     rescue
+                        begin
+                            fileInfo = JSON.parse(@input)
+                        rescue
+                            Globals.putsColText(Globals::RED, "ExternalRepoContent tag got bad json string as input\n")
+                        end
                 end
                 ContentUtilities.getExternalContentFromGitHub(fileInfo)
             end
@@ -44,9 +50,14 @@ module Jekyll
             def render(context)
                 begin
                     if( !@input.nil? && !@input.empty? )
-                        fileInfo = JSON.parse(@input)
+                        fileInfo = JSON.parse(Liquid::Template.parse(@input).render(context))
                     end
                     rescue
+                        begin
+                            fileInfo = JSON.parse(@input)
+                        rescue
+                            Globals.putsColText(Globals::RED, "ExternalRepoContentMM tag got bad json string as input\n")
+                        end
                 end
                 ContentUtilities.getExternalContentFromGitHubMM(fileInfo)
             end
@@ -64,9 +75,14 @@ module Jekyll
             def render(context)
                 begin
                     if( !@input.nil? && !@input.empty? )
-                        fileInfo = JSON.parse(@input)
+                        fileInfo = JSON.parse(Liquid::Template.parse(@input).render(context))
                     end
                     rescue
+                        begin
+                            fileInfo = JSON.parse(@input)
+                        rescue
+                            Globals.putsColText(Globals::RED, "ExternalSiteContent tag got bad json string as input\n")
+                        end
                 end
                 ContentUtilities.getExternalSiteContent(fileInfo)
             end
@@ -85,9 +101,14 @@ module Jekyll
             def render(context)
                 begin
                     if( !@input.nil? && !@input.empty? )
-                        fileInfo = JSON.parse(@input)
+                        fileInfo = JSON.parse(Liquid::Template.parse(@input).render(context))
                     end
                     rescue
+                        begin
+                            fileInfo = JSON.parse(@input)
+                        rescue
+                            Globals.putsColText(Globals::RED, "ExternalSiteContentMM tag got bad json string as input\n")
+                        end
                 end
                 ContentUtilities.getExternalSiteContentMM(fileInfo)
             end

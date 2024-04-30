@@ -57,10 +57,10 @@ $alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToD
     }
 }
 
-$alwaysBlackTextElements: ('body', 'li[siteFunction="searchTagListItem"], .page-link');
+$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"], .page-link');
 @each $element in $alwaysBlackTextElements {
     #{$element} {
-        color: $textColor !important;
+        color: $textColor;
     }
 }
 

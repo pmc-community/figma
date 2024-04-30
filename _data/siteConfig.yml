@@ -28,7 +28,7 @@ colSchemaCorrections:
   backgroundColorOnElementsAffected:
     light: '#fff'
     dark: '#27262b'
-  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h1, h2, span, .dt-info, label[for=\"dt-length-0\"], label[for=\"dt-search-0\"]'
+  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h1, h2, span, .dt-info, label[for^=\"dt-length-\"], label[for^=\"dt-search-\"]'
   textColorOnElementsAffected:
     light: '#000'
     dark: '#dee2e6'

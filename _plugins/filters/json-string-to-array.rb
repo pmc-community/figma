@@ -1,3 +1,4 @@
+require_relative "../../tools/modules/globals"
 
 module Jekyll
     
@@ -6,7 +7,7 @@ module Jekyll
             begin
                 JSON.parse(input)
             rescue
-                puts "#{input} string is not a valid JSON"
+                Globals.putsColText(Globals::YELLOW, "#{input} string is not a valid JSON\n")
             end
         end
     end

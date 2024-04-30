@@ -1,4 +1,5 @@
 require 'json'
+require_relative "../../tools/modules/globals"
 
 module Jekyll
 
@@ -13,10 +14,16 @@ module Jekyll
             def render(context)
                 begin
                     if( !@input.nil? && !@input.empty? )
-                        info = JSON.parse(@input)
+                        info = JSON.parse(Liquid::Template.parse(@input).render(context))
                     end
                     rescue
+                        begin
+                            info = JSON.parse(@input)
+                        rescue
+                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: CatList tag got bad json string as input\n")
+                        end
                 end
+                puts info
                 context.registers[:site].data["category_list"]
             end
         end
@@ -31,10 +38,16 @@ module Jekyll
             def render(context)
                 begin
                     if( !@input.nil? && !@input.empty? )
-                        info = JSON.parse(@input)
+                        info = JSON.parse(Liquid::Template.parse(@input).render(context))
                     end
                     rescue
+                        begin
+                            info = JSON.parse(@input)
+                        rescue
+                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: CatDetails tag got bad json string as input\n")
+                        end
                 end
+                puts info
                 context.registers[:site].data["categories_details"]
             end
         end

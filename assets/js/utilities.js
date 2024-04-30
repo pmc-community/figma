@@ -158,7 +158,8 @@ const setSearchList = (searchInputSelector, searchResultsSelector) => {
         var $searchInput = $(searchInputSelector);
         var $searchResults = $(searchResultsSelector);
 
-        $searchResults.css('left', $(searchInputSelector).position().left);
+        $searchResults.css('left', $(searchInputSelector).position().left + 'px');
+        $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');
     
         $searchInput.on('input', function() {
         var query = $(this).val().toLowerCase();
@@ -259,7 +260,7 @@ const setSearchList = (searchInputSelector, searchResultsSelector) => {
     });
 }
 
-const setDataTable = (page, tableSelector) => {
+const setDataTable = (page, tableSelector, columnsConfig) => {
     $(document).ready(function() {
         // Initialize DataTable
         $(tableSelector).DataTable({
@@ -272,7 +273,7 @@ const setDataTable = (page, tableSelector) => {
             layout: {
                 topStart: {
                     pageLength: {
-                        menu: [1,2,5, 10, 25, 50]
+                        menu: [5, 10, 25, 50]
                     }
                 }
             },
@@ -286,7 +287,36 @@ const setDataTable = (page, tableSelector) => {
             stateLoadCallback: function (settings) {
                 return JSON.parse(localStorage.getItem(`${page}_DataTables_` + settings.sInstance));
             },
-            columns: [null, { searchable: false }, null]
+            columns: columnsConfig
         });
     });
+}
+
+const handleBtnClose = () => {
+    $(document).ready(function ()  {
+        $('.btn-close').click(function() {
+            toCloseSelector = $(this).attr('whatToClose');
+            if (toCloseSelector !== 'undefined') {
+                console.log($(this).attr('whatToClose'));
+                $(`${toCloseSelector}`).fadeOut();
+            }
+        });
+    });
+}
+
+const applyColorSchemaCorrections = (theme) => {
+    
+    // jtd forgets to change some colors when switching from light to dark and back
+    if (theme === 'light' ) {
+        $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.light);
+        $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.light);
+        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.light);
+        $('.btn-close').removeClass('btn-close-white');
+    }
+    else {
+        $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.dark);
+        $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.dark);
+        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark)
+        $('.btn-close').addClass('btn-close-white');
+    }
 }

@@ -12,39 +12,60 @@ or using the custom filter
 
 {% endcomment %}
 
-
-<h1 class="container mb-5">Tag cloud</h1>
+<!-- content from the page using this template -->
+{{ content }}
 
 <!-- Tag search -->
 {% assign tagsArray= site.data.tag_list  | json_string_to_object %}
 <div id="cloud_tag_search_container" class="container mb-5">
-    <input type="text" class="form-control" id="tagSearchInput" placeholder="Search tag: type, select, hit enter ...">
-    <ul siteFunction="searchTagList" id="tagSearchResults">
-        {% for tagItem in tagsArray %}
-            <li siteFunction="searchTagListItem">{{tagItem}}</li>
-        {% endfor %}
-    </ul>
+    <div class=" card shadow bg-transparent">
+        <div class="card-header d-flex justify-content-between">
+            <span class="fs-6 fw-medium">Search tag</span>
+        </div>
+        <div class="card-body d-flex justify-content-between">
+            <input type="text" class="form-control" id="tagSearchInput" placeholder="type, select, hit enter ...">
+            <ul siteFunction="searchTagList" id="tagSearchResults">
+                {% for tagItem in tagsArray %}
+                    <li siteFunction="searchTagListItem">{{tagItem}}</li>
+                {% endfor %}
+            </ul>
+            <button siteFunction="openTagCloud" id="openTagCloud" type="button" class="btn btn-sm btn-success">Open Tag Cloud</button>
+        </div>
+    </div>
 </div>
 
 <!-- Tag cloud -->
 <div id="cloud_tag_container" class="container">
-    {% for tagItem in site.data.tags_details %}
-        <button siteFunction="tagButton" id="{{ tagItem[0] }}" type="button" class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
-            {{ tagItem[0] }}
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
-                {{ tagItem[1]["numPages"] }}
-                <span class="visually-hidden">unread messages</span>
-            </span>
-        </button>
-    {% endfor %}
+    <div class=" card shadow bg-transparent overflow-y-auto" style="max-height: 300px">
+        <div class="card-header d-flex justify-content-between">
+            <span class="fs-6 fw-medium">Tag cloud</span>
+            <button siteFunction="btnClose" whatToClose="#cloud_tag_container" type="button" class="btn-close" aria-label="Close"></button>
+        </div>
+        <div class="card-body d-flex">
+            {% for tagItem in site.data.tags_details %}
+                <button siteFunction="tagButton" id="{{ tagItem[0] }}" type="button" class="d-flex focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
+                    {{ tagItem[0] }}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
+                        {{ tagItem[1]["numPages"] }}
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                </button>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <!-- Tag details -->
 <div id="tag_details" class="container my-5 " >
     {% for tagItem in site.data.tags_details %}
         <div tagReference="{{ tagItem[0] }}" siteFunction="tagDetails" class="d-none card shadow bg-transparent">
-            <div class="card-header">
-                <span class="fs-6 fw-medium">Pages having tag: {{ tagItem[0] }}</span>
+            <div class="card-header d-flex justify-content-between">
+                <span class="fs-6 fw-medium">Pages having tag: 
+                    <button siteFunction="tagButton" id="{{ tagItem[0] }}" type="button" class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
+                        {{ tagItem[0] }}       
+                    </button>
+                </span>
+                <button siteFunction="btnClose" whatToClose='div[tagReference="{{ tagItem[0] }}"]' type="button" class="btn-close" aria-label="Close"></button>
             </div>
             <div class="card-body">
                 <table siteFunction="tagDetailsPageTable" class="table table-hover bg-transparent">
@@ -53,6 +74,7 @@ or using the custom filter
                             <th class="bg-transparent">Page</th>
                             <th class="bg-transparent">Actions</th>
                             <th class="bg-transparent">Excerpt</th>
+                            <th class="bg-transparent">Other Tags</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,33 +86,31 @@ or using the custom filter
                                     </td>
 
                                     <td class="fw-normal align-self-center bg-transparent align-middle">
-                                        
-                                        <a 
-                                            siteFunction="tagPageItemLinkToDoc" 
-                                            class="btn btn-danger btn-sm" 
-                                            href="{{ pageItem.permalink }}"
-                                            style="width: 6rem;">
-                                            Read
-                                        </a>
+                                        <div class="btn-group">
+                                            <a 
+                                                siteFunction="tagPageItemLinkToDoc" 
+                                                class="btn btn-info" 
+                                                href="{{ pageItem.permalink }}">
+                                                <i class="bi bi-book" style="font-size:1.2rem"></i>
+                                            </a>
 
-                                        <button 
-                                            siteFunction="tagPageItemSaveForLaterRead" 
-                                            pageRefPermalink = "{{ pageItem.permalink }}" 
-                                            pageRefTitle="{{ pageItem.title }}" 
-                                            class="btn btn-success btn-sm"
-                                            style="width: 6rem;">
-                                            Save
-                                        </button>
+                                            <button 
+                                                siteFunction="tagPageItemSaveForLaterRead" 
+                                                pageRefPermalink = "{{ pageItem.permalink }}" 
+                                                pageRefTitle="{{ pageItem.title }}" 
+                                                class="btn btn-success">
+                                                <i class="bi bi-bookmark-plus" style="font-size:1.2rem"></i>
+                                            </button>
 
-                                        <button 
-                                            siteFunction="tagPageItemRemoveFromSavedItems" 
-                                            pageRefPermalink = "{{ pageItem.permalink }}" 
-                                            pageRefTitle="{{ pageItem.title }}" 
-                                            class="btn btn-warning btn-sm"
-                                            style="width: 6rem;">
-                                            Remove
-                                        </button>
+                                            <button 
+                                                siteFunction="tagPageItemRemoveFromSavedItems" 
+                                                pageRefPermalink = "{{ pageItem.permalink }}" 
+                                                pageRefTitle="{{ pageItem.title }}" 
+                                                class="btn btn-warning">
+                                                <i class="bi bi-bookmark-x" style="font-size:1.2rem"></i>
+                                            </button>
                                         
+                                        </div>
                                     </td>
 
                                     <td class="fw-normal align-self-center bg-transparent align-middle">
@@ -103,6 +123,27 @@ or using the custom filter
                                             {% PageExcerpt {{ permalink_param | json_string_to_object }} %}
                                         </span>
                                     </td>
+                                    
+                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                        <span>
+                                            {% capture permalink_param %}
+                                                {
+                                                    "permalink": "{{pageItem.permalink | escape}}",
+                                                    "except": ["{{ tagItem[0] }}"]
+                                                }
+                                            {% endcapture %}
+
+                                            {% capture pageTags %}
+                                                {% PageTags {{ permalink_param | json_string_to_object }} %}
+                                            {% endcapture %}
+                                            {% assign pageTagsArray = pageTags | json_string_to_object  %}
+                                            {% for pageTag in pageTagsArray %}
+                                                <button siteFunction="pageTagButton" id="pageTag_{{ pageTag }}" type="button" class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
+                                                    {{ pageTag }}
+                                                </button>
+                                            {% endfor %}
+                                        </span>
+                                    </td>
 
                                 </tr>
                             {% endfor %}
@@ -112,9 +153,6 @@ or using the custom filter
         </div>
     {% endfor %}
 </div>
-
-<!-- content from the page using this template -->
-{{ content }}
 
 <!-- setting up the page -->
 <script>setTagsSupport();</script>

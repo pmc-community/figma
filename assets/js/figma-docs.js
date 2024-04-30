@@ -33,6 +33,8 @@ const customiseTheme = () => {
     handleTocOnWindowsResize();
     handleTocDuplicates();  
     addSwitchThemeIcon();
+    advRestoreCodeBlocksStyle();
+    handleBtnClose(); //from utilities
     $(document).ready(() => {
         if ($(`#${settings.marker404}`).length > 0) $(settings.pageToc.tocContainer).remove();
         else {
@@ -49,7 +51,9 @@ const customiseTheme = () => {
         }
 
         // just to mask the flicker a little, but a preloader should be here
-        setTimeout( () => {$('body').css('visibility','visible');}, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
+        setTimeout( () => {
+            $('body').css('visibility','visible');
+        }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
                 
     });
 }
@@ -95,17 +99,36 @@ const addSwitchThemeIcon = () => {
     
 }
 
-const applyColorSchemaCorrections = (theme) => {
-    // jtd forgets to change some colors when switching from light to dark and back
-    if (theme === 'light' ) {
-        $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.light);
-        $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.light);
-        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.light);
-    }
-    else {
-        $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.dark);
-        $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.dark);
-        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark)
+// for some reasons, JTD dark and light themes will override the code blocks style
+// and the syntax will not be highlighted anymore
+// so, we need to remove the styles applied by the theme on code blocks
+const restoreCodeBlockStyle = () => {
+    $(document).ready( () => {
+        $('code span').each( function() {
+            $(this).removeAttr('style')
+        });
+    });
+}
+
+const advRestoreCodeBlocksStyle = () => {
+    const targetElement = $('code span')[0];
+
+    if (targetElement) {
+        const observer = new MutationObserver(function(mutationsList) {
+            mutationsList.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    $('code span').each( function() {
+                        $(this).removeAttr('style')
+                    });
+                }
+            });
+        });
+
+        const config = { attributes: true, attributeFilter: ['style'] };
+        observer.observe(targetElement, config);
+
+        // observer must remain active
+        //observer.disconnect();
     }
 }
 
@@ -121,7 +144,7 @@ const setTheTheme = () => {
         jtd.setTheme('dark'); 
         applyColorSchemaCorrections('dark'); 
     }
-
+    restoreCodeBlockStyle();
 }
 
 const handleTocDuplicates = () => {
