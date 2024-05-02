@@ -38,7 +38,7 @@ OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE A
     {% include_relative Y/y.md %}
 {% endcapture %}
 
-{% include siteIncludes/utilities.liquid fileContent=included_content %}
+{% include siteIncludes/modules/utilities.liquid fileContent=included_content %}
 {{ file_content_result }}
 
 <script siteAttr = "externalContent">

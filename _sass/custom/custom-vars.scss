@@ -9,6 +9,7 @@ $c-grey-alt: #cccccc49;
 $c-white: #fff;
 $c-light-grey: #f0f0f0;
 $c-error-message: #dc3545;
+$c-not-set: initial;
 
 // typography
 $siteFontFamily: 'poppins';
@@ -33,10 +34,12 @@ $s-5px:5px;
 $s-1rem:1rem;
 $s-neg-1px:-1px;
 $s-neg-5px:-5px;
+$s-neg-25px: -25px;
 
 // sizes, widths, heights
 $sz-full: 100%;
 $sz-70p: 70%;
+$sz-80p: 80%;
 $sz-20p: 20%;
 $sz-25px: 25px;
 $sz-h-65p: 65%;
@@ -52,10 +55,10 @@ $p-10px: $s-10px;
 $p-20px: $s-20px;
 $p-50px:$s-50px;
 $p-0px:$s-0px;
-$m-0px:$s-0px;
 $p-1rem:$s-1rem;
 
 // margins
+$m-0px:$s-0px;
 $m-10px: $s-10px;
 $m-20px: $s-20px;
 $m-top0px: $s-0px;
@@ -92,17 +95,21 @@ $siteTitlePaddingLeft: $p-1rem; //because of the logo
 
 // decorations
 $dec-none: none;
+$dec-underline: underline;
 
 // positions
 $pos-fixed: fixed;
 $pos-sticky: sticky;
 $pos-absolute: absolute;
+$pos-top-neg-5px: $s-neg-5px;
+$pos-left-neg-25px: $s-neg-25px;
 
 // cursors
 $c-pointer: pointer;
 
 // display
 $d-hidden: none;
+$d-block: block;
 
 // z-index
 $z-max: 999;
@@ -120,3 +127,6 @@ $ov-none: hidden;
 
 // shadows
 $sh-none: none;
+
+// container fill
+$fl-all-available-space: auto //this is flex:auto

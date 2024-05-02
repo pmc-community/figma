@@ -50,17 +50,24 @@ $weight600Elements: ('.site-header a', 'h1', 'h2', 'h3', 'h4');
     }
 }
 
-$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]');
+$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]', 'a[siteFunction="menuItemLevel1"]');
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
         color: $siteHeaderTextColor !important; 
     }
 }
 
-$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"], .page-link');
+$noBackgroundChangeWhenHoverElements: ('.dropdown-item');
+@each $element in $noBackgroundChangeWhenHoverElements {
+    #{$element}:hover {
+        background-color: $c-not-set !important; 
+    }
+}
+
+$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"], .page-link', '.DocSearch-Button-Placeholder');
 @each $element in $alwaysBlackTextElements {
     #{$element} {
-        color: $textColor;
+        color: $textColor !important;
     }
 }
 
@@ -89,10 +96,24 @@ $neverDecoratedTextElements: ('a');
     }
 }
 
+$alwaysUnderlinedOnHoverTextElements: ('a[siteFunction*="menuItemLevel"]');
+@each $element in $alwaysUnderlinedOnHoverTextElements {
+   #{$element}:hover {
+        text-decoration: $dec-underline !important;
+    }
+}
+
 $hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul li::before');
 @each $element in $hiddenElements {
         #{$element} {
             display:$d-hidden;
+        }
+}
+
+$visibleElements: ('hr[siteFunction="pageTagsSeparator"], .dropdown-divider');
+@each $element in $visibleElements {
+        #{$element} {
+            display:$d-block;
         }
 }
 
@@ -105,3 +126,10 @@ $alwaysNoBorderBottomElements: ('ul[siteFunction="tagPageItem"]:last-child');
 
 $btnID: '#ihs_go_to_top_btn';
 @include goToTopBtn($btnID);
+
+$alwaysFlexAutoElements: ('#category-menu');
+@each $element in $alwaysFlexAutoElements {
+   #{$element} {
+        flex: $fl-all-available-space;
+    }
+}

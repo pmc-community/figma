@@ -29,6 +29,11 @@ nav_order: 1
 
 {% PageExcerpt {{ my_object }} %}
 
-{% PageExcerpt {
-    "permalink":"/collection1/g11/"
-} %}
+{% 
+    PageExcerpt {
+        "permalink":"/collection1/g11/"
+    } 
+%}
+
+{{ site.data.category_list | cat_main_menu }}
+

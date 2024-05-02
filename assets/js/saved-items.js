@@ -45,9 +45,11 @@ const setSaveForLaterRead = () => {
     
     $('button[siteFunction="tagPageItemSaveForLaterRead"]').click(function() {
         const pageToSave = {
-            permalink: $(this).attr('pageRefPermalink'),
-            title: $(this).attr('pageRefTitle'),
-            customTags: []
+            permalink: sanitizeURL($(this).attr('pageRefPermalink')),
+            title: DOMPurify.sanitize($(this).attr('pageRefTitle')),
+            customTags: [],
+            customCategories: [],
+            customSummary:''
         }
         const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
 

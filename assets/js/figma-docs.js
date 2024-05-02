@@ -282,10 +282,10 @@ const fullContentAreaOnHome = () => {
 
 const formatAuxLinksBtns =() => {
     //  no need to use site vars here since the selectors cannot be changed, being set by JTD theme
-    $('.aux-nav-list-item').addClass('btn btn-danger btn-sm m-2');
-    $('.aux-nav-list-item:first-child a').addClass('text-light');
-    $('.aux-nav-list-item:last-child').removeClass('btn-danger').addClass('btn-warning');
-    $('.aux-nav-list-item:last-child a').addClass('text-dark');
+    $('.aux-nav-list-item').removeClass('btn btn-danger btn-warning btn-sm m-2').addClass('align-items-center d-flex');
+    $('.aux-nav-list-item a').removeClass('site-button');
+    $('.aux-nav-list-item:first-child a').addClass('btn btn-danger m-2 text-light');
+    $('.aux-nav-list-item:last-child a').addClass('btn btn-warning m-2 text-dark');
 }
 
 const setGoToTopBtn = () => {

@@ -26,7 +26,7 @@ module Jekyll
           categories <<  front_matter['categories'] if front_matter && front_matter['categories']
         end
       end
-      return categories.flatten.uniq
+      return categories.flatten.uniq.sort
     end
 
     def valid_front_matter?(file_path)

@@ -2,6 +2,7 @@
 layout: page
 title: External content
 permalink: /ec/
+tags: [tag1, tag4, tag3]
 ---
 ```
 Content from an exernal private repo

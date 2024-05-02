@@ -30,13 +30,17 @@ module Jekyll
           categories = front_matter['categories']
           tags = front_matter['tags']
           excerpt = front_matter['excerpt']
+          lastUpdate = File.mtime(file_path)
+          createTime = File.birthtime(file_path)
   
           document_data = {
             'title' => title,
             'permalink' => permalink,
             'categories' => categories || [],
             'tags' => tags || [],
-            'excerpt' => excerpt || ""
+            'excerpt' => excerpt || "",
+            'lastUpdate' => lastUpdate || "",
+            'createTime' => createTime || ""
           } 
           
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"

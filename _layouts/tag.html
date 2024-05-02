@@ -29,7 +29,7 @@ or using the custom filter
                     <li siteFunction="searchTagListItem">{{tagItem}}</li>
                 {% endfor %}
             </ul>
-            <button siteFunction="openTagCloud" id="openTagCloud" type="button" class="btn btn-sm btn-success">Open Tag Cloud</button>
+            <button siteFunction="openTagCloud" id="openTagCloud" type="button" class="btn btn-sm btn-success">Tag Cloud</button>
         </div>
     </div>
 </div>
@@ -47,7 +47,7 @@ or using the custom filter
                     {{ tagItem[0] }}
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
                         {{ tagItem[1]["numPages"] }}
-                        <span class="visually-hidden">unread messages</span>
+                        <span class="visually-hidden">number of pages</span>
                     </span>
                 </button>
             {% endfor %}

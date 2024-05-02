@@ -24,11 +24,11 @@ pageToc:
   pagesWithoutToc:
     - tag-info
 colSchemaCorrections:
-  elementsWithBackgroundAffected: 'body'
+  elementsWithBackgroundAffected: 'body, #category-menu-more-list'
   backgroundColorOnElementsAffected:
     light: '#fff'
     dark: '#27262b'
-  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h1, h2, span, .dt-info, label[for^=\"dt-length-\"], label[for^=\"dt-search-\"]'
+  elementsWithTextAffected: 'body, p, ul li, ol li, li a, h1, h2, span, .dt-info, label[for^=\"dt-length-\"], label[for^=\"dt-search-\"], #category-menu-more-list li a'
   textColorOnElementsAffected:
     light: '#000'
     dark: '#dee2e6'
@@ -78,4 +78,3 @@ toBeRemovedAfterLoad:
     - "testAttr"
     - "testAttr_1"
 marker404: "site-this-is-404-page" # should be allocated as id to one element in 404.html
-testColor: "#ff6200"

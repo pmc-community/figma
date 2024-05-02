@@ -13,6 +13,8 @@ $tocContainerBorderLeft:$b-none !default;
 $tocContainerBorderBottom: $b-none !default;
 $tocContainerBorderRight: $b-none !default;
 $tocContainerBorderRadius: $brad-10px;
+$tocContainerMaxHeight: $sz-80p;
+$tocContainerOverflowY: $ov-auto;
 
 // toc
 $tocPadding: $tocContainerPadding !default;
@@ -23,6 +25,7 @@ $tocNavNestedULPaddingLeft: $p-0px !default;
 $tocNavNestedULPaddingTop: $p-0px !default;
 $tocNavNestedULPaddingBottm: $p-0px !default;
 $tocItemSymbolBeforeLiTagVisibility: $d-hidden !default;
+$allTocItemsVisibility: $d-block; // all toc items visible, set to $d-hidden to have sub-items visible on scroll
 
 $tocItemLinkPaddingTop: $p-0px !default;
 $tocItemLinkPaddingBottom: $p-0px !default;
@@ -34,5 +37,3 @@ $tocBase: 'toc';
 $toc: '#'+$tocBase;
 @include toc($toc);
 @include tocItem($tocBase);
-
-

@@ -24,7 +24,7 @@ module Jekyll
           tags <<  front_matter['tags'] if front_matter && front_matter['tags']
         end
       end
-      return tags.flatten.uniq
+      return tags.flatten.uniq.sort
     end
 
     def valid_front_matter?(file_path)

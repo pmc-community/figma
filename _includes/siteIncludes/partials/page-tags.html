@@ -1,0 +1,35 @@
+
+
+<div id="pageTags" class="container px-5">
+  
+  {% capture permalink_param %}
+    {
+        "permalink": "{{page.permalink | escape}}",
+        "except": []
+    }
+  {% endcapture %}
+
+  {% capture pageTags %}
+    {% PageTags {{ permalink_param | json_string_to_object }} %}
+  {% endcapture %}
+
+  {% assign pageTagsArray = pageTags | json_string_to_object  %}
+  {% assign hasTags = pageTagsArray | size %}
+  {%if hasTags > 0 %}
+    <hr siteFunction="pageTagsSeparator">
+    <span class="mr-5 fs-6 fw-medium">Tags:</span>
+    {% for pageTag in pageTagsArray %}
+      <div class="d-inline-flex align-items-center">
+        <a href="/tag-info?tag={{pageTag}}" siteFunction="pageTagButton" id="pageTag_{{ pageTag }}" type="button" class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
+          {{ pageTag }}
+        </a>
+        <span siteFunction="tagBadgeOnPage" class="position-relative translate-middle badge rounded-pill text-bg-warning">
+          {% assign tagObj =  site.data["tags_details"][pageTag] %}
+          {% assign numPages = tagObj.numPages %}  
+          {{ numPages }}
+          <span class="visually-hidden">number of pages</span>
+        </span>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>

@@ -273,7 +273,7 @@ const setDataTable = (page, tableSelector, columnsConfig) => {
             layout: {
                 topStart: {
                     pageLength: {
-                        menu: [5, 10, 25, 50]
+                        menu: [1, 5, 10, 25, 50]
                     }
                 }
             },
@@ -319,4 +319,18 @@ const applyColorSchemaCorrections = (theme) => {
         $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark)
         $('.btn-close').addClass('btn-close-white');
     }
+}
+
+const sanitizeURL = (url) => {
+    url = url.trim();
+
+    if (!/^(?:\w+:)?\/\//.test(url) && url[0] !== '/') {
+        url = url.split(/[?#]/)[0];
+        return url;
+    }
+    url = decodeURI(url);
+    url = url.split(/[?#]/)[0];
+    url = encodeURI(url);
+
+    return url;
 }

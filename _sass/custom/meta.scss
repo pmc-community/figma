@@ -37,6 +37,11 @@
     #{$tocBase} {
         padding: $tocPadding;
     }
+
+    // all toc items visible
+    nav[data-toggle='toc'] .nav .nav {
+        display: $allTocItemsVisibility;
+      }
     
     #{$tocBase}_container {
         position: $tocContainerPosition;
@@ -46,7 +51,9 @@
         border-top: $tocContainerBorderTop;
         border-bottom: $tocContainerBorderBottom;
         border-right: $tocContainerBorderRight;
-        border-radius:$tocContainerBorderRadius
+        border-radius:$tocContainerBorderRadius;
+        height: $tocContainerMaxHeight;
+        overflow-y: $tocContainerOverflowY;
     }
 }
 
@@ -149,11 +156,6 @@
         padding-right: $auxContainerPaddingRight;
     }
 
-    #{map-get($siteHeaderElements, auxLinksItem)} {
-        height: $auxItemHeightToFitInHeader !important;
-        align-self: $auxItemVerticalAlignment;
-    }
-
     // style algolia search button and contaner
     #{map-get($siteHeaderElements, algoliaSearchBtn)} {
         align-self: $algoliaSearchBtnVerticalAlignment;
@@ -231,6 +233,14 @@
 
     #{map-get($tagSearchElements, searchResults)} li.selected {
         background-color: $tagSearchResultsItemMarkedBackground;
+    }
+}
+
+// tags on page
+@mixin tagsOnPage($tagOnPageElements) {
+    #{map-get($tagOnPageElements, badge)} {
+        top: $badgeTopPosition;
+        left: $badgeLeftPositions;
     }
 }
 
