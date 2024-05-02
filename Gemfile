@@ -41,4 +41,6 @@ gem "webrick", "~> 1.8"
 
 # is no the last version but this one works both with jekyll 4.3.3 and macOS high sierra for local testing
 gem 'jekyll-sass-converter', '2.0.0'
-
+gem 'rack', '~> 2.2.9'
+gem 'rack-livereload', require: 'rack/livereload'
+gem 'rack-cors'

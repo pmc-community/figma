@@ -1,5 +1,8 @@
 require 'net/http'
 require 'kramdown'
+require 'dotenv'
+
+Dotenv.load
 
 module ContentUtilities
 
@@ -9,7 +12,6 @@ module ContentUtilities
         uri = URI.parse(raw_url)
 
         request = Net::HTTP::Get.new(uri)
-        #request.basic_auth(ENV["JEKYLL_GIT_USER"], ENV["JEKYLL_ACCESS_TOKEN"])
         request['Authorization'] = "token #{ENV["JEKYLL_ACCESS_TOKEN"]}"
 
         response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
