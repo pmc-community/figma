@@ -15,6 +15,7 @@ nav_order: 1
 
 {% SitePages %}
 
+[T a g 1](http://localhost:4000/tag-info?tag=t%20a%20g%201){: .btn .btn-green }
 [Tag1](http://localhost:4000/tag-info?tag=tag1){: .btn .btn-green }
 
 {%assign s = "/collection1/g11/" %}

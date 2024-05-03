@@ -124,6 +124,7 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
             },
             error: async (xhr, status, error) => {
                 toast = new bootstrap.Toast($('.toast'));
+                $('.toast').addClass('bg-danger');
                 $('.toast-body').html('Error loading external content. Details in console ...');
                 toast.show();
                 const placeholder = position === 'before' || position === 'after' ? 'N/A for this position' : whereID;
@@ -148,9 +149,16 @@ const objectIndexInArray = (searchCriteria, objectArray) => {
 }
 
 const readQueryString = () => {
+
+    const replaceSpecialCharacters = (inputString) => {
+        const encodedString = encodeURIComponent(inputString);
+        const replacedString = decodeURIComponent(encodedString);
+        return replacedString;        
+    }
+    
     const urlParams = new URLSearchParams(window.location.search);
     const tag = urlParams.get('tag');
-    return tag;
+    return replaceSpecialCharacters(tag);
 }
 
 const filterArrayStartingWith = (arr, prefix) => {

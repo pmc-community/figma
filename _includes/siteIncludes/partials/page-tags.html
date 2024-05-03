@@ -20,7 +20,13 @@
     <span class="mr-5 fs-6 fw-medium">Tags:</span>
     {% for pageTag in pageTagsArray %}
       <div class="d-inline-flex align-items-center">
-        <a href="/tag-info?tag={{pageTag}}" siteFunction="pageTagButton" id="pageTag_{{ pageTag }}" type="button" class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
+        {% assign rawPageTagUrl = "/tag-info?tag=" | append: pageTag %}
+        {% assign sanitizedPageTagUrl = rawPageTagUrl | sanitize_url %}
+        <a 
+          href="{{sanitizedPageTagUrl}}" 
+          siteFunction="pageTagButton" 
+          type="button" 
+          class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
           {{ pageTag }}
         </a>
         <span siteFunction="tagBadgeOnPage" class="position-relative translate-middle badge rounded-pill text-bg-warning">

@@ -16,8 +16,10 @@ testMd: '[![](https://img.shields.io/badge/Delivery-As%20A%20Service-ff6200?styl
 # to be always the first page if the site (we use numerical nav_order)
 nav_order: 2
 
-categories: [general, intro, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15]
-tags: [tag1, tag2]
+categories: [g e n e r a l, intro, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15]
+tags: [t a g 1, tag2]
+
+#, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15
 ---
 
 {{ site.data.pageConfig["/intro/"].prop1 }}
