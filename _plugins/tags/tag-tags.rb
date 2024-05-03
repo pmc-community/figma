@@ -14,7 +14,9 @@ module Jekyll
             def render(context)
                 begin
                     if( !@input.nil? && !@input.empty? )
-                        info = JSON.parse(Liquid::Template.parse(@input).render(context))       
+                        info = JSON.parse(Liquid::Template.parse(@input).render(context))
+                        _ = info # noop to prevent warnings for not using variable. to be removed when the variable will be used
+
                     end
                     rescue
                         begin
@@ -23,7 +25,6 @@ module Jekyll
                             Globals.putsColText(Globals::RED, "#{context['page']['url']}: TagList tag got bad json string as input\n")
                         end
                 end
-                puts info
                 context.registers[:site].data["tag_list"]
             end
         end
@@ -39,6 +40,7 @@ module Jekyll
                 begin
                     if( !@input.nil? && !@input.empty? )
                         info = JSON.parse(Liquid::Template.parse(@input).render(context))
+                        _ = info # noop to prevent warnings for not using variable. to be removed when the variable will be used
                     end
                     rescue
                         begin
@@ -47,7 +49,6 @@ module Jekyll
                             Globals.putsColText(Globals::RED, "#{context['page']['url']}: TagDetails tag got bad json string as input\n")
                         end
                 end
-                puts info
                 context.registers[:site].data["tags_details"]
             end
         end

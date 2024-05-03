@@ -7,7 +7,8 @@ $tocFontColor: $c-black !default;
 // container
 $tocContainerPosition: $pos-fixed !default;
 $tocContainerInitialView: $d-hidden !default;
-$tocContainerPadding:$p-10px !default;
+$tocContainerPadding:$p-0px !default;
+$tocListPadding:$p-0px !default;
 $tocContainerBorderTop:$b-none !default;
 $tocContainerBorderLeft:$b-none !default;
 $tocContainerBorderBottom: $b-none !default;
@@ -30,10 +31,15 @@ $allTocItemsVisibility: $d-block; // all toc items visible, set to $d-hidden to 
 $tocItemLinkPaddingTop: $p-0px !default;
 $tocItemLinkPaddingBottom: $p-0px !default;
 $tocItemLinkBorderLeftOnActive: $b-Sol2pxBlack !default;
+
+$tocItemLinkBorderLeftOnActiveLight: $b-Sol2pxBlack !default;
+$tocItemLinkBorderLeftOnActiveDark: $b-Sol2pxWhite !default;
 @import 'meta.scss';
 
 // STYLE PAGE TOC
 $tocBase: 'toc';
 $toc: '#'+$tocBase;
+$tocItemActiveLight: '.pageTocActiveLight';
+$tocItemActiveDark: '.pageTocActiveDark';
 @include toc($toc);
 @include tocItem($tocBase);

@@ -334,3 +334,34 @@ const sanitizeURL = (url) => {
 
     return url;
 }
+
+const getElementInHotZone = (elements, zone, callback) => {
+    $(document).ready(function() {
+        $(window).scroll(function() {
+            const viewportTop = $(window).scrollTop();
+            const viewportBottom = viewportTop + $(window).height();
+            let minTopPosition = Number.POSITIVE_INFINITY;
+            let minTopElement = null;
+            
+            elements.forEach(function(element) {
+        
+                $(element).each(function() {
+                    const crtElement = $(this);
+                    let crtElementTop = crtElement.offset().top;
+            
+                    if (crtElementTop >= viewportTop + zone.top && crtElementTop <= viewportTop + zone.bottom) {
+                        if (crtElementTop < minTopPosition) {
+                            minTopPosition = crtElementTop;
+                            minTopElement = crtElement;
+                        }
+                    }
+                });
+            });
+        
+            if (minTopElement) {
+                callback(minTopElement);
+            }
+        });
+    });
+}
+

@@ -1,9 +1,10 @@
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case
+// this has to be here, orherwise the hash will be removed before handling the fixed header
 $(window).on('scroll', () => {
 
     // handle fixed header scroll
-    var hash = window.location.hash;
+    const hash = window.location.hash;
     if (hash) {
         // if the header is not fixed, 
         // -$(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll 
@@ -35,6 +36,7 @@ const customiseTheme = () => {
     addSwitchThemeIcon();
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
+    handleTocActiveElementsOnScroll();
     $(document).ready(() => {
         if ($(`#${settings.marker404}`).length > 0) $(settings.pageToc.tocContainer).remove();
         else {
@@ -340,4 +342,23 @@ const clearTheUrl = () => {
         }
     });
 
+}
+
+const handleTocActiveElementsOnScroll = () => {
+    getElementInHotZone(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], {top: 150, bottom: 850}, function(result) {
+        if (result) {
+            $(settings.pageToc.tocItemLink).removeClass(settings.pageToc.tocItemLinkClass.light).removeClass(settings.pageToc.tocItemLinkClass.dark);
+            $(settings.pageToc.tocItemLink).each( function() {
+                if ($(this).attr('href') === `#${result.attr('id')}`) {
+                    theme = Cookies.get(settings.themeSwitch.cookie);
+                    if (theme === 'undefined' || theme === '0' ) { 
+                        $(this).addClass(settings.pageToc.tocItemLinkClass.light); 
+                    }
+                    else { 
+                        $(this).addClass(settings.pageToc.tocItemLinkClass.dark);
+                    }
+                }
+            });
+        }
+    });
 }

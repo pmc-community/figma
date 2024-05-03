@@ -16,6 +16,10 @@ pageToc:
   toc: '#toc'
   tocLoadedEvent: 'page_toc_loaded'
   scrollSpyBase: 'body'
+  tocItemLink: '#toc li a'
+  tocItemLinkClass:
+    light: 'pageTocActiveLight'
+    dark: 'pageTocActiveDark'
   desktop:
     referenceContainer: '.main-content'
     offsetFromHeader: 25

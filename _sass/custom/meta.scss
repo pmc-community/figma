@@ -31,7 +31,7 @@
 // page toc
 // toc_container = the container containing the page toc
 // toc = the actually toc
-
+// tocItem = the li or li.a element inside the toc
 @mixin toc($tocBase) {
     
     #{$tocBase} {
@@ -39,8 +39,12 @@
     }
 
     // all toc items visible
-    nav[data-toggle='toc'] .nav .nav {
+    #{$tocBase} .nav .nav {
         display: $allTocItemsVisibility;
+      }
+    
+    #{$tocBase}  ul {
+        padding-left: $tocListPadding !important
       }
     
     #{$tocBase}_container {
@@ -74,10 +78,6 @@
         padding-top:$tocItemLinkPaddingTop !important;
     }
 
-    nav[data-toggle=#{$tocBase}] .nav>li>a:focus, nav[data-toggle=#{$tocBase}] .nav>li>a:hover {
-        border-left:$tocItemLinkBorderLeftOnActive !important
-    }
-
     nav[data-toggle=#{$tocBase}] .nav-link.active, nav[data-toggle=#{$tocBase}] .nav-link.active:focus, nav[data-toggle=#{$tocBase}] .nav-link.active:hover {
         font-weight:$tocFontWeight;
         
@@ -89,6 +89,14 @@
 
     nav[data-toggle=#{$tocBase}] .nav>li::before {
         display:$tocItemSymbolBeforeLiTagVisibility;
+    }
+
+    #{$tocItemActiveLight}, #{$tocItemActiveLight}:hover {
+        border-left: $tocItemLinkBorderLeftOnActiveLight !important;
+    }
+
+    #{$tocItemActiveDark}, #{$tocItemActiveDark}:hover {
+        border-left: $tocItemLinkBorderLeftOnActiveDark !important;
     }
     
 }
@@ -132,7 +140,6 @@
 }
 
 // header above the content
-
 @mixin headerAboveContent($siteHeaderElements) {
     
     // set the background

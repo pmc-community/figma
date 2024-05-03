@@ -110,7 +110,7 @@ $hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul l
         }
 }
 
-$visibleElements: ('hr[siteFunction="pageTagsSeparator"], .dropdown-divider');
+$visibleElements: ('hr[siteFunction="pageTagsSeparator"], .dropdown-divider, hr[siteFunction="pageTocHeaderSeparator"]');
 @each $element in $visibleElements {
         #{$element} {
             display:$d-block;

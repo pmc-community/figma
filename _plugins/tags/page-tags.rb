@@ -15,6 +15,8 @@ module Jekyll
                 begin
                     if( !@input.nil? && !@input.empty? )
                         info = JSON.parse(Liquid::Template.parse(@input).render(context))
+                        _ = info # noop to prevent warnings for not using variable. to be removed when the variable will be used
+
                     end
                     rescue
                         begin
@@ -23,7 +25,6 @@ module Jekyll
                                 Globals.putsColText(Globals::RED, "SitePages tag got bad json string as input\n")
                         end
                 end
-                puts info
                 context.registers[:site].data["page_list"]
                 
             end

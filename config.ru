@@ -5,7 +5,7 @@ require 'jekyll'
 require 'fileutils'
 require 'rack/cors' # Require rack-cors gem
 
-class MyApp
+class TheSite
   def initialize
     @site_directory = '_site'
   end
@@ -43,4 +43,4 @@ use Rack::Cors do
 end
 
 # Run Rack application
-run MyApp.new
+run TheSite.new
