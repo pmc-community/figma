@@ -76,7 +76,7 @@ const arrayDuplicates = (arr) => {
     return duplicateValues;
 }
 
-// read external contens between markers
+// read external contents between markers
 const getExternalContent = async (file, position, startMarker , endMarker, header, whereID, whoCalled) => {
     $(window).on('load', () => {
         // prevent returning unwanted quantity of content
@@ -153,111 +153,142 @@ const readQueryString = () => {
     return tag;
 }
 
-const setSearchList = (searchInputSelector, searchResultsSelector) => {
-    $(document).ready( () => {
-        var $searchInput = $(searchInputSelector);
-        var $searchResults = $(searchResultsSelector);
-
-        $searchResults.css('left', $(searchInputSelector).position().left + 'px');
-        $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');
-    
-        $searchInput.on('input', function() {
-        var query = $(this).val().toLowerCase();
-    
-        // Filter the list items based on the search query
-        $searchResults.find('li').each(function() {
-            var $item = $(this);
-            var text = $item.text().toLowerCase();
-            var match = text.includes(query);
-            //$item.toggleClass('selected', match);
-        });
-    
-        // Show or hide the list based on whether there are matching results
-        $searchResults.toggle(query.length > 0);
-        });
-    
-        // Handle click outside search input or search results to hide the list
-        $(document).on('click', function(event) {
-        var $target = $(event.target);
-        if (!$target.closest(`${searchInputSelector}, ${searchResultsSelector}`).length) {
-            $searchResults.hide();
-        }
-        });
-    
-        // Hide search results when pressing escape key
-        $(document).on('keydown', function(event) {
-        if (event.which === 27) { // Escape key
-            $searchResults.hide();
-            $searchInput.val('');
-        }
-        });
-    
-        // Handle keydown events on search input
-        $searchInput.on('keydown', function(event) {
-        var $selected = $searchResults.find('.selected');
-        var $items = $searchResults.find('li');
-    
-        // Handle up arrow key
-        if (event.which === 38) { // Up arrow
-            if ($selected.length) {
-            var $prev = $selected.prev();
-            if ($prev.length) {
-                $selected.removeClass('selected');
-                $prev.addClass('selected');
-                if ($items.filter('.selected').length === 1) {
-                $searchInput.val($prev.text()); // Copy selected value to search input
-                }
-            }
-            } else {
-            $items.last().addClass('selected');
-            $searchInput.val($items.last().text()); // Copy last value to search input
-            }
-            event.preventDefault(); // Prevent scrolling the page
-        }
-    
-        // Handle down arrow key
-        if (event.which === 40) { // Down arrow
-            if ($selected.length) {
-            var $next = $selected.next();
-            if ($next.length) {
-                $selected.removeClass('selected');
-                $next.addClass('selected');
-                if ($items.filter('.selected').length === 1) {
-                $searchInput.val($next.text()); // Copy selected value to search input
-                }
-            }
-            } else {
-            $items.first().addClass('selected');
-            $searchInput.val($items.first().text()); // Copy first value to search input
-            }
-            event.preventDefault(); // Prevent scrolling the page
-        }
-    
-        // Handle enter key
-        if (event.which === 13) { // Enter key
-            if ($selected.length === 1) { // Only if there is a single selected item
-            var selectedValue = $selected.text();
-            $searchInput.val(selectedValue); // Set input value to selected item
-            $searchResults.hide(); // Hide search results
-            event.preventDefault(); // Prevent default behavior (form submission)
-    
-            // Call custom function here
-            showTagDetails(selectedValue);
-            }
-        }
-        });
-    
-        // Handle click on search results item
-        $searchResults.on('click', 'li', function() {
-        var clickedValue = $(this).text();
-        $searchInput.val(clickedValue); // Set input value to clicked item
-        $searchResults.hide(); // Hide search results
-    
-        // Call custom function here
-        showTagDetails(clickedValue);
-        });
-    
+const filterArrayStartingWith = (arr, prefix) => {
+    return arr.filter(function(item) {
+      return item.startsWith(prefix);
     });
+  }
+
+const setSearchList = (
+    searchInputSelector, 
+    searchResultsSelector, 
+    searchResultsItemSelector, 
+    searchResultsItemTag, 
+    searchResultsItemClosingTag,
+    callback
+) => {
+        $(document).ready( () => {
+            const $searchInput = $(searchInputSelector);
+            const $searchResults = $(searchResultsSelector);
+
+            $searchResults.css('left', $(searchInputSelector).position().left + 'px');
+            $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');
+
+            let list = [];
+            $(searchResultsItemSelector).each(function() { list.push($(this).text().trim()); });
+    
+            function showSearchResults() {
+                const searchTerm = $searchInput.val().trim().toLowerCase();
+                let html = '';
+                if (searchTerm === '') {
+                    $searchResults.hide();
+                    return;
+                }
+                const filteredList =  filterArrayStartingWith (list, searchTerm);            
+                filteredList.forEach(function(result) { html += searchResultsItemTag + result + searchResultsItemClosingTag; });            
+                $searchResults.html(html).show();
+            }
+            
+            $searchInput.on('input', function() { if ($searchInput.val().trim().toLowerCase() !== '') showSearchResults(); });
+        
+            // Handle click outside search input or search results to hide the list
+            $(document).on('click', function(event) {
+                const $target = $(event.target);
+                if (!$target.closest(`${searchInputSelector}, ${searchResultsSelector}`).length) { $searchResults.hide();} 
+            });
+        
+            // Hide search results when pressing escape key
+            $(document).on('keydown', function(event) {
+                if (event.which === 27) { // Escape key
+                    $searchResults.hide();
+                    $searchInput.val('');
+                }
+            });
+        
+            // Handle keydown events on search input
+            $searchInput.on('keydown', function(event) {
+
+                // Adjust scroll position to keep the selected element in sight
+                const getElementInSight = (container, element) => {
+                    const containerHeight = container.innerHeight();
+                    const scrollTop = container.scrollTop();
+                    const elementTop = element.position().top;
+
+                    if (elementTop < 0) {
+                    container.scrollTop(scrollTop + elementTop); // Scroll up
+                    } else if (elementTop + element.outerHeight() > containerHeight) {
+                        container.scrollTop(scrollTop + elementTop + element.outerHeight() - containerHeight); // Scroll down
+                    }
+                }
+
+                const $selected = $searchResults.find('.selected');
+                const $items = $searchResults.find(searchResultsItemSelector);
+        
+                // Handle up arrow key
+                if (event.which === 38) { // Up arrow
+                    if ($selected.length) {
+                        let $prev = $selected.prev();
+                        if ($prev.length) {
+                            $selected.removeClass('selected');
+                            $prev.addClass('selected');
+                            if ($items.filter('.selected').length === 1) {
+                                $searchInput.val($prev.text()); // Copy selected value to search input
+                            }
+                            // Adjust scroll position to keep the selected element in sight
+                            getElementInSight($searchResults, $prev)
+                        }
+                    } else {
+                        $items.last().addClass('selected');
+                        $searchInput.val($items.last().text()); // Copy last value to search input
+                    }
+                    event.preventDefault(); // Prevent scrolling the page
+                }
+        
+                // Handle down arrow key
+                if (event.which === 40) { // Down arrow
+                    if ($selected.length) {
+                        let $next = $selected.next();
+                        if ($next.length) {
+                            $selected.removeClass('selected');
+                            $next.addClass('selected');
+                            if ($items.filter('.selected').length === 1) {
+                                $searchInput.val($next.text()); // Copy selected value to search input
+                            }
+                            // Adjust scroll position to keep the selected element in sight
+                            getElementInSight($searchResults, $next);                        }
+                    } else {
+                        $items.first().addClass('selected');
+                        $searchInput.val($items.first().text()); // Copy first value to search input
+                    }
+                    event.preventDefault(); // Prevent scrolling the page
+                }
+
+                // Handle enter key
+                if (event.which === 13) { // Enter key
+                    if ($selected.length === 1) { // Only if there is a single selected item
+                        const selectedValue = $selected.text();
+                        $searchInput.val(selectedValue); // Set input value to selected item
+                        $searchResults.hide(); // Hide search results
+                        event.preventDefault(); // Prevent default behavior (form submission)
+            
+                        //showTagDetails(selectedValue);
+                        //executeFunction(customFunction, customFunctionArgs);
+                        callback(selectedValue);
+                    }
+                }
+            });
+            // Handle click on search results item
+            $searchResults.on('click', searchResultsItemSelector, function() {
+                const clickedValue = $(this).text();
+                $searchInput.val(clickedValue); // Set input value to clicked item
+                $searchResults.hide(); // Hide search results
+        
+                // Call custom function here
+                //showTagDetails(clickedValue);
+                //executeFunction(customFunction, customFunctionArgs);
+                callback(selectedValue);
+            });
+        });
 }
 
 const setDataTable = (page, tableSelector, columnsConfig) => {
@@ -297,7 +328,6 @@ const handleBtnClose = () => {
         $('.btn-close').click(function() {
             toCloseSelector = $(this).attr('whatToClose');
             if (toCloseSelector !== 'undefined') {
-                console.log($(this).attr('whatToClose'));
                 $(`${toCloseSelector}`).fadeOut();
             }
         });

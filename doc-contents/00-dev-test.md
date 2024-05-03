@@ -1,7 +1,7 @@
 ---
 layout: page
-permalink: /categories/
-title: Categories
+permalink: /devtest/
+title: DevTest
 nav_order: 1
 ---
 

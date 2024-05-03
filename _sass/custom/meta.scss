@@ -225,6 +225,9 @@
         margin-top: $tagSearchResultsMarginTop;
         border-radius: $brad-0px $brad-0px $tagSearchResultsBorderBottomRadius $tagSearchResultsBorderBottomRadius;
         border-top: $tagSearchBorders;
+
+        overflow-y: $tagSearchResultsOverflowY !important;
+
     }
 
     #{map-get($tagSearchElements, searchResults)} li {
@@ -271,5 +274,65 @@
     #{map-get($tableElements, tableRow)} {
         border-color: $tableInnerBorderColor !important;
           
+    }
+}
+
+
+// cat search
+@mixin catSearch($catSearchElements) {
+    #{map-get($catSearchElements, searchInput)} {
+        width: $catSearchWidth;
+        padding: $catSearchInputPadding;
+        background-color: $catSearchBackground;
+        border: $catSearchBorders;
+        color: $catSearchTextColor;
+
+    }
+
+    #{map-get($catSearchElements, searchResults)} {
+        position: $catSearchResultsPosition;
+        z-index: $catSearchResultsZIndex;
+        background-color: $catSearchBackground;
+        border: $b-none;
+        border-top: $catSearchBorders;
+        border-bottom: $catSearchBorders;
+        border-left: $catSearchBorders;
+        border-right: $catSearchBorders;
+        width: $catSearchWidth;
+        padding: $catSearchResultsPadding;
+        margin: $catSearchResultsMargin;
+        list-style: $catSearchResultsListStyle;
+        max-height: $catSearchResultsMaxHeight;
+        overflow-y: $catSearchResultsOverflow;
+        display: $catSearchResultsDefaultDisplay;
+      
+        margin-top: $catSearchResultsMarginTop;
+        border-radius: $brad-0px $brad-0px $catSearchResultsBorderBottomRadius $catSearchResultsBorderBottomRadius;
+        border-top: $catSearchBorders;
+
+        overflow-y: $catSearchResultsOverflowY !important;
+    }
+
+    #{map-get($catSearchElements, searchResults)} li {
+        padding: $catSearchResultsItemPadding;
+        cursor: $catSearchResultsItemCursor;
+        color: $catSearchTextColor !important;
+        margin: $catSearchResultsItemMargin !important;
+    }
+
+    #{map-get($catSearchElements, searchResults)} li:hover {
+        background-color: $catSearchResultsItemMarkedBackground;
+    }
+
+    #{map-get($catSearchElements, searchResults)} li.selected {
+        background-color: $catSearchResultsItemMarkedBackground;
+    }
+}
+
+// cats on page
+@mixin catsOnPage($catOnPageElements) {
+    #{map-get($catOnPageElements, badge)} {
+        top: $badgeTopPosition;
+        left: $badgeLeftPositions;
     }
 }

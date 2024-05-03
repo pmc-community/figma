@@ -27,6 +27,7 @@ pageToc:
     leftSideBar: '.side-bar'
   pagesWithoutToc:
     - tag-info
+    - cat-info
 colSchemaCorrections:
   elementsWithBackgroundAffected: 'body, #category-menu-more-list'
   backgroundColorOnElementsAffected:

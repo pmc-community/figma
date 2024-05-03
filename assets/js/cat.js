@@ -1,13 +1,15 @@
 // Let's do some work
-const setTagsSupport = () => {
+const setCatSupport = () => {
     setSearchList(
-        '#tagSearchInput', 
-        '#tagSearchResults', 
-        'li[siteFunction="searchTagListItem"]', 
-        '<li siteFunction="searchTagListItem">',
+        '#catSearchInput', 
+        '#catSearchResults', 
+        'li[siteFunction="searchCatListItem"]', 
+        '<li siteFunction="searchCatListItem">',
         '</li>',
-        function(result) { showTagDetails(result);}
+        function(result) { console.log(result); }
     );
+    
+    /*
     setTagDetailsDataTable();
     setOpenTagCloudBtn();
     setTagButtons();
@@ -19,8 +21,11 @@ const setTagsSupport = () => {
     setRemoveFromSavedItemsStatus();
     setSaveForLaterRead();
     setRemoveFromSavedItems();
+    */
 }
 // work ends here
+
+/*
 const setPageTagButtons = () => {
     $(window).on('load', () => {
         $('button[siteFunction="pageTagButton"]').click( function() {
@@ -66,3 +71,4 @@ const setOpenTagCloudBtn = () => {
         });
     });
 }
+*/
