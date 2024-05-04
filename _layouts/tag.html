@@ -53,7 +53,7 @@ or using the custom filter
                 <button 
                     siteFunction="tagButton" 
                     id="{{ tagItem[0] }}" type="button" 
-                    class="d-flex focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative"
+                    class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative"
                     title = "Details for tag {{ tagItem[0] }}">
                     {{ tagItem[0] }}
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
@@ -79,24 +79,24 @@ or using the custom filter
                 <button siteFunction="btnClose" whatToClose='div[tagReference="{{ tagItem[0] }}"]' type="button" class="btn-close" aria-label="Close"></button>
             </div>
             <div class="card-body">
-                <table siteFunction="tagDetailsPageTable" class="table table-hover bg-transparent">
+                <table siteFunction="tagDetailsPageTable" class="table table-hover" tagReference="{{ tagItem[0] }}">
                     <thead>
-                        <tr class="bg-transparent">
-                            <th class="bg-transparent">Page</th>
-                            <th class="bg-transparent">Actions</th>
-                            <th class="bg-transparent">Excerpt</th>
-                            <th class="bg-transparent">Other Tags</th>
+                        <tr>
+                            <th>Page</th>
+                            <th>Actions</th>
+                            <th>Excerpt</th>
+                            <th>Other Tags</th>
                         </tr>
                     </thead>
                     <tbody>
                             {% for pageItem in tagItem[1]["pages"] %}
-                                <tr class="bg-transparent">
+                                <tr>
 
-                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                    <td class="fw-normal align-self-center align-middle">
                                         <span>{{ pageItem.title }}</span>
                                     </td>
 
-                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                    <td class="fw-normal align-self-center align-middle">
                                         <div class="btn-group">
                                             <a 
                                                 siteFunction="tagPageItemLinkToDoc" 
@@ -127,7 +127,7 @@ or using the custom filter
                                         </div>
                                     </td>
 
-                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                    <td class="fw-normal align-self-center align-middle">
                                         <span>
                                             {% capture permalink_param %}
                                                 {
@@ -138,7 +138,7 @@ or using the custom filter
                                         </span>
                                     </td>
                                     
-                                    <td class="fw-normal align-self-center bg-transparent align-middle">
+                                    <td class="fw-normal align-self-center align-middle">
                                         <span>
                                             {% capture permalink_param %}
                                                 {
@@ -155,7 +155,7 @@ or using the custom filter
                                                 <button 
                                                     siteFunction="pageTagButton" 
                                                     id="pageTag_{{ pageTag }}" type="button" 
-                                                    class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative"
+                                                    class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm btn-primary position-relative"
                                                     title = "Details for tag {{ pageTag }}">
                                                     {{ pageTag }}
                                                 </button>

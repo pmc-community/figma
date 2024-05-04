@@ -148,7 +148,7 @@ const objectIndexInArray = (searchCriteria, objectArray) => {
       });
 }
 
-const readQueryString = () => {
+const readQueryString = (queryParameter) => {
 
     const replaceSpecialCharacters = (inputString) => {
         const encodedString = encodeURIComponent(inputString);
@@ -157,8 +157,8 @@ const readQueryString = () => {
     }
     
     const urlParams = new URLSearchParams(window.location.search);
-    const tag = urlParams.get('tag');
-    return replaceSpecialCharacters(tag);
+    const value = urlParams.get(queryParameter);
+    return value;
 }
 
 const filterArrayStartingWith = (arr, prefix) => {
@@ -180,7 +180,7 @@ const setSearchList = (
             const $searchResults = $(searchResultsSelector);
 
             $searchResults.css('left', $(searchInputSelector).position().left + 'px');
-            $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');
+            $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');    
 
             let list = [];
             $(searchResultsItemSelector).each(function() { list.push($(this).text().trim()); });
@@ -299,21 +299,35 @@ const setSearchList = (
         });
 }
 
-const setDataTable = (page, tableSelector, columnsConfig) => {
+const setDataTable = (page, tableSelector, columnsConfig, callback) => {
     $(document).ready(function() {
-        // Initialize DataTable
-        $(tableSelector).DataTable({
+        table = $(tableSelector).DataTable({
             paging: true, 
             ordering: true,
             searching: true,
             colReorder: true,
             processing: true,
             fixedHeader: true,
+            responsive: true,
+            scrollX:true,
             layout: {
                 topStart: {
                     pageLength: {
                         menu: [1, 5, 10, 25, 50]
                     }
+                },
+                top2: {
+                    buttons: [
+                        {
+                            extend: ['colvis'],
+                            text: 'Columns',
+                            attr: {
+                                title: 'Show/Hide Columns',
+                                siteFunction: 'tableColumnsVisibility'
+                            },
+                            className: 'btn-primary btn-sm text-light focus-ring focus-ring-warning'
+                        }
+                    ]
                 }
             },
             stateSave: true,
@@ -328,6 +342,11 @@ const setDataTable = (page, tableSelector, columnsConfig) => {
             },
             columns: columnsConfig
         });
+
+        // since tables are created dynamically, some color corrections may be lost 
+        // because the thme is already applied, so we need to do the corrections again
+        applyColorSchemaCorrections();
+        callback(table);
     });
 }
 
@@ -345,6 +364,14 @@ const handleBtnClose = () => {
 const applyColorSchemaCorrections = (theme) => {
     
     // jtd forgets to change some colors when switching from light to dark and back
+    if (!theme) {
+        let themeCookie = Cookies.get(settings.themeSwitch.cookie);
+        if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+        themeCookie = Cookies.get(settings.themeSwitch.cookie);
+        if (Cookies.get(settings.themeSwitch.cookie) === '0' ) theme = 'light';
+        else  theme = 'dark';
+    }
+
     if (theme === 'light' ) {
         $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.light);
@@ -403,3 +430,22 @@ const getElementInHotZone = (elements, zone, callback) => {
     });
 }
 
+const applyColorSchemaCorrectionsOnTD = () => {
+    const targetNode = document.querySelector(settings.layouts.contentArea.contentContainer);
+    if (targetNode) {
+        const config = { childList: true, subtree: true };
+        const callback = function(mutationsList, observer) {
+            mutationsList.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && $(node).is('tr.child')) {
+                        applyColorSchemaCorrections();
+                    }
+                });
+            });
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+    } else {
+        console.error('Target node not found when trying to set datatables cell background');
+    }
+}

@@ -36,11 +36,12 @@ $alwaysWithBaseFontSize: ('body');
     }
 }
 
-$fullWidthElements: ('.site-header', '.search', '.site-footer', '#site-nav');
+//.dt-scroll-headInner because scrollX:true makes datatable header to not cover the table width
+$fullWidthElements: ('.site-header', '.search', '.site-footer', '#site-nav'); 
 @each $element in $fullWidthElements {
     #{$element} {
-        width:$sz-full;
-        max-width:$sz-full;
+        width:$sz-full !important;
+        max-width:$sz-full !important;
     }
 }
 
@@ -51,7 +52,7 @@ $weight600Elements: ('.site-header a', 'h1', 'h2', 'h3', 'h4');
     }
 }
 
-$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]', 'a[siteFunction="menuItemLevel1"]');
+$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]', 'a[siteFunction="menuItemLevel1"]', 'button[siteFunction="tableColumnsVisibility"] span');
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
         color: $siteHeaderTextColor !important; 
@@ -65,7 +66,7 @@ $noBackgroundChangeWhenHoverElements: ('.dropdown-item');
     }
 }
 
-$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"], .page-link', '.DocSearch-Button-Placeholder');
+$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"]', '.page-link', '.DocSearch-Button-Placeholder', 'button[siteFunction="tableLockFirstColumn"] span');
 @each $element in $alwaysBlackTextElements {
     #{$element} {
         color: $textColor !important;
@@ -104,14 +105,14 @@ $alwaysUnderlinedOnHoverTextElements: ('a[siteFunction*="menuItemLevel"]');
     }
 }
 
-$hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul li::before');
+$hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul li::before', 'td::before');
 @each $element in $hiddenElements {
         #{$element} {
-            display:$d-hidden;
+            display:$d-hidden !important;
         }
 }
 
-$visibleElements: ('hr[siteFunction="pageTagsSeparator"], .dropdown-divider, hr[siteFunction="pageTocHeaderSeparator"]');
+$visibleElements: ('hr[siteFunction="pageTagsSeparator"]', '.dropdown-divider', 'hr[siteFunction="pageTocHeaderSeparator"]');
 @each $element in $visibleElements {
         #{$element} {
             display:$d-block;

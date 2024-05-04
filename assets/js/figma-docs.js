@@ -38,6 +38,7 @@ const customiseTheme = () => {
     handleBtnClose(); //from utilities
     handleTocActiveElementsOnScroll();
     $(document).ready(() => {
+        
         if ($(`#${settings.marker404}`).length > 0) $(settings.pageToc.tocContainer).remove();
         else {
             // last checks on page toc
@@ -51,6 +52,8 @@ const customiseTheme = () => {
             // remove some elements
             removeUselessElements();
         }
+         // necessary on mobile for datadatbles cells
+        applyColorSchemaCorrectionsOnTD();
 
         // just to mask the flicker a little, but a preloader should be here
         setTimeout( () => {

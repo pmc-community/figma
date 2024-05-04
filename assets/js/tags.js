@@ -8,11 +8,13 @@ const setTagsSupport = () => {
         '</li>',
         function(result) { showTagDetails(result);}
     );
-    setTagDetailsDataTable();
+    //setTagDetailsDataTable();
     setOpenTagCloudBtn();
     setTagButtons();
     setPageTagButtons();
-    showTagDetails(readQueryString());
+
+    requestedTag = readQueryString('tag');
+    if (requestedTag) showTagDetails(requestedTag);
 
     // from saved-items.js
     setSaveForLaterReadStatus();
@@ -44,19 +46,46 @@ const setTagButtons = () => {
 }
 
 const showTagDetails = (tag) => {
-    if ( !tag ) return
+    if ( !tag ) return;
+    if ( tag === 'undefined' ) return;
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
     $(`div[siteFunction="tagDetails"][tagReference!="${tag}"]`).addClass('d-none');
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).fadeIn();
+
+    const $table = $(`table[tagReference="${tag}"]`).DataTable();
+    if ($.fn.DataTable.isDataTable($table)) $table.destroy();
+    setDataTable(
+        'TagInfo', 
+        `table[tagReference="${tag}"]`, 
+        [null, { searchable: false, orderable: false}, null, null],
+        (table) => {
+            if(table) console.log( `created: ${$(table.table().node()).attr('id')} for tag ${$(table.table().node()).attr('tagReference')}`);
+        }
+    );
+
     history.replaceState({}, document.title, window.location.pathname);
 }
 
+// HEADS UP!!!
+// this is not used anymore, datatable are created when activating a tad details view
+// otherwise will have the features set at create time and will not be modified dynamically
+// i.e. the head will not cover the whole table width when srollX is true or will not be responsive
 const setTagDetailsDataTable = () => {
-    setDataTable(
-        'TagInfo', 
-        'table[siteFunction="tagDetailsPageTable"]', 
-        [null, { searchable: false }, null, null]
-    )
+    // creating tables one-by-one to be able to do potential post-processing on callback
+    $('table[siteFunction="tagDetailsPageTable"]').each(function() {
+        setDataTable(
+            'TagInfo', 
+            `table[tagReference="${$(this).attr('tagReference')}"]`, 
+            [null, { searchable: false, orderable: false}, null, null],
+            (table) => {
+                table.responsive.rebuild();
+                table.responsive.recalc();
+                table.columns.adjust().draw();
+                console.log( `created: ${$(table.table().node()).attr('id')} for tag ${$(table.table().node()).attr('tagReference')}`);
+            }
+        )
+    });
+    
 }
 
 const setOpenTagCloudBtn = () => {
