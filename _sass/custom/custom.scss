@@ -52,7 +52,7 @@ $weight600Elements: ('.site-header a', 'h1', 'h2', 'h3', 'h4');
     }
 }
 
-$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]', 'a[siteFunction="menuItemLevel1"]', 'button[siteFunction="tableColumnsVisibility"] span');
+$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]', 'a[siteFunction="menuItemLevel1"]', 'button[siteFunction="tableColumnsVisibility"] span', 'button[siteFunction="tableNavigateToSavedItems"] span');
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
         color: $siteHeaderTextColor !important; 
@@ -66,7 +66,7 @@ $noBackgroundChangeWhenHoverElements: ('.dropdown-item');
     }
 }
 
-$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"]', '.page-link', '.DocSearch-Button-Placeholder', 'button[siteFunction="tableLockFirstColumn"] span');
+$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"]', '.page-link', '.DocSearch-Button-Placeholder', 'button[siteFunction="tableLockFirstColumn"] span', 'button[siteFunction="tableNavigateToCategories"] span');
 @each $element in $alwaysBlackTextElements {
     #{$element} {
         color: $textColor !important;
@@ -115,14 +115,21 @@ $hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul l
 $visibleElements: ('hr[siteFunction="pageTagsSeparator"]', '.dropdown-divider', 'hr[siteFunction="pageTocHeaderSeparator"]');
 @each $element in $visibleElements {
         #{$element} {
-            display:$d-block;
+            display:$d-block !important;
         }
 }
 
-$alwaysNoBorderBottomElements: ('ul[siteFunction="tagPageItem"]:last-child');
+$alwaysNoBorderBottomElements: ('ul[siteFunction="tagPageItem"]:last-child','.dt-processing');
 @each $element in $alwaysNoBorderBottomElements {
     #{$element} {
         border-bottom: $b-none !important;
+    }
+}
+
+$alwaysNoBorderElements: ('.dt-processing');
+@each $element in $alwaysNoBorderElements {
+    #{$element} {
+        border: $b-none !important;
     }
 }
 

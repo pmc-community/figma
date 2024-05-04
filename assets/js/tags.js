@@ -59,7 +59,38 @@ const showTagDetails = (tag) => {
         `table[tagReference="${tag}"]`, 
         [null, { searchable: false, orderable: false}, null, null],
         (table) => {
-            if(table) console.log( `created: ${$(table.table().node()).attr('id')} for tag ${$(table.table().node()).attr('tagReference')}`);
+            if(table) {
+                console.log( `created: ${$(table.table().node()).attr('id')} for tag ${$(table.table().node()).attr('tagReference')}`);
+
+                gotToCatBtn = {
+                    attr: {
+                        siteFunction: 'tableNavigateToCategories',
+                        title: 'Go to categories'
+                    },
+                    className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
+                    text: 'Categories',
+                    action: () => {
+                        window.location.href = '/cat-info'
+                    }
+                }
+
+                gotToSavedItemsBtn = {
+                    attr: {
+                        siteFunction: 'tableNavigateToSavedItems',
+                        title: 'Go to saved items'
+                    },
+                    className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
+                    text: 'Saved items',
+                    action: () => {
+                        window.location.href = '/cat-info'
+                    }
+                }
+                
+                const btnArray = [];
+                btnArray.push(gotToCatBtn);
+                btnArray.push(gotToSavedItemsBtn);
+                addAdditionalButtonsToTable(table, `table[tagReference="${tag}"]`, 'bottom2', btnArray);
+            }
         }
     );
 

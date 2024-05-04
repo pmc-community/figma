@@ -29,7 +29,7 @@ pageToc:
     - tag-info
     - cat-info
 colSchemaCorrections:
-  elementsWithBackgroundAffected: 'body, #category-menu-more-list, table, tbody, thead, tr, td, th, td[class=\"child\"]'
+  elementsWithBackgroundAffected: 'body, #category-menu-more-list, table, tbody, thead, tr, td, th, td[class=\"child\"], .dt-processing'
   backgroundColorOnElementsAffected:
     light: '#fff'
     dark: '#27262b'

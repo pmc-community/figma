@@ -316,7 +316,7 @@ const setDataTable = (page, tableSelector, columnsConfig, callback) => {
                         menu: [1, 5, 10, 25, 50]
                     }
                 },
-                top2: {
+                bottom2: {
                     buttons: [
                         {
                             extend: ['colvis'],
@@ -325,7 +325,7 @@ const setDataTable = (page, tableSelector, columnsConfig, callback) => {
                                 title: 'Show/Hide Columns',
                                 siteFunction: 'tableColumnsVisibility'
                             },
-                            className: 'btn-primary btn-sm text-light focus-ring focus-ring-warning'
+                            className: 'btn-primary btn-sm text-light focus-ring focus-ring-warning mb-2'
                         }
                     ]
                 }
@@ -349,6 +349,16 @@ const setDataTable = (page, tableSelector, columnsConfig, callback) => {
         callback(table);
     });
 }
+
+const addAdditionalButtonsToTable = (table, tableSelector, zone, btnArray) => {
+    tableConfiguration = table.settings().init();
+    tableButtons = tableConfiguration.layout[zone].buttons || [];
+    tableButtons = [...tableButtons, ...btnArray];
+    tableConfiguration.layout[zone].buttons = tableButtons;
+    table.destroy();
+    $(tableSelector).DataTable(tableConfiguration);
+}
+
 
 const handleBtnClose = () => {
     $(document).ready(function ()  {
