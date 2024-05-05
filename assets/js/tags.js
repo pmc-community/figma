@@ -8,7 +8,6 @@ const setTagsSupport = () => {
         '</li>',
         function(result) { showTagDetails(result);}
     );
-    //setTagDetailsDataTable();
     setOpenTagCloudBtn();
     setTagButtons();
     setPageTagButtons();
@@ -55,13 +54,12 @@ const showTagDetails = (tag) => {
     const $table = $(`table[tagReference="${tag}"]`).DataTable();
     if ($.fn.DataTable.isDataTable($table)) $table.destroy();
     setDataTable(
-        'TagInfo', 
-        `table[tagReference="${tag}"]`, 
+        `table[tagReference="${tag}"]`,
+        tag.trim().replace(/\s+/g, "_"),
         [null, { searchable: false, orderable: false}, null, null],
         (table) => {
             if(table) {
-                console.log( `created: ${$(table.table().node()).attr('id')} for tag ${$(table.table().node()).attr('tagReference')}`);
-
+                // post processing table: adding 2 buttons in the bottom 2 zone
                 gotToCatBtn = {
                     attr: {
                         siteFunction: 'tableNavigateToCategories',
@@ -85,7 +83,6 @@ const showTagDetails = (tag) => {
                         window.location.href = '/cat-info'
                     }
                 }
-                
                 const btnArray = [];
                 btnArray.push(gotToCatBtn);
                 btnArray.push(gotToSavedItemsBtn);
@@ -95,28 +92,6 @@ const showTagDetails = (tag) => {
     );
 
     history.replaceState({}, document.title, window.location.pathname);
-}
-
-// HEADS UP!!!
-// this is not used anymore, datatable are created when activating a tad details view
-// otherwise will have the features set at create time and will not be modified dynamically
-// i.e. the head will not cover the whole table width when srollX is true or will not be responsive
-const setTagDetailsDataTable = () => {
-    // creating tables one-by-one to be able to do potential post-processing on callback
-    $('table[siteFunction="tagDetailsPageTable"]').each(function() {
-        setDataTable(
-            'TagInfo', 
-            `table[tagReference="${$(this).attr('tagReference')}"]`, 
-            [null, { searchable: false, orderable: false}, null, null],
-            (table) => {
-                table.responsive.rebuild();
-                table.responsive.recalc();
-                table.columns.adjust().draw();
-                console.log( `created: ${$(table.table().node()).attr('id')} for tag ${$(table.table().node()).attr('tagReference')}`);
-            }
-        )
-    });
-    
 }
 
 const setOpenTagCloudBtn = () => {

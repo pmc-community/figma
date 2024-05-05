@@ -299,7 +299,7 @@ const setSearchList = (
         });
 }
 
-const setDataTable = (page, tableSelector, columnsConfig, callback) => {
+const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback) => {
     $(document).ready(function() {
         table = $(tableSelector).DataTable({
             paging: true, 
@@ -332,13 +332,10 @@ const setDataTable = (page, tableSelector, columnsConfig, callback) => {
             },
             stateSave: true,
             stateSaveCallback: function (settings, data) {
-                localStorage.setItem(
-                    `${page}_DataTables_` + settings.sInstance,
-                    JSON.stringify(data)
-                );
+                localStorage.setItem(`${window.location.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '_')}_DataTables_` + tableUniqueID, JSON.stringify(data));
             },
             stateLoadCallback: function (settings) {
-                return JSON.parse(localStorage.getItem(`${page}_DataTables_` + settings.sInstance));
+                return JSON.parse(localStorage.getItem(`${window.location.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '_')}_DataTables_` + tableUniqueID));
             },
             columns: columnsConfig
         });
@@ -352,13 +349,15 @@ const setDataTable = (page, tableSelector, columnsConfig, callback) => {
 
 const addAdditionalButtonsToTable = (table, tableSelector, zone, btnArray) => {
     tableConfiguration = table.settings().init();
-    tableButtons = tableConfiguration.layout[zone].buttons || [];
-    tableButtons = [...tableButtons, ...btnArray];
-    tableConfiguration.layout[zone].buttons = tableButtons;
+    tableConfigurationLayout = tableConfiguration.layout || {};
+    tableConfigurationLayoutZone = tableConfigurationLayout[zone] || {};
+    tableButtonsInZone = tableConfigurationLayoutZone.buttons || [];
+    tableButtonsInZone = [...tableButtonsInZone, ...btnArray];
+    tableConfiguration.layout[zone].buttons = tableButtonsInZone;
     table.destroy();
     $(tableSelector).DataTable(tableConfiguration);
+    applyColorSchemaCorrections();
 }
-
 
 const handleBtnClose = () => {
     $(document).ready(function ()  {
