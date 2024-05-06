@@ -58,6 +58,7 @@ module Jekyll
             tagPage["numPages"] = tagPagesNum
             pageObj["title"] = page["title"]
             pageObj["permalink"] = page["permalink"]
+            pageObj["lastUpdate"] = DateTime.parse(page["lastUpdate"]).strftime("%d-%b-%Y")
             pageArr = tagPage["pages"]
             pageArr << pageObj if pageObj
             tagPage["pages"] = pageArr

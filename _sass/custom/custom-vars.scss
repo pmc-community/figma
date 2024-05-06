@@ -114,10 +114,15 @@ $d-block: block;
 
 // z-index
 $z-max: 999;
+$z-1:1;
+$z-9:9;
 
-// alignment
+//element alignment
 $al-h-left: flex-end;
 $al-v-center: center;
+
+//text alignment
+$tal-h-left: left;
 
 // lists
 $lstyle-none: none;

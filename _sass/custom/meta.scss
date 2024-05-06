@@ -273,7 +273,14 @@
 
     #{map-get($tableElements, tableRow)} {
         border-color: $tableInnerBorderColor !important;
-          
+    }
+
+    #{map-get($tableElements, firstColumn)} {
+        z-index:$tableFreezeColumnZIndex !important;
+    }
+
+    #{map-get($tableElements, dateField)} {
+        text-align: $tableDateFieldTextAlignment !important;
     }
 }
 

@@ -299,8 +299,11 @@ const setSearchList = (
         });
 }
 
-const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback) => {
+// columnsConfig is set in the caller, to be fit to the specific table
+// callback and callbackClickRow are set in the caller to to specific processing after the table is initialized
+const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow) => {
     $(document).ready(function() {
+        
         table = $(tableSelector).DataTable({
             paging: true, 
             ordering: true,
@@ -308,8 +311,10 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback) => 
             colReorder: true,
             processing: true,
             fixedHeader: true,
-            responsive: true,
             scrollX:true,
+            fixedColumns: {
+                "left": 1
+            },
             layout: {
                 topStart: {
                     pageLength: {
@@ -340,10 +345,49 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback) => 
             columns: columnsConfig
         });
 
-        // since tables are created dynamically, some color corrections may be lost 
-        // because the thme is already applied, so we need to do the corrections again
-        applyColorSchemaCorrections();
+        // callback to be personalised for each table
+        // for post processing the table (i.e. adding buttons based on context)
         callback(table);
+
+        // callbackClickRow to be personalised for each table
+        // to process the selected row
+
+        // compose the selector to remove columns which must be innactive when click on a row
+        let notActiveWhenClick = [];
+        columnsConfig.forEach( column => {
+            if (column) {
+                if (column.exceptWhenRowSelect) {
+                    notActiveWhenClick.push(columnsConfig.indexOf(column));
+                }
+            }
+        });
+
+        let rowClickSelector = 'tbody tr'
+
+        if (notActiveWhenClick.length > 0) {
+            rowClickSelector = 'tbody td'
+            notActiveWhenClick.forEach( columnIndex => {
+                rowClickSelector += `:not(:nth-child(${columnIndex+1}))`
+            });
+        }
+
+        function handleRowClick(event) {
+            callbackClickRow({
+                    rowNumber: table.row(this).index(),
+                    data: table.row(this).data()
+                }
+            );
+        }
+        table.off('click').on('click', rowClickSelector, handleRowClick);
+
+
+        //table.on('click', 'tbody tr', handleRowClick);
+        // since tables are created dynamically, some color corrections may be lost 
+        // because the theme is already applied, so we need to do the corrections again
+        // also needed when switching theme
+        // if switch theme and increase no of rows/page, new rows will have the previous color scheme
+        // better to be on draw event to cover all potential cases
+        table.on('draw', function () { applyColorSchemaCorrections(); });
     });
 }
 

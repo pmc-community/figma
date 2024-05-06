@@ -53,45 +53,75 @@ const showTagDetails = (tag) => {
 
     const $table = $(`table[tagReference="${tag}"]`).DataTable();
     if ($.fn.DataTable.isDataTable($table)) $table.destroy();
+
+    // exceptWhenRowSelect: true to make the column innactive when click in a table row
+    // this is a custom column configuration, not a standard DataTables conlumn configuration
+    // is good to be used for columns having already a functional role in the table (such as buttons)
     setDataTable(
         `table[tagReference="${tag}"]`,
         tag.trim().replace(/\s+/g, "_"),
-        [null, { searchable: false, orderable: false}, null, null],
-        (table) => {
-            if(table) {
-                // post processing table: adding 2 buttons in the bottom 2 zone
-                gotToCatBtn = {
-                    attr: {
-                        siteFunction: 'tableNavigateToCategories',
-                        title: 'Go to categories'
-                    },
-                    className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
-                    text: 'Categories',
-                    action: () => {
-                        window.location.href = '/cat-info'
-                    }
-                }
-
-                gotToSavedItemsBtn = {
-                    attr: {
-                        siteFunction: 'tableNavigateToSavedItems',
-                        title: 'Go to saved items'
-                    },
-                    className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
-                    text: 'Saved items',
-                    action: () => {
-                        window.location.href = '/cat-info'
-                    }
-                }
-                const btnArray = [];
-                btnArray.push(gotToCatBtn);
-                btnArray.push(gotToSavedItemsBtn);
-                addAdditionalButtonsToTable(table, `table[tagReference="${tag}"]`, 'bottom2', btnArray);
-            }
-        }
+        [null, {type: 'date', className: 'dt-left'}, { searchable: false, orderable: false, exceptWhenRowSelect: true}, null, {exceptWhenRowSelect: true}],
+        (table) => { postProcessTagDetailsTable(table, tag) },
+        (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) }
     );
 
     history.replaceState({}, document.title, window.location.pathname);
+}
+
+const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
+    // tags may contain spaces 
+    // so we need to extract them from the html to prevent .split(' ' ) to provide wrong tags
+    const extractTags = (tags) => {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = `${tags}`;
+        const buttons = tempElement.querySelectorAll('button');
+        const buttonTexts = Array.from(buttons).map(button => button.textContent.trim());
+        return buttonTexts;
+    }
+    // process rowData when click on row
+    cleanRowData = rowData.data.map(element => element.replace(/<[^>]*>/g, '').trim().replace(/\s+/g, ' '));
+    cleanRowData[4] = extractTags(rowData.data[4]);
+    console.log({
+            tableSelector: tableSelector,
+            tag: tag,
+            rowNumber: rowData.rowNumber,
+            data: cleanRowData
+        }
+    );
+}
+
+
+const postProcessTagDetailsTable = (table, tag) => {
+    if(table) {
+        // post processing table: adding 2 buttons in the bottom2 zone
+        gotToCatBtn = {
+            attr: {
+                siteFunction: 'tableNavigateToCategories',
+                title: 'Go to categories'
+            },
+            className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
+            text: 'Categories',
+            action: () => {
+                window.location.href = '/cat-info'
+            }
+        }
+
+        gotToSavedItemsBtn = {
+            attr: {
+                siteFunction: 'tableNavigateToSavedItems',
+                title: 'Go to saved items'
+            },
+            className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
+            text: 'Saved items',
+            action: () => {
+                window.location.href = '/cat-info'
+            }
+        }
+        const btnArray = [];
+        btnArray.push(gotToCatBtn);
+        btnArray.push(gotToSavedItemsBtn);
+        addAdditionalButtonsToTable(table, `table[tagReference="${tag}"]`, 'bottom2', btnArray);
+    }   
 }
 
 const setOpenTagCloudBtn = () => {

@@ -7,12 +7,16 @@ $tablePaginationFontSize: $fs-small;
 $tableNothingFoundBackground: $c-transparent;
 $tableNothingFoundTextColor: $c-error-message;
 $tableInnerBorderColor: $c-grey-alt;
+$tableFreezeColumnZIndex: $z-9;
+$tableDateFieldTextAlignment: $tal-h-left;
 
 $tableElements: (
     tableWrapper: '.table-wrapper',
     paginationButtonLink: '.page-link',
     nothingFound: '.dt-empty',
-    tableRow: 'td'
+    tableRow: 'td',
+    firstColumn: 'td[siteFunction="tableFirstColumn"]',
+    dateField: 'th[siteFunction="tableDateField"], td[siteFunction="tableDateField"]'
 );
 
 @import 'meta.scss';
