@@ -24,7 +24,7 @@
         bottom: $m-20px;
         right: $m-50px;
         width: $s-30px;
-        cursor: $c-pointer;
+        cursor: $cr-pointer;
     }
 }
 
@@ -254,6 +254,14 @@
     }
 }
 
+// tag cloud
+@mixin tagCloud($tagCloudElements) {
+    #{map-get($tagCloudElements, tagCloudContainer)} {
+        max-height:$tagCloudBodyMaxHeight;
+        overflow-y: $tagCloudBodyOverflowY;
+    }
+}
+
 // data tables
 @mixin dataTable($tableElements) {
     #{map-get($tableElements, tableWrapper)} {
@@ -277,13 +285,17 @@
 
     #{map-get($tableElements, firstColumn)} {
         z-index:$tableFreezeColumnZIndex !important;
+        cursor: $tableFirstColumnCursor;
     }
 
     #{map-get($tableElements, dateField)} {
         text-align: $tableDateFieldTextAlignment !important;
     }
-}
 
+    #{map-get($tableElements, colvisButton)} {
+        font-size:$tableColvisBtnFontSize;
+    }
+}
 
 // cat search
 @mixin catSearch($catSearchElements) {
@@ -341,5 +353,17 @@
     #{map-get($catOnPageElements, badge)} {
         top: $badgeTopPosition;
         left: $badgeLeftPositions;
+    }
+}
+
+// pgae full info offcanvas
+@mixin offCanvasPageFullInfo($offcanvasElements) {
+    #{map-get($offcanvasElements, container)} {
+        width: $offcanvasWidth !important;
+    }
+
+    #{map-get($offcanvasElements, tagsCardBody)} {
+        max-height: $tagsCardBodyMaxHeight;
+        overflow-y: $tagCloudBodyOverflowY;
     }
 }

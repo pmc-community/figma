@@ -1,0 +1,14 @@
+@import 'custom-vars.scss';
+
+$offcanvasWidth: $sz-40p;
+$tagsCardBodyMaxHeight: $sz-200px;
+$tagsCardBodyOverflowY: $ov-auto;
+
+$offcanvasElements: (
+    container: '.offcanvas',
+    body: '.offcanvas-body',
+    tagsCardBody: 'div[siteFunction="offcanvasPageFullInfoPageTags"]'
+);
+
+@import 'meta.scss';
+@include offCanvasPageFullInfo($offcanvasElements);

@@ -54,13 +54,43 @@ const showTagDetails = (tag) => {
     const $table = $(`table[tagReference="${tag}"]`).DataTable();
     if ($.fn.DataTable.isDataTable($table)) $table.destroy();
 
-    // exceptWhenRowSelect: true to make the column innactive when click in a table row
-    // this is a custom column configuration, not a standard DataTables conlumn configuration
+    // exceptWhenRowSelect: true to make the column inactive when click in a table row
+    // this is a custom column configuration, not a standard DataTables column configuration
     // is good to be used for columns having already a functional role in the table (such as buttons)
     setDataTable(
         `table[tagReference="${tag}"]`,
         tag.trim().replace(/\s+/g, "_"),
-        [null, {type: 'date', className: 'dt-left'}, { searchable: false, orderable: false, exceptWhenRowSelect: true}, null, {exceptWhenRowSelect: true}],
+        
+        // columns settings
+        [
+            // page name
+            null, 
+
+            // last update
+            {
+                type: 'date', 
+                className: 'dt-left', 
+                exceptWhenRowSelect: true
+            }, 
+
+            // action buttons
+            { 
+                searchable: false, 
+                orderable: false, 
+                exceptWhenRowSelect: true
+            }, 
+            
+            // excerpt
+            {
+                exceptWhenRowSelect: true
+            }, 
+
+            // other tags
+            {
+                exceptWhenRowSelect: true
+            }
+        ],
+
         (table) => { postProcessTagDetailsTable(table, tag) },
         (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) }
     );
@@ -78,16 +108,25 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
         const buttonTexts = Array.from(buttons).map(button => button.textContent.trim());
         return buttonTexts;
     }
+
+    const extractPermalink = (actionsHtml) => {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = `${actionsHtml}`;
+        const linkToDoc = tempElement.querySelector('a[siteFunction="tagPageItemLinkToDoc"]');
+        return linkToDoc.getAttribute('href');
+    }
+
     // process rowData when click on row
-    cleanRowData = rowData.data.map(element => element.replace(/<[^>]*>/g, '').trim().replace(/\s+/g, ' '));
+    const cleanRowData = rowData.data.map(element => element.replace(/<[^>]*>/g, '').trim().replace(/\s+/g, ' '));
     cleanRowData[4] = extractTags(rowData.data[4]);
-    console.log({
-            tableSelector: tableSelector,
-            tag: tag,
-            rowNumber: rowData.rowNumber,
-            data: cleanRowData
-        }
-    );
+    const permalink = extractPermalink(rowData.data[2]);
+    const title = cleanRowData[0];
+    let pageInfo = {
+        siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
+        savedInfo: getPageSavedInfo (permalink, title)
+    };
+
+    showPageFullInfoCanvas(pageInfo);
 }
 
 

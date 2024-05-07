@@ -9,6 +9,8 @@ $tableNothingFoundTextColor: $c-error-message;
 $tableInnerBorderColor: $c-grey-alt;
 $tableFreezeColumnZIndex: $z-9;
 $tableDateFieldTextAlignment: $tal-h-left;
+$tableFirstColumnCursor: $cr-pointer;
+$tableColvisBtnFontSize: $fs-body;
 
 $tableElements: (
     tableWrapper: '.table-wrapper',
@@ -16,7 +18,8 @@ $tableElements: (
     nothingFound: '.dt-empty',
     tableRow: 'td',
     firstColumn: 'td[siteFunction="tableFirstColumn"]',
-    dateField: 'th[siteFunction="tableDateField"], td[siteFunction="tableDateField"]'
+    dateField: 'th[siteFunction="tableDateField"], td[siteFunction="tableDateField"]',
+    colvisButton: '.buttons-columnVisibility'
 );
 
 @import 'meta.scss';

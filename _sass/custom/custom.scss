@@ -17,6 +17,7 @@
 @import 'tags.scss';
 @import 'cat.scss';
 @import 'tables.scss';
+@import 'page-full-info.scss';
 
 // this should be last import because component's settings are set in the imports above
 @import 'meta.scss';
@@ -105,7 +106,7 @@ $alwaysUnderlinedOnHoverTextElements: ('a[siteFunction*="menuItemLevel"]');
     }
 }
 
-$hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul li::before', 'td::before');
+$hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul li::before', 'td::before', '.dt-paging-button::before');
 @each $element in $hiddenElements {
         #{$element} {
             display:$d-hidden !important;

@@ -38,6 +38,9 @@ exclude:
   - CNAME
   - LICENSE
   - README.md
+  - serve
+  - serve-rack
+  - config.ru
 
 
 aux_links:

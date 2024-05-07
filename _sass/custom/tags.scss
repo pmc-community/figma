@@ -19,7 +19,7 @@ $tagSearchResultsDefaultDisplay: $d-hidden;
 $tagSearchResultsBorderBottomRadius: $brad-5px;
 $tagSearchResultsItemPadding: $p-10px;
 $tagSearchResultsItemMargin: $m-0px;
-$tagSearchResultsItemCursor: $c-pointer;
+$tagSearchResultsItemCursor: $cr-pointer;
 $tagSearchResultsItemMarkedBackground: $c-light-grey;
 $tagSearchResultsOverflowY: $ov-auto;
 
@@ -36,8 +36,16 @@ $tagOnPageElements: (
     badge: 'span[siteFunction="tagBadgeOnPage"]'
 );
 
+// tag cloud
+$tagCloudBodyOverflowY: $ov-auto;
+$tagCloudBodyMaxHeight: $sz-200px;
+$tagCloudElements: (
+    tagCloudContainer: 'div[siteFunction="tagCloudContainerBody"]'
+);
+
 @import 'meta.scss';
 @include tagSearch($tagSearchElements);
 @include tagsOnPage($tagOnPageElements);
+@include tagCloud($tagCloudElements);
 
   

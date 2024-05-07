@@ -43,12 +43,12 @@ or using the custom filter
 
 <!-- Tag cloud -->
 <div id="cloud_tag_container" class="container">
-    <div class=" card shadow bg-transparent overflow-y-auto" style="max-height: 300px">
+    <div class=" card shadow bg-transparent overflow-y-auto">
         <div class="card-header d-flex justify-content-between">
             <span class="fs-6 fw-medium">Tag cloud</span>
             <button siteFunction="btnClose" whatToClose="#cloud_tag_container" type="button" class="btn-close" aria-label="Close"></button>
         </div>
-        <div class="card-body">
+        <div siteFunction="tagCloudContainerBody" class="card-body overflow-y-auto">
             {% for tagItem in site.data.tags_details %}
                 <button 
                     siteFunction="tagButton" 
@@ -82,7 +82,7 @@ or using the custom filter
                 <table siteFunction="tagDetailsPageTable" class="table table-hover" tagReference="{{ tagItem[0] }}">
                     <thead>
                         <tr>
-                            <th>Page</th>
+                            <th>Title</th>
                             <th siteFunction="tableDateField">Last Update</th>
                             <th>Actions</th>
                             <th>Excerpt</th>
@@ -93,7 +93,10 @@ or using the custom filter
                             {% for pageItem in tagItem[1]["pages"] %}
                                 <tr>
 
-                                    <td siteFunction = "tableFirstColumn" class="fw-normal align-self-center align-middle">
+                                    <td 
+                                        siteFunction="tableFirstColumn" 
+                                        class="fw-normal align-self-center align-middle"
+                                        title="Click here for more info about page {{ pageItem.title }}">
                                         <span>{{ pageItem.title }}</span>
                                     </td>
 
@@ -107,7 +110,7 @@ or using the custom filter
                                                 siteFunction="tagPageItemLinkToDoc" 
                                                 class="btn btn-sm btn-info" 
                                                 href="{{ pageItem.permalink }}"
-                                                title="Read {{ pageItem.title }}">
+                                                title="Read page {{ pageItem.title }}">
                                                 <i class="bi bi-book" style="font-size:1.2rem"></i>
                                             </a>
 
@@ -116,7 +119,7 @@ or using the custom filter
                                                 pageRefPermalink = "{{ pageItem.permalink }}" 
                                                 pageRefTitle="{{ pageItem.title }}" 
                                                 class="btn btn-sm btn-success"
-                                                title="Save {{ pageItem.title }} for later read">
+                                                title="Save page {{ pageItem.title }} for later read">
                                                 <i class="bi bi-bookmark-plus" style="font-size:1.2rem"></i>
                                             </button>
 
@@ -125,7 +128,7 @@ or using the custom filter
                                                 pageRefPermalink = "{{ pageItem.permalink }}" 
                                                 pageRefTitle="{{ pageItem.title }}" 
                                                 class="btn btn-sm btn-warning"
-                                                title="Remove {{ pageItem.title }} from saved documents">
+                                                title="Remove page {{ pageItem.title }} from saved documents">
                                                 <i class="bi bi-bookmark-x" style="font-size:1.2rem"></i>
                                             </button>
                                         
@@ -176,6 +179,9 @@ or using the custom filter
         </div>
     {% endfor %}
 </div>
+
+<!-- off canvas for page full information -->
+{% include siteIncludes/partials/page-full-info.html %} 
 
 <!-- setting up the page -->
 <script>setTagsSupport();</script>

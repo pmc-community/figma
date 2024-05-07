@@ -1,0 +1,82 @@
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasPageFullInformation">
+  <div class="offcanvas-header px-5 pt-5">
+    <span class="offcanvas-title fs-5" id="offcanvasPageFullInformationTitle">Page information</span>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body px-5" id="offcanvasPageFullInformationBody">
+
+    <!-- general -->
+    <div siteFunction="offcanvasPageFullInfoPageGeneralCard" class="card shadow bg-transparent mb-5">
+        <div class="card-header">
+            <span class="fs-6 fw-medium">General</span> 
+        </div>
+        <div siteFunction="offcanvasPageFullInfoPageGeneral" class="card-body">
+            
+            <!-- title -->
+            <div 
+                siteFunction="offcanvasPageFullInfoPageGeneralTitle"
+                class="mb-2">
+                <span class="fw-medium">Title:</span> 
+                <a 
+                    siteFunction="offcanvasPageFullInfoPageGeneralDocLink" href="#">
+                    DocLink
+                </a>
+            </div>
+
+            <!-- excerpt -->
+            <div 
+                siteFunction="offcanvasPageFullInfoPageGeneralExcerpt"
+                class="mb-2">
+                <span class="fw-medium">Excerpt:</span> 
+                <span 
+                    siteFunction="offcanvasPageFullInfoPageGeneralExcerptText">
+                    Excerpt Text
+                </span>
+            </div>
+
+            <!-- custom notes -->
+            <div 
+                siteFunction="offcanvasPageFullInfoPageGeneralCustomNotes">
+                <span class="fw-medium">Custom Notes:</span> 
+                <table siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesTable" id ="offcanvasPageFullInfoPageGeneralCustomNotesTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th siteFunction="tableDateField">Date</th>
+                            <th>Note</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td siteFunction="tableDateField">Date1</th>
+                            <td>Note1</th>
+                            <td>X/Y/Z</th>
+                        </tr>
+                        <tr>
+                            <td siteFunction="tableDateField">Date2</th>
+                            <td>Note2</th>
+                            <td>X/Y/Z</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- tags -->
+    <div siteFunction="offcanvasPageFullInfoPageTagsCard" class="card shadow bg-transparent mb-5">
+        <div class="card-header">
+            <span class="fs-6 fw-medium">Page tags</span> 
+        </div>
+        <div siteFunction="offcanvasPageFullInfoPageTags" class="card-body">
+            <button 
+                siteFunction="tagButton" 
+                type="button" 
+                class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm btn-primary position-relative">
+                tag
+            </button>
+        </div>
+    </div>
+  </div>
+</div>

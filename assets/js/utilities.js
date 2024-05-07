@@ -142,6 +142,12 @@ const findObjectInArray = (searchCriteria, objectArray) => {
       });
 }
 
+const getObjectFromArray = (searchCriteria, objectArray) => {
+    if (objectArray.length === 0) return 'none';
+    const found = _.find(objectArray, searchCriteria);
+    return !found || found === 'undefined' ? 'none' : found;
+}
+
 const objectIndexInArray = (searchCriteria, objectArray) => {
     return _.findIndex(objectArray, (obj) => {
         return Object.entries(searchCriteria).every(([key, value]) => obj[key] === value);
@@ -300,10 +306,10 @@ const setSearchList = (
 }
 
 // columnsConfig is set in the caller, to be fit to the specific table
-// callback and callbackClickRow are set in the caller to to specific processing after the table is initialized
+// callback and callbackClickRow are set in the caller to do specific processing after the table is initialized
 const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow) => {
     $(document).ready(function() {
-        
+        $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
         table = $(tableSelector).DataTable({
             paging: true, 
             ordering: true,
@@ -312,6 +318,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
             processing: true,
             fixedHeader: true,
             scrollX:true,
+            colReorder: false,
             fixedColumns: {
                 "left": 1
             },
@@ -325,6 +332,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
                     buttons: [
                         {
                             extend: ['colvis'],
+                            columns: ':gt(0)', // except first column which will be always visible
                             text: 'Columns',
                             attr: {
                                 title: 'Show/Hide Columns',
@@ -349,44 +357,52 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         // for post processing the table (i.e. adding buttons based on context)
         callback(table);
 
-        // callbackClickRow to be personalised for each table
-        // to process the selected row
-
-        // compose the selector to remove columns which must be innactive when click on a row
-        let notActiveWhenClick = [];
-        columnsConfig.forEach( column => {
-            if (column) {
-                if (column.exceptWhenRowSelect) {
-                    notActiveWhenClick.push(columnsConfig.indexOf(column));
+        const composeRowClickColumnsSelector = (colDef) => {
+            let notActiveWhenClick = [];
+            colDef.forEach( column => {
+                if (column && table.column(colDef.indexOf(column)).visible() && table.colReorder.order().indexOf(colDef.indexOf(column)) !== -1) {
+                    if (column.exceptWhenRowSelect) {
+                        notActiveWhenClick.push(colDef.indexOf(column));
+                    }
                 }
-            }
-        });
-
-        let rowClickSelector = 'tbody tr'
-
-        if (notActiveWhenClick.length > 0) {
-            rowClickSelector = 'tbody td'
-            notActiveWhenClick.forEach( columnIndex => {
-                rowClickSelector += `:not(:nth-child(${columnIndex+1}))`
             });
-        }
+            let rowClickSelector = 'tbody tr'
 
-        function handleRowClick(event) {
+            if (notActiveWhenClick.length > 0) {
+                rowClickSelector = 'tbody td'
+                notActiveWhenClick.forEach( columnIndex => {
+                    rowClickSelector += `:not(:nth-child(${columnIndex+1}))`
+                });
+            }
+            return rowClickSelector
+        }
+        
+        // HEADS UP!!!
+        // ARROW FUNCTIONS NOT ALLOWED HERE, WILL RAISE ERROR WHEN EXECUTING CALLBACK
+        const handleRowClick = function(event) {
+            table = $(event.target).closest('table').DataTable(); // mandatory when many tables on page, otherwise will mix the tables and raise errors
+            $(`${tableSelector} tr`).removeClass('table-active');
+            if (event.target.tagName.toLowerCase() === 'span') rowElement = $(event.target).parent().parent();
+            else rowElement = $(event.target).parent();
+            rowElement.addClass('table-active');
+
+            // callbackClickRow to be personalised for each table
+            // to process the selected row
             callbackClickRow({
                     rowNumber: table.row(this).index(),
                     data: table.row(this).data()
                 }
             );
         }
-        table.off('click').on('click', rowClickSelector, handleRowClick);
 
+        table.off('click').on('click', composeRowClickColumnsSelector(columnsConfig), handleRowClick);
 
-        //table.on('click', 'tbody tr', handleRowClick);
         // since tables are created dynamically, some color corrections may be lost 
         // because the theme is already applied, so we need to do the corrections again
         // also needed when switching theme
-        // if switch theme and increase no of rows/page, new rows will have the previous color scheme
-        // better to be on draw event to cover all potential cases
+        // if switch theme and increase no of rows/page, new rows will have the previous scheme background
+        applyColorSchemaCorrections();
+        // also on draw event to cover all potential cases
         table.on('draw', function () { applyColorSchemaCorrections(); });
     });
 }

@@ -49,7 +49,7 @@ const setSaveForLaterRead = () => {
             title: DOMPurify.sanitize($(this).attr('pageRefTitle')),
             customTags: [],
             customCategories: [],
-            customSummary:''
+            customNotes:[]
         }
         const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
 
@@ -60,4 +60,41 @@ const setSaveForLaterRead = () => {
             setRemoveFromSavedItemsStatus();
         }
     });
+}
+
+const getPageSavedInfo = (permalink, title) => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const page = {
+        permalink: permalink,
+        title: title
+    }
+    return getObjectFromArray(page, savedItems);
+}
+
+const getCustomTags = () => {
+    let customTags = [];
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return customTags;
+    else {
+        savedItems.forEach( (page) => {
+            let pageCustomTags = page.customTags || [];
+            pageCustomTags = ['ct1', 'ct2'];
+            //customTags = [...customTags, ...pageCustomTags];
+            customTags = Array.from(new Set([...customTags, ...pageCustomTags].slice().sort()));
+        });
+    return customTags;
+    }
+}
+
+const getCustomCats = () => {
+    let customCats = [];
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return customCats;
+    else {
+        savedItems.forEach( (page) => {
+            let pageCustomCats = page.customCategories || [];
+            customCats = Array.from(new Set([...customCats, ...pageCustomCats].slice().sort()));
+        });
+    return customCats;
+    }
 }
