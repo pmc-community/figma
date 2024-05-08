@@ -84,7 +84,7 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
         if (startMarker.trim() === '' && endMarker.trim() === '') return;
         
         // getting the content from external md
-        // comments in the form of '<!- comment ... ->' are ignored when converting from md to hmml
+        // comments in the form of '<!- comment ... ->' are ignored when converting from md to html
         $.ajax({
             url: file,
             method: "GET",
@@ -307,51 +307,54 @@ const setSearchList = (
 
 // columnsConfig is set in the caller, to be fit to the specific table
 // callback and callbackClickRow are set in the caller to do specific processing after the table is initialized
-const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow) => {
-    $(document).ready(function() {
-        $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
-        table = $(tableSelector).DataTable({
-            paging: true, 
-            ordering: true,
-            searching: true,
-            colReorder: true,
-            processing: true,
-            fixedHeader: true,
-            scrollX:true,
-            colReorder: false,
-            fixedColumns: {
-                "left": 1
-            },
-            layout: {
-                topStart: {
-                    pageLength: {
-                        menu: [1, 5, 10, 25, 50]
-                    }
-                },
-                bottom2: {
-                    buttons: [
-                        {
-                            extend: ['colvis'],
-                            columns: ':gt(0)', // except first column which will be always visible
-                            text: 'Columns',
-                            attr: {
-                                title: 'Show/Hide Columns',
-                                siteFunction: 'tableColumnsVisibility'
-                            },
-                            className: 'btn-primary btn-sm text-light focus-ring focus-ring-warning mb-2'
-                        }
-                    ]
+const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow, additionalSettings = {}) => {
+    const defaultSettings = {
+        paging: true, 
+        ordering: true,
+        searching: true,
+        colReorder: true,
+        processing: true,
+        fixedHeader: true,
+        scrollX:true,
+        colReorder: false,
+        fixedColumns: {
+            "left": 1
+        },
+        layout: {
+            topStart: {
+                pageLength: {
+                    menu: [1, 5, 10, 25, 50]
                 }
             },
-            stateSave: true,
-            stateSaveCallback: function (settings, data) {
-                localStorage.setItem(`${window.location.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '_')}_DataTables_` + tableUniqueID, JSON.stringify(data));
-            },
-            stateLoadCallback: function (settings) {
-                return JSON.parse(localStorage.getItem(`${window.location.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '_')}_DataTables_` + tableUniqueID));
-            },
-            columns: columnsConfig
-        });
+            bottom2: {
+                buttons: [
+                    {
+                        extend: ['colvis'],
+                        columns: ':gt(0)', // except first column which will be always visible
+                        text: 'Columns',
+                        attr: {
+                            title: 'Show/Hide Columns',
+                            siteFunction: 'tableColumnsVisibility'
+                        },
+                        className: 'btn-primary btn-sm text-light focus-ring focus-ring-warning mb-2'
+                    }
+                ]
+            }
+        },
+        stateSave: true,
+        stateSaveCallback: function (settings, data) {
+            localStorage.setItem(`${window.location.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '_')}_DataTables_` + tableUniqueID, JSON.stringify(data));
+        },
+        stateLoadCallback: function (settings) {
+            return JSON.parse(localStorage.getItem(`${window.location.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '_')}_DataTables_` + tableUniqueID));
+        },
+        columns: columnsConfig
+    };
+    const allSettings = {...defaultSettings, ...additionalSettings};
+
+    $(document).ready(function() {
+        $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
+        table = $(tableSelector).DataTable(allSettings);
 
         // callback to be personalised for each table
         // for post processing the table (i.e. adding buttons based on context)
@@ -381,18 +384,25 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         // ARROW FUNCTIONS NOT ALLOWED HERE, WILL RAISE ERROR WHEN EXECUTING CALLBACK
         const handleRowClick = function(event) {
             table = $(event.target).closest('table').DataTable(); // mandatory when many tables on page, otherwise will mix the tables and raise errors
-            $(`${tableSelector} tr`).removeClass('table-active');
-            if (event.target.tagName.toLowerCase() === 'span') rowElement = $(event.target).parent().parent();
-            else rowElement = $(event.target).parent();
-            rowElement.addClass('table-active');
+            
+            if (table.rows().count() > 0) {
+                // using try-catch to avoid datatables behaviour when removing rows and clicking in table. 
+                // table.rows().count() has still the value before the rows removal
+                try { 
+                    $(`${tableSelector} tr`).removeClass('table-active');
+                    if (event.target.tagName.toLowerCase() === 'span') rowElement = $(event.target).parent().parent();
+                    else rowElement = $(event.target).parent();
+                    rowElement.addClass('table-active');
 
-            // callbackClickRow to be personalised for each table
-            // to process the selected row
-            callbackClickRow({
-                    rowNumber: table.row(this).index(),
-                    data: table.row(this).data()
-                }
-            );
+                    // callbackClickRow to be personalised for each table
+                    // to process the selected row
+                    callbackClickRow({
+                            rowNumber: table.row(this).index(),
+                            data: table.row(this).data()
+                        }
+                    );
+                } catch {} 
+            }
         }
 
         table.off('click').on('click', composeRowClickColumnsSelector(columnsConfig), handleRowClick);
@@ -414,6 +424,15 @@ const addAdditionalButtonsToTable = (table, tableSelector, zone, btnArray) => {
     tableButtonsInZone = tableConfigurationLayoutZone.buttons || [];
     tableButtonsInZone = [...tableButtonsInZone, ...btnArray];
     tableConfiguration.layout[zone].buttons = tableButtonsInZone;
+    table.destroy();
+    $(tableSelector).DataTable(tableConfiguration);
+    applyColorSchemaCorrections();
+}
+
+const addDataSourceToTable = (table, tableSelector, dataSource) => {
+    tableConfiguration = table.settings().init();
+    tableConfiguration.data = dataSource;
+    console.log(tableConfiguration)
     table.destroy();
     $(tableSelector).DataTable(tableConfiguration);
     applyColorSchemaCorrections();
@@ -517,4 +536,46 @@ const applyColorSchemaCorrectionsOnTD = () => {
     } else {
         console.error('Target node not found when trying to set datatables cell background');
     }
+}
+
+const showToast = (message, type, textType) => {
+    toast = new bootstrap.Toast($('.toast'));
+    $('.toast').removeClass('bg-warning').removeClass('bg-danger').removeClass('bg-success').removeClass('bg-info');
+    $('.toast').addClass(type);
+    $('.toast .toast-body').removeClass('text-light').removeClass('text-dark');
+    $('.toast .toast-body').addClass(textType);
+    $('.toast-body').html(message);
+    toast.show();
+}
+
+const getCurrentDateTime = () => {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mmm = today.toLocaleString('default', { month: 'short' });
+    const yyyy = today.getFullYear();
+    
+    const hh = String(today.getHours()).padStart(2, '0');
+    const mm = String(today.getMinutes()).padStart(2, '0');
+    
+    const formattedDate = `${dd}-${mmm}-${yyyy} ${hh}:${mm}`;
+    return formattedDate;
+}
+
+const keepTextInputLimits = (textInputSelector, maxWords, maxChars, wordCountSelector, charCountSelector) => {
+    const MAX_WORDS = maxWords;
+    const MAX_CHARS = maxChars;
+    const $textarea = $(textInputSelector);
+    const $wordCount= $(wordCountSelector);
+    const $charCount= $(charCountSelector);
+
+    $textarea.on('keyup keypress paste', function() {
+        const text = $(this).val();
+        const wordCount = _.words(text).length;
+        const charCount = text.length;
+        $wordCount.text(`W: ${wordCount}/${MAX_WORDS}`);
+        $charCount.text(`C: ${charCount}/${MAX_CHARS}`);
+        if (wordCount > MAX_WORDS || charCount > MAX_CHARS) {
+            $(this).val(_.truncate(text, { 'length': MAX_CHARS }));
+        }
+    });
 }

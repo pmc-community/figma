@@ -53,7 +53,14 @@ $weight600Elements: ('.site-header a', 'h1', 'h2', 'h3', 'h4');
     }
 }
 
-$alwaysWhiteTextElements: ('.site-header a', 'a[siteFunction="tagPageItemLinkToDoc"]', 'a[siteFunction="menuItemLevel1"]', 'button[siteFunction="tableColumnsVisibility"] span', 'button[siteFunction="tableNavigateToSavedItems"] span');
+$alwaysWhiteTextElements: (
+    '.site-header a', 
+    'a[siteFunction="tagPageItemLinkToDoc"]', 
+    'a[siteFunction="menuItemLevel1"]', 
+    'button[siteFunction="tableColumnsVisibility"] span', 
+    'button[siteFunction="tableNavigateToSavedItems"] span', 
+    'button[siteFunction="tablePageCustomNotesRemoveAllNotes"] span'
+);
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
         color: $siteHeaderTextColor !important; 
@@ -141,5 +148,19 @@ $alwaysFlexAutoElements: ('#category-menu');
 @each $element in $alwaysFlexAutoElements {
    #{$element} {
         flex: $fl-all-available-space;
+    }
+}
+
+$alwaysCursorPointerElements: ('.alwaysCursorPointer');
+@each $element in $alwaysCursorPointerElements {
+   #{$element} {
+        cursor: $cr-pointer;
+    }
+}
+
+$alwaysTextAlignmentLeft: ('.alwaysTextToLeft');
+@each $element in $alwaysTextAlignmentLeft {
+   #{$element} {
+        text-align: $tal-h-left !important;
     }
 }

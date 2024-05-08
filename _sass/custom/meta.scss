@@ -364,6 +364,10 @@
 
     #{map-get($offcanvasElements, tagsCardBody)} {
         max-height: $tagsCardBodyMaxHeight;
-        overflow-y: $tagCloudBodyOverflowY;
+        overflow-y: $tagsCardBodyOverflowY;
+    }
+
+    #{map-get($offcanvasElements, customNoteButton)} {
+        width: $customNotesButtonWidth !important;
     }
 }

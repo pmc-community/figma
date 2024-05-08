@@ -9,9 +9,79 @@ const showPageFullInfoCanvas = (pageInfo) => {
 }
 
 const initPageFullInfoCanvas = (pageInfo) => {
+    setOpeners();
+    resetCustomNotesInputAreas();
+    setFunctions(pageInfo);
+    setInitialVisibility();
     fillPageTitle(pageInfo);
     fillPageExcerpt(pageInfo);
+    setCustomNoteTextAreaLimits();
     initCustomNotesTable(pageInfo);
+}
+
+const resetCustomNotesInputAreas = () => {
+    $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val('');
+    $('span[siteFunction="offcanvasPageFullInfoPageGeneralCustomNoteWords"]').text('W: 0');
+    $('span[siteFunction="offcanvasPageFullInfoPageGeneralCustomNoteChars"]').text('C: 0');
+}
+
+const setCustomNoteTextAreaLimits = () => {
+    keepTextInputLimits(
+        '#offcanvasPageFullInfoPageGeneralCustomNotesEdit', 
+        50, 
+        250, 
+        'span[siteFunction="offcanvasPageFullInfoPageGeneralCustomNoteWords"]', 
+        'span[siteFunction="offcanvasPageFullInfoPageGeneralCustomNoteChars"]'
+    );
+}
+
+const setFunctions = (pageInfo) => {
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditAdd"]').on('click', () => {
+        addCustomNote(pageInfo);
+    });
+
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').on('click', () => {
+        updateCustomNote(pageInfo);
+    });
+
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').on('click', () => {
+        deleteCustomNote(pageInfo);
+    });
+}
+
+const addCustomNote = (pageInfo) => {
+    note = $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val();
+    if (addNote(note, pageInfo)) {
+        const notesData = getPageNotes(pageInfo);
+        const table = $('#offcanvasPageFullInfoPageGeneralCustomNotesTable').DataTable();
+        table.rows().remove().draw();
+        table.rows.add(notesData).draw();
+        resetCustomNotesInputAreas();
+    }
+}
+
+const updateCustomNote = (pageInfo) => {
+    console.log ('update');
+    resetCustomNotesInputAreas(); 
+}
+
+const deleteCustomNote = (pageInfo) => {
+    console.log ('delete');
+    resetCustomNotesInputAreas(); 
+}
+
+const setInitialVisibility = () => {
+    $('div[siteFunction="offcanvasPageFullInfoPageTags"]').hide();
+}
+
+const setOpeners = () => {
+    $('span[siteFunction="offcanvasPageFullInfoPageOpenGeneral"]').on('click', function() {
+        $('div[siteFunction="offcanvasPageFullInfoPageGeneral"]').fadeIn();
+    })
+
+    $('span[siteFunction="offcanvasPageFullInfoPageTagsOpen"]').on('click', function() {
+        $('div[siteFunction="offcanvasPageFullInfoPageTags"]').fadeIn();
+    })
 }
 
 const fillPageTitle = (pageInfo) => {
@@ -37,23 +107,61 @@ const initCustomNotesTable = (pageInfo) => {
         [
             // date
             {
-                type: 'date', 
-                className: 'dt-left'
+                data: 'date',
+                type: 'date',
+                className: 'dt-left alwaysCursorPointer alwaysTextToLeft'
             }, 
 
             // note
-            null, 
+            {
+                data: "note",
+                className: 'alwaysCursorPointer'
+            },
 
-            // action buttons
+            // note id
             { 
+                data: "id",
                 searchable: false, 
                 orderable: false, 
-                exceptWhenRowSelect: true
+                visible: false
             }
+
         ],
 
-        (table) => {},
-        (rowData) => {console.log(rowData)}
+        (table) => { postProcessCustomNotesTable(table, pageInfo) },
+        (rowData) => {processCustomNotesTabelsClickOnRow(rowData, pageInfo)},
+        {
+            order: [
+                [0, "dec"]
+            ],
+            data: getPageNotes(pageInfo)
+        }
     );
+}
 
+const processCustomNotesTabelsClickOnRow = (rowData, pageInfo) => {
+    $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val(rowData.data.note);
+}
+
+const postProcessCustomNotesTable = (table, pageInfo) => {
+    if(table) {
+        deleteAllNotes = {
+            attr: {
+                siteFunction: 'tablePageCustomNotesRemoveAllNotes',
+                title: `Remove all custom notes for page ${pageInfo.siteInfo.title}`
+            },
+            className: 'btn-danger btn-sm text-light focus-ring focus-ring-warning mb-2',
+            text: 'Delete All Notes',
+            action: () => {
+                removeAllCustomNotes(pageInfo);
+                const notesData = getPageNotes(pageInfo);
+                table.clear().rows.add(notesData).draw();
+                resetCustomNotesInputAreas();
+        
+            }
+        };
+        const btnArray = [];
+        btnArray.push(deleteAllNotes);
+        addAdditionalButtonsToTable(table, '#offcanvasPageFullInfoPageGeneralCustomNotesTable', 'bottom2', btnArray);       
+    }   
 }

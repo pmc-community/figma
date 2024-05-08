@@ -79,7 +79,6 @@ const getCustomTags = () => {
         savedItems.forEach( (page) => {
             let pageCustomTags = page.customTags || [];
             pageCustomTags = ['ct1', 'ct2'];
-            //customTags = [...customTags, ...pageCustomTags];
             customTags = Array.from(new Set([...customTags, ...pageCustomTags].slice().sort()));
         });
     return customTags;
@@ -97,4 +96,85 @@ const getCustomCats = () => {
         });
     return customCats;
     }
+}
+
+const removeAllCustomNotes = (pageInfo) => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return;
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) return;
+
+    savedPage = getPageSavedInfo(pageInfo.siteInfo.permalink, pageInfo.siteInfo.title);
+    savedPage.customNotes = [];
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+}
+
+const addNote = (note, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t add note! Page is not in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t add note! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    if (note.trim() === '') {
+        //showToast('Nothing to add, write something ...', 'bg-warning', 'text-dark');
+        return false;
+    }
+    
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomNotes = savedPage.customNotes || [];
+    const rawSavedPageCustomNotes = _.map(savedPageCustomNotes, obj => ({
+        ...obj,
+        note: _.trim(obj.note).toLowerCase()
+    }));
+    
+    const noteIndex = objectIndexInArray({note: note.trim().toLowerCase()}, rawSavedPageCustomNotes);
+    if (noteIndex !== -1) {
+        showToast('Note already saved, no need to save it again!', 'bg-warning', 'text-dark');
+        return false;
+    }
+
+    const noteObj = {
+        date: getCurrentDateTime(),
+        note: DOMPurify.sanitize(note.trim()).replace(/<[^>]*>/g, ''),
+        id: uuid()
+    }
+    savedPageCustomNotes.push(noteObj);
+    savedPage.customNotes = savedPageCustomNotes;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+
+}
+
+const getPageNotes = (pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return [];
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) return [];
+
+    const savedPage = savedItems[pageIndex];
+    return savedPage.customNotes || [];
 }
