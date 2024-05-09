@@ -429,15 +429,6 @@ const addAdditionalButtonsToTable = (table, tableSelector, zone, btnArray) => {
     applyColorSchemaCorrections();
 }
 
-const addDataSourceToTable = (table, tableSelector, dataSource) => {
-    tableConfiguration = table.settings().init();
-    tableConfiguration.data = dataSource;
-    console.log(tableConfiguration)
-    table.destroy();
-    $(tableSelector).DataTable(tableConfiguration);
-    applyColorSchemaCorrections();
-}
-
 const handleBtnClose = () => {
     $(document).ready(function ()  {
         $('.btn-close').click(function() {
@@ -565,17 +556,55 @@ const keepTextInputLimits = (textInputSelector, maxWords, maxChars, wordCountSel
     const MAX_WORDS = maxWords;
     const MAX_CHARS = maxChars;
     const $textarea = $(textInputSelector);
-    const $wordCount= $(wordCountSelector);
-    const $charCount= $(charCountSelector);
+    const $wordCount= $(wordCountSelector) || null;
+    const $charCount= $(charCountSelector) || null;
 
     $textarea.on('keyup keypress paste', function() {
         const text = $(this).val();
         const wordCount = _.words(text).length;
         const charCount = text.length;
-        $wordCount.text(`W: ${wordCount}/${MAX_WORDS}`);
-        $charCount.text(`C: ${charCount}/${MAX_CHARS}`);
+        if ($wordCount) $wordCount.text(`W: ${wordCount}/${MAX_WORDS}`);
+        if ($charCount) $charCount.text(`C: ${charCount}/${MAX_CHARS}`);
         if (wordCount > MAX_WORDS || charCount > MAX_CHARS) {
             $(this).val(_.truncate(text, { 'length': MAX_CHARS }));
         }
     });
+}
+
+const setCanvasCloseObserver = (callback) => {
+    const targetElement = document.querySelector('.offcanvas');
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.attributeName === 'class') {
+                const classList = Array.from(mutation.target.classList);
+                if (!classList.includes('show')) {
+                    callback();
+                }
+            }
+        });
+    });
+    const config = { attributes: true, attributeFilter: ['class'] };
+    observer.observe(targetElement, config);
+}
+
+const setSimpleEditor = (placeholder, callback) => {
+    const createEditor = () => {
+        const $parent = $(placeholder).parent();
+        if ($parent.find('.ck').length === 0) {
+            ClassicEditor.create(document.querySelector(placeholder), {
+                toolbar: false
+            })
+            .then(editor => {
+                editor.model.document.on('change', () => {
+                    callback(DOMPurify.sanitize(editor.getData().replace(/<[^>]*>/g, '').trim()));
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        else $parent.find('.ck-editor__editable')[0].ckeditorInstance.setData('');
+    }
+    
+    $(document).ready(createEditor);
 }

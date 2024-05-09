@@ -62,6 +62,36 @@ const setSaveForLaterRead = () => {
     });
 }
 
+const savePageToSavedItems = (pageInfo) => {
+    const pageToSave = {
+        permalink: sanitizeURL(pageInfo.siteInfo.permalink),
+        title: DOMPurify.sanitize(pageInfo.siteInfo.title),
+        customTags: [],
+        customCategories: [],
+        customNotes:[]
+    }
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+
+    if (!findObjectInArray(pageToSave, savedItems)) {
+        savedItems.push(pageToSave);
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    }
+}
+
+const removePageFromSavedItems = (pageInfo) => {
+    const pageToRemove = {
+        permalink: sanitizeURL(pageInfo.siteInfo.permalink),
+        title:DOMPurify.sanitize(pageInfo.siteInfo.title)
+    }
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+
+    foundIndex = objectIndexInArray(pageToRemove, savedItems);
+    if ( foundIndex !== -1) {
+        const newData = _.without(savedItems, savedItems[foundIndex]);
+        localStorage.setItem('savedItems', JSON.stringify(newData));
+    }
+}
+
 const getPageSavedInfo = (permalink, title) => {
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     const page = {
@@ -122,13 +152,13 @@ const addNote = (note, pageInfo) => {
     };
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
-        showToast('Can\'t add note! Page is not in saved items...', 'bg-danger', 'text-light');
+        showToast(`Can\'t add note! Page ${page.title} is not in saved items...`, 'bg-danger', 'text-light');
         return false;
     }
 
     const pageIndex = objectIndexInArray(page, savedItems);
     if ( pageIndex === -1 ) {
-        showToast('Can\'t add note! Page not found in saved items...', 'bg-danger', 'text-light');
+        showToast(`Can\'t add note! Page ${page.title} not found in saved items...`, 'bg-danger', 'text-light');
         return false;
     }
 
@@ -163,6 +193,70 @@ const addNote = (note, pageInfo) => {
 
 }
 
+const deleteNote = (noteId, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t delete note! Page is not in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t delete note! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomNotes = savedPage.customNotes || [];
+
+    const noteIndex = objectIndexInArray({id: noteId}, savedPageCustomNotes);
+    if (noteIndex !== -1)  _.pullAt(savedPageCustomNotes, noteIndex);
+
+    savedPage.customNotes = savedPageCustomNotes;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const updateNote = (noteId, note, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t update note! Page is not in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t update note! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomNotes = savedPage.customNotes || [];
+    
+    const noteIndex = objectIndexInArray({id: noteId}, savedPageCustomNotes);
+    if (noteIndex === -1) {
+        showToast('Can\'t update! Note not found', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    savedPageCustomNotes[noteIndex].note = note;
+    savedPage.customNotes = savedPageCustomNotes;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
 const getPageNotes = (pageInfo) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
@@ -177,4 +271,9 @@ const getPageNotes = (pageInfo) => {
 
     const savedPage = savedItems[pageIndex];
     return savedPage.customNotes || [];
+}
+
+const getPageStatusInSavedItems = (pageInfo) => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    return findObjectInArray({permalink: pageInfo.siteInfo.permalink, title:pageInfo.siteInfo.title}, savedItems);
 }

@@ -74,7 +74,14 @@ $noBackgroundChangeWhenHoverElements: ('.dropdown-item');
     }
 }
 
-$alwaysBlackTextElements: ('li[siteFunction="searchTagListItem"]', '.page-link', '.DocSearch-Button-Placeholder', 'button[siteFunction="tableLockFirstColumn"] span', 'button[siteFunction="tableNavigateToCategories"] span');
+$alwaysBlackTextElements: (
+    'li[siteFunction="searchTagListItem"]', 
+    '.page-link', 
+    '.DocSearch-Button-Placeholder', 
+    'button[siteFunction="tableLockFirstColumn"] span', 
+    'button[siteFunction="tableNavigateToCategories"] span',
+    '.ck-editor__editable p'
+);
 @each $element in $alwaysBlackTextElements {
     #{$element} {
         color: $textColor !important;
@@ -113,7 +120,14 @@ $alwaysUnderlinedOnHoverTextElements: ('a[siteFunction*="menuItemLevel"]');
     }
 }
 
-$hiddenElements: ('hr', '#docFeedbackForm', 'div[siteFunction="tagDetails"] ul li::before', 'td::before', '.dt-paging-button::before');
+$hiddenElements: (
+    'hr', 
+    '#docFeedbackForm', 
+    'div[siteFunction="tagDetails"] ul li::before', 
+    'td::before', 
+    '.dt-paging-button::before',
+    '.ck-editor__top'
+);
 @each $element in $hiddenElements {
         #{$element} {
             display:$d-hidden !important;

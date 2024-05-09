@@ -363,7 +363,7 @@
     }
 
     #{map-get($offcanvasElements, tagsCardBody)} {
-        max-height: $tagsCardBodyMaxHeight;
+        //max-height: $tagsCardBodyMaxHeight;
         overflow-y: $tagsCardBodyOverflowY;
     }
 

@@ -20,6 +20,11 @@ const setTagsSupport = () => {
     setRemoveFromSavedItemsStatus();
     setSaveForLaterRead();
     setRemoveFromSavedItems();
+
+    setCanvasCloseObserver( () => {
+        setSaveForLaterReadStatus();
+        setRemoveFromSavedItemsStatus();
+    });
 }
 // work ends here
 const setPageTagButtons = () => {
@@ -125,10 +130,10 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
         siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
         savedInfo: getPageSavedInfo (permalink, title)
     };
-
+    
     showPageFullInfoCanvas(pageInfo);
+    pageInfo = {}
 }
-
 
 const postProcessTagDetailsTable = (table, tag) => {
     if(table) {

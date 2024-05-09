@@ -1,22 +1,66 @@
-
 const showPageFullInfoCanvas = (pageInfo) => {
-    $(document).ready ( function() {  
-        if (pageInfo) {
-            initPageFullInfoCanvas(pageInfo);
-            $('#offcanvasPageFullInformation').offcanvas('show');
-        }
-    });  
+    if (pageInfo) {
+        initPageFullInfoCanvasBeforeShow(pageInfo);
+        $('#offcanvasPageFullInformation').offcanvas('show');
+        initPageFullInfoCanvasAfterShow(pageInfo);
+    }
 }
 
-const initPageFullInfoCanvas = (pageInfo) => {
-    setOpeners();
+const initPageFullInfoCanvasAfterShow = (pageInfo) => {
+
+    // for tags
+    setTagEditor('#offcanvasPageFullInfoPageTagsEditor', pageInfo);
+}
+
+const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
+    $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val('');
+    // for custom notes
+    setPageStatusButtons(pageInfo);
+    setCanvasSectionsOpeners();
     resetCustomNotesInputAreas();
-    setFunctions(pageInfo);
-    setInitialVisibility();
+    setCanvasButtonsFunctions(pageInfo);
+    setInitialCanvasSectionsVisibility();
     fillPageTitle(pageInfo);
     fillPageExcerpt(pageInfo);
     setCustomNoteTextAreaLimits();
     initCustomNotesTable(pageInfo);
+    setCanvasGeneralCustomNotesVisibility(pageInfo);
+
+    // for tags
+    setCanvasPageCustomTagsVisibility(pageInfo);
+}
+
+const setCanvasGeneralCustomNotesVisibility = (pageInfo) => {
+    if ( getPageStatusInSavedItems(pageInfo)) {
+        $('div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesLimitsAlert"]').show();
+        $('div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesSavePageAlert"]').hide();
+        $('div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesContainer"]').show();
+    }
+    else {
+        $('div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesLimitsAlert"]').hide();
+        $('div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesSavePageAlert"]').show();
+        $('div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesContainer"]').hide();
+    }
+}
+
+const setCanvasPageCustomTagsVisibility = (pageInfo) => {
+    if ( getPageStatusInSavedItems(pageInfo)) {
+        $('div[siteFunction="offcanvasPageFullInfoPageCustomTags"]').show();
+    }
+    else {
+        $('div[siteFunction="offcanvasPageFullInfoPageCustomTags"]').hide();
+    }
+}
+
+const setPageStatusButtons = (pageInfo) => {
+    if ( getPageStatusInSavedItems(pageInfo)) {
+        $('button[siteFunction="offcanvasPageFullInfoPageSaveToSavedItems"]').addClass('disabled');
+        $('button[siteFunction="offcanvasPageFullInfoPageRemoveFromSavedItems"]').removeClass('disabled');
+    }
+    else {
+        $('button[siteFunction="offcanvasPageFullInfoPageSaveToSavedItems"]').removeClass('disabled');
+        $('button[siteFunction="offcanvasPageFullInfoPageRemoveFromSavedItems"]').addClass('disabled');
+    }
 }
 
 const resetCustomNotesInputAreas = () => {
@@ -35,46 +79,80 @@ const setCustomNoteTextAreaLimits = () => {
     );
 }
 
-const setFunctions = (pageInfo) => {
-    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditAdd"]').on('click', () => {
+const setCanvasButtonsFunctions = (pageInfo) => {
+
+    // .off('click') is mandatory, otherwise the listener will be binded multiple times to the page
+    // and the function will be executed for all history of pageInfo until the whole page is reloaded
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditAdd"]').off('click').on('click', function() {
         addCustomNote(pageInfo);
     });
 
-    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').on('click', () => {
-        updateCustomNote(pageInfo);
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').off('click').on('click', function() {
+        const noteId = $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').attr('selectedNote');
+        updateCustomNote(noteId, pageInfo);
     });
 
-    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').on('click', () => {
-        deleteCustomNote(pageInfo);
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').off('click').on('click', function() {
+        const noteId = $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').attr('selectedNote');
+        deleteCustomNote(noteId, pageInfo);
     });
+
+    $('button[siteFunction="offcanvasPageFullInfoPageSaveToSavedItems"]').off('click').on('click', function() {
+        savePageToSavedItems(pageInfo);
+        setPageStatusButtons(pageInfo);
+        setCanvasGeneralCustomNotesVisibility(pageInfo);
+        setCanvasPageCustomTagsVisibility(pageInfo);
+    });
+    
+    $('button[siteFunction="offcanvasPageFullInfoPageRemoveFromSavedItems"]').off('click').on('click', function() {
+        removePageFromSavedItems(pageInfo);
+        setPageStatusButtons(pageInfo);
+        setCanvasGeneralCustomNotesVisibility(pageInfo);
+        setCanvasPageCustomTagsVisibility(pageInfo);
+    });
+    
+}
+
+const refreshNotesTable = (pageInfo) => {
+    const notesData = getPageNotes(pageInfo);
+    const table = $('#offcanvasPageFullInfoPageGeneralCustomNotesTable').DataTable();
+    table.rows().remove().draw();
+    table.rows.add(notesData).draw();
 }
 
 const addCustomNote = (pageInfo) => {
     note = $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val();
-    if (addNote(note, pageInfo)) {
-        const notesData = getPageNotes(pageInfo);
-        const table = $('#offcanvasPageFullInfoPageGeneralCustomNotesTable').DataTable();
-        table.rows().remove().draw();
-        table.rows.add(notesData).draw();
-        resetCustomNotesInputAreas();
-    }
+    if (addNote(note, pageInfo)) refreshNotesTable(pageInfo);
+    resetCustomNotesInputAreas();
+    toggleUpdateNoteButton();
+    toggleDeleteNoteButton();
+    unsetSelectedNote();
 }
 
-const updateCustomNote = (pageInfo) => {
+const updateCustomNote = (noteId, pageInfo) => {
     console.log ('update');
-    resetCustomNotesInputAreas(); 
+    note = $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val();
+    if (updateNote(noteId, note, pageInfo)) refreshNotesTable(pageInfo);
+    resetCustomNotesInputAreas();
+    toggleUpdateNoteButton();
+    toggleDeleteNoteButton();
+    unsetSelectedNote();
 }
 
-const deleteCustomNote = (pageInfo) => {
-    console.log ('delete');
-    resetCustomNotesInputAreas(); 
+const deleteCustomNote = (noteId, pageInfo) => {
+    if (deleteNote(noteId, pageInfo)) refreshNotesTable(pageInfo);
+    resetCustomNotesInputAreas();
+    toggleUpdateNoteButton();
+    toggleDeleteNoteButton();
+    unsetSelectedNote();
 }
 
-const setInitialVisibility = () => {
+const setInitialCanvasSectionsVisibility = () => {
+    $('div[siteFunction="offcanvasPageFullInfoPageGeneral"]').hide();
     $('div[siteFunction="offcanvasPageFullInfoPageTags"]').hide();
 }
 
-const setOpeners = () => {
+const setCanvasSectionsOpeners = () => {
     $('span[siteFunction="offcanvasPageFullInfoPageOpenGeneral"]').on('click', function() {
         $('div[siteFunction="offcanvasPageFullInfoPageGeneral"]').fadeIn();
     })
@@ -132,7 +210,7 @@ const initCustomNotesTable = (pageInfo) => {
         (rowData) => {processCustomNotesTabelsClickOnRow(rowData, pageInfo)},
         {
             order: [
-                [0, "dec"]
+                [0, "desc"]
             ],
             data: getPageNotes(pageInfo)
         }
@@ -140,7 +218,14 @@ const initCustomNotesTable = (pageInfo) => {
 }
 
 const processCustomNotesTabelsClickOnRow = (rowData, pageInfo) => {
-    $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val(rowData.data.note);
+    $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val(rowData.data.note).on('input', function() { 
+        disableDeleteNoteButton(); // disable delete if click on table and start typing in note text area
+    });
+
+    $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').trigger('keyup'); // to update word and char counts
+    toggleDeleteNoteButton(true);
+    toggleUpdateNoteButton(true);
+    setSelectedNote(rowData);
 }
 
 const postProcessCustomNotesTable = (table, pageInfo) => {
@@ -157,6 +242,9 @@ const postProcessCustomNotesTable = (table, pageInfo) => {
                 const notesData = getPageNotes(pageInfo);
                 table.clear().rows.add(notesData).draw();
                 resetCustomNotesInputAreas();
+                toggleUpdateNoteButton();
+                toggleDeleteNoteButton();
+                unsetSelectedNote();
         
             }
         };
@@ -164,4 +252,37 @@ const postProcessCustomNotesTable = (table, pageInfo) => {
         btnArray.push(deleteAllNotes);
         addAdditionalButtonsToTable(table, '#offcanvasPageFullInfoPageGeneralCustomNotesTable', 'bottom2', btnArray);       
     }   
+}
+
+const toggleDeleteNoteButton = (mode) => {
+    if (mode) $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').removeClass('disabled');
+    else $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').addClass('disabled');
+}
+
+const toggleUpdateNoteButton = (mode) => {
+    if (mode) $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').removeClass('disabled');
+    else $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').addClass('disabled');
+}
+
+const setSelectedNote = (rowData) => {
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').attr('selectedNote', rowData.data.id);
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').attr('selectedNote', rowData.data.id)
+}
+
+const unsetSelectedNote = () => {
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').attr('selectedNote', '');
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').attr('selectedNote', '')
+}
+
+const disableDeleteNoteButton = () => {
+    toggleDeleteNoteButton();
+    $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').attr('selectedNote', '');
+}
+
+const setTagEditor = (editorSelector, pageInfo) => {
+    if ( getPageStatusInSavedItems(pageInfo)) {
+        setSimpleEditor(editorSelector, (editorText) => {
+            console.log(editorText);
+        });
+    }
 }
