@@ -315,11 +315,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         colReorder: true,
         processing: true,
         fixedHeader: true,
-        scrollX:true,
         colReorder: false,
-        fixedColumns: {
-            "left": 1
-        },
         layout: {
             topStart: {
                 pageLength: {
@@ -540,15 +536,19 @@ const showToast = (message, type, textType) => {
 }
 
 const getCurrentDateTime = () => {
-    const today = new Date();
+    return formatDate(new Date());
+}
+
+const formatDate = (dateString) => {
+    const today = new Date(dateString);
     const dd = String(today.getDate()).padStart(2, '0');
     const mmm = today.toLocaleString('default', { month: 'short' });
     const yyyy = today.getFullYear();
     
-    const hh = String(today.getHours()).padStart(2, '0');
-    const mm = String(today.getMinutes()).padStart(2, '0');
+    //const hh = String(today.getHours()).padStart(2, '0');
+    //const mm = String(today.getMinutes()).padStart(2, '0');
     
-    const formattedDate = `${dd}-${mmm}-${yyyy} ${hh}:${mm}`;
+    const formattedDate = `${dd}-${mmm}-${yyyy}`;
     return formattedDate;
 }
 
@@ -587,24 +587,33 @@ const setCanvasCloseObserver = (callback) => {
     observer.observe(targetElement, config);
 }
 
-const setSimpleEditor = (placeholder, callback) => {
+const setSimpleEditor = (placeholder, options, callbackEditor, callbackEditorData) => {
     const createEditor = () => {
         const $parent = $(placeholder).parent();
+        
         if ($parent.find('.ck').length === 0) {
-            ClassicEditor.create(document.querySelector(placeholder), {
-                toolbar: false
-            })
+            DecoupledEditor.create(document.querySelector(placeholder), options)
             .then(editor => {
-                editor.model.document.on('change', () => {
-                    callback(DOMPurify.sanitize(editor.getData().replace(/<[^>]*>/g, '').trim()));
-                });
+                callbackEditor(editor);
+                $(placeholder).addClass('rounded border'); // to fit in the theme design
+                editor.model.document.on('change', handleEditorDataChange.bind(null, editor, callbackEditorData));
             })
             .catch(error => {
                 console.error(error);
             });
         }
-        else $parent.find('.ck-editor__editable')[0].ckeditorInstance.setData('');
+        else {
+            // stop the listener so editor to not fire on change for setData()
+            editor = $parent.find('.ck-editor__editable')[0].ckeditorInstance;
+            editor.model.document.off();
+            editor.setData('');
+            editor.model.document.on('change', handleEditorDataChange.bind(null, editor, callbackEditorData));
+        }
     }
-    
+
     $(document).ready(createEditor);
+}
+
+const handleEditorDataChange = (editor, callbackEditorData) => { 
+    callbackEditorData(editor.getData());
 }

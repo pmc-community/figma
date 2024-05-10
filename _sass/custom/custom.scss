@@ -17,6 +17,7 @@
 @import 'tags.scss';
 @import 'cat.scss';
 @import 'tables.scss';
+@import 'editor.scss';
 @import 'page-full-info.scss';
 
 // this should be last import because component's settings are set in the imports above
@@ -125,8 +126,7 @@ $hiddenElements: (
     '#docFeedbackForm', 
     'div[siteFunction="tagDetails"] ul li::before', 
     'td::before', 
-    '.dt-paging-button::before',
-    '.ck-editor__top'
+    '.dt-paging-button::before'
 );
 @each $element in $hiddenElements {
         #{$element} {

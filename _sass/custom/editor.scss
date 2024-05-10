@@ -1,0 +1,11 @@
+@import 'custom-vars.scss';
+
+$editZoneBackground: $c-white;
+$editZoneBorder: $b-SolThinGrey;
+
+$editorElements: (
+    editZone: '.ck-editor__editable'
+);
+
+@import 'meta.scss';
+@include editor($editorElements);

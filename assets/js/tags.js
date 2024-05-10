@@ -97,7 +97,13 @@ const showTagDetails = (tag) => {
         ],
 
         (table) => { postProcessTagDetailsTable(table, tag) },
-        (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) }
+        (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) },
+        {
+            scrollX:true,
+            fixedColumns: {
+                "left": 1
+            }
+        }
     );
 
     history.replaceState({}, document.title, window.location.pathname);
@@ -132,7 +138,6 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
     };
     
     showPageFullInfoCanvas(pageInfo);
-    pageInfo = {}
 }
 
 const postProcessTagDetailsTable = (table, tag) => {

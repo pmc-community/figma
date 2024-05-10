@@ -3,7 +3,12 @@ const showPageFullInfoCanvas = (pageInfo) => {
         initPageFullInfoCanvasBeforeShow(pageInfo);
         $('#offcanvasPageFullInformation').offcanvas('show');
         initPageFullInfoCanvasAfterShow(pageInfo);
+        initPageFullInfoCanvasAfterDocReady(pageInfo);
     }
+}
+
+const initPageFullInfoCanvasAfterDocReady = (pageInfo) => {
+    fillTagList(pageInfo);
 }
 
 const initPageFullInfoCanvasAfterShow = (pageInfo) => {
@@ -21,6 +26,7 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
     setCanvasButtonsFunctions(pageInfo);
     setInitialCanvasSectionsVisibility();
     fillPageTitle(pageInfo);
+    fillPageLastUpdate(pageInfo);
     fillPageExcerpt(pageInfo);
     setCustomNoteTextAreaLimits();
     initCustomNotesTable(pageInfo);
@@ -28,7 +34,33 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
 
     // for tags
     setCanvasPageCustomTagsVisibility(pageInfo);
+    
 }
+
+const fillTagList = (pageInfo) => {
+    
+    const $tagItemsContainer = $('div[siteFunction="offcanvasPageFullInfoPageTagsList"]');
+    const $tagItemElement = $('a[siteFunction="offcanvasPageFullInfoPageTagButton"]')[0];
+    const html = $tagItemElement.outerHTML;
+    $tagItemsContainer.empty();
+
+    pageInfo.siteInfo.tags.sort().forEach( tag => {
+        const $el = $(html);
+        $el.text(tag);
+        $el.attr('href',`/tag-info?tag=${tag}`);
+        $el.removeClass('btn-primarry').removeClass('btn-success').addClass('btn-primary');
+        $el.appendTo( $tagItemsContainer);
+    });
+
+    pageInfo.savedInfo.customTags.sort().forEach( tag => {
+        const $el = $(html);
+        $el.text(tag);
+        $el.attr('href',`/tag-info?tag=${tag}`);
+        $el.removeClass('btn-primarry').removeClass('btn-success').addClass('btn-success');
+        $el.appendTo( $tagItemsContainer);
+    });
+}
+
 
 const setCanvasGeneralCustomNotesVisibility = (pageInfo) => {
     if ( getPageStatusInSavedItems(pageInfo)) {
@@ -102,6 +134,7 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
+        refreshNotesTable(pageInfo);
     });
     
     $('button[siteFunction="offcanvasPageFullInfoPageRemoveFromSavedItems"]').off('click').on('click', function() {
@@ -109,6 +142,7 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
+        refreshNotesTable(pageInfo);
     });
     
 }
@@ -165,6 +199,10 @@ const setCanvasSectionsOpeners = () => {
 const fillPageTitle = (pageInfo) => {
     $('a[siteFunction="offcanvasPageFullInfoPageGeneralDocLink"]').text(pageInfo.siteInfo.title);
     $('a[siteFunction="offcanvasPageFullInfoPageGeneralDocLink"]').attr('href',pageInfo.siteInfo.permalink);
+}
+
+const fillPageLastUpdate = (pageInfo) => {
+    $('span[siteFunction="offcanvasPageFullInfoPageGeneralLastUpdateDate"]').text(formatDate(pageInfo.siteInfo.lastUpdate));
 }
 
 const fillPageExcerpt = (pageInfo) => {
@@ -250,7 +288,7 @@ const postProcessCustomNotesTable = (table, pageInfo) => {
         };
         const btnArray = [];
         btnArray.push(deleteAllNotes);
-        addAdditionalButtonsToTable(table, '#offcanvasPageFullInfoPageGeneralCustomNotesTable', 'bottom2', btnArray);       
+        addAdditionalButtonsToTable(table, '#offcanvasPageFullInfoPageGeneralCustomNotesTable', 'bottom2', btnArray);      
     }   
 }
 
@@ -281,8 +319,29 @@ const disableDeleteNoteButton = () => {
 
 const setTagEditor = (editorSelector, pageInfo) => {
     if ( getPageStatusInSavedItems(pageInfo)) {
-        setSimpleEditor(editorSelector, (editorText) => {
-            console.log(editorText);
-        });
+        const options = {};
+
+        setSimpleEditor(
+            editorSelector, 
+            options,
+            (editor) => {
+                postProcessTagEditor(editor, pageInfo);
+            }, 
+            (editorText) => {
+                postProcessingEditorText(editorText, editorSelector, pageInfo);
+            }
+        );
     }
+}
+
+const postProcessTagEditor = (editor, pageInfo) => {
+    // add post processing of editor after creation
+    // such as changing fonts through API, etc
+}
+
+const postProcessingEditorText = (editorText, editorSelector, pageInfo) => {
+    // process the editor text while typing
+    console.log(DOMPurify.sanitize(editorText.replace(/<[^>]*>/g, '').trim()));
+    const tagString = DOMPurify.sanitize(editorText.replace(/<[^>]*>/g, '').trim());
+    //console.log(pageInfo);
 }

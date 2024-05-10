@@ -14,15 +14,25 @@
             </div>
             <div siteFunction="offcanvasPageFullInfoPageGeneral" class="card-body">
                 
-                <!-- title -->
-                <div 
-                    siteFunction="offcanvasPageFullInfoPageGeneralTitle"
-                    class="mb-2">
-                    <span class="fw-medium">Title:</span> 
-                    <a 
-                        siteFunction="offcanvasPageFullInfoPageGeneralDocLink" href="#">
-                        DocLink
-                    </a>
+                <!-- title and last update -->
+                <div class=" d-flex justify-content-between">
+                    <!-- title -->
+                    <div 
+                        siteFunction="offcanvasPageFullInfoPageGeneralTitle"
+                        class="mb-2">
+                        <span class="fw-medium">Title:</span> 
+                        <a 
+                            siteFunction="offcanvasPageFullInfoPageGeneralDocLink" href="#">
+                            DocLink
+                        </a>
+                    </div>
+                    <!-- last update -->
+                    <div 
+                        siteFunction="offcanvasPageFullInfoPageGeneralLastUpdate"
+                        class="mb-2">
+                        <span class="fw-medium">Last update:</span> 
+                        <span siteFunction="offcanvasPageFullInfoPageGeneralLastUpdateDate" class="fw-medium">docLAstUpdate</span>
+                    </div>
                 </div>
 
                 <!-- excerpt -->
@@ -133,15 +143,18 @@
             </div>
             <div siteFunction="offcanvasPageFullInfoPageTags" class="card-body">
 
-                <div siteFunction="offcanvasPageFullInfoPageTagsList">
-                    <button 
-                        siteFunction="tagButton" 
+                <!-- page tags -->
+                <div siteFunction="offcanvasPageFullInfoPageTagsList" class="mb-2">
+                    <a 
+                        siteFunction="offcanvasPageFullInfoPageTagButton" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm btn-primary position-relative">
+                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm position-relative"
+                        href="#">
                         tag
-                    </button>
+                    </a>
                 </div>
 
+                <!-- tag editor -->
                 <div siteFunction="offcanvasPageFullInfoPageCustomTags" >
                     <div 
                         siteFunction="offcanvasPageFullInfoPageTagsEditor" 

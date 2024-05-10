@@ -356,7 +356,7 @@
     }
 }
 
-// pgae full info offcanvas
+// page full info offcanvas
 @mixin offCanvasPageFullInfo($offcanvasElements) {
     #{map-get($offcanvasElements, container)} {
         width: $offcanvasWidth !important;
@@ -369,5 +369,13 @@
 
     #{map-get($offcanvasElements, customNoteButton)} {
         width: $customNotesButtonWidth !important;
+    }
+}
+
+// editor
+@mixin editor($editorElements) {
+    #{map-get($editorElements, editZone)} {
+        background: $editZoneBackground;
+        //border: $editZoneBorder !important;
     }
 }
