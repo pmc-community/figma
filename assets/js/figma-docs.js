@@ -1,6 +1,7 @@
 // GLOBALS
 let globCustomCats, globCustomTags;
 let globAllCats, globAllTags;
+let siteObservers = new Map();
 
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case

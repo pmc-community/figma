@@ -571,6 +571,7 @@ const keepTextInputLimits = (textInputSelector, maxWords, maxChars, wordCountSel
     });
 }
 
+// OBSERVERS
 const setCanvasCloseObserver = (callback) => {
     const targetElement = document.querySelector('.offcanvas');
     const observer = new MutationObserver(mutations => {
@@ -587,33 +588,144 @@ const setCanvasCloseObserver = (callback) => {
     observer.observe(targetElement, config);
 }
 
-const setSimpleEditor = (placeholder, options, callbackEditor, callbackEditorData) => {
+const setElementChangeClassObserver = (elementSelector, cls, callback) => {
+    const targetElement = document.querySelector(elementSelector);
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.attributeName === 'class') {
+                const classList = Array.from(mutation.target.classList);
+                if (!classList.includes(cls)) {
+                    callback();
+                }
+            }
+        });
+    });
+    const config = { attributes: true, attributeFilter: ['class'] };
+    siteObservers.set(observer, elementSelector);
+    observer.observe(targetElement, config);
+}
+
+const setElementCreatedObserver = (elementClass, callback) => {
+    const mutationCallback = function(mutationsList) {
+        for(const mutation of mutationsList) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach(node => {
+                    if (node instanceof Element && node.classList.contains(elementClass)) {
+                        callback();
+                    }
+                });
+            }
+        }
+    };
+    
+    const observerOptions = {
+        childList: true,  
+        subtree: true  
+    };
+    
+    const targetNode = document.body;
+    const observer = new MutationObserver(mutationCallback);    
+    observer.observe(targetNode, observerOptions);
+}
+
+const removeObservers = (elementSelector) => {
+    for (const [observer, element] of siteObservers) {
+        if (element === elementSelector) {
+            observer.disconnect();
+        }
+    }
+}
+
+const setEditor = (placeholder, options={}, callbackEditor, callbackEditorData) => {
     const createEditor = () => {
         const $parent = $(placeholder).parent();
         
+        const defaultBuiltInOptions = {
+            toolbar: [
+                'undo', 'redo', '|', 'heading', '|', 'alignment', 'outdent', 'indent', '|',
+                {
+                    label: 'Fonts',
+                    withText: true,
+                    items: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor' ]
+                },
+                '|',
+                {
+                    label: 'Style',
+                    withText: true,
+                    items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
+                },
+                '|',
+                {
+                    label: 'Code Blocks',
+                    withText: true,
+                    items: [ 'blockQuote', 'codeBlock' ]
+                },
+                '|', 'link', 'blockQuote', '|',
+                {
+                    label: 'Lists',
+                    withText: true,
+                    items: [ 'bulletedList', 'numberedList', 'todoList']
+                },   
+            ]
+        }
+
+        const allBuiltInOptions = { ...defaultBuiltInOptions, ...options.builtInOptions }
+
         if ($parent.find('.ck').length === 0) {
-            DecoupledEditor.create(document.querySelector(placeholder), options)
+            DecoupledEditor.create(document.querySelector(placeholder), allBuiltInOptions)
             .then(editor => {
+
+                if (options.toolbar.show) {
+                    const toolbarContainer = document.querySelector( options.toolbar.selector);
+                    toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
+                    if (options.menuBar.show) {
+                        document.querySelector( options.menuBar.selector).appendChild( editor.ui.view.menuBarView.element );
+                        $(options.toolbar.selector).css('margin-top','-1px');
+                    }
+                    
+                    $(placeholder).addClass('documentEditor').addClass('border').removeClass('rounded');
+                    removeObservers(placeholder);
+                    setElementChangeClassObserver(placeholder,'documentEditor', ()=>{
+                        $(placeholder).addClass('documentEditor').addClass('border').removeClass('rounded');
+                    });
+                }
+                else {
+                    removeObservers(placeholder);
+                    $(placeholder).addClass('border');
+                    setElementChangeClassObserver(placeholder,'border', ()=>{
+                        $(placeholder).addClass('border');
+                    });
+                }
+
                 callbackEditor(editor);
-                $(placeholder).addClass('rounded border'); // to fit in the theme design
-                editor.model.document.on('change', handleEditorDataChange.bind(null, editor, callbackEditorData));
+
+                // setting the listener to process editor data
+                // using on change:data to filter events that are not changing the content of the editor (such as mouse clicks)
+                editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
             })
             .catch(error => {
                 console.error(error);
             });
         }
         else {
-            // stop the listener so editor to not fire on change for setData()
+            // stop the listener so editor to not fire on change for setData() and avoid endless loop on change
             editor = $parent.find('.ck-editor__editable')[0].ckeditorInstance;
             editor.model.document.off();
             editor.setData('');
-            editor.model.document.on('change', handleEditorDataChange.bind(null, editor, callbackEditorData));
+            editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
         }
     }
+
+    const handleEditorDataChange = (editor, callbackEditorData) => {
+        // we assume that there may be a setData() when processing the text, so we stop the listner to avoid endless loop
+        editor.model.document.off();
+        callbackEditorData(editor.getData(), ()=>{
+            editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
+        });
+    }    
 
     $(document).ready(createEditor);
 }
 
-const handleEditorDataChange = (editor, callbackEditorData) => { 
-    callbackEditorData(editor.getData());
-}
+

@@ -1,4 +1,4 @@
-<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasPageFullInformation">
+<div class="offcanvas offcanvas-start" tabindex="-1" data-bs-scroll="true" id="offcanvasPageFullInformation">
     <div class="offcanvas-header px-5 pt-5">
         <span class="offcanvas-title fs-5" id="offcanvasPageFullInformationTitle">Page information</span>
         <button siteFunction="offcanvasPageFullInfoClose" type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -155,7 +155,15 @@
                 </div>
 
                 <!-- tag editor -->
-                <div siteFunction="offcanvasPageFullInfoPageCustomTags" >
+                <div siteFunction="offcanvasPageFullInfoPageCustomTags">
+                    <div 
+                        siteFunction="offcanvasPageFullInfoPageTagsEditorMenubar"
+                        id="offcanvasPageFullInfoPageTagsEditorMenubar">
+                    </div>
+                    <div 
+                        siteFunction="offcanvasPageFullInfoPageTagsEditorToolbar"
+                        id="offcanvasPageFullInfoPageTagsEditorToolbar">
+                    </div>
                     <div 
                         siteFunction="offcanvasPageFullInfoPageTagsEditor" 
                         id="offcanvasPageFullInfoPageTagsEditor"

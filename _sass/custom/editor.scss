@@ -2,9 +2,15 @@
 
 $editZoneBackground: $c-white;
 $editZoneBorder: $b-SolThinGrey;
+$documentEditorHeight: $sz-300px;
+$documentEditorTopMargin: $s-neg-1px;
+$documentEditorBorderRadius: $brad-0px;
+$documentEditorBaloonZIndex: calc(#{$z-max} + 1000);
 
 $editorElements: (
-    editZone: '.ck-editor__editable'
+    editZone: '.ck-editor__editable',
+    documentEditor: '.documentEditor', // for the case when we need a full doc editor
+    balloon: '.ck-balloon-panel'
 );
 
 @import 'meta.scss';

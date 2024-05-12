@@ -39,7 +39,12 @@ $alwaysWithBaseFontSize: ('body');
 }
 
 //.dt-scroll-headInner because scrollX:true makes datatable header to not cover the table width
-$fullWidthElements: ('.site-header', '.search', '.site-footer', '#site-nav'); 
+$fullWidthElements: (
+    '.site-header', 
+    '.search', 
+    '.site-footer', 
+    '#site-nav'
+); 
 @each $element in $fullWidthElements {
     #{$element} {
         width:$sz-full !important;
@@ -47,7 +52,13 @@ $fullWidthElements: ('.site-header', '.search', '.site-footer', '#site-nav');
     }
 }
 
-$weight600Elements: ('.site-header a', 'h1', 'h2', 'h3', 'h4');
+$weight600Elements: (
+    '.site-header a', 
+    'h1', 
+    'h2', 
+    'h3', 
+    'h4'
+);
 @each $element in $weight600Elements {
     #{$element} {
         font-weight:$f-semiBold;
@@ -81,7 +92,8 @@ $alwaysBlackTextElements: (
     '.DocSearch-Button-Placeholder', 
     'button[siteFunction="tableLockFirstColumn"] span', 
     'button[siteFunction="tableNavigateToCategories"] span',
-    '.ck-editor__editable p'
+    '.ck-editor__editable p',
+    '.ck-button__label'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {
@@ -126,7 +138,11 @@ $hiddenElements: (
     '#docFeedbackForm', 
     'div[siteFunction="tagDetails"] ul li::before', 
     'td::before', 
-    '.dt-paging-button::before'
+    '.dt-paging-button::before',
+    '.ck-powered-by',
+    'div[sitefunction="offcanvasPageFullInfoPageTagsEditor"] li::before',
+    '.ck-menu-bar__menu__item::before',
+    '.ck-list__separator::before'
 );
 @each $element in $hiddenElements {
         #{$element} {
@@ -134,14 +150,21 @@ $hiddenElements: (
         }
 }
 
-$visibleElements: ('hr[siteFunction="pageTagsSeparator"]', '.dropdown-divider', 'hr[siteFunction="pageTocHeaderSeparator"]');
+$visibleElements: (
+    'hr[siteFunction="pageTagsSeparator"]', 
+    '.dropdown-divider', 
+    'hr[siteFunction="pageTocHeaderSeparator"]'
+);
 @each $element in $visibleElements {
         #{$element} {
             display:$d-block !important;
         }
 }
 
-$alwaysNoBorderBottomElements: ('ul[siteFunction="tagPageItem"]:last-child','.dt-processing');
+$alwaysNoBorderBottomElements: (
+    'ul[siteFunction="tagPageItem"]:last-child',
+    '.dt-processing'
+);
 @each $element in $alwaysNoBorderBottomElements {
     #{$element} {
         border-bottom: $b-none !important;

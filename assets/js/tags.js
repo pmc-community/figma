@@ -20,7 +20,8 @@ const setTagsSupport = () => {
     setRemoveFromSavedItemsStatus();
     setSaveForLaterRead();
     setRemoveFromSavedItems();
-
+       
+    // from utilities.js
     setCanvasCloseObserver( () => {
         setSaveForLaterReadStatus();
         setRemoveFromSavedItemsStatus();
@@ -136,6 +137,15 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
         siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
         savedInfo: getPageSavedInfo (permalink, title)
     };
+
+    $.fn.modal.Constructor.prototype._enforceFocus = function() {
+        $(document).off('focusin.bs.modal').on('focusin.bs.modal', $.proxy((function(e) {
+          if (this.$element[0] !== e.target && !this.$element.has(e.target).length && !$(e.target).closest('.ck-balloon-panel, .ck').length) {
+            this.$element.trigger('focus');
+          }
+        }), this));
+      };
+
     
     showPageFullInfoCanvas(pageInfo);
 }

@@ -8,11 +8,10 @@ const showPageFullInfoCanvas = (pageInfo) => {
 }
 
 const initPageFullInfoCanvasAfterDocReady = (pageInfo) => {
-    fillTagList(pageInfo);
+    fillTagList(pageInfo);    
 }
 
 const initPageFullInfoCanvasAfterShow = (pageInfo) => {
-
     // for tags
     setTagEditor('#offcanvasPageFullInfoPageTagsEditor', pageInfo);
 }
@@ -60,7 +59,6 @@ const fillTagList = (pageInfo) => {
         $el.appendTo( $tagItemsContainer);
     });
 }
-
 
 const setCanvasGeneralCustomNotesVisibility = (pageInfo) => {
     if ( getPageStatusInSavedItems(pageInfo)) {
@@ -319,16 +317,28 @@ const disableDeleteNoteButton = () => {
 
 const setTagEditor = (editorSelector, pageInfo) => {
     if ( getPageStatusInSavedItems(pageInfo)) {
-        const options = {};
+        const options = {
+            toolbar: {
+                show: true,
+                selector: '#offcanvasPageFullInfoPageTagsEditorToolbar'
+            },
+            menuBar: {
+                show: true,
+                selector: '#offcanvasPageFullInfoPageTagsEditorMenubar'
+            },
+            builtInOptions: {}
+        };
 
-        setSimpleEditor(
+        setEditor(
             editorSelector, 
             options,
             (editor) => {
                 postProcessTagEditor(editor, pageInfo);
             }, 
-            (editorText) => {
-                postProcessingEditorText(editorText, editorSelector, pageInfo);
+            (editorText, callbackResponse) => {
+                //editor = $(editorSelector).parent().find('.ck-editor__editable')[0].ckeditorInstance;
+                //editor.model.document.off();
+                postProcessingEditorText(editorText, editorSelector, pageInfo, callbackResponse);
             }
         );
     }
@@ -339,9 +349,25 @@ const postProcessTagEditor = (editor, pageInfo) => {
     // such as changing fonts through API, etc
 }
 
-const postProcessingEditorText = (editorText, editorSelector, pageInfo) => {
+const postProcessingEditorText = (editorText, editorSelector, pageInfo, callbackResponse) => {
     // process the editor text while typing
-    console.log(DOMPurify.sanitize(editorText.replace(/<[^>]*>/g, '').trim()));
-    const tagString = DOMPurify.sanitize(editorText.replace(/<[^>]*>/g, '').trim());
-    //console.log(pageInfo);
+
+    let tagString = DOMPurify.sanitize(editorText.replace(/<[^>]*>/g, '').replace(/(\n|&nbsp;)/g, ','));
+    tagString = tagString === ',' ? '' : tagString;
+    console.log(tagString);
+
+    editor = $(editorSelector).parent().find('.ck-editor__editable')[0].ckeditorInstance;
+    editor.setData(tagString);
+        
+    // moving cursor at the end of text after setData()
+    // setTimeout is necessary to avoid endless loop
+    setTimeout(() => {
+        const editingView = editor.editing.view;    
+        editor.model.change((writer) => {
+          writer.setSelection(writer.createPositionAt(editor.model.document.getRoot(), 'end'));
+        });    
+        editingView.focus();
+        callbackResponse(); //job done here, is time to set back the change:data listener 
+      }, 100);
+
 }
