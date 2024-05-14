@@ -76,6 +76,7 @@ const savePageToSavedItems = (pageInfo) => {
         savedItems.push(pageToSave);
         localStorage.setItem('savedItems', JSON.stringify(savedItems));
     }
+    createGlobalLists();
 }
 
 const removePageFromSavedItems = (pageInfo) => {
@@ -90,6 +91,7 @@ const removePageFromSavedItems = (pageInfo) => {
         const newData = _.without(savedItems, savedItems[foundIndex]);
         localStorage.setItem('savedItems', JSON.stringify(newData));
     }
+    createGlobalLists();
 }
 
 const getPageSavedInfo = (permalink, title) => {
@@ -108,7 +110,6 @@ const getCustomTags = () => {
     else {
         savedItems.forEach( (page) => {
             let pageCustomTags = page.customTags || [];
-            pageCustomTags = ['ct1', 'ct2'];
             customTags = Array.from(new Set([...customTags, ...pageCustomTags].slice().sort()));
         });
     return customTags;
@@ -273,7 +274,59 @@ const getPageNotes = (pageInfo) => {
     return savedPage.customNotes || [];
 }
 
+const getPageTags = (pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return [];
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) return [];
+
+    const savedPage = savedItems[pageIndex];
+    const customTags = savedPage.customTags || [];
+    customTags.sort();
+    return customTags;
+}
+
+
 const getPageStatusInSavedItems = (pageInfo) => {
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     return findObjectInArray({permalink: pageInfo.siteInfo.permalink, title:pageInfo.siteInfo.title}, savedItems);
+}
+
+const addTag = (tag, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast(`Can\'t add tag! Page ${page.title} is not in saved items...`, 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast(`Can\'t add tag! Page ${page.title} not found in saved items...`, 'bg-danger', 'text-light');
+        return false;
+    }
+
+    if (tag.trim() === '') {
+        //showToast('Nothing to add, write something ...', 'bg-warning', 'text-dark');
+        return false;
+    }
+    
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomTags = savedPage.customTags || [];
+    
+    savedPageCustomTags.push(tag);
+    savedPage.customTags = savedPageCustomTags.sort();
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+
 }

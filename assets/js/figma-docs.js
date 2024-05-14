@@ -2,6 +2,7 @@
 let globCustomCats, globCustomTags;
 let globAllCats, globAllTags;
 let siteObservers = new Map();
+let pageInfo = {}; // used for full page info canvas
 
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case
@@ -65,11 +66,7 @@ const customiseTheme = () => {
             $('body').css('visibility','visible');
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
-        globCustomCats = getCustomCats();
-        globCustomTags = getCustomTags();
-
-        globAllCats = Array.from(new Set([...catList, ...globCustomCats].slice().sort()));
-        globAllTags = Array.from(new Set([...tagList, ...globCustomTags].slice().sort()));        
+        createGlobalLists();
     });
 }
 

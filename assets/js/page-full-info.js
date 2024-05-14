@@ -1,3 +1,6 @@
+
+
+
 const showPageFullInfoCanvas = (pageInfo) => {
     if (pageInfo) {
         initPageFullInfoCanvasBeforeShow(pageInfo);
@@ -8,7 +11,7 @@ const showPageFullInfoCanvas = (pageInfo) => {
 }
 
 const initPageFullInfoCanvasAfterDocReady = (pageInfo) => {
-    fillTagList(pageInfo);    
+    fillTagList(pageInfo);
 }
 
 const initPageFullInfoCanvasAfterShow = (pageInfo) => {
@@ -43,7 +46,10 @@ const fillTagList = (pageInfo) => {
     const html = $tagItemElement.outerHTML;
     $tagItemsContainer.empty();
 
-    pageInfo.siteInfo.tags.sort().forEach( tag => {
+    siteTags = pageInfo.siteInfo.tags || [];
+    customTags = getPageTags(pageInfo);
+
+    siteTags.sort().forEach( tag => {
         const $el = $(html);
         $el.text(tag);
         $el.attr('href',`/tag-info?tag=${tag}`);
@@ -51,11 +57,11 @@ const fillTagList = (pageInfo) => {
         $el.appendTo( $tagItemsContainer);
     });
 
-    pageInfo.savedInfo.customTags.sort().forEach( tag => {
+    customTags.sort().forEach( tag => {
         const $el = $(html);
         $el.text(tag);
         $el.attr('href',`/tag-info?tag=${tag}`);
-        $el.removeClass('btn-primarry').removeClass('btn-success').addClass('btn-success');
+        $el.removeClass('btn-primarry').removeClass('btn-primary').addClass('btn-success');
         $el.appendTo( $tagItemsContainer);
     });
 }
@@ -132,7 +138,14 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
+
+        // for custom notes
         refreshNotesTable(pageInfo);
+
+        // for custom tags
+        setTagEditor('#offcanvasPageFullInfoPageTagsEditor', pageInfo);
+        fillTagList(pageInfo);
+        createGlobalLists();
     });
     
     $('button[siteFunction="offcanvasPageFullInfoPageRemoveFromSavedItems"]').off('click').on('click', function() {
@@ -140,7 +153,13 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
+
+        // for custom notes
         refreshNotesTable(pageInfo);
+
+        // for custom tags
+        fillTagList(pageInfo);
+        createGlobalLists();
     });
     
 }
@@ -319,11 +338,11 @@ const setTagEditor = (editorSelector, pageInfo) => {
     if ( getPageStatusInSavedItems(pageInfo)) {
         const options = {
             toolbar: {
-                show: true,
+                show: false,
                 selector: '#offcanvasPageFullInfoPageTagsEditorToolbar'
             },
             menuBar: {
-                show: true,
+                get show() {return options.toolbar.show},
                 selector: '#offcanvasPageFullInfoPageTagsEditorMenubar'
             },
             builtInOptions: {}
@@ -332,42 +351,76 @@ const setTagEditor = (editorSelector, pageInfo) => {
         setEditor(
             editorSelector, 
             options,
-            (editor) => {
-                postProcessTagEditor(editor, pageInfo);
-            }, 
-            (editorText, callbackResponse) => {
-                //editor = $(editorSelector).parent().find('.ck-editor__editable')[0].ckeditorInstance;
-                //editor.model.document.off();
-                postProcessingEditorText(editorText, editorSelector, pageInfo, callbackResponse);
-            }
+            (editor) => { postProcessTagEditor(editor, editorSelector, pageInfo); }, 
+            (editor, callbackResponse) => { postProcessingEditorText(editor, editorSelector, pageInfo, callbackResponse); },
+            (editor) => { posProcessEditorTextOnHitEnter(editor, pageInfo); }
         );
     }
 }
 
-const postProcessTagEditor = (editor, pageInfo) => {
-    // add post processing of editor after creation
-    // such as changing fonts through API, etc
+const postProcessTagEditor = (editor, editorSelector, pageInfo) => {
+    // post processing editor after creation, 
+    // runs only one time, after the editor is created
+
+    // setting the observer to see when tags are added in the editor (when hit enter key)
+    // and apply styles to the tags
+    setElementCreateBySelectorObserver (`${editorSelector} p`, () => {
+        $(`${editorSelector} p`).each( function() {
+            if ($(this).children().length === 0) $(this).addClass('btn bg-success-subtle btn-sm text-dark  m-2');
+            else $(this).addClass('addTagLine');
+        });
+        $(".addTagLine:not(:last)").hide();
+    }); 
 }
 
-const postProcessingEditorText = (editorText, editorSelector, pageInfo, callbackResponse) => {
-    // process the editor text while typing
+const postProcessingEditorText = (editor, editorSelector, pageInfo, callbackResponse) => {
+    const editorText = editor.getData();
+    const cleanEditorText = DOMPurify.sanitize(editorText.replace(/<[^>]*>/g, '').replace(/(\n|&nbsp;)/g, ''));    
+    if ( cleanEditorText.trim() ==='' || cleanEditorText.trim() ===',') editor.setData(cleanEditorText);
 
-    let tagString = DOMPurify.sanitize(editorText.replace(/<[^>]*>/g, '').replace(/(\n|&nbsp;)/g, ','));
-    tagString = tagString === ',' ? '' : tagString;
-    console.log(tagString);
-
-    editor = $(editorSelector).parent().find('.ck-editor__editable')[0].ckeditorInstance;
-    editor.setData(tagString);
-        
-    // moving cursor at the end of text after setData()
     // setTimeout is necessary to avoid endless loop
-    setTimeout(() => {
-        const editingView = editor.editing.view;    
-        editor.model.change((writer) => {
-          writer.setSelection(writer.createPositionAt(editor.model.document.getRoot(), 'end'));
-        });    
-        editingView.focus();
-        callbackResponse(); //job done here, is time to set back the change:data listener 
-      }, 100);
-
+    setTimeout(() => { callbackResponse(); }, 10); //job done here, is time to set back the change:data listener 
 }
+
+const posProcessEditorTextOnHitEnter = (editor, pageInfo) => {
+    let editorText = editor.getData();
+    const matches = editorText.match(/<p>&nbsp;<\/p>$/g);
+    const count = matches ? matches.length : 0
+    if (count > 0) {
+        tags = transformEditorTextToArray(editorText);
+        if (tags.length > 0 ) {
+            editor.setData('');    
+            processNewTags(tags, pageInfo);
+        }
+    }
+    else {
+        editor.setData(editorText.replace(/^(<p>&nbsp;<\/p>)+/, '').replace(/<p>&nbsp;<\/p>$/g, ''));
+        editor.model.change((writer) => { writer.setSelection(writer.createPositionAt(editor.model.document.getRoot(), 'end')); });
+    }
+};
+
+const processNewTags = (tags, pageInfo) => {
+    tags.forEach ( tag => {
+        const isPageTag = _.includes(_.map(pageInfo.savedInfo.customTags, _.toLower), _.toLower(tag));
+        if (!isPageTag) addTagToPage(tag, pageInfo);
+    } );
+}
+
+const addTagToPage = (tag, pageInfo) => {
+    updateGlobalTagLists(tag);
+    if (addTag(tag, pageInfo)) {
+            pageInfo.savedInfo.customTags = getPageTags(pageInfo);
+            fillTagList(pageInfo);
+    }
+}
+
+const updateGlobalTagLists = (tag) => {
+    const isCustomTag = _.includes(_.map(globCustomTags, _.toLower), _.toLower(tag));
+    if ( !isCustomTag ) { 
+        globCustomTags.push(tag);
+        globCustomTags.sort();
+        globAllTags.push(tag);
+        globAllTags.sort();
+    }
+}
+

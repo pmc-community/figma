@@ -387,4 +387,9 @@
     #{map-get($editorElements, balloon)} {
         z-index: $documentEditorBaloonZIndex !important;        
     }
+
+    #{map-get($editorElements, addTagLine)} {
+        border-top: $documentEditorAddTagLineBorderTop;
+        padding-top: $documentEditorAddTagLinePaddingTop;        
+    }
 }

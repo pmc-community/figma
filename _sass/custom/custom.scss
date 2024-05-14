@@ -71,7 +71,7 @@ $alwaysWhiteTextElements: (
     'a[siteFunction="menuItemLevel1"]', 
     'button[siteFunction="tableColumnsVisibility"] span', 
     'button[siteFunction="tableNavigateToSavedItems"] span', 
-    'button[siteFunction="tablePageCustomNotesRemoveAllNotes"] span'
+    'button[siteFunction="tablePageCustomNotesRemoveAllNotes"] span',
 );
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
@@ -92,7 +92,6 @@ $alwaysBlackTextElements: (
     '.DocSearch-Button-Placeholder', 
     'button[siteFunction="tableLockFirstColumn"] span', 
     'button[siteFunction="tableNavigateToCategories"] span',
-    '.ck-editor__editable p',
     '.ck-button__label'
 );
 @each $element in $alwaysBlackTextElements {

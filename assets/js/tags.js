@@ -22,10 +22,13 @@ const setTagsSupport = () => {
     setRemoveFromSavedItems();
        
     // from utilities.js
-    setCanvasCloseObserver( () => {
+    removeObservers('.offcanvas class=show getClass=false');
+    setElementChangeClassObserver('.offcanvas', 'show', false, () => {
         setSaveForLaterReadStatus();
         setRemoveFromSavedItemsStatus();
+        console.log(pageInfo);
     });
+
 }
 // work ends here
 const setPageTagButtons = () => {
@@ -133,7 +136,7 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
     cleanRowData[4] = extractTags(rowData.data[4]);
     const permalink = extractPermalink(rowData.data[2]);
     const title = cleanRowData[0];
-    let pageInfo = {
+    pageInfo = {
         siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
         savedInfo: getPageSavedInfo (permalink, title)
     };

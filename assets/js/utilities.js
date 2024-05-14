@@ -171,7 +171,7 @@ const filterArrayStartingWith = (arr, prefix) => {
     return arr.filter(function(item) {
       return item.startsWith(prefix);
     });
-  }
+}
 
 const setSearchList = (
     searchInputSelector, 
@@ -572,40 +572,26 @@ const keepTextInputLimits = (textInputSelector, maxWords, maxChars, wordCountSel
 }
 
 // OBSERVERS
-const setCanvasCloseObserver = (callback) => {
-    const targetElement = document.querySelector('.offcanvas');
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            if (mutation.attributeName === 'class') {
-                const classList = Array.from(mutation.target.classList);
-                if (!classList.includes('show')) {
-                    callback();
-                }
-            }
-        });
-    });
-    const config = { attributes: true, attributeFilter: ['class'] };
-    observer.observe(targetElement, config);
-}
-
-const setElementChangeClassObserver = (elementSelector, cls, callback) => {
+// observes when elementSelector receive class cls (getClass=true) or lose class cls (getClass=false)
+// and executes callback function
+const setElementChangeClassObserver = (elementSelector, cls, getClass, callback = () => {}) => {
     const targetElement = document.querySelector(elementSelector);
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             if (mutation.attributeName === 'class') {
                 const classList = Array.from(mutation.target.classList);
-                if (!classList.includes(cls)) {
-                    callback();
-                }
+                if (!getClass) { if (!classList.includes(cls)) callback(); }
+                else { if (classList.includes(cls)) callback(); }
             }
         });
     });
     const config = { attributes: true, attributeFilter: ['class'] };
-    siteObservers.set(observer, elementSelector);
+    siteObservers.set(observer, `${elementSelector} class=${cls} getClass=${getClass}`);
     observer.observe(targetElement, config);
 }
 
-const setElementCreatedObserver = (elementClass, callback) => {
+// observes when an element with class=element Class is created and executes callback function
+const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => {
     const mutationCallback = function(mutationsList) {
         for(const mutation of mutationsList) {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
@@ -624,22 +610,56 @@ const setElementCreatedObserver = (elementClass, callback) => {
     };
     
     const targetNode = document.body;
-    const observer = new MutationObserver(mutationCallback);    
+    const observer = new MutationObserver(mutationCallback); 
+    siteObservers.set(observer, `body (class=${elementClass})`); 
     observer.observe(targetNode, observerOptions);
 }
 
-const removeObservers = (elementSelector) => {
+// observes when the element with selector=selector is created and executes callback function
+const setElementCreateBySelectorObserver = (selector, callback = () => {}) => {
+    function handleNewElements(mutationsList) {
+        mutationsList.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.matches(selector)) {
+                        callback();
+                    }
+                });
+            }
+        });
+    }
+    
+    var targetNode = document.body;
+    var config = { childList: true, subtree: true };    
+    var observer = new MutationObserver(function(mutationsList, observer) {
+        handleNewElements(mutationsList, observer);
+        
+    });
+    siteObservers.set(observer, `body (selector=${selector})`); 
+    observer.observe(targetNode, config);
+
+}
+
+// disconnect an observer having the id=observerID
+// see each observer definition to understand what are the used observerIDs
+const removeObservers = (observerID) => {
     for (const [observer, element] of siteObservers) {
-        if (element === elementSelector) {
+        if (element === observerID) {
             observer.disconnect();
+            siteObservers.delete(observer);
         }
     }
 }
 
-const setEditor = (placeholder, options={}, callbackEditor, callbackEditorData) => {
+// build a CKEditor Decoupled Editor having a set of default options + context specific options, on a div with the id=placeholder
+// sets the needed general observers to modify the styles of the dynamic created elements
+// sets the listeners for context specific processing and the references to the context specific callbacks:
+// - post-processing the editor object after creation (callbackEditor)
+// - process editor data while typing (callbackEditorData)
+// - process editor data when hit the enter key (callbackEnterKey)
+const setEditor = (placeholder, options={}, callbackEditor = ()=>{}, callbackEditorData = ()=>{}, callbackEnterKey = ()=>{}) => {
     const createEditor = () => {
         const $parent = $(placeholder).parent();
-        
         const defaultBuiltInOptions = {
             toolbar: [
                 'undo', 'redo', '|', 'heading', '|', 'alignment', 'outdent', 'indent', '|',
@@ -671,6 +691,42 @@ const setEditor = (placeholder, options={}, callbackEditor, callbackEditorData) 
 
         const allBuiltInOptions = { ...defaultBuiltInOptions, ...options.builtInOptions }
 
+        // EDITOR EVENT HANDLERS
+
+        // on change:data
+        const handleEditorDataChange = (editor, callbackEditorData) => {
+            // we assume that there may be a setData() when processing the text, so we stop the listner to avoid endless loop
+            editor.model.document.off('change:data');
+            callbackEditorData(editor, ()=>{
+                
+                // more post setData() processing can be added here, before setting back the listener
+                // this processing will be executed for all active CKEditors, so it should be something like logging
+                // this is callbackResponse function, see setting the CKEditor in page-full-info.js 
+                /* ... */
+                editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
+            });
+        } 
+
+        // on hit enter
+        const handleEnterKey = (editor, callbackEnterKey) => {
+            callbackEnterKey(editor); 
+        }
+
+        const setListeners = (editor) => {
+
+            // set a listener to process data while typing
+            // using on change:data to filter events that don't change data but fire the event (i.e. mouse click)
+            editor = $parent.find('.ck-editor__editable')[0].ckeditorInstance;
+            editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
+
+            // set a listener to process data when hit enter key
+            // but first remove any potential existing listeners on enter key
+            editor.editing.view.document.off('enter');
+            editor.editing.view.document.on('enter', handleEnterKey.bind(null, editor, callbackEnterKey));
+
+        }
+
+        // CREATE THE EDITOR OR RESET ITS DATA IF ALREADY EXISTS
         if ($parent.find('.ck').length === 0) {
             DecoupledEditor.create(document.querySelector(placeholder), allBuiltInOptions)
             .then(editor => {
@@ -684,25 +740,22 @@ const setEditor = (placeholder, options={}, callbackEditor, callbackEditorData) 
                         $(options.toolbar.selector).css('margin-top','-1px');
                     }
                     
+                    removeObservers(`${placeholder} class=documentEditor getClass=false`);
                     $(placeholder).addClass('documentEditor').addClass('border').removeClass('rounded');
-                    removeObservers(placeholder);
-                    setElementChangeClassObserver(placeholder,'documentEditor', ()=>{
+                    setElementChangeClassObserver(placeholder,'documentEditor', false, ()=>{
                         $(placeholder).addClass('documentEditor').addClass('border').removeClass('rounded');
                     });
                 }
                 else {
-                    removeObservers(placeholder);
+                    removeObservers(`${placeholder} class=border getClass=false`);
                     $(placeholder).addClass('border');
-                    setElementChangeClassObserver(placeholder,'border', ()=>{
+                    setElementChangeClassObserver(placeholder,'border', false, ()=>{
                         $(placeholder).addClass('border');
-                    });
+                    });            
                 }
-
                 callbackEditor(editor);
-
-                // setting the listener to process editor data
-                // using on change:data to filter events that are not changing the content of the editor (such as mouse clicks)
-                editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
+                setListeners(editor);
+        
             })
             .catch(error => {
                 console.error(error);
@@ -711,21 +764,30 @@ const setEditor = (placeholder, options={}, callbackEditor, callbackEditorData) 
         else {
             // stop the listener so editor to not fire on change for setData() and avoid endless loop on change
             editor = $parent.find('.ck-editor__editable')[0].ckeditorInstance;
-            editor.model.document.off();
+            editor.model.document.off('change:data');
             editor.setData('');
-            editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
+            setListeners(editor);
         }
     }
-
-    const handleEditorDataChange = (editor, callbackEditorData) => {
-        // we assume that there may be a setData() when processing the text, so we stop the listner to avoid endless loop
-        editor.model.document.off();
-        callbackEditorData(editor.getData(), ()=>{
-            editor.model.document.on('change:data', handleEditorDataChange.bind(null, editor, callbackEditorData));
-        });
-    }    
 
     $(document).ready(createEditor);
 }
 
+const transformEditorTextToArray = (htmlString) => {
+    const textWithoutTags = htmlString.replace(/<[^>]*>|&nbsp;/g, ' ');
+    const trimmedText = textWithoutTags.trim().replace(/\s{2}/g, ', ');
+    const rawArray = trimmedText.split(",");
+    const notEmptyArray = _.compact(rawArray);
+    var nonEmptyArray = _.filter(nonEmptyArray, function(value) { return value !== ''; });
+    const cleanArray = notEmptyArray.map(function(value) { return value.trim(); });
+    const uniqueArray = _.uniqBy(cleanArray, function(value) { return value.toLowerCase(); });
+    
+    return uniqueArray;
+}
 
+const createGlobalLists = () => {
+    globCustomCats = getCustomCats();
+    globCustomTags = getCustomTags();
+    globAllCats = Array.from(new Set([...catList, ...globCustomCats].slice().sort()));
+    globAllTags = Array.from(new Set([...tagList, ...globCustomTags].slice().sort()));
+}
