@@ -26,7 +26,7 @@ const setTagsSupport = () => {
     setElementChangeClassObserver('.offcanvas', 'show', false, () => {
         setSaveForLaterReadStatus();
         setRemoveFromSavedItemsStatus();
-        console.log(pageInfo);
+        //console.log(pageInfo);
     });
 
 }
@@ -136,6 +136,7 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
     cleanRowData[4] = extractTags(rowData.data[4]);
     const permalink = extractPermalink(rowData.data[2]);
     const title = cleanRowData[0];
+
     pageInfo = {
         siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
         savedInfo: getPageSavedInfo (permalink, title)

@@ -1,6 +1,45 @@
+// HEADS UP!!!
+// pageInfo is a global
 
 
+// FUNCTION WRAPPERS
+// HEADS UP!!! don't forget to wrap the function after its definition
 
+// refresh pageInfo global, after the function execution
+const AFTER = (func) => {
+    return function(...args) {
+        console.log('executing after');
+        const result = func.apply(this, args);
+
+        pageInfo = {
+            siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
+            savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+        };
+        return result;
+    };
+}
+
+// refresh the pageInfo global, before the function execution
+const REFRESH_PAGE_INFO_BEFORE = (func) => {
+    return function(...args) {
+        return new Promise((resolve) => {
+
+            pageInfo = {
+                siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
+                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+            };
+
+            resolve(pageInfo);
+        })
+        .then((updatedPageInfo) => {
+            const pageInfoArgIndex = func.toString().match(/\((.*?)\)/)[1].split(',').findIndex(arg => arg.includes('pageInfo'));
+            args.splice(pageInfoArgIndex, 0, updatedPageInfo);
+            return func.apply(this, args);
+        });
+    };
+}
+
+// FUNCTIONS
 const showPageFullInfoCanvas = (pageInfo) => {
     if (pageInfo) {
         initPageFullInfoCanvasBeforeShow(pageInfo);
@@ -11,7 +50,7 @@ const showPageFullInfoCanvas = (pageInfo) => {
 }
 
 const initPageFullInfoCanvasAfterDocReady = (pageInfo) => {
-    fillTagList(pageInfo);
+    REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
 }
 
 const initPageFullInfoCanvasAfterShow = (pageInfo) => {
@@ -40,14 +79,13 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
 }
 
 const fillTagList = (pageInfo) => {
-    
     const $tagItemsContainer = $('div[siteFunction="offcanvasPageFullInfoPageTagsList"]');
     const $tagItemElement = $('a[siteFunction="offcanvasPageFullInfoPageTagButton"]')[0];
     const html = $tagItemElement.outerHTML;
     $tagItemsContainer.empty();
 
     siteTags = pageInfo.siteInfo.tags || [];
-    customTags = getPageTags(pageInfo);
+    customTags = pageInfo.savedInfo.customTags || [];
 
     siteTags.sort().forEach( tag => {
         const $el = $(html);
@@ -65,6 +103,9 @@ const fillTagList = (pageInfo) => {
         $el.appendTo( $tagItemsContainer);
     });
 }
+
+// wrap the function to refresh the pageInfo before the execution
+const REFRESH_PAGE_INFO_BEFORE__fillTagList = REFRESH_PAGE_INFO_BEFORE(fillTagList);
 
 const setCanvasGeneralCustomNotesVisibility = (pageInfo) => {
     if ( getPageStatusInSavedItems(pageInfo)) {
@@ -144,7 +185,8 @@ const setCanvasButtonsFunctions = (pageInfo) => {
 
         // for custom tags
         setTagEditor('#offcanvasPageFullInfoPageTagsEditor', pageInfo);
-        fillTagList(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
+
         createGlobalLists();
     });
     
@@ -158,7 +200,7 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         refreshNotesTable(pageInfo);
 
         // for custom tags
-        fillTagList(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
         createGlobalLists();
     });
     
@@ -181,7 +223,6 @@ const addCustomNote = (pageInfo) => {
 }
 
 const updateCustomNote = (noteId, pageInfo) => {
-    console.log ('update');
     note = $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val();
     if (updateNote(noteId, note, pageInfo)) refreshNotesTable(pageInfo);
     resetCustomNotesInputAreas();
@@ -401,7 +442,7 @@ const posProcessEditorTextOnHitEnter = (editor, pageInfo) => {
 
 const processNewTags = (tags, pageInfo) => {
     tags.forEach ( tag => {
-        const isPageTag = _.includes(_.map(pageInfo.savedInfo.customTags, _.toLower), _.toLower(tag));
+        const isPageTag = _.includes(_.map(getPageTags(pageInfo), _.toLower), _.toLower(tag));
         if (!isPageTag) addTagToPage(tag, pageInfo);
     } );
 }
@@ -409,8 +450,8 @@ const processNewTags = (tags, pageInfo) => {
 const addTagToPage = (tag, pageInfo) => {
     updateGlobalTagLists(tag);
     if (addTag(tag, pageInfo)) {
-            pageInfo.savedInfo.customTags = getPageTags(pageInfo);
-            fillTagList(pageInfo);
+        pageInfo.savedInfo.customTags = getPageTags(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
     }
 }
 
