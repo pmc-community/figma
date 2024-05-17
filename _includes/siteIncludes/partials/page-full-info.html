@@ -1,11 +1,17 @@
-<div class="offcanvas offcanvas-start" tabindex="-1" data-bs-scroll="true" id="offcanvasPageFullInformation">
+<div 
+    class="offcanvas offcanvas-start" 
+    data-bs-scroll="true" 
+    id="offcanvasPageFullInformation"  
+    data-bs-config='{"keyboard": false}' 
+    data-bs-focus="false">
+    
     <div class="offcanvas-header px-5 pt-5">
         <span class="offcanvas-title fs-5" id="offcanvasPageFullInformationTitle">Page information</span>
         <button siteFunction="offcanvasPageFullInfoClose" type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
     <div class="offcanvas-body px-5" id="offcanvasPageFullInformationBody">
-
+       
         <!-- general -->
         <div siteFunction="offcanvasPageFullInfoPageGeneralCard" class="card shadow bg-transparent mb-5">
             <div class="card-header d-flex justify-content-between">
@@ -142,7 +148,6 @@
                 <button siteFunction="btnClose" whatToClose='div[siteFunction="offcanvasPageFullInfoPageTags"]' type="button" class="btn-close" aria-label="Close"></button>
             </div>
             <div siteFunction="offcanvasPageFullInfoPageTags" class="card-body">
-
                 <!-- page tags -->
                 <div siteFunction="offcanvasPageFullInfoPageTagsList" class="mb-2">
                     <a 

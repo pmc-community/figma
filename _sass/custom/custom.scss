@@ -18,6 +18,7 @@
 @import 'cat.scss';
 @import 'tables.scss';
 @import 'editor.scss';
+@import 'context-menu.scss';
 @import 'page-full-info.scss';
 
 // this should be last import because component's settings are set in the imports above
@@ -92,7 +93,10 @@ $alwaysBlackTextElements: (
     '.DocSearch-Button-Placeholder', 
     'button[siteFunction="tableLockFirstColumn"] span', 
     'button[siteFunction="tableNavigateToCategories"] span',
-    '.ck-button__label'
+    '.ck-button__label',
+    '.context-menu-item a',
+    '.context-menu-header',
+    '.context-menu-footer'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {
@@ -152,7 +156,8 @@ $hiddenElements: (
 $visibleElements: (
     'hr[siteFunction="pageTagsSeparator"]', 
     '.dropdown-divider', 
-    'hr[siteFunction="pageTocHeaderSeparator"]'
+    'hr[siteFunction="pageTocHeaderSeparator"]',
+    'hr[siteFunction="contextMenuSeparator"]'
 );
 @each $element in $visibleElements {
         #{$element} {
@@ -174,6 +179,13 @@ $alwaysNoBorderElements: ('.dt-processing');
 @each $element in $alwaysNoBorderElements {
     #{$element} {
         border: $b-none !important;
+    }
+}
+
+$alwaysNoMarginElements: ('hr[sitefunction="contextMenuSeparator"]');
+@each $element in $alwaysNoMarginElements {
+    #{$element} {
+        margin: $m-0px !important;
     }
 }
 

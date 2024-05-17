@@ -791,3 +791,105 @@ const createGlobalLists = () => {
     globAllCats = Array.from(new Set([...catList, ...globCustomCats].slice().sort()));
     globAllTags = Array.from(new Set([...tagList, ...globCustomTags].slice().sort()));
 }
+
+
+const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, menuContent, callbackItem) => {
+    $(document).ready(function() {
+
+        $(document).off('contextmenu').on('contextmenu', elementSelector, function(event) {
+            event.preventDefault(); // Prevent default context menu  
+               
+            $('.context-menu').remove(); // remove the potential existing context menu
+            const $clickedElement = $(this);
+
+            const calculatePosition = ($element, dropdownMenu) => {
+                // calculate the position of the context menu
+                const elementHeight = $element.outerHeight();
+                const elementScrollTop = $element.offset().top - $(window).scrollTop();
+                const elementLeft = $element.offset().left;
+                let topPosition;
+
+                topPosition = elementScrollTop + elementHeight + 2
+                
+                let leftPosition = elementLeft; 
+                
+                position = {
+                    x:leftPosition,
+                    y:topPosition
+                }
+
+                return position;
+            }
+
+            $(window).sizeChanged(() => { 
+                position = calculatePosition($clickedElement, dropdownMenu);
+            });
+
+            
+            const dropdownMenu = $('<div class="context-menu rounded border bg-light-subtle show">');
+
+            // context menu header
+            if (menuContent.header.trim() !=='') {
+                const dropdownMenuHeader = $('<div class="context-menu-header px-4 py-2">');
+                dropdownMenuHeader.append($(menuContent.header));
+                const dropdownMenuSeparator = $('<hr class="my-0 mx-2" siteFunction="contextMenuSeparator">');
+                dropdownMenu.append(dropdownMenuHeader).append(dropdownMenuSeparator);
+            }
+        
+            // context menu items
+            const dropdownMenuList = $('<ul class="context-menu-list">'); 
+            const dropdownMenuListContainer = $('<div class="context-menu-list-container px-4">');
+            dropdownMenu.append(dropdownMenuListContainer);
+            dropdownMenuListContainer.append(dropdownMenuList);
+
+            menuContent.menu.forEach( item => {
+                let $itemElement = $(item.html);
+                $itemElement.addClass('context-menu-item py-2');
+                dropdownMenuList.append($itemElement);
+            });
+
+            // context menu footer
+            if (menuContent.footer.trim() !=='') {
+                const dropdownMenuFooter = $('<div class="context-menu-footer px-4 py-2">');
+                dropdownMenuFooter.append($(menuContent.footer));
+                const dropdownMenuSeparator = $('<hr class="my-0, mx-2" siteFunction="contextMenuSeparator">');
+                dropdownMenu.append(dropdownMenuSeparator).append(dropdownMenuFooter);
+                
+            }
+            
+            position = calculatePosition($(this), dropdownMenu);
+            dropdownMenu.css({
+                top: position.y + 'px',
+                left: position.x + 'px',
+            });
+
+            $('body').append(dropdownMenu);
+
+            $('#offcanvasPageInfoEditTag').val($clickedElement.text().trim())
+            $('#offcanvasPageInfoEditTag').focus()
+            
+            // set auto closing events
+            if (elementTriggerCloseWhenScroll) 
+                $(elementTriggerCloseWhenScroll).on('scroll', function() {
+                    $('.context-menu').remove();
+                });
+            
+            $(window).on('scroll', function() {
+                $('.context-menu').remove();
+            });
+
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.context-menu').length) {
+                dropdownMenu.remove();
+                }
+            });
+            
+            // set callback action
+            dropdownMenu.find('.context-menu-item').on('click', function(e) {
+                e.preventDefault();
+                callbackItem($(this), $clickedElement);
+                dropdownMenu.remove();
+            });
+        });
+    });
+}

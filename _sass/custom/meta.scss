@@ -372,7 +372,7 @@
     }
 }
 
-// editor
+// context menu
 @mixin editor($editorElements) {
     #{map-get($editorElements, editZone)} {
         background: $editZoneBackground;
@@ -391,5 +391,29 @@
     #{map-get($editorElements, addTagLine)} {
         border-top: $documentEditorAddTagLineBorderTop;
         padding-top: $documentEditorAddTagLinePaddingTop;        
+    }
+}
+
+// editor
+@mixin contextMenu($contextMenuElements) {
+    #{map-get($contextMenuElements, container)} {
+        z-index: $contextMenuZIndex !important;
+        position: $contextMenuContainerPosition;
+        //background: $contextMenuContainerBackground;
+    }
+
+    #{map-get($contextMenuElements, menuItem)} {
+        cursor: $contextMenuItemCursor;
+        padding-left: $contextMenuItemPaddingLeft !important;
+    }
+
+    #{map-get($contextMenuElements, menuItemLink)} {
+        font-size: $contextMenuLinkFontSize;
+        align-items: $contextMenuItemAlgnItemsVertical !important;
+    }
+
+    #{map-get($contextMenuElements, menuItemList)} {
+        padding-left: $contextMenuListPaddingLeft !important;
+        list-style: $contextMenuListStyle;
     }
 }

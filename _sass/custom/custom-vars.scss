@@ -10,6 +10,7 @@ $c-white: #fff;
 $c-light-grey: #f0f0f0;
 $c-error-message: #dc3545;
 $c-not-set: initial;
+$c-metal-grey: #f5f6fa;
 
 // typography
 $siteFontFamily: 'poppins';
@@ -127,6 +128,7 @@ $z-9:9;
 //element alignment
 $al-h-left: flex-end;
 $al-v-center: center;
+$al-v-baseline: baseline;
 
 //text alignment
 $tal-h-left: left;
@@ -142,4 +144,7 @@ $ov-none: hidden;
 $sh-none: none;
 
 // container fill
-$fl-all-available-space: auto //this is flex:auto
+$fl-all-available-space: auto; //this is flex:auto
+
+// list styles
+$ls-none: none;

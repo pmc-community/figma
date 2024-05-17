@@ -1,20 +1,27 @@
 // HEADS UP!!!
 // pageInfo is a global
 
-
-// FUNCTION WRAPPERS
-// HEADS UP!!! don't forget to wrap the function after its definition
+/* FUNCTION WRAPPERS
+ * HEADS UP!!!
+ * because of the many async operations, events and callbacks used by datatables or CKEditor, sometimes
+ * pageInfo global may fall behind when passing from one function to another (a subsequent function may use an older version of pageInfo), 
+ * so is safer to refresh it whenever is needed, before or after a function execution or even before and after. we use the wrappers for this. 
+ * - don't forget to wrap the function after its definition
+ * - wrapped external functions are defined below
+ * - each function that needs updated pageInfo should be wrapped with BEFORE
+ * - each function that modifies pageInfo shoud be wrapped with AFTER
+*/
 
 // refresh pageInfo global, after the function execution
-const AFTER = (func) => {
+const REFRESH_PAGE_INFO_AFTER = (func) => {
     return function(...args) {
-        console.log('executing after');
-        const result = func.apply(this, args);
+        const result = func(...args);
 
         pageInfo = {
             siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
             savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
         };
+
         return result;
     };
 }
@@ -39,7 +46,38 @@ const REFRESH_PAGE_INFO_BEFORE = (func) => {
     };
 }
 
-// FUNCTIONS
+// refresh the pageInfo global, before and after the function execution
+const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
+    return function(...args) {
+        return new Promise((resolve) => {
+
+            pageInfo = {
+                siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
+                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+            };
+
+            resolve(pageInfo);
+        })
+        .then((updatedPageInfo) => {
+            const pageInfoArgIndex = func.toString().match(/\((.*?)\)/)[1].split(',').findIndex(arg => arg.includes('pageInfo'));
+            args.splice(pageInfoArgIndex, 0, updatedPageInfo);
+            return func.apply(this, args);
+        })
+        .then (() => {
+            pageInfo = {
+                siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
+                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+            };
+        });
+    };
+}
+
+// WRAPPED EXTERNAL FUNCTIONS
+REFRESH_PAGE_INFO_AFTER__savePageToSavedItems = REFRESH_PAGE_INFO_AFTER(savePageToSavedItems);
+REFRESH_PAGE_INFO_AFTER__removePageFromSavedItems = REFRESH_PAGE_INFO_AFTER(removePageFromSavedItems);
+REFRESH_PAGE_INFO_AFTER__removeAllCustomNotes = REFRESH_PAGE_INFO_AFTER(removeAllCustomNotes);
+
+// ENTRY POINT
 const showPageFullInfoCanvas = (pageInfo) => {
     if (pageInfo) {
         initPageFullInfoCanvasBeforeShow(pageInfo);
@@ -49,8 +87,10 @@ const showPageFullInfoCanvas = (pageInfo) => {
     }
 }
 
+// FUNCTIONS
 const initPageFullInfoCanvasAfterDocReady = (pageInfo) => {
     REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
+    REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu(pageInfo);
 }
 
 const initPageFullInfoCanvasAfterShow = (pageInfo) => {
@@ -78,6 +118,71 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
     
 }
 
+const setCustomTagContextMenu = (pageInfo) => {
+    const getMenuItemHtml = (text, icon) => {
+        return `
+            <li>
+                <a class="icon-link">
+                    <i class="bi ${icon}"></i>
+                    ${text}
+                </a>
+            </li>`
+    }
+
+    const menuContent = 
+    {   
+        header: '',
+        menu:[
+            {
+                html: getMenuItemHtml('Remove from page', 'bi-x-circle'),
+                handler: removeTagFromPage
+            },
+            {
+                html: getMenuItemHtml('Remove from all pages', 'bi-trash'),
+                handler: removeTagFromAllPages
+            },
+        ],
+        footer:` <input type="text" autocomplete="off" class="form-control" id="offcanvasPageInfoEditTag">`
+    };
+    
+    setContextMenu (
+        'div[sitefunction="offcanvasPageFullInfoPageTagsList"] a[pageTagType="customTag"]', 
+        '.offcanvas-body', 
+        menuContent, 
+        (menuItem, itemClicked) => {
+            processSelectedTag( 
+                menuItem, 
+                itemClicked,
+                menuContent
+            ); 
+        });
+}
+const REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu = REFRESH_PAGE_INFO_BEFORE(setCustomTagContextMenu);
+
+const processSelectedTag = (menuItem, itemClicked, menuContent) => {
+    const tag = itemClicked.text().trim();
+    const action = menuItem.text().trim();
+    const handler = getMenuItemHandler(action, menuContent).bind(null, tag, pageInfo);
+    handler();
+    
+}
+
+const getMenuItemHandler = (action, menuContent) => {
+    let handler = null;
+    menuContent.menu.forEach (menuItem => {
+        if ( $(menuItem.html).text().trim() === action ) handler = menuItem.handler
+    });
+    return handler;
+}
+
+const removeTagFromPage = (tag, pageInfo = {}) => {
+    console.log(`removing ${tag} from ${pageInfo.siteInfo.title}`);
+}
+
+const removeTagFromAllPages = (tag, pageInfo = {}) => {
+    console.log(`removing ${tag} from all pages`);
+}
+
 const fillTagList = (pageInfo) => {
     const $tagItemsContainer = $('div[siteFunction="offcanvasPageFullInfoPageTagsList"]');
     const $tagItemElement = $('a[siteFunction="offcanvasPageFullInfoPageTagButton"]')[0];
@@ -99,12 +204,12 @@ const fillTagList = (pageInfo) => {
         const $el = $(html);
         $el.text(tag);
         $el.attr('href',`/tag-info?tag=${tag}`);
+        $el.attr('customTagRef', tag);
+        $el.attr('pageTagType', 'customTag');
         $el.removeClass('btn-primarry').removeClass('btn-primary').addClass('btn-success');
         $el.appendTo( $tagItemsContainer);
     });
 }
-
-// wrap the function to refresh the pageInfo before the execution
 const REFRESH_PAGE_INFO_BEFORE__fillTagList = REFRESH_PAGE_INFO_BEFORE(fillTagList);
 
 const setCanvasGeneralCustomNotesVisibility = (pageInfo) => {
@@ -158,24 +263,24 @@ const setCustomNoteTextAreaLimits = () => {
 
 const setCanvasButtonsFunctions = (pageInfo) => {
 
-    // .off('click') is mandatory, otherwise the listener will be binded multiple times to the page
+    // .off('click') is mandatory, otherwise the listener will be binded multiple times to the button
     // and the function will be executed for all history of pageInfo until the whole page is reloaded
     $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditAdd"]').off('click').on('click', function() {
-        addCustomNote(pageInfo);
+        REFRESH_PAGE_INFO_AFTER__addCustomNote(pageInfo);
     });
 
     $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').off('click').on('click', function() {
         const noteId = $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditUpdate"]').attr('selectedNote');
-        updateCustomNote(noteId, pageInfo);
+        REFRESH_PAGE_INFO_AFTER__updateCustomNote(noteId, pageInfo);
     });
 
     $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').off('click').on('click', function() {
         const noteId = $('button[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesEditDelete"]').attr('selectedNote');
-        deleteCustomNote(noteId, pageInfo);
+        REFRESH_PAGE_INFO_AFTER__deleteCustomNote(noteId, pageInfo);
     });
 
     $('button[siteFunction="offcanvasPageFullInfoPageSaveToSavedItems"]').off('click').on('click', function() {
-        savePageToSavedItems(pageInfo);
+        REFRESH_PAGE_INFO_AFTER__savePageToSavedItems(pageInfo);
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
@@ -191,7 +296,8 @@ const setCanvasButtonsFunctions = (pageInfo) => {
     });
     
     $('button[siteFunction="offcanvasPageFullInfoPageRemoveFromSavedItems"]').off('click').on('click', function() {
-        removePageFromSavedItems(pageInfo);
+        //removePageFromSavedItems(pageInfo);
+        REFRESH_PAGE_INFO_AFTER__removePageFromSavedItems(pageInfo);
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
@@ -221,6 +327,7 @@ const addCustomNote = (pageInfo) => {
     toggleDeleteNoteButton();
     unsetSelectedNote();
 }
+const REFRESH_PAGE_INFO_AFTER__addCustomNote = REFRESH_PAGE_INFO_AFTER(addCustomNote);
 
 const updateCustomNote = (noteId, pageInfo) => {
     note = $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val();
@@ -230,6 +337,7 @@ const updateCustomNote = (noteId, pageInfo) => {
     toggleDeleteNoteButton();
     unsetSelectedNote();
 }
+const REFRESH_PAGE_INFO_AFTER__updateCustomNote = REFRESH_PAGE_INFO_AFTER(updateCustomNote);
 
 const deleteCustomNote = (noteId, pageInfo) => {
     if (deleteNote(noteId, pageInfo)) refreshNotesTable(pageInfo);
@@ -238,6 +346,7 @@ const deleteCustomNote = (noteId, pageInfo) => {
     toggleDeleteNoteButton();
     unsetSelectedNote();
 }
+const REFRESH_PAGE_INFO_AFTER__deleteCustomNote  = REFRESH_PAGE_INFO_AFTER(deleteCustomNote);
 
 const setInitialCanvasSectionsVisibility = () => {
     $('div[siteFunction="offcanvasPageFullInfoPageGeneral"]').hide();
@@ -334,7 +443,7 @@ const postProcessCustomNotesTable = (table, pageInfo) => {
             className: 'btn-danger btn-sm text-light focus-ring focus-ring-warning mb-2',
             text: 'Delete All Notes',
             action: () => {
-                removeAllCustomNotes(pageInfo);
+                REFRESH_PAGE_INFO_AFTER__addCustomNote(pageInfo);
                 const notesData = getPageNotes(pageInfo);
                 table.clear().rows.add(notesData).draw();
                 resetCustomNotesInputAreas();
@@ -394,7 +503,7 @@ const setTagEditor = (editorSelector, pageInfo) => {
             options,
             (editor) => { postProcessTagEditor(editor, editorSelector, pageInfo); }, 
             (editor, callbackResponse) => { postProcessingEditorText(editor, editorSelector, pageInfo, callbackResponse); },
-            (editor) => { posProcessEditorTextOnHitEnter(editor, pageInfo); }
+            (editor) => { postProcessEditorTextOnHitEnter(editor, pageInfo); }
         );
     }
 }
@@ -423,7 +532,7 @@ const postProcessingEditorText = (editor, editorSelector, pageInfo, callbackResp
     setTimeout(() => { callbackResponse(); }, 10); //job done here, is time to set back the change:data listener 
 }
 
-const posProcessEditorTextOnHitEnter = (editor, pageInfo) => {
+const postProcessEditorTextOnHitEnter = (editor, pageInfo) => {
     let editorText = editor.getData();
     const matches = editorText.match(/<p>&nbsp;<\/p>$/g);
     const count = matches ? matches.length : 0
@@ -431,7 +540,7 @@ const posProcessEditorTextOnHitEnter = (editor, pageInfo) => {
         tags = transformEditorTextToArray(editorText);
         if (tags.length > 0 ) {
             editor.setData('');    
-            processNewTags(tags, pageInfo);
+            REFRESH_PAGE_INFO_BEFORE__processNewTags(tags, pageInfo);
         }
     }
     else {
@@ -443,9 +552,10 @@ const posProcessEditorTextOnHitEnter = (editor, pageInfo) => {
 const processNewTags = (tags, pageInfo) => {
     tags.forEach ( tag => {
         const isPageTag = _.includes(_.map(getPageTags(pageInfo), _.toLower), _.toLower(tag));
-        if (!isPageTag) addTagToPage(tag, pageInfo);
+        if (!isPageTag) REFRESH_PAGE_INFO_BEFORE__addTagToPage(tag, pageInfo);
     } );
 }
+const REFRESH_PAGE_INFO_BEFORE__processNewTags = REFRESH_PAGE_INFO_BEFORE(processNewTags);
 
 const addTagToPage = (tag, pageInfo) => {
     updateGlobalTagLists(tag);
@@ -454,6 +564,7 @@ const addTagToPage = (tag, pageInfo) => {
         REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
     }
 }
+const REFRESH_PAGE_INFO_BEFORE__addTagToPage = REFRESH_PAGE_INFO_BEFORE(addTagToPage);
 
 const updateGlobalTagLists = (tag) => {
     const isCustomTag = _.includes(_.map(globCustomTags, _.toLower), _.toLower(tag));
@@ -464,4 +575,3 @@ const updateGlobalTagLists = (tag) => {
         globAllTags.sort();
     }
 }
-
