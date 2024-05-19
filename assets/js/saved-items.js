@@ -292,6 +292,18 @@ const getPageTags = (pageInfo) => {
     return customTags;
 }
 
+const getTagPages = (tag) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return 0;
+
+    let numPages = 0;
+    savedItems.forEach(page => {
+        if ( page.customTags.includes(tag) ) numPages++;
+    });
+
+    return numPages;
+}
 
 const getPageStatusInSavedItems = (pageInfo) => {
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
@@ -329,4 +341,56 @@ const addTag = (tag, pageInfo) => {
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
     return true;
 
+}
+
+const deleteTagFromPage = (tag, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t delete tag! Page is not in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t delete tag! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomTags = savedPage.customTags || [];
+
+    const tagIndex =  _.findIndex(savedPageCustomTags, item => item === tag);;
+    if (tagIndex !== -1)  _.pullAt(savedPageCustomTags, tagIndex);
+
+    savedPage.customTags = savedPageCustomTags;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const deleteTagFromAllPages = (tag, pageInfo={}) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t delete tag! Page is not in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    let pageIndex = 0;
+    savedItems.forEach( page => {
+        const savedPageCustomTags = page.customTags || [];
+        const tagIndex =  _.findIndex(savedPageCustomTags, item => item === tag);;
+        if (tagIndex !== -1)  _.pullAt(savedPageCustomTags, tagIndex);
+        page.customTags = savedPageCustomTags;
+        savedItems[pageIndex] = page;
+        pageIndex += 1;
+    });
+
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
 }

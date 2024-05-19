@@ -23,6 +23,14 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = () => {
+
+    if (isMobileOrTablet()) {
+        console.log("Mobile or Tablet detected");
+    } else {
+        console.log("Desktop detected");
+    }
+
+    createGlobalLists(); // first things first
     $('body').css('visibility','hidden'); // to avoid the fast display of unstyled page before styles are loaded and applied
     setTheTheme();
     addExtraPaddingToContentArea();
@@ -66,7 +74,6 @@ const customiseTheme = () => {
             $('body').css('visibility','visible');
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
-        createGlobalLists();
     });
 }
 

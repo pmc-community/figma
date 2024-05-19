@@ -1,15 +1,9 @@
 // Let's do some work
 const setTagsSupport = () => {
-    setSearchList(
-        '#tagSearchInput', 
-        '#tagSearchResults', 
-        'li[siteFunction="searchTagListItem"]', 
-        '<li siteFunction="searchTagListItem">',
-        '</li>',
-        function(result) { showTagDetails(result);}
-    );
+   
     setOpenTagCloudBtn();
     setTagButtons();
+
     setPageTagButtons();
 
     requestedTag = readQueryString('tag');
@@ -20,17 +14,88 @@ const setTagsSupport = () => {
     setRemoveFromSavedItemsStatus();
     setSaveForLaterRead();
     setRemoveFromSavedItems();
-       
+        
     // from utilities.js
-    removeObservers('.offcanvas class=show getClass=false');
-    setElementChangeClassObserver('.offcanvas', 'show', false, () => {
+    removeObservers('.offcanvas class=hiding getClass=true');
+    $(document).ready(()=> {
+        setCustomTagCloud();
+        updateTagSearchList();
+        setTagSearchList();
+    });
+    
+    setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
         setSaveForLaterReadStatus();
         setRemoveFromSavedItemsStatus();
-        //console.log(pageInfo);
+        setCustomTagCloud();
+        updateTagSearchList();
+        //setTagSearchList(); 
     });
 
 }
 // work ends here
+
+// FUNCTIONS
+
+const setTagSearchList = () => {
+    setSearchList(
+        '#tagSearchInput', 
+        '#tagSearchResults', 
+        'li[siteFunction="searchTagListItem"]', 
+        '<li siteFunction="searchTagListItem">',
+        '</li>',
+        function(result) { showTagDetails(result);}
+    );
+}
+
+const updateTagSearchList = () => {
+    getCustomTagListElement = (tag) => {
+        return (
+            `
+                <li 
+                    siteFunction="searchTagListItem"
+                    tagType="customTag"
+                    tagReference="${tag}">
+                    ${tag}
+                </li>
+            `
+        );
+    }
+
+    $('li[tagType="customTag"]').remove();
+    globCustomTags.forEach(tag => {
+        console.log('adding ' + tag)
+        $('ul[siteFunction="searchTagList"]').append($(getCustomTagListElement(tag)));
+    });
+}
+
+const setCustomTagCloud = () => {
+
+    const getTagCloudElement = (tag, numPages) => {
+         
+        return  (
+            `
+                <button 
+                    siteFunction="tagButton" 
+                    tagType="customTag"
+                    id="${tag}" type="button" 
+                    class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm btn-success position-relative"
+                    title = "Details for tag ${tag}">
+                    ${tag}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
+                        ${numPages}
+                    </span>
+                </button>
+            `
+        );
+    } 
+
+    $('button[tagType="customTag"]').remove();
+    globCustomTags.forEach(tag => {
+        $('div[siteFunction="tagCloudContainerBody"]').append($(getTagCloudElement(tag, getTagPages(tag))));
+    });
+}
+
+
 const setPageTagButtons = () => {
     $(window).on('load', () => {
         $('button[siteFunction="pageTagButton"]').click( function() {
@@ -56,6 +121,14 @@ const setTagButtons = () => {
 const showTagDetails = (tag) => {
     if ( !tag ) return;
     if ( tag === 'undefined' ) return;
+    if ( tag === '' ) return;
+
+    const siteTagPageNo = tagList.includes(tag) ? tagDetails[tag].numPages : 0;
+    const customTagPageNo = tagList.includes(tag) ? 0 : getTagPages(tag);
+    if (siteTagPageNo + customTagPageNo === 0 ) return;
+
+    if (siteTagPageNo === 0 && customTagPageNo > 0 ) return; // TO BE REMOVED WHEN CUSTOM TAGS FUNCTIONALITY WILL BE ADDED
+
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
     $(`div[siteFunction="tagDetails"][tagReference!="${tag}"]`).addClass('d-none');
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).fadeIn();
@@ -73,7 +146,9 @@ const showTagDetails = (tag) => {
         // columns settings
         [
             // page name
-            null, 
+            {
+                className: 'alwaysCursorPointer' 
+            }, 
 
             // last update
             {
@@ -149,7 +224,6 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
           }
         }), this));
       };
-
     
     showPageFullInfoCanvas(pageInfo);
 }

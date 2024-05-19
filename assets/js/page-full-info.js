@@ -119,9 +119,9 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
 }
 
 const setCustomTagContextMenu = (pageInfo) => {
-    const getMenuItemHtml = (text, icon) => {
+    const getMenuItemHtml = (title, text, icon) => {
         return `
-            <li>
+            <li title="${title}">
                 <a class="icon-link">
                     <i class="bi ${icon}"></i>
                     ${text}
@@ -134,15 +134,15 @@ const setCustomTagContextMenu = (pageInfo) => {
         header: '',
         menu:[
             {
-                html: getMenuItemHtml('Remove from page', 'bi-x-circle'),
+                html: getMenuItemHtml(`Remove the tag from the page ${pageInfo.siteInfo.title} only`,'Remove from page', 'bi-x-circle'),
                 handler: removeTagFromPage
             },
             {
-                html: getMenuItemHtml('Remove from all pages', 'bi-trash'),
+                html: getMenuItemHtml('Remove the tag from all pages tagged with it','Remove from all pages', 'bi-trash'),
                 handler: removeTagFromAllPages
             },
         ],
-        footer:` <input type="text" autocomplete="off" class="form-control" id="offcanvasPageInfoEditTag">`
+        footer: ''
     };
     
     setContextMenu (
@@ -150,24 +150,26 @@ const setCustomTagContextMenu = (pageInfo) => {
         '.offcanvas-body', 
         menuContent, 
         (menuItem, itemClicked) => {
-            processSelectedTag( 
+            REFRESH_PAGE_INFO_BEFORE_AND_AFTER__processSelectedTag( 
                 menuItem, 
                 itemClicked,
-                menuContent
+                menuContent,
+                pageInfo
             ); 
         });
 }
 const REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu = REFRESH_PAGE_INFO_BEFORE(setCustomTagContextMenu);
 
-const processSelectedTag = (menuItem, itemClicked, menuContent) => {
+const processSelectedTag = (menuItem, itemClicked, menuContent, pageInfo) => {
     const tag = itemClicked.text().trim();
     const action = menuItem.text().trim();
-    const handler = getMenuItemHandler(action, menuContent).bind(null, tag, pageInfo);
+    const handler = getTagContextMenuItemHandler(action, menuContent).bind(null, tag, pageInfo);
     handler();
     
 }
+const REFRESH_PAGE_INFO_BEFORE_AND_AFTER__processSelectedTag = REFRESH_PAGE_INFO_BEFORE_AND_AFTER(processSelectedTag);
 
-const getMenuItemHandler = (action, menuContent) => {
+const getTagContextMenuItemHandler = (action, menuContent) => {
     let handler = null;
     menuContent.menu.forEach (menuItem => {
         if ( $(menuItem.html).text().trim() === action ) handler = menuItem.handler
@@ -176,11 +178,19 @@ const getMenuItemHandler = (action, menuContent) => {
 }
 
 const removeTagFromPage = (tag, pageInfo = {}) => {
-    console.log(`removing ${tag} from ${pageInfo.siteInfo.title}`);
+    if (deleteTagFromPage(tag, pageInfo)) {
+        pageInfo.savedInfo.customTags = getPageTags(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
+        createGlobalLists();
+    }
 }
 
 const removeTagFromAllPages = (tag, pageInfo = {}) => {
-    console.log(`removing ${tag} from all pages`);
+    if (deleteTagFromAllPages(tag)) {
+        pageInfo.savedInfo.customTags = getPageTags(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
+        createGlobalLists();
+    }
 }
 
 const fillTagList = (pageInfo) => {

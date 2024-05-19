@@ -303,6 +303,8 @@ const setSearchList = (
                 callback(selectedValue);
             });
         });
+
+        
 }
 
 // columnsConfig is set in the caller, to be fit to the specific table
@@ -579,7 +581,7 @@ const setElementChangeClassObserver = (elementSelector, cls, getClass, callback 
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             if (mutation.attributeName === 'class') {
-                const classList = Array.from(mutation.target.classList);
+                const classList = Array.from(mutation.target.classList);                
                 if (!getClass) { if (!classList.includes(cls)) callback(); }
                 else { if (classList.includes(cls)) callback(); }
             }
@@ -792,7 +794,6 @@ const createGlobalLists = () => {
     globAllTags = Array.from(new Set([...tagList, ...globCustomTags].slice().sort()));
 }
 
-
 const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, menuContent, callbackItem) => {
     $(document).ready(function() {
 
@@ -893,3 +894,26 @@ const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, m
         });
     });
 }
+
+const isMobileOrTablet = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+  
+    const isMobile = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/i.test(userAgent);
+    
+    // Exclude desktops with touch screens (e.g., some Surface devices)
+    const isDesktopTouchScreen = /windows nt 10.0;.*touch/i.test(userAgent);
+    if (isTablet && isDesktopTouchScreen) {
+      return false; // Exclude desktops with touch masquerading as tablets
+    }
+  
+    const isUserAgentMobileOrTablet = isMobile || isTablet;
+    const isMediaQueryMobileOrTablet = window.matchMedia("(max-width: 768px) and (orientation: portrait), (max-width: 992px) and (orientation: landscape)").matches;
+  
+    // Consider viewport width for more reliable detection in emulation mode
+    const viewportWidth = window.innerWidth;
+    const isViewportMobileOrTablet = viewportWidth <= 992;
+  
+    return isUserAgentMobileOrTablet || isMediaQueryMobileOrTablet || isViewportMobileOrTablet;
+}
+    

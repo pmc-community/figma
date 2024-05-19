@@ -26,7 +26,12 @@ or using the custom filter
             <input type="text" autocomplete="off" class="form-control" id="tagSearchInput" placeholder="type, select, hit enter ...">
             <ul siteFunction="searchTagList" id="tagSearchResults">
                 {% for tagItem in tagsArray %}
-                    <li siteFunction="searchTagListItem">{{tagItem}}</li>
+                    <li 
+                        siteFunction="searchTagListItem"
+                        tagType="siteTag"
+                        tagReference="{{tagItem}}">
+                        {{tagItem}}
+                    </li>
                 {% endfor %}
             </ul>
             <button 
@@ -51,14 +56,14 @@ or using the custom filter
         <div siteFunction="tagCloudContainerBody" class="card-body overflow-y-auto">
             {% for tagItem in site.data.tags_details %}
                 <button 
-                    siteFunction="tagButton" 
+                    siteFunction="tagButton"
+                    tagType="siteTag" 
                     id="{{ tagItem[0] }}" type="button" 
                     class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm btn-primary position-relative"
                     title = "Details for tag {{ tagItem[0] }}">
                     {{ tagItem[0] }}
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
                         {{ tagItem[1]["numPages"] }}
-                        <span class="visually-hidden">number of pages</span>
                     </span>
                 </button>
             {% endfor %}
@@ -94,17 +99,26 @@ or using the custom filter
                                 <tr>
 
                                     <td 
-                                        siteFunction="tableFirstColumn" 
+                                        siteFunction="tagPagePageTitle" 
                                         class="fw-normal align-self-center align-middle"
-                                        title="Click here for more info about page {{ pageItem.title }}">
+                                        title="Click here for more info about page {{ pageItem.title }}"
+                                        tagReference="{{ tagItem[0] }}"
+                                        colFunction="pageTitle">
                                         <span>{{ pageItem.title }}</span>
                                     </td>
 
-                                    <td siteFunction="tableDateField" class="fw-normal align-self-center align-middle">
+                                    <td 
+                                        siteFunction="tableDateField" 
+                                        class="fw-normal align-self-center align-middle"
+                                        tagReference="{{ tagItem[0] }}"
+                                        colFunction="pageLastUpdate">
                                         <span>{{ pageItem.lastUpdate }}</span>
                                     </td>
 
-                                    <td class="fw-normal align-self-center align-middle">
+                                    <td 
+                                        class="fw-normal align-self-center align-middle"
+                                        tagReference="{{ tagItem[0] }}"
+                                        colFunction="pageActions">
                                         <div class="btn-group">
                                             <a 
                                                 siteFunction="tagPageItemLinkToDoc" 
@@ -135,7 +149,10 @@ or using the custom filter
                                         </div>
                                     </td>
 
-                                    <td class="fw-normal align-self-center align-middle">
+                                    <td 
+                                        class="fw-normal align-self-center align-middle"
+                                        tagReference="{{ tagItem[0] }}"
+                                        colFunction="pageExcerpt">
                                         <span>
                                             {% capture permalink_param %}
                                                 {
@@ -146,7 +163,10 @@ or using the custom filter
                                         </span>
                                     </td>
                                     
-                                    <td class="fw-normal align-self-center align-middle">
+                                    <td 
+                                        class="fw-normal align-self-center align-middle"
+                                        tagReference="{{ tagItem[0] }}"
+                                        colFunction="pageOtherTags">
                                         <span>
                                             {% capture permalink_param %}
                                                 {
