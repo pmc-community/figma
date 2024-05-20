@@ -15,26 +15,65 @@ const setTagsSupport = () => {
     setSaveForLaterRead();
     setRemoveFromSavedItems();
         
-    // from utilities.js
-    removeObservers('.offcanvas class=hiding getClass=true');
+    
     $(document).ready(()=> {
         setCustomTagCloud();
         updateTagSearchList();
         setTagSearchList();
     });
     
+    // from utilities.js
+    removeObservers('.offcanvas class=hiding getClass=true');
     setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
         setSaveForLaterReadStatus();
         setRemoveFromSavedItemsStatus();
         setCustomTagCloud();
         updateTagSearchList();
-        //setTagSearchList(); 
+        setTagSearchList();
+        setPageOtherCustomTags(pageInfo);
     });
 
 }
 // work ends here
 
 // FUNCTIONS
+const setPageOtherCustomTags = (pageInformation) => {
+
+    const getCustomTagButtonElement = (tag) => {
+        return (
+            `
+                <button 
+                    siteFunction="pageTagButton"
+                    tagType="customTag" 
+                    id="${tag}" 
+                    type="button" 
+                    class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm btn-success position-relative"
+                    title = "Details for tag ${tag}">
+                    ${tag}
+                </button>
+            `
+        )
+    }
+
+    const customTags = getPageTags(pageInformation);
+    if ( customTags.length > 0 ) {
+
+        const $pageOtherTagsElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"]`);
+
+        const $pageOtherCustomTagElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageTagButton"][tagType="customTag"]`);
+
+
+        if ( $pageOtherTagsElement.length > 0 ) {
+            $pageOtherCustomTagElement.remove(); 
+            customTags.forEach(tag => {
+                $pageOtherTagsElement.each(function() {
+                    $(this).children().first().append($(getCustomTagButtonElement(tag)))
+                })
+            });
+        }
+    }
+
+}
 
 const setTagSearchList = () => {
     setSearchList(
@@ -63,7 +102,6 @@ const updateTagSearchList = () => {
 
     $('li[tagType="customTag"]').remove();
     globCustomTags.forEach(tag => {
-        console.log('adding ' + tag)
         $('ul[siteFunction="searchTagList"]').append($(getCustomTagListElement(tag)));
     });
 }
@@ -94,7 +132,6 @@ const setCustomTagCloud = () => {
         $('div[siteFunction="tagCloudContainerBody"]').append($(getTagCloudElement(tag, getTagPages(tag))));
     });
 }
-
 
 const setPageTagButtons = () => {
     $(window).on('load', () => {
@@ -127,15 +164,22 @@ const showTagDetails = (tag) => {
     const customTagPageNo = tagList.includes(tag) ? 0 : getTagPages(tag);
     if (siteTagPageNo + customTagPageNo === 0 ) return;
 
-    if (siteTagPageNo === 0 && customTagPageNo > 0 ) return; // TO BE REMOVED WHEN CUSTOM TAGS FUNCTIONALITY WILL BE ADDED
+    if (siteTagPageNo === 0 && customTagPageNo > 0 ) {
+        console.log(tag);
+        return; // TO BE REMOVED WHEN CUSTOM TAGS FUNCTIONALITY WILL BE ADDED
+    }
 
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
     $(`div[siteFunction="tagDetails"][tagReference!="${tag}"]`).addClass('d-none');
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).fadeIn();
 
-    const $table = $(`table[tagReference="${tag}"]`).DataTable();
-    if ($.fn.DataTable.isDataTable($table)) $table.destroy();
-
+    if( $.fn.DataTable.isDataTable(`table[tagReference="${tag}"]`) ) {
+        //console.log($(`table[tagReference="${tag}"]`).prop('outerHTML'));
+        $(`table[tagReference="${tag}"]`).DataTable().destroy();
+        $(`table[tagReference="${tag}"]`).removeAttr('id').removeAttr('aria-describedby')
+        //console.log($(`table[tagReference="${tag}"]`).prop('outerHTML'));
+    }
+    
     // exceptWhenRowSelect: true to make the column inactive when click in a table row
     // this is a custom column configuration, not a standard DataTables column configuration
     // is good to be used for columns having already a functional role in the table (such as buttons)
@@ -190,7 +234,7 @@ const showTagDetails = (tag) => {
 
 const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
     // tags may contain spaces 
-    // so we need to extract them from the html to prevent .split(' ' ) to provide wrong tags
+    // so we need to extract them from the html to prevent .split(' ') to provide wrong tags
     const extractTags = (tags) => {
         const tempElement = document.createElement('div');
         tempElement.innerHTML = `${tags}`;
@@ -216,49 +260,64 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
         siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
         savedInfo: getPageSavedInfo (permalink, title)
     };
-
-    $.fn.modal.Constructor.prototype._enforceFocus = function() {
-        $(document).off('focusin.bs.modal').on('focusin.bs.modal', $.proxy((function(e) {
-          if (this.$element[0] !== e.target && !this.$element.has(e.target).length && !$(e.target).closest('.ck-balloon-panel, .ck').length) {
-            this.$element.trigger('focus');
-          }
-        }), this));
-      };
     
     showPageFullInfoCanvas(pageInfo);
 }
 
 const postProcessTagDetailsTable = (table, tag) => {
     if(table) {
-        // post processing table: adding 2 buttons in the bottom2 zone
-        gotToCatBtn = {
-            attr: {
-                siteFunction: 'tableNavigateToCategories',
-                title: 'Go to categories'
-            },
-            className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
-            text: 'Categories',
-            action: () => {
-                window.location.href = '/cat-info'
-            }
-        }
-
-        gotToSavedItemsBtn = {
-            attr: {
-                siteFunction: 'tableNavigateToSavedItems',
-                title: 'Go to saved items'
-            },
-            className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
-            text: 'Saved items',
-            action: () => {
-                window.location.href = '/cat-info'
-            }
-        }
-        const btnArray = [];
-        btnArray.push(gotToCatBtn);
-        btnArray.push(gotToSavedItemsBtn);
-        addAdditionalButtonsToTable(table, `table[tagReference="${tag}"]`, 'bottom2', btnArray);
+        addAdditionalButtons(table, tag);
+        addCustomTagsToPages(table, tag);
     }   
+}
+
+const addCustomTagsToPages = (table) => {
+    const nodes = table.rows().nodes();
+
+    $.each(nodes, function(index, node) {
+        const title = $(node.outerHTML).attr('pageTitleReference');
+        const permalink = $(node.outerHTML).attr('pagePermalinkReference');
+        const pageInformation = {
+            siteInfo: {
+                title: title,
+                permalink: permalink
+            }
+        };
+        
+        setPageOtherCustomTags(pageInformation)
+
+    });
+}
+
+const addAdditionalButtons = (table, tag) => {
+     // post processing table: adding 2 buttons in the bottom2 zone
+     gotToCatBtn = {
+        attr: {
+            siteFunction: 'tableNavigateToCategories',
+            title: 'Go to categories'
+        },
+        className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
+        text: 'Categories',
+        action: () => {
+            window.location.href = '/cat-info'
+        }
+    }
+
+    gotToSavedItemsBtn = {
+        attr: {
+            siteFunction: 'tableNavigateToSavedItems',
+            title: 'Go to saved items'
+        },
+        className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
+        text: 'Saved items',
+        action: () => {
+            window.location.href = '/cat-info'
+        }
+    }
+    const btnArray = [];
+    btnArray.push(gotToCatBtn);
+    btnArray.push(gotToSavedItemsBtn);
+    addAdditionalButtonsToTable(table, `table[tagReference="${tag}"]`, 'bottom2', btnArray);
 }
 
 const setOpenTagCloudBtn = () => {

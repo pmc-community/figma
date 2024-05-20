@@ -17,9 +17,12 @@ const REFRESH_PAGE_INFO_AFTER = (func) => {
     return function(...args) {
         const result = func(...args);
 
+        const oldPageInfo = pageInfo;
         pageInfo = {
             siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
-            savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+            savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
+            activeTable: oldPageInfo.tableSelector,
+            tag: oldPageInfo.tag
         };
 
         return result;
@@ -33,7 +36,7 @@ const REFRESH_PAGE_INFO_BEFORE = (func) => {
 
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
-                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
             };
 
             resolve(pageInfo);
@@ -53,7 +56,7 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
 
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
-                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
             };
 
             resolve(pageInfo);
@@ -66,7 +69,7 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
         .then (() => {
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
-                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+                savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
             };
         });
     };
@@ -374,6 +377,7 @@ const setCanvasSectionsOpeners = () => {
 }
 
 const fillPageTitle = (pageInfo) => {
+    $('#offcanvasPageFullInformationTitle').text(`Page information (${pageInfo.siteInfo.title})`);
     $('a[siteFunction="offcanvasPageFullInfoPageGeneralDocLink"]').text(pageInfo.siteInfo.title);
     $('a[siteFunction="offcanvasPageFullInfoPageGeneralDocLink"]').attr('href',pageInfo.siteInfo.permalink);
 }

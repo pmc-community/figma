@@ -180,8 +180,16 @@ const setSearchList = (
     searchResultsItemTag, 
     searchResultsItemClosingTag,
     callback
-) => {
-        $(document).ready( () => {
+) => {  
+
+    const handleSetTagSearcResults = (
+        searchInputSelector, 
+        searchResultsSelector, 
+        searchResultsItemSelector, 
+        searchResultsItemTag,
+        searchResultsItemClosingTag, 
+        callback
+    ) => {
             const $searchInput = $(searchInputSelector);
             const $searchResults = $(searchResultsSelector);
 
@@ -190,7 +198,7 @@ const setSearchList = (
 
             let list = [];
             $(searchResultsItemSelector).each(function() { list.push($(this).text().trim()); });
-    
+
             function showSearchResults() {
                 const searchTerm = $searchInput.val().trim().toLowerCase();
                 let html = '';
@@ -203,7 +211,7 @@ const setSearchList = (
                 $searchResults.html(html).show();
             }
             
-            $searchInput.on('input', function() { if ($searchInput.val().trim().toLowerCase() !== '') showSearchResults(); });
+            $searchInput.off('input').on('input', function() { if ($searchInput.val().trim().toLowerCase() !== '') showSearchResults(); });
         
             // Handle click outside search input or search results to hide the list
             $(document).on('click', function(event) {
@@ -212,7 +220,7 @@ const setSearchList = (
             });
         
             // Hide search results when pressing escape key
-            $(document).on('keydown', function(event) {
+            $(document).off('keydown').on('keydown', function(event) {
                 if (event.which === 27) { // Escape key
                     $searchResults.hide();
                     $searchInput.val('');
@@ -220,7 +228,10 @@ const setSearchList = (
             });
         
             // Handle keydown events on search input
-            $searchInput.on('keydown', function(event) {
+            // HEADS UP!!! .off('keydown') is mandatory, otherwise multiple handlers will be set and errors can be raised
+            // e.g., when having datatables on page and one of these must be updated on the event handler callback, the instances of dt may be mixed
+            // and datatables.js may raise error of not being able to initialize a table since is already initialized
+            $searchInput.off('keydown').on('keydown', function(event) {
 
                 // Adjust scroll position to keep the selected element in sight
                 const getElementInSight = (container, element) => {
@@ -284,26 +295,29 @@ const setSearchList = (
                         $searchInput.val(selectedValue); // Set input value to selected item
                         $searchResults.hide(); // Hide search results
                         event.preventDefault(); // Prevent default behavior (form submission)
-            
-                        //showTagDetails(selectedValue);
-                        //executeFunction(customFunction, customFunctionArgs);
                         callback(selectedValue);
                     }
                 }
             });
+
             // Handle click on search results item
-            $searchResults.on('click', searchResultsItemSelector, function() {
+            $searchResults.off('click', searchResultsItemSelector).on('click', searchResultsItemSelector, function() {
                 const clickedValue = $(this).text();
                 $searchInput.val(clickedValue); // Set input value to clicked item
                 $searchResults.hide(); // Hide search results
-        
-                // Call custom function here
-                //showTagDetails(clickedValue);
-                //executeFunction(customFunction, customFunctionArgs);
-                callback(selectedValue);
+                callback(clickedValue);
             });
-        });
+    }
 
+    $(document).off('ready', handleSetTagSearcResults).ready(handleSetTagSearcResults.bind(
+        null, 
+        searchInputSelector, 
+        searchResultsSelector, 
+        searchResultsItemSelector, 
+        searchResultsItemTag, 
+        searchResultsItemClosingTag,
+        callback
+    ));
         
 }
 
