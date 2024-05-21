@@ -295,6 +295,7 @@ const setSearchList = (
                         $searchInput.val(selectedValue); // Set input value to selected item
                         $searchResults.hide(); // Hide search results
                         event.preventDefault(); // Prevent default behavior (form submission)
+                        $searchInput.val('');
                         callback(selectedValue);
                     }
                 }
@@ -305,6 +306,7 @@ const setSearchList = (
                 const clickedValue = $(this).text();
                 $searchInput.val(clickedValue); // Set input value to clicked item
                 $searchResults.hide(); // Hide search results
+                $searchInput.val('');
                 callback(clickedValue);
             });
     }
@@ -808,10 +810,10 @@ const createGlobalLists = () => {
     globAllTags = Array.from(new Set([...tagList, ...globCustomTags].slice().sort()));
 }
 
-const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, menuContent, callbackItem) => {
+const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, menuContent, callbackItem, callbackAfterShow = null) => {
     $(document).ready(function() {
 
-        $(document).off('contextmenu').on('contextmenu', elementSelector, function(event) {
+        $(document).off('contextmenu', elementSelector).on('contextmenu', elementSelector, function(event) {
             event.preventDefault(); // Prevent default context menu  
                
             $('.context-menu').remove(); // remove the potential existing context menu
@@ -880,8 +882,7 @@ const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, m
 
             $('body').append(dropdownMenu);
 
-            $('#offcanvasPageInfoEditTag').val($clickedElement.text().trim())
-            $('#offcanvasPageInfoEditTag').focus()
+            if (callbackAfterShow) callbackAfterShow(event);
             
             // set auto closing events
             if (elementTriggerCloseWhenScroll) 
@@ -907,6 +908,14 @@ const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, m
             });
         });
     });
+}
+
+const getContextMenuItemHandler = (action, menuContent) => {
+    let handler = null;
+    menuContent.menu.forEach (menuItem => {
+        if ( $(menuItem.html).text().trim() === action ) handler = menuItem.handler
+    });
+    return handler;
 }
 
 const isMobileOrTablet = () => {

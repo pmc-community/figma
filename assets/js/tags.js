@@ -4,7 +4,7 @@ const setTagsSupport = () => {
     setOpenTagCloudBtn();
     setTagButtons();
 
-    setPageTagButtons();
+    //setPageTagButtons();
 
     requestedTag = readQueryString('tag');
     if (requestedTag) showTagDetails(requestedTag);
@@ -20,6 +20,7 @@ const setTagsSupport = () => {
         setCustomTagCloud();
         updateTagSearchList();
         setTagSearchList();
+        setTagCloudButtonesContextMenu();
     });
     
     // from utilities.js
@@ -30,13 +31,74 @@ const setTagsSupport = () => {
         setCustomTagCloud();
         updateTagSearchList();
         setTagSearchList();
-        setPageOtherCustomTags(pageInfo);
+        addCustomTagsToPages(null, pageInfo.tag);
     });
 
 }
 // work ends here
 
 // FUNCTIONS
+
+const setTagCloudButtonesContextMenu = () => {
+
+    const getMenuItemHtml = (title, text, icon) => {
+        return `
+            <li title="${title}">
+                <a class="icon-link">
+                    <i class="bi ${icon}"></i>
+                    ${text}
+                </a>
+            </li>`
+    }
+
+    const menuContent = 
+    {   
+        header: '',
+        menu:[
+            {
+                html: getMenuItemHtml(`Remove the tag from all pages`,'Remove tag', 'bi-trash'),
+                handler: handleTagRemoval
+            }
+        ],
+        footer: 
+            `
+                <input type="text" autocomplete="off" class="form-control" id="tagCloudEditCustomTagInput">
+                <button 
+                    siteFunction="tagCloudEditCustomTag" 
+                    id="tagCloudEditCustomTag" 
+                    type="button" 
+                    class="focus-ring focus-ring-warning btn btn-sm btn-warning mt-2 position-relative">
+                    Update      
+                </button>
+            `
+    };
+    
+    setContextMenu (
+        'button[sitefunction="tagButton"][tagType="customTag"]', 
+        'body', 
+        menuContent, 
+        (menuItem, itemClicked) => {
+            // get the menu item click handler and execute it
+            getContextMenuItemHandler(
+                menuItem.text().replace(/[\n\r\t]/g, '').trim(), 
+                menuContent
+            ).bind(
+                null,
+                $(itemClicked.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim() // that's the tag
+            )();
+        },
+        (event) => {
+            const $tagBtn = $(event.target).closest('button[sitefunction="tagButton"][tagtype="customTag"]').clone();
+            $('#tagCloudEditCustomTagInput').val($($tagBtn.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim());
+            $('#tagCloudEditCustomTagInput').focus();
+        }
+    );
+}
+
+const handleTagRemoval = (tag) => {
+    console.log('remove: ' + tag);
+}
+
 const setPageOtherCustomTags = (pageInformation) => {
 
     const getCustomTagButtonElement = (tag) => {
@@ -45,7 +107,8 @@ const setPageOtherCustomTags = (pageInformation) => {
                 <button 
                     siteFunction="pageTagButton"
                     tagType="customTag" 
-                    id="${tag}" 
+                    tagReference="${tag}"
+                    id="pageTag_${tag}" 
                     type="button" 
                     class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm btn-success position-relative"
                     title = "Details for tag ${tag}">
@@ -56,22 +119,22 @@ const setPageOtherCustomTags = (pageInformation) => {
     }
 
     const customTags = getPageTags(pageInformation);
-    if ( customTags.length > 0 ) {
 
-        const $pageOtherTagsElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"]`);
+    const $pageOtherTagsElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"]`);
 
-        const $pageOtherCustomTagElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageTagButton"][tagType="customTag"]`);
+    const $pageOtherCustomTagElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageTagButton"][tagType="customTag"]`);
+    
+    $pageOtherCustomTagElement.remove(); //???
+    
+    customTags.forEach(tag => {        
+        $pageOtherTagsElement.each(function() {
+            $(this).children().first().append($(getCustomTagButtonElement(tag)))
+        })
+    });
 
-
-        if ( $pageOtherTagsElement.length > 0 ) {
-            $pageOtherCustomTagElement.remove(); 
-            customTags.forEach(tag => {
-                $pageOtherTagsElement.each(function() {
-                    $(this).children().first().append($(getCustomTagButtonElement(tag)))
-                })
-            });
-        }
-    }
+    $('button[siteFunction="pageTagButton"]').off('click').click(function(event) {
+        handlePageTagButtonClick(event)
+    });
 
 }
 
@@ -133,15 +196,20 @@ const setCustomTagCloud = () => {
     });
 }
 
+// not used anymore since this is set when executing setPageOtherCustomTags
 const setPageTagButtons = () => {
     $(window).on('load', () => {
-        $('button[siteFunction="pageTagButton"]').click( function() {
-            const selectedTag = $(this).attr('id');
-            showTagDetails(selectedTag.match(/pageTag_(.*)/)[1]);
-            setSaveForLaterReadStatus();
-            setRemoveFromSavedItemsStatus();
-        } );
+        $('button[siteFunction="pageTagButton"]').off('click').click(function(event) {
+            handlePageTagButtonClick(event)
+        });
     });
+}
+
+const handlePageTagButtonClick = (event) => {
+    const selectedTag = $(event.target).attr('id');
+    showTagDetails(selectedTag.match(/pageTag_(.*)/)[1]);
+    setSaveForLaterReadStatus();
+    setRemoveFromSavedItemsStatus();
 }
 
 const setTagButtons = () => {
@@ -155,6 +223,7 @@ const setTagButtons = () => {
     });
 }
 
+// here we set the datatable with tag details
 const showTagDetails = (tag) => {
     if ( !tag ) return;
     if ( tag === 'undefined' ) return;
@@ -210,7 +279,9 @@ const showTagDetails = (tag) => {
             
             // excerpt
             {
-                exceptWhenRowSelect: true
+                exceptWhenRowSelect: true,
+                width: '30%',
+                visible: false
             }, 
 
             // other tags
@@ -258,7 +329,8 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
 
     pageInfo = {
         siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
-        savedInfo: getPageSavedInfo (permalink, title)
+        savedInfo: getPageSavedInfo (permalink, title),
+        tag:tag //need to pass tag too because we need a reference to the tag details datatable when returning from page info offcanvas
     };
     
     showPageFullInfoCanvas(pageInfo);
@@ -267,12 +339,18 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
 const postProcessTagDetailsTable = (table, tag) => {
     if(table) {
         addAdditionalButtons(table, tag);
-        addCustomTagsToPages(table, tag);
+        addCustomTagsToPages(table, null);
     }   
 }
 
-const addCustomTagsToPages = (table) => {
-    const nodes = table.rows().nodes();
+const addCustomTagsToPages = (table = null, tag = null) => {
+    
+    if (!table && !tag) return;
+    if (table && tag ) return; // not allowed both arguments to be not null
+
+    let nodes;
+    if (table) nodes = table.rows().nodes();
+    if (tag) nodes = $(`table[tagReference="${tag}"]`).DataTable().rows().nodes();
 
     $.each(nodes, function(index, node) {
         const title = $(node.outerHTML).attr('pageTitleReference');

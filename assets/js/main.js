@@ -66,7 +66,7 @@ const customiseTheme = () => {
             // remove some elements
             removeUselessElements();
         }
-         // necessary on mobile for datadatbles cells
+         // necessary on mobile for datatables cells, when responsive mode is true for tables
         applyColorSchemaCorrectionsOnTD();
 
         // just to mask the flicker a little, but a preloader should be here
@@ -342,6 +342,7 @@ const customiseFooter = () => {
 
 const addLogo = () => {
     $(settings.headerAboveSideBar.container).prepend(settings.headerAboveSideBar.logo);
+    $(settings.headerAboveSideBar.siteTitle).addClass('fs-5');
 }
 
 const clearTheUrl = () => {

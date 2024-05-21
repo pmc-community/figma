@@ -69,6 +69,7 @@ headerAboveContent:
 headerAboveSideBar:
   logo: '<a href=\"/\"><img class = \"site_logo\" src=\"/assets/img/logo.png\" /></a>'
   container: '.site-header'
+  siteTitle: '.site-title'
 layouts:
     contentArea:
       mainContainer: '.main-content-wrap'

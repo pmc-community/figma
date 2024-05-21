@@ -21,7 +21,6 @@ const REFRESH_PAGE_INFO_AFTER = (func) => {
         pageInfo = {
             siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
             savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-            activeTable: oldPageInfo.tableSelector,
             tag: oldPageInfo.tag
         };
 
@@ -34,9 +33,12 @@ const REFRESH_PAGE_INFO_BEFORE = (func) => {
     return function(...args) {
         return new Promise((resolve) => {
 
+            const oldPageInfo = pageInfo;
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
+                tag: oldPageInfo.tag
+
             };
 
             resolve(pageInfo);
@@ -54,9 +56,11 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
     return function(...args) {
         return new Promise((resolve) => {
 
+            const oldPageInfo = pageInfo;
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
+                tag: oldPageInfo.tag
             };
 
             resolve(pageInfo);
@@ -67,9 +71,11 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
             return func.apply(this, args);
         })
         .then (() => {
+            const oldPageInfo = pageInfo;
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
+                tag: oldPageInfo.tag
             };
         });
     };
@@ -159,7 +165,8 @@ const setCustomTagContextMenu = (pageInfo) => {
                 menuContent,
                 pageInfo
             ); 
-        });
+        }
+    );
 }
 const REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu = REFRESH_PAGE_INFO_BEFORE(setCustomTagContextMenu);
 

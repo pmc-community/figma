@@ -299,7 +299,10 @@ const getTagPages = (tag) => {
 
     let numPages = 0;
     savedItems.forEach(page => {
-        if ( page.customTags.includes(tag) ) numPages++;
+        let customTags= _.map(page.customTags || [], function(str) {
+            return str.toLowerCase();
+          });
+        if ( customTags.includes(tag.toLowerCase()) ) numPages++;
     });
 
     return numPages;

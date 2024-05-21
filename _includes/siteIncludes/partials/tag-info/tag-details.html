@@ -115,7 +115,8 @@
                                             {% for pageTag in pageTagsArray %}
                                                 <button 
                                                     siteFunction="pageTagButton"
-                                                    tagType="siteTag" 
+                                                    tagType="siteTag"
+                                                    tagReference="{{ pageTag }}" 
                                                     id="pageTag_{{ pageTag }}" 
                                                     type="button" 
                                                     class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm btn-primary position-relative"
