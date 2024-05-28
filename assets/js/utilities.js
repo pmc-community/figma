@@ -810,12 +810,20 @@ const createGlobalLists = () => {
     globAllTags = Array.from(new Set([...tagList, ...globCustomTags].slice().sort()));
 }
 
+// callbackItem is executed when click on a menu item from the menuContent items list
+// callbackAfterShow is executed after the context menu is shown (i.e. dynamic initialize some elements from the context menu header/footer)
+// elementSelector is the css selector for the element on which the context menu is applied
+// elementTriggerCloseWhenScroll is the element which triggers the closure of the context menu when scrolled vertically. 
+// usually is the window element but can be the parent of the element on which the context menu is applied 
+// (to be used when the context menu is applied on an element which is on a modal or offcanvas that blocks the window scroll when active)
 const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, menuContent, callbackItem, callbackAfterShow = null) => {
     $(document).ready(function() {
 
         $(document).off('contextmenu', elementSelector).on('contextmenu', elementSelector, function(event) {
             event.preventDefault(); // Prevent default context menu  
-               
+            
+            // we can use a hard-coded class for the context menu since there will never be more than one open
+            // since any click outside a context menu will close it and remove the context menu from the DOM
             $('.context-menu').remove(); // remove the potential existing context menu
             const $clickedElement = $(this);
 
@@ -939,4 +947,3 @@ const isMobileOrTablet = () => {
   
     return isUserAgentMobileOrTablet || isMediaQueryMobileOrTablet || isViewportMobileOrTablet;
 }
-    

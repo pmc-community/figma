@@ -1,22 +1,13 @@
 // Let's do some work
 const setTagsSupport = () => {
-   
-    setOpenTagCloudBtn();
-    setTagButtons();
-
-    //setPageTagButtons();
 
     requestedTag = readQueryString('tag');
     if (requestedTag) showTagDetails(requestedTag);
 
-    // from saved-items.js
-    setSaveForLaterReadStatus();
-    setRemoveFromSavedItemsStatus();
-    setSaveForLaterRead();
-    setRemoveFromSavedItems();
-        
+    setPageSavedButtonsStatus();        
     
     $(document).ready(()=> {
+        setTagInfoPageButtonsFunctions();
         setCustomTagCloud();
         updateTagSearchList();
         setTagSearchList();
@@ -26,18 +17,81 @@ const setTagsSupport = () => {
     // from utilities.js
     removeObservers('.offcanvas class=hiding getClass=true');
     setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
-        setSaveForLaterReadStatus();
-        setRemoveFromSavedItemsStatus();
-        setCustomTagCloud();
-        updateTagSearchList();
-        setTagSearchList();
-        addCustomTagsToPages(null, pageInfo.tag);
+        setPageSavedButtonsStatus();
+        
+        // tag was passed to pageInfo global before opening the offcanvas 
+        // in order to preserve the reference to the active tag details datatable
+        // see processTagDetailsTableRowClick
+        updateAllTagInfoOnPage(pageInfo.tag)
     });
 
 }
 // work ends here
 
 // FUNCTIONS
+
+const updateAllTagInfoOnPage = (tagForActiveTagDetailsTable) => {
+    setCustomTagCloud(); //only custom tags are dynamic, site tags don't need update since cannot be modified
+    updateTagSearchList(); //update the tag search list items to have all custom tags modifications
+    setTagSearchList(); //tag search list must be recreated after the update of the list items
+    addCustomTagsToPages(null, tagForActiveTagDetailsTable); //update custom tags for the pages in the active tag details datatable
+}
+
+const setTagInfoPageButtonsFunctions = () => {
+
+    // click "Tag Cloud" button and show the tag cloud container
+    $('#openTagCloud').off('click').click(function() {
+        $('#cloud_tag_container').fadeIn();
+    });
+
+    // click on tag button in the tag cloud and show the tag details table
+    $('button[siteFunction="tagButton"]').off('click').click( function() {
+        const selectedTag = $(this).attr('id');
+        showTagDetails(selectedTag);
+        setPageSavedButtonsStatus(); 
+    });
+
+    // click on the tag button in tag details table and show the details table for the clicked tag
+    $('button[siteFunction="pageTagButton"]').off('click').click(function(event) {
+        
+        const handlePageTagButtonClick = (event) => {
+            const selectedTag = $(event.target).attr('id');
+            showTagDetails(selectedTag.match(/pageTag_(.*)/)[1]);
+            setPageSavedButtonsStatus(); 
+        }
+    
+        handlePageTagButtonClick(event);
+
+    });
+
+    // remove page from saved items
+    $('button[siteFunction="tagPageItemRemoveFromSavedItems"]').off('click').click(function() {
+        const pageToRemove = {
+            siteInfo: {
+                permalink: $(this).attr('pageRefPermalink'),
+                title: $(this).attr('pageRefTitle')
+            }
+        }
+        removePageFromSavedItems(pageToRemove);
+        setPageSavedButtonsStatus();        
+    });
+
+    // save page to saved items
+    $('button[siteFunction="tagPageItemSaveForLaterRead"]').off('click').click(function() {
+        const pageToSave = {
+            siteInfo: {
+                permalink: sanitizeURL($(this).attr('pageRefPermalink')),
+                title: DOMPurify.sanitize($(this).attr('pageRefTitle')),
+                customTags: [],
+                customCategories: [],
+                customNotes:[]
+            }
+        }
+        savePageToSavedItems(pageToSave);
+        setPageSavedButtonsStatus();        
+    });
+
+}
 
 const setTagCloudButtonesContextMenu = () => {
 
@@ -124,16 +178,12 @@ const setPageOtherCustomTags = (pageInformation) => {
 
     const $pageOtherCustomTagElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageTagButton"][tagType="customTag"]`);
     
-    $pageOtherCustomTagElement.remove(); //???
+    $pageOtherCustomTagElement.remove();
     
     customTags.forEach(tag => {        
         $pageOtherTagsElement.each(function() {
             $(this).children().first().append($(getCustomTagButtonElement(tag)))
         })
-    });
-
-    $('button[siteFunction="pageTagButton"]').off('click').click(function(event) {
-        handlePageTagButtonClick(event)
     });
 
 }
@@ -193,33 +243,6 @@ const setCustomTagCloud = () => {
     $('button[tagType="customTag"]').remove();
     globCustomTags.forEach(tag => {
         $('div[siteFunction="tagCloudContainerBody"]').append($(getTagCloudElement(tag, getTagPages(tag))));
-    });
-}
-
-// not used anymore since this is set when executing setPageOtherCustomTags
-const setPageTagButtons = () => {
-    $(window).on('load', () => {
-        $('button[siteFunction="pageTagButton"]').off('click').click(function(event) {
-            handlePageTagButtonClick(event)
-        });
-    });
-}
-
-const handlePageTagButtonClick = (event) => {
-    const selectedTag = $(event.target).attr('id');
-    showTagDetails(selectedTag.match(/pageTag_(.*)/)[1]);
-    setSaveForLaterReadStatus();
-    setRemoveFromSavedItemsStatus();
-}
-
-const setTagButtons = () => {
-    $(window).on('load', () => {
-        $('button[siteFunction="tagButton"]').click( function() {
-            const selectedTag = $(this).attr('id');
-            showTagDetails(selectedTag);
-            setSaveForLaterReadStatus();
-            setRemoveFromSavedItemsStatus();
-        } );
     });
 }
 
@@ -398,10 +421,33 @@ const addAdditionalButtons = (table, tag) => {
     addAdditionalButtonsToTable(table, `table[tagReference="${tag}"]`, 'bottom2', btnArray);
 }
 
-const setOpenTagCloudBtn = () => {
-    $(document).ready(function ()  {
-        $('#openTagCloud').click(function() {
-            $('#cloud_tag_container').fadeIn();
+const setPageSavedButtonsStatus = () => {
+
+    const setRemoveFromSavedItemsStatus = () => {
+        $('button[siteFunction="tagPageItemRemoveFromSavedItems"]').each( function() {
+            const pageToSave = {
+                permalink: $(this).attr('pageRefPermalink'),
+                title: $(this).attr('pageRefTitle')
+            }
+            const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];        
+            if (!findObjectInArray(pageToSave, savedItems)) $(this).addClass('disabled');
+            else $(this).removeClass('disabled')
         });
-    });
+    }
+    
+    const setSaveForLaterReadStatus = () => {
+        $('button[siteFunction="tagPageItemSaveForLaterRead"]').each( function() {
+            const pageToSave = {
+                permalink: $(this).attr('pageRefPermalink'),
+                title: $(this).attr('pageRefTitle')
+            }
+            const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    
+            if (findObjectInArray(pageToSave, savedItems)) $(this).addClass('disabled');
+            else $(this).removeClass('disabled')
+        });
+    }
+    
+    setRemoveFromSavedItemsStatus();
+    setSaveForLaterReadStatus();
 }

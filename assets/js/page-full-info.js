@@ -464,7 +464,7 @@ const postProcessCustomNotesTable = (table, pageInfo) => {
             className: 'btn-danger btn-sm text-light focus-ring focus-ring-warning mb-2',
             text: 'Delete All Notes',
             action: () => {
-                REFRESH_PAGE_INFO_AFTER__addCustomNote(pageInfo);
+                REFRESH_PAGE_INFO_AFTER__removeAllCustomNotes(pageInfo);
                 const notesData = getPageNotes(pageInfo);
                 table.clear().rows.add(notesData).draw();
                 resetCustomNotesInputAreas();
