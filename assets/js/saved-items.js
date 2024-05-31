@@ -89,7 +89,7 @@ const addNote = (note, pageInfo) => {
     };
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
-        showToast(`Can\'t add note! Page ${page.title} is not in saved items...`, 'bg-danger', 'text-light');
+        showToast(`Can\'t add note! There is nothing in saved items...`, 'bg-danger', 'text-light');
         return false;
     }
 
@@ -138,7 +138,7 @@ const deleteNote = (noteId, pageInfo) => {
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
-        showToast('Can\'t delete note! Page is not in saved items...', 'bg-danger', 'text-light');
+        showToast('Can\'t delete note! There is nothing in saved items...', 'bg-danger', 'text-light');
         return false;
     }
 
@@ -168,7 +168,7 @@ const updateNote = (noteId, note, pageInfo) => {
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
-        showToast('Can\'t update note! Page is not in saved items...', 'bg-danger', 'text-light');
+        showToast('Can\'t update note! There is nothing in saved items...', 'bg-danger', 'text-light');
         return false;
     }
 
@@ -256,7 +256,7 @@ const addTag = (tag, pageInfo) => {
     };
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
-        showToast(`Can\'t add tag! Page ${page.title} is not in saved items...`, 'bg-danger', 'text-light');
+        showToast(`Can\'t add tag! There is nothing in saved items...`, 'bg-danger', 'text-light');
         return false;
     }
 
@@ -274,7 +274,8 @@ const addTag = (tag, pageInfo) => {
     const savedPage = savedItems[pageIndex];
     const savedPageCustomTags = savedPage.customTags || [];
     
-    savedPageCustomTags.push(tag);
+    const tagIndex =  _.findIndex(savedPageCustomTags, item => item.toLowerCase() === tag.toLowerCase());
+    if (tagIndex === -1) savedPageCustomTags.push(tag);
     savedPage.customTags = savedPageCustomTags.sort();
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
@@ -290,7 +291,7 @@ const deleteTagFromPage = (tag, pageInfo) => {
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
-        showToast('Can\'t delete tag! Page is not in saved items...', 'bg-danger', 'text-light');
+        showToast('Can\'t delete tag! There is nothing in saved items...', 'bg-danger', 'text-light');
         return false;
     }
 
@@ -316,17 +317,41 @@ const deleteTagFromAllPages = (tag, pageInfo={}) => {
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
-        showToast('Can\'t delete tag! Page is not in saved items...', 'bg-danger', 'text-light');
+        showToast('Can\'t delete tag! There is nothing in saved items...', 'bg-danger', 'text-light');
         return false;
     }
 
     let pageIndex = 0;
     savedItems.forEach( page => {
         const savedPageCustomTags = page.customTags || [];
-        const tagIndex =  _.findIndex(savedPageCustomTags, item => item === tag);;
+        const tagIndex =  _.findIndex(savedPageCustomTags, item => item.toLowerCase() === tag.toLowerCase());
         if (tagIndex !== -1)  _.pullAt(savedPageCustomTags, tagIndex);
         page.customTags = savedPageCustomTags;
         savedItems[pageIndex] = page;
+        pageIndex += 1;
+    });
+
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const updateTagForAllPages = (oldTag, newTag) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t update tag! There is nothing in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    let pageIndex = 0;
+    savedItems.forEach( page => {
+        let savedPageCustomTags = page.customTags || [];
+        const tagIndex =  _.findIndex(savedPageCustomTags, item => item.toLowerCase() === oldTag.toLowerCase());
+        if (tagIndex !== -1) {
+            savedPageCustomTags = _.uniq(_.map(savedPageCustomTags, item => item.toLowerCase() === oldTag.toLowerCase() ? newTag : item));
+            page.customTags = savedPageCustomTags;
+            savedItems[pageIndex] = page;
+        } 
         pageIndex += 1;
     });
 

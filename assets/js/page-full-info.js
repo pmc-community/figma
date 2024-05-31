@@ -312,7 +312,6 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         setTagEditor('#offcanvasPageFullInfoPageTagsEditor', pageInfo);
         REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
 
-        createGlobalLists();
     });
     
     $('button[siteFunction="offcanvasPageFullInfoPageRemoveFromSavedItems"]').off('click').on('click', function() {

@@ -167,9 +167,15 @@ const readQueryString = (queryParameter) => {
     return value;
 }
 
-const filterArrayStartingWith = (arr, prefix) => {
+const filterArrayStartingWith = (arr, prefix, caseSensitive) => {
     return arr.filter(function(item) {
-      return item.startsWith(prefix);
+        return (
+            typeof item !== 'string' ? 
+                item : 
+                !caseSensitive ? 
+                    item.toLowerCase().startsWith(prefix.toLowerCase()) : 
+                    item.startsWith(prefix) 
+        );
     });
 }
 
@@ -179,16 +185,20 @@ const setSearchList = (
     searchResultsItemSelector, 
     searchResultsItemTag, 
     searchResultsItemClosingTag,
-    callback
+    caseSensitive = false,
+    callback,
+    callbackFilteredList = null
 ) => {  
 
     const handleSetTagSearcResults = (
-        searchInputSelector, 
-        searchResultsSelector, 
-        searchResultsItemSelector, 
-        searchResultsItemTag,
-        searchResultsItemClosingTag, 
-        callback
+        searchInputSelector, // css selector for the search text input field
+        searchResultsSelector, // css selector for the search results list
+        searchResultsItemSelector, // usually li[some_attribute = "some_value"]
+        searchResultsItemTag, // usually <li with_some_attributes>
+        searchResultsItemClosingTag, // usually </li>
+        caseSensitive, // true if the search must be case sensitive
+        callback, // do something with selected item
+        callbackFilteredList // do something with the filtered list before showing it and before making any selection
     ) => {
             const $searchInput = $(searchInputSelector);
             const $searchResults = $(searchResultsSelector);
@@ -200,18 +210,21 @@ const setSearchList = (
             $(searchResultsItemSelector).each(function() { list.push($(this).text().trim()); });
 
             function showSearchResults() {
-                const searchTerm = $searchInput.val().trim().toLowerCase();
+                //const searchTerm = $searchInput.val().trim().toLowerCase();
+                const searchTerm = $searchInput.val().trim();
                 let html = '';
                 if (searchTerm === '') {
                     $searchResults.hide();
                     return;
                 }
-                const filteredList =  filterArrayStartingWith (list, searchTerm);            
-                filteredList.forEach(function(result) { html += searchResultsItemTag + result + searchResultsItemClosingTag; });            
-                $searchResults.html(html).show();
+                const filteredList =  filterArrayStartingWith (list, searchTerm, caseSensitive);
+                filteredList.forEach(function(item) { html += searchResultsItemTag + item + searchResultsItemClosingTag; });            
+                $searchResults.html(html);
+                if (callbackFilteredList) callbackFilteredList(filteredList); // do some addtional processing to the filtered list before showing it
+                $searchResults.show();
             }
             
-            $searchInput.off('input').on('input', function() { if ($searchInput.val().trim().toLowerCase() !== '') showSearchResults(); });
+            $searchInput.off('input').on('input', function() { if ($searchInput.val().trim() !== '') showSearchResults(); });
         
             // Handle click outside search input or search results to hide the list
             $(document).on('click', function(event) {
@@ -224,6 +237,8 @@ const setSearchList = (
                 if (event.which === 27) { // Escape key
                     $searchResults.hide();
                     $searchInput.val('');
+                    //_.remove(list); // first, clear the list since modification of the searchResultsItemSelector elements may occured meanwhile
+                    //$(searchResultsItemSelector).each(function() { list.push($(this).text().trim()); }); // re-build the list
                 }
             });
         
@@ -318,7 +333,9 @@ const setSearchList = (
         searchResultsItemSelector, 
         searchResultsItemTag, 
         searchResultsItemClosingTag,
-        callback
+        caseSensitive,
+        callback,
+        callbackFilteredList
     ));
         
 }
@@ -447,7 +464,7 @@ const handleBtnClose = () => {
     $(document).ready(function ()  {
         $('.btn-close').click(function() {
             toCloseSelector = $(this).attr('whatToClose');
-            if (toCloseSelector !== 'undefined') {
+            if (toCloseSelector !== 'undefined' && $(`${toCloseSelector}`).length > 0 ) {
                 $(`${toCloseSelector}`).fadeOut();
             }
         });
@@ -804,10 +821,10 @@ const transformEditorTextToArray = (htmlString) => {
 }
 
 const createGlobalLists = () => {
-    globCustomCats = getCustomCats();
-    globCustomTags = getCustomTags();
-    globAllCats = Array.from(new Set([...catList, ...globCustomCats].slice().sort()));
-    globAllTags = Array.from(new Set([...tagList, ...globCustomTags].slice().sort()));
+    globCustomCats = _.uniq(getCustomCats());
+    globCustomTags = _.uniq(getCustomTags());
+    globAllCats = _.uniq(Array.from(new Set([...catList, ...globCustomCats].slice().sort())));
+    globAllTags = _.uniq(Array.from(new Set([...tagList, ...globCustomTags].slice().sort())));
 }
 
 // callbackItem is executed when click on a menu item from the menuContent items list
