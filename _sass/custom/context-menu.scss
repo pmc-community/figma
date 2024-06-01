@@ -9,12 +9,14 @@ $contextMenuItemAlgnItemsVertical: $al-v-baseline;
 $contextMenuContainerPosition: $pos-fixed;
 $contextMenuContainerBackground: $c-metal-grey;
 $contextMenuListStyle: $ls-none;
+$contextMenuPageTagFooterBtnWidth: $sz-6rem;
 
 $contextMenuElements: (
     container: '.context-menu',
     menuItem: '.context-menu-item',
     menuItemLink: '.context-menu-item a',
-    menuItemList: '.context-menu-list'
+    menuItemList: '.context-menu-list',
+    pageTagContextMenuFooterButton: '.pageTagContextMenuFooterBtn'
 );
 
 @import 'meta.scss';

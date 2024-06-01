@@ -416,4 +416,8 @@
         padding-left: $contextMenuListPaddingLeft !important;
         list-style: $contextMenuListStyle;
     }
+
+    #{map-get($contextMenuElements, pageTagContextMenuFooterButton)} {
+        width: $contextMenuPageTagFooterBtnWidth;
+    }
 }

@@ -165,7 +165,9 @@ const setCustomTagContextMenu = (pageInfo) => {
                 menuContent,
                 pageInfo
             ); 
-        }
+        },
+        null,
+        ['pageFullInfoCustomTagContextMenu']
     );
 }
 const REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu = REFRESH_PAGE_INFO_BEFORE(setCustomTagContextMenu);

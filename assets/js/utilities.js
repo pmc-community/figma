@@ -827,13 +827,17 @@ const createGlobalLists = () => {
     globAllTags = _.uniq(Array.from(new Set([...tagList, ...globCustomTags].slice().sort())));
 }
 
-// callbackItem is executed when click on a menu item from the menuContent items list
-// callbackAfterShow is executed after the context menu is shown (i.e. dynamic initialize some elements from the context menu header/footer)
-// elementSelector is the css selector for the element on which the context menu is applied
 // elementTriggerCloseWhenScroll is the element which triggers the closure of the context menu when scrolled vertically. 
 // usually is the window element but can be the parent of the element on which the context menu is applied 
 // (to be used when the context menu is applied on an element which is on a modal or offcanvas that blocks the window scroll when active)
-const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, menuContent, callbackItem, callbackAfterShow = null) => {
+const setContextMenu = (
+    elementSelector, //css selector for the element on which the context menu is applied
+    elementTriggerCloseWhenScroll = null, //element which triggers the closure of the context menu when scrolled vertically
+    menuContent, // the html content of the context menu = header(custom) + body(menu item list) + footer(custom)
+    callbackItem, // executed when click on a menu item from the menuContent items list
+    callbackAfterShow = null, //executed after the context menu is shown to do some post processing if needed
+    additionalClass = [] // additional classes to be applied to the whole context menu container
+) => {
     $(document).ready(function() {
 
         $(document).off('contextmenu', elementSelector).on('contextmenu', elementSelector, function(event) {
@@ -906,7 +910,10 @@ const setContextMenu = (elementSelector, elementTriggerCloseWhenScroll = null, m
             });
 
             $('body').append(dropdownMenu);
-
+            additionalClass.forEach(cls => {
+                dropdownMenu.addClass(cls);
+            });
+            
             if (callbackAfterShow) callbackAfterShow(event);
             
             // set auto closing events
@@ -963,4 +970,8 @@ const isMobileOrTablet = () => {
     const isViewportMobileOrTablet = viewportWidth <= 992;
   
     return isUserAgentMobileOrTablet || isMediaQueryMobileOrTablet || isViewportMobileOrTablet;
+}
+
+const cleanText = (text) => {
+    return DOMPurify.sanitize(text.replace(/<[^>]*>/g, '').replace(/(\n|&nbsp;)/g, ''));
 }

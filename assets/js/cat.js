@@ -6,7 +6,9 @@ const setCatSupport = () => {
         'li[siteFunction="searchCatListItem"]', 
         '<li siteFunction="searchCatListItem">',
         '</li>',
-        function(result) { console.log(result); }
+        false,
+        function(result) { console.log(result); },
+        null
     );
     
     /*
