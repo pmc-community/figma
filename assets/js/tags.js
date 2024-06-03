@@ -255,6 +255,7 @@ const handlePageTagDelete = (page = {}, tag, tagForActiveTagDetailsDatatable) =>
     deleteTagFromPage(tag, {siteInfo:page});
     updateAllTagInfoOnPage(tagForActiveTagDetailsDatatable);
     $('.context-menu').remove();
+
 }
 
 const handlePageTagUpdate = () => {
@@ -394,6 +395,10 @@ const handleTagUpdate = () => {
     const tagForActiveTagDetailsDatatable = $('div[siteFunction="tagDetails"]:not(.d-none) button[sitefunction="tagForActiveTagDetailsDatatable"]').text().trim();
 
     updateAllTagInfoOnPage(tagForActiveTagDetailsDatatable);
+
+    // update the tag details card header if it is visible for the tag we update
+    if (oldTag.toLowerCase() === tagForActiveTagDetailsDatatable.toLowerCase())
+        $('button[sitefunction="tagForActiveTagDetailsDatatable"]').text(tag);
 }
 
 const handleTagRemoval = (tag, tagForActiveTagDetailsDatatable = null) => {
@@ -404,6 +409,10 @@ const handleTagRemoval = (tag, tagForActiveTagDetailsDatatable = null) => {
     if (!deleteTagFromAllPages(tag)) return;
     createGlobalLists();
     updateAllTagInfoOnPage(tagForActiveTagDetailsDatatable);
+
+    // remove the tag details container id it is open for the tag we delete
+    if (tag.toLowerCase() === tagForActiveTagDetailsDatatable.toLowerCase())
+        $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).remove();
 
 }
 
@@ -532,12 +541,15 @@ const showTagDetails = (tag) => {
     const customTagPageNo = tagList.includes(tag) ? 0 : getTagPages(tag);
     if (siteTagPageNo + customTagPageNo === 0 ) return;
 
+    if( $.fn.DataTable.isDataTable(`table[tagReference="${tag}"]`) ) {
+        $(`table[tagReference="${tag}"]`).DataTable().destroy();
+        $(`table[tagReference="${tag}"]`).removeAttr('id').removeAttr('aria-describedby')
+    }
+
     let tableData = [];
     if (siteTagPageNo === 0 && customTagPageNo > 0 ) {
-        //console.log(tag);
         tableData = buildTagPagesListForCustomTag(tag);
-        console.log(tableData);
-        //return; // TO BE REMOVED WHEN CUSTOM TAGS FUNCTIONALITY WILL BE ADDED
+        createSimpleTable(tag, tableData);
     }
 
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
@@ -545,16 +557,11 @@ const showTagDetails = (tag) => {
     $('div[siteFunction="tagDetails"]').removeAttr('style'); // to clear some style values added by a potential previous close button click
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).fadeIn();
 
-    if( $.fn.DataTable.isDataTable(`table[tagReference="${tag}"]`) ) {
-        $(`table[tagReference="${tag}"]`).DataTable().destroy();
-        $(`table[tagReference="${tag}"]`).removeAttr('id').removeAttr('aria-describedby')
-    }
-    
     // columns settings
     // always a good idea to set the data mapping for each column
     // maybe we need to replace the datatable rows from a dynamic source and we would need the data mapping
 
-    // exceptWhenRowSelect: true to make the column inactive when click in a table row
+    // exceptWhenRowSelect: true to make the column inactive when click in a table row (click on that column dows not trigger the click on row event)
     // this is a custom column configuration, not a standard DataTables column configuration
     // is good to be used for columns having already a functional role in the table (such as buttons)
     const colDefinition = [
@@ -562,7 +569,15 @@ const showTagDetails = (tag) => {
         {
             data: 'pageTitle',
             className: 'alwaysCursorPointer',
-            title:'Title'
+            title:'Title',
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('siteFunction', 'tagInfoTagTablePageTitle')
+                    .attr('title', `Click here for more info about page ${cellData.replace(/<\/?[^>]+(>|$)/g, "")}`)
+                    .attr('tagReference', `${tag}`)
+                    .attr('colFunction', 'pageTitle')
+                    .addClass('fw-normal align-self-center align-middle');
+            }
         }, 
 
         // last update
@@ -571,16 +586,32 @@ const showTagDetails = (tag) => {
             title:'Last Update',
             type: 'date', 
             className: 'dt-left', 
-            exceptWhenRowSelect: true
+            exceptWhenRowSelect: true,
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('siteFunction', 'tableDateField')
+                    .attr('tagReference', `${tag}`)
+                    .attr('colFunction', 'pageLastUpdate')
+                    .addClass('fw-normal align-self-center align-middle');
+            }
         }, 
 
         // action buttons
         { 
             data: 'pageActions',
             title:'Actions',
+            type: 'string',
             searchable: false, 
             orderable: false, 
-            exceptWhenRowSelect: true
+            exceptWhenRowSelect: true,
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('tagReference', `${tag}`)
+                    .attr('colFunction', 'pageActions')
+                    .addClass('fw-normal align-self-center align-middle')
+                    .removeClass('dt-type-numeric');
+            }
+
         }, 
         
         // excerpt
@@ -589,24 +620,39 @@ const showTagDetails = (tag) => {
             title:'Excerpt',
             exceptWhenRowSelect: true,
             width: '30%',
-            visible: false
+            visible: false,
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('tagReference', `${tag}`)
+                    .attr('colFunction', 'pageExcerpt')
+                    .addClass('fw-normal align-self-center align-middle');
+            }
         }, 
 
         // other tags
         {
             data: 'pageOtherTags',
             title:'Other Tags',
-            exceptWhenRowSelect: true
+            exceptWhenRowSelect: true,
+            createdCell: function(td, cellData, rowData, row, col) {
+                const permalink = $(rowData.pageActions).find('[siteFunction="tagPageItemLinkToDoc"]').attr('href');
+                $(td)
+                    .attr('tagReference', `${tag}`)
+                    .attr('colFunction', 'tagInfoTagTablePageOtherTags')
+                    .attr('pageTitleReference', `${rowData.pageTitle.replace(/<\/?[^>]+(>|$)/g, "").trim()}`)
+                    .attr('pagePermalinkReference', `${permalink.trim()}`)
+                    .addClass('fw-normal align-self-center align-middle');
+            }
         }
     ];
 
-    const additionalTableSettings = tableData.length === 0 ?
+    const additionalTableSettings = tableData.length === 0 ? 
         {
             scrollX:true,
             fixedColumns: {
                 "left": 1
             }
-        } :
+        } : 
         {
             scrollX:true,
             fixedColumns: {
@@ -615,10 +661,9 @@ const showTagDetails = (tag) => {
             data:tableData
         }
 
-    console.log(additionalTableSettings)
     setDataTable(
         `table[tagReference="${tag}"]`,
-        tag.trim().replace(/\s+/g, "_"),     
+        `TagPages_${tag.trim()}`,     
         colDefinition,
         (table) => { postProcessTagDetailsTable(table, tag) }, // will execute after the table is created
         (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) }, // will execute when click on row
@@ -626,6 +671,68 @@ const showTagDetails = (tag) => {
     );
 
     history.replaceState({}, document.title, window.location.pathname);
+}
+
+const createSimpleTable = (tag, tableData) => {
+
+    const tagDetailsCardHeader = (tag) => {
+        return (
+            `
+                <div class="card-header d-flex justify-content-between">
+                    <span class="fs-6 fw-medium">Tag:
+                        <button 
+                            siteFunction="tagForActiveTagDetailsDatatable" id="${tag}" 
+                            type="button" 
+                            class="px-3 ml-1 btn btn-sm btn-success position-relative">
+                            ${tag}       
+                        </button>
+                    </span>
+                    <button 
+                        siteFunction="btnClose" 
+                        whatToClose="div[tagReference=&quot;${tag.trim()}&quot;]" 
+                        type="button" class="btn-close" 
+                        aria-label="Close">
+                    </button>
+                 </div>
+            `
+        );
+    }
+
+    const cardDetailsCardBody = (tag) => {
+        return (
+            `
+                <div class="card-body">
+                    <table siteFunction="tagDetailsPageTable" class="table table-hover" tagReference="${tag}">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th siteFunction="tableDateField">Last Update</th>
+                                <th>Actions</th>
+                                <th>Excerpt</th>
+                                <th>Other Tags</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `
+        );
+    }
+
+    $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).remove();
+    const $tagDetailsContainer = $(`<div tagReference="${tag}" siteFunction="tagDetails" class="d-none card shadow bg-transparent">`);
+    $tagDetailsContainer.append($(tagDetailsCardHeader(tag)));
+    $tagDetailsContainer.append($(cardDetailsCardBody(tag)));
+    $('div[id="tag_details"]').append($tagDetailsContainer);
+
 }
 
 const buildTagPagesListForCustomTag = (tag) => {
@@ -687,15 +794,53 @@ const buildTagPagesListForCustomTag = (tag) => {
             .replace(/>\s+/g, '>'); // remove spaces after >
     }
 
-    //console.log(pageList);
+    const colPageOtherTags = (tag, pageOtherTags) => {
+
+        const otherTagBtnItem = (tag) => {
+        
+            const tagType = _.findIndex(globCustomTags, item => item.toLowerCase() === tag.trim().toLowerCase()) === -1 ?
+                'siteTag' :
+                'customTag';
+            
+            const tagBtnType = tagType === 'siteTag' ? 'btn-primary' : 'btn-success';
+    
+            return (
+                `
+                    <button 
+                        sitefunction="pageTagButton" 
+                        tagtype="${tagType}" 
+                        tagreference="${tag}" 
+                        id="pageTag_${tag}" 
+                        type="button" 
+                        class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm ${tagBtnType} position-relative" 
+                        title="Details for tag ${tag}"> 
+                        ${tag} 
+                    </button>
+                `
+            );
+        }
+
+        let buttons = '';
+        pageOtherTags.forEach(tag => { buttons += otherTagBtnItem(tag); });
+
+        buttons = '<span>' + buttons + '</span>';
+        buttons = buttons
+            .replace(/[\n\t]/g, '') // remove newlines and tabs
+            .replace(/\s\s+/g, ' ') // replace multiple spaces with single space
+            .replace(/>\s+</g, '><') // remove spaces between > <
+            .replace(/\s+</g, '<') // remove spaces before <
+            .replace(/>\s+/g, '>'); // remove spaces after >
+        return buttons;
+
+    }
 
     getArrayOfTagSavedPages(tag).forEach(page => {
         const sitePage = getObjectFromArray ({permalink: page.permalink, title: page.title}, pageList);
 
         const pageTitle = colPageTitle(page.title);
-        const pageLastUpdate = colPageLastUpdate(sitePage.lastUpdate);
+        const pageLastUpdate = colPageLastUpdate(formatDate(sitePage.lastUpdate));
         const pageExcerpt = colPageExcerpt(sitePage.excerpt);
-        const pageActions = colPageActions(tag, page.permalink, page.pageTitle);
+        const pageActions = colPageActions(tag, page.permalink, page.title);
         
         const pageOtherTags = _.uniq(_.pull(
             [
@@ -705,14 +850,12 @@ const buildTagPagesListForCustomTag = (tag) => {
             tag
         )); // get all site and custom tags, except for the one which was clicked
         
-        //console.log(sitePage);
-
         tableData.push({
             pageTitle: pageTitle,
             pageLastUpdate: pageLastUpdate,
             pageActions: pageActions,
             pageExcerpt: pageExcerpt,
-            pageOtherTags: 'pageOtherTags'
+            pageOtherTags: colPageOtherTags(tag, pageOtherTags)
         });
     });
 

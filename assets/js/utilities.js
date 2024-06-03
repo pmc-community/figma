@@ -462,7 +462,8 @@ const addAdditionalButtonsToTable = (table, tableSelector, zone, btnArray) => {
 
 const handleBtnClose = () => {
     $(document).ready(function ()  {
-        $('.btn-close').click(function() {
+        // delegate listener at higher level since some close buttons may be created dynamically
+        $(document).on('click','.btn-close', function() {
             toCloseSelector = $(this).attr('whatToClose');
             if (toCloseSelector !== 'undefined' && $(`${toCloseSelector}`).length > 0 ) {
                 $(`${toCloseSelector}`).fadeOut();
@@ -825,6 +826,46 @@ const createGlobalLists = () => {
     globCustomTags = _.uniq(getCustomTags());
     globAllCats = _.uniq(Array.from(new Set([...catList, ...globCustomCats].slice().sort())));
     globAllTags = _.uniq(Array.from(new Set([...tagList, ...globCustomTags].slice().sort())));
+    getOrphanDataTables('tag').forEach( table => { localStorage.removeItem(table); });
+}
+
+const getOrphanDataTables = (what) => {
+    
+    let substring = '';
+
+    switch (what) {
+        case 'tag':
+            substring = '_DataTables_TagPages_';
+            break;
+    }
+    
+    if (!substring) return [];
+    if (substring === 'undefined' || substring === '') return [];
+
+    let matchingKeys = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.includes(substring)) {
+            matchingKeys.push(key);
+        }
+    }
+
+    const modifiedArray = _.map(matchingKeys, item => {
+        return _.split(item, substring)[1];
+      });
+
+    const orphanTags = _.difference(_.uniq(modifiedArray.sort()), globAllTags);
+    const regex = new RegExp(`${substring}(${orphanTags.join('|')})$`);
+    matchingKeys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (regex.test(key)) {
+          matchingKeys.push(key);
+        }
+    }
+
+    return matchingKeys;
 }
 
 // elementTriggerCloseWhenScroll is the element which triggers the closure of the context menu when scrolled vertically. 
@@ -987,4 +1028,4 @@ const replaceAllOccurrencesCaseInsensitive = (array, target, replacement) => {
       }
       return item;
     });
-  }
+}

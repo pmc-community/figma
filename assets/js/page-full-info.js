@@ -400,7 +400,7 @@ const fillPageExcerpt = (pageInfo) => {
 }
 
 const initCustomNotesTable = (pageInfo) => {
-    const permalink = pageInfo.siteInfo.permalink.replace(/^\/|\/$/g, '').replace(/\//g, '_').trim();
+    const permalink = pageInfo.siteInfo.permalink.trim();
     const $table = $('#offcanvasPageFullInfoPageGeneralCustomNotesTable').DataTable();
     if ($.fn.DataTable.isDataTable($table)) $table.destroy();
         
