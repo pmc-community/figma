@@ -975,3 +975,16 @@ const isMobileOrTablet = () => {
 const cleanText = (text) => {
     return DOMPurify.sanitize(text.replace(/<[^>]*>/g, '').replace(/(\n|&nbsp;)/g, ''));
 }
+
+const replaceAllOccurrencesCaseInsensitive = (array, target, replacement) => {
+    // Create a case-insensitive, global regular expression
+    const regex = new RegExp(_.escapeRegExp(target), 'gi');
+    
+    // Use _.map to iterate through the array and replace the target string
+    return _.map(array, item => {
+      if (typeof item === 'string') {
+        return item.replace(regex, replacement);
+      }
+      return item;
+    });
+  }

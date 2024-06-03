@@ -244,6 +244,22 @@ const getTagPages = (tag) => {
     return numPages;
 }
 
+const getArrayOfTagSavedPages= (tag) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return [];
+
+    let pagesArray = [];
+    savedItems.forEach(page => {
+        let customTags= _.map(page.customTags || [], function(str) {
+            return str.toLowerCase();
+          });
+        if ( customTags.includes(tag.toLowerCase()) ) pagesArray.push(page);
+    });
+
+    return pagesArray;
+}
+
 const getPageStatusInSavedItems = (pageInfo) => {
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     return findObjectInArray({permalink: pageInfo.siteInfo.permalink, title:pageInfo.siteInfo.title}, savedItems);
@@ -357,4 +373,37 @@ const updateTagForAllPages = (oldTag, newTag) => {
 
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
     return true;
+}
+
+const updateTagForPage = (oldTag, newTag, pageInfo={}) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t update tag! There is nothing in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t update tag! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const savedPage = savedItems[pageIndex];
+    let savedPageCustomTags = savedPage.customTags || [];
+    savedPageCustomTags = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomTags, oldTag, newTag));
+
+    savedPage.customTags = savedPageCustomTags;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const getAllSavedItems = () => {
+    return JSON.parse(localStorage.getItem('savedItems')) || [];
 }

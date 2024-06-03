@@ -4,8 +4,8 @@
     {% for tagItem in site.data.tags_details %}
         <div tagReference="{{ tagItem[0] }}" siteFunction="tagDetails" class="d-none card shadow bg-transparent">
             <div class="card-header d-flex justify-content-between">
-                <span class="fs-6 fw-medium">Pages having tag: 
-                    <button siteFunction="tagForActiveTagDetailsDatatable" id="{{ tagItem[0] }}" type="button" class="px-3 mr-5 btn btn-sm btn-primary position-relative">
+                <span class="fs-6 fw-medium">Tag:
+                    <button siteFunction="tagForActiveTagDetailsDatatable" id="{{ tagItem[0] }}" type="button" class="px-3 ml-1 btn btn-sm btn-primary position-relative">
                         {{ tagItem[0] }}       
                     </button>
                 </span>

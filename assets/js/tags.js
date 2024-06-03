@@ -31,6 +31,7 @@ const setTagsSupport = () => {
 
 // FUNCTIONS
 const updateAllTagInfoOnPage = (tagForActiveTagDetailsTable = null) => {
+    createGlobalLists();
     setCustomTagCloud(); //only custom tags are dynamic, site tags don't need update since cannot be modified
     updateTagSearchList(); //update the tag search list items to have all custom tags modifications
     setTagSearchList(); //tag search list must be recreated after the update of the list items
@@ -69,33 +70,39 @@ const setTagInfoPageButtonsFunctions = () => {
         });
 
     // remove page from saved items
-    $('button[siteFunction="tagPageItemRemoveFromSavedItems"]').off('click').click(function() {
-        const pageToRemove = {
-            siteInfo: {
-                permalink: $(this).attr('pageRefPermalink'),
-                title: $(this).attr('pageRefTitle')
+    // delegate event handler to document since the buttons are not available when setting the listener
+    $(document)
+        .off('click', 'button[siteFunction="tagPageItemRemoveFromSavedItems"]')
+        .on('click', 'button[siteFunction="tagPageItemRemoveFromSavedItems"]', function() {
+            const pageToRemove = {
+                siteInfo: {
+                    permalink: $(this).attr('pageRefPermalink'),
+                    title: $(this).attr('pageRefTitle')
+                }
             }
-        }
-        removePageFromSavedItems(pageToRemove);
-        setPageSavedButtonsStatus();
-        updateAllTagInfoOnPage($(this).attr('tagForTagTableDetailsReference'));
-    });
+            removePageFromSavedItems(pageToRemove);
+            setPageSavedButtonsStatus();
+            updateAllTagInfoOnPage($(this).attr('tagForTagTableDetailsReference'));
+        });
 
     // save page to saved items
-    $('button[siteFunction="tagPageItemSaveForLaterRead"]').off('click').click(function() {
-        const pageToSave = {
-            siteInfo: {
-                permalink: sanitizeURL($(this).attr('pageRefPermalink')),
-                title: DOMPurify.sanitize($(this).attr('pageRefTitle')),
-                customTags: [],
-                customCategories: [],
-                customNotes:[]
+    // delegate event handler to document since the buttons are not available when setting the listener
+    $(document)
+        .off('click', 'button[siteFunction="tagPageItemSaveForLaterRead"]')
+        .on('click', 'button[siteFunction="tagPageItemSaveForLaterRead"]', function() {
+            const pageToSave = {
+                siteInfo: {
+                    permalink: sanitizeURL($(this).attr('pageRefPermalink')),
+                    title: DOMPurify.sanitize($(this).attr('pageRefTitle')),
+                    customTags: [],
+                    customCategories: [],
+                    customNotes:[]
+                }
             }
-        }
-        savePageToSavedItems(pageToSave);
-        setPageSavedButtonsStatus();
-        updateAllTagInfoOnPage($(this).attr('tagForTagTableDetailsReference'));
-    });
+            savePageToSavedItems(pageToSave);
+            setPageSavedButtonsStatus();
+            updateAllTagInfoOnPage($(this).attr('tagForTagTableDetailsReference'));
+        });
 
     // update tag for all pages when click "Update" in the context menu for custom tags in tag cloud
     // delegate event handler to document since the buttons are not available when setting the listener
@@ -135,7 +142,7 @@ const setPageTagButtonsContextMenu = () => {
         menu:[
             {
                 html: getMenuItemHtml(`Remove the tag from page`,'Remove tag', 'bi-x-circle'),
-                handler: handleTagRemovalFromPage
+                handler: handlePageTagDelete
             }
         ],
         footer: 
@@ -226,13 +233,28 @@ const setPageTagButtonsContextMenu = () => {
             }
 
         },
-        ['pageTagContextMenu']
+        ['pageTagContextMenu'] //additonal class for the context menu container
     );
 }
 
-const handleTagRemovalFromPage = (page = {}, tag, tagForActiveTagDetailsDatatable) => {
-    console.log(`removing ${tag} from ${page.title} = ${page.permalink}, table is ${tagForActiveTagDetailsDatatable}`);
+const handlePageTagDelete = (page = {}, tag, tagForActiveTagDetailsDatatable) => {
+
+    if (!tag) return;
+    if (tag === 'undefined') return;
+    if (tag === '') return;
+
+    if (!page) return;    
+    if (!page.title) return;
+    if (page.title === 'undefined') return;
+    if (page.title === '') return;
+    
+    if (!page.permalink) return;
+    if (page.permalink === 'undefined') return;
+    if (page.permalink === '') return;
+
+    deleteTagFromPage(tag, {siteInfo:page});
     updateAllTagInfoOnPage(tagForActiveTagDetailsDatatable);
+    $('.context-menu').remove();
 }
 
 const handlePageTagUpdate = () => {
@@ -247,16 +269,28 @@ const handlePageTagUpdate = () => {
     
     const tagForActiveTagDetailsDatatable = $('div[siteFunction="tagDetails"]:not(.d-none) button[sitefunction="tagForActiveTagDetailsDatatable"]').text().trim();
 
-    $('.context-menu').remove();
-
-    console.log(`update ${oldTag} to ${tag} for page ${page.title} = ${page.permalink}, table is ${tagForActiveTagDetailsDatatable}`);
+    updateTagForPage (oldTag, tag, {siteInfo:page})
     updateAllTagInfoOnPage(tagForActiveTagDetailsDatatable);
+    $('.context-menu').remove();
 }
 
 const handlePageTagAdd = () => {
     const tag = cleanText($('#pageTagEditCustomTagInput').val());
     const title = $('button[siteFunction="pageTagAddCustomTag"]').attr('pageTitleReference');
     const permalink = $('button[siteFunction="pageTagAddCustomTag"]').attr('pagePermalinkReference');
+
+    if (!tag) return;
+    if (tag === 'undefined') return;
+    if (tag === '') return;
+    
+    if (!title) return;
+    if (title === 'undefined') return;
+    if (title === '') return;
+    
+    if (!permalink) return;
+    if (permalink === 'undefined') return;
+    if (permalink === '') return;
+    
     const page = {
         title: title,
         permalink: permalink
@@ -264,10 +298,9 @@ const handlePageTagAdd = () => {
     
     const tagForActiveTagDetailsDatatable = $('div[siteFunction="tagDetails"]:not(.d-none) button[sitefunction="tagForActiveTagDetailsDatatable"]').text().trim();
 
-    $('.context-menu').remove();
-
-    console.log(`adding ${tag} for page ${page.title} = ${page.permalink}, table is ${tagForActiveTagDetailsDatatable}`);
+    addTag(tag, {siteInfo: page});
     updateAllTagInfoOnPage(tagForActiveTagDetailsDatatable);
+    $('.context-menu').remove();
 }
 
 const setTagCloudButtonsContextMenu = () => {
@@ -336,7 +369,7 @@ const setTagCloudButtonsContextMenu = () => {
             $('button[siteFunction="tagCloudEditCustomTag"]').attr('tagForTagTableDetailsReference',tagForActiveTagDetailsDatatable);
             $('button[siteFunction="tagCloudEditCustomTag"]').attr('tagReference', tag);
         },
-        ['tagCloudContextMenu']
+        ['tagCloudContextMenu'] //additonal class for the context menu container
     );
 }
 
@@ -499,9 +532,12 @@ const showTagDetails = (tag) => {
     const customTagPageNo = tagList.includes(tag) ? 0 : getTagPages(tag);
     if (siteTagPageNo + customTagPageNo === 0 ) return;
 
+    let tableData = [];
     if (siteTagPageNo === 0 && customTagPageNo > 0 ) {
-        console.log(tag);
-        return; // TO BE REMOVED WHEN CUSTOM TAGS FUNCTIONALITY WILL BE ADDED
+        //console.log(tag);
+        tableData = buildTagPagesListForCustomTag(tag);
+        console.log(tableData);
+        //return; // TO BE REMOVED WHEN CUSTOM TAGS FUNCTIONALITY WILL BE ADDED
     }
 
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
@@ -514,63 +550,180 @@ const showTagDetails = (tag) => {
         $(`table[tagReference="${tag}"]`).removeAttr('id').removeAttr('aria-describedby')
     }
     
+    // columns settings
+    // always a good idea to set the data mapping for each column
+    // maybe we need to replace the datatable rows from a dynamic source and we would need the data mapping
+
     // exceptWhenRowSelect: true to make the column inactive when click in a table row
     // this is a custom column configuration, not a standard DataTables column configuration
     // is good to be used for columns having already a functional role in the table (such as buttons)
-    setDataTable(
-        `table[tagReference="${tag}"]`,
-        tag.trim().replace(/\s+/g, "_"),
+    const colDefinition = [
+        // page name
+        {
+            data: 'pageTitle',
+            className: 'alwaysCursorPointer',
+            title:'Title'
+        }, 
+
+        // last update
+        {
+            data: 'pageLastUpdate',
+            title:'Last Update',
+            type: 'date', 
+            className: 'dt-left', 
+            exceptWhenRowSelect: true
+        }, 
+
+        // action buttons
+        { 
+            data: 'pageActions',
+            title:'Actions',
+            searchable: false, 
+            orderable: false, 
+            exceptWhenRowSelect: true
+        }, 
         
-        // columns settings
-        [
-            // page name
-            {
-                className: 'alwaysCursorPointer' 
-            }, 
+        // excerpt
+        {
+            data: 'pageExcerpt',
+            title:'Excerpt',
+            exceptWhenRowSelect: true,
+            width: '30%',
+            visible: false
+        }, 
 
-            // last update
-            {
-                type: 'date', 
-                className: 'dt-left', 
-                exceptWhenRowSelect: true
-            }, 
+        // other tags
+        {
+            data: 'pageOtherTags',
+            title:'Other Tags',
+            exceptWhenRowSelect: true
+        }
+    ];
 
-            // action buttons
-            { 
-                searchable: false, 
-                orderable: false, 
-                exceptWhenRowSelect: true
-            }, 
-            
-            // excerpt
-            {
-                exceptWhenRowSelect: true,
-                width: '30%',
-                visible: false
-            }, 
-
-            // other tags
-            {
-                exceptWhenRowSelect: true
-            }
-        ],
-
-        (table) => { postProcessTagDetailsTable(table, tag) },
-        (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) },
+    const additionalTableSettings = tableData.length === 0 ?
         {
             scrollX:true,
             fixedColumns: {
                 "left": 1
             }
+        } :
+        {
+            scrollX:true,
+            fixedColumns: {
+                "left": 1
+            },
+            data:tableData
         }
+
+    console.log(additionalTableSettings)
+    setDataTable(
+        `table[tagReference="${tag}"]`,
+        tag.trim().replace(/\s+/g, "_"),     
+        colDefinition,
+        (table) => { postProcessTagDetailsTable(table, tag) }, // will execute after the table is created
+        (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) }, // will execute when click on row
+        additionalTableSettings // additional datatable settings for this table instance
     );
 
     history.replaceState({}, document.title, window.location.pathname);
 }
 
+const buildTagPagesListForCustomTag = (tag) => {
+    let tableData = [];
+
+    const colPageTitle = (title) => {
+        return `<span>${title}</span>`
+    }
+
+    const colPageLastUpdate = (date) => {
+        return `<span>${date}</span>`
+    }
+
+    const colPageExcerpt = (excerpt) => {
+        return `<span>${excerpt}</span>`
+    }
+    
+    const colPageActions = (tag, permalink, title) => {
+
+        return (
+            `
+                <div class="btn-group"> 
+                    <a 
+                        siteFunction="tagPageItemLinkToDoc" 
+                        class="btn btn-sm btn-info" 
+                        href="${permalink}" 
+                        title="Read page ${title}" 
+                        tagForTagTableDetailsReference="${tag}" 
+                        target="_blank"> 
+                        <i class="bi bi-book" style="font-size:1.2rem"></i> 
+                    </a> 
+                    
+                    <button 
+                        siteFunction="tagPageItemSaveForLaterRead" 
+                        pageRefPermalink="${permalink}" 
+                        pageRefTitle="${title}" 
+                        class="btn btn-sm btn-success disabled" 
+                        title="Save page ${title} for later read" 
+                        tagForTagTableDetailsReference="${tag}"> 
+                        <i class="bi bi-bookmark-plus" style="font-size:1.2rem"></i> 
+                    </button>
+                    
+                    <button 
+                        siteFunction="tagPageItemRemoveFromSavedItems" 
+                        pageRefPermalink="${permalink}" 
+                        pageRefTitle="${title}" 
+                        class="btn btn-sm btn-warning" 
+                        title="Remove page ${title} from saved documents" 
+                        tagForTagTableDetailsReference="${tag}"> 
+                        <i class="bi bi-bookmark-x" style="font-size:1.2rem"></i> 
+                    </button>
+                </div>
+            `
+        )   // format the output string to look nice
+            .replace(/[\n\t]/g, '') // remove newlines and tabs
+            .replace(/\s\s+/g, ' ') // replace multiple spaces with single space
+            .replace(/>\s+</g, '><') // remove spaces between > <
+            .replace(/\s+</g, '<') // remove spaces before <
+            .replace(/>\s+/g, '>'); // remove spaces after >
+    }
+
+    //console.log(pageList);
+
+    getArrayOfTagSavedPages(tag).forEach(page => {
+        const sitePage = getObjectFromArray ({permalink: page.permalink, title: page.title}, pageList);
+
+        const pageTitle = colPageTitle(page.title);
+        const pageLastUpdate = colPageLastUpdate(sitePage.lastUpdate);
+        const pageExcerpt = colPageExcerpt(sitePage.excerpt);
+        const pageActions = colPageActions(tag, page.permalink, page.pageTitle);
+        
+        const pageOtherTags = _.uniq(_.pull(
+            [
+                ...sitePage.tags.sort(), 
+                ...getPageTags({siteInfo:{permalink:page.permalink, title: page.title}}).sort()
+            ], 
+            tag
+        )); // get all site and custom tags, except for the one which was clicked
+        
+        //console.log(sitePage);
+
+        tableData.push({
+            pageTitle: pageTitle,
+            pageLastUpdate: pageLastUpdate,
+            pageActions: pageActions,
+            pageExcerpt: pageExcerpt,
+            pageOtherTags: 'pageOtherTags'
+        });
+    });
+
+    return tableData;
+}
+
 const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
+
     // tags may contain spaces 
     // so we need to extract them from the html to prevent .split(' ') to provide wrong tags
+    // NOT USED
     const extractTags = (tags) => {
         const tempElement = document.createElement('div');
         tempElement.innerHTML = `${tags}`;
@@ -586,11 +739,14 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
         return linkToDoc.getAttribute('href');
     }
 
+    const stripHtml = (html) => {
+        return html.replace(/<\/?[^>]+(>|$)/g, "").trim();
+      };
+
     // process rowData when click on row
-    const cleanRowData = rowData.data.map(element => element.replace(/<[^>]*>/g, '').trim().replace(/\s+/g, ' '));
-    cleanRowData[4] = extractTags(rowData.data[4]);
-    const permalink = extractPermalink(rowData.data[2]);
-    const title = cleanRowData[0];
+    const cleanRowData  = _.mapValues(rowData.data, stripHtml);
+    const permalink = extractPermalink(rowData.data.pageActions);
+    const title = cleanRowData.pageTitle;
 
     pageInfo = {
         siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),

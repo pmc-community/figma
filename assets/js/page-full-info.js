@@ -166,8 +166,8 @@ const setCustomTagContextMenu = (pageInfo) => {
                 pageInfo
             ); 
         },
-        null,
-        ['pageFullInfoCustomTagContextMenu']
+        null, // nothing to post-process after context menu is shown
+        ['pageFullInfoCustomTagContextMenu'] //additonal class for the context menu container
     );
 }
 const REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu = REFRESH_PAGE_INFO_BEFORE(setCustomTagContextMenu);
