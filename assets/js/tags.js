@@ -702,7 +702,7 @@ const createSimpleTable = (tag, tableData) => {
         return (
             `
                 <div class="card-body">
-                    <table siteFunction="tagDetailsPageTable" class="table table-hover" tagReference="${tag}">
+                    <table style="display:none" siteFunction="tagDetailsPageTable" class="table table-hover" tagReference="${tag}">
                         <thead>
                             <tr>
                                 <th>Title</th>
@@ -732,6 +732,8 @@ const createSimpleTable = (tag, tableData) => {
     $tagDetailsContainer.append($(tagDetailsCardHeader(tag)));
     $tagDetailsContainer.append($(cardDetailsCardBody(tag)));
     $('div[id="tag_details"]').append($tagDetailsContainer);
+    // small delay to avoid visibility of white table background for dummy table on dark theme
+    setTimeout(()=>{$(`table[siteFunction="tagDetailsPageTable"][tagReference="${tag}"]`).removeAttr('style')} ,100);
 
 }
 
