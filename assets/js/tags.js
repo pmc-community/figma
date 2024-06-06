@@ -416,7 +416,7 @@ const handleTagRemoval = (tag, tagForActiveTagDetailsDatatable = null) => {
 
 }
 
-const setPageOtherCustomTags = (pageInformation) => {
+const setPageOtherCustomTags = (pageInformation, crtTag = null) => {
 
     const getCustomTagButtonElement = (tag) => {
         return (
@@ -435,7 +435,7 @@ const setPageOtherCustomTags = (pageInformation) => {
         )
     }
 
-    const customTags = getPageTags(pageInformation);
+    const customTags = _.pull(getPageTags(pageInformation), crtTag);
 
     const $pageOtherTagsElement = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"]`);
 
@@ -444,6 +444,7 @@ const setPageOtherCustomTags = (pageInformation) => {
     $pageOtherCustomTagElement.remove();
     
     customTags.forEach(tag => {        
+
         $pageOtherTagsElement.each(function() {
             $(this).children().first().append($(getCustomTagButtonElement(tag)))
         })
@@ -646,20 +647,24 @@ const showTagDetails = (tag) => {
         }
     ];
 
-    const additionalTableSettings = tableData.length === 0 ? 
-        {
-            scrollX:true,
-            fixedColumns: {
-                "left": 1
-            }
-        } : 
-        {
-            scrollX:true,
-            fixedColumns: {
-                "left": 1
-            },
-            data:tableData
+    const commonAdditionalTableSettings = {
+        scrollX:true,
+        fixedColumns: {
+            "left": 1
+        },
+        "createdRow": function(row, data, dataIndex) {
+            const permalink = $(data.pageActions).find('[siteFunction="tagPageItemLinkToDoc"]').attr('href');
+            $(row)
+                .attr('siteFunction', 'tagInfoTagTablePageRow')
+                .attr('tagReference', `${tag}`)
+                .attr('pageTitleReference', `${data.pageTitle.replace(/<\/?[^>]+(>|$)/g, "").trim()}`)
+                .attr('pagePermalinkReference', `${permalink.trim()}`);
         }
+    }; 
+
+    const additionalTableSettings = tableData.length === 0 ? 
+        commonAdditionalTableSettings : 
+        {...commonAdditionalTableSettings, data:tableData};
 
     setDataTable(
         `table[tagReference="${tag}"]`,
@@ -905,14 +910,12 @@ const processTagDetailsTableRowClick = (rowData, tableSelector, tag) => {
 const postProcessTagDetailsTable = (table, tag) => {
     if(table) {
         addAdditionalButtons(table, tag);
-        addCustomTagsToPages(table, null);
+        addCustomTagsToPages(table, tag);
     }   
 }
 
 const addCustomTagsToPages = (table = null, tag = null) => {
-    
     if (!table && !tag) return;
-    if (table && tag ) return; // not allowed both arguments to be not null
 
     let nodes;
     if (table) nodes = table.rows().nodes();
@@ -928,7 +931,7 @@ const addCustomTagsToPages = (table = null, tag = null) => {
             }
         };
         
-        setPageOtherCustomTags(pageInformation)
+        setPageOtherCustomTags(pageInformation, tag);
 
     });
 }

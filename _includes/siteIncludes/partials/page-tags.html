@@ -1,5 +1,3 @@
-
-
 <div id="pageTags" class="container px-5">
   
   {% capture permalink_param %}
@@ -39,3 +37,11 @@
     {% endfor %}
   {% endif %}
 </div>
+
+<!-- site-page.js has the scripts to be executed on each page -->
+<script>
+  showPageCustomTags({
+    permalink: '{{ page.permalink | escape }}',
+    title: '{{ page.title | escape }}'
+  });
+</script>
