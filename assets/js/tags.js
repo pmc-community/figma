@@ -1,18 +1,17 @@
 // Let's do some work
 const setTagsSupport = () => {
 
-    requestedTag = readQueryString('tag');
-    if (requestedTag) showTagDetails(requestedTag);
-
-    setPageSavedButtonsStatus();        
-    
     $(document).ready(()=> {
+        setPageSavedButtonsStatus();  
         setCustomTagCloud();
         setTagInfoPageButtonsFunctions();
         updateTagSearchList();
         setTagSearchList();
         setTagCloudButtonsContextMenu();
         setPageTagButtonsContextMenu();
+
+        requestedTag = readQueryString('tag');
+        if (requestedTag) showTagDetails(requestedTag);
     });
     
     // from utilities.js
@@ -544,7 +543,7 @@ const showTagDetails = (tag) => {
 
     if( $.fn.DataTable.isDataTable(`table[tagReference="${tag}"]`) ) {
         $(`table[tagReference="${tag}"]`).DataTable().destroy();
-        $(`table[tagReference="${tag}"]`).removeAttr('id').removeAttr('aria-describedby')
+        $(`table[tagReference="${tag}"]`).removeAttr('id').removeAttr('aria-describedby');
     }
 
     let tableData = [];
@@ -805,18 +804,20 @@ const buildTagPagesListForCustomTag = (tag) => {
 
         const otherTagBtnItem = (tag) => {
         
-            const tagType = _.findIndex(globCustomTags, item => item.toLowerCase() === tag.trim().toLowerCase()) === -1 ?
-                'siteTag' :
-                'customTag';
+            const tagType = _.findIndex(globCustomTags, item => item.toLowerCase() === tag.trim().toLowerCase()) > 0 ?
+                'customTag' :
+                'siteTag';
             
-            const tagBtnType = tagType === 'siteTag' ? 'btn-primary' : 'btn-success';
+            const tagBtnType = _.findIndex(globCustomTags, item => item.toLowerCase() === tag.trim().toLowerCase()) > 0 ? 
+                'btn-success' : 
+                'btn-primary';
     
             return (
                 `
                     <button 
-                        sitefunction="pageTagButton" 
-                        tagtype="${tagType}" 
-                        tagreference="${tag}" 
+                        siteFunction="pageTagButton" 
+                        tagType="${tagType}" 
+                        tagReference="${tag}" 
                         id="pageTag_${tag}" 
                         type="button" 
                         class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm ${tagBtnType} position-relative" 
