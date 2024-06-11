@@ -24,7 +24,7 @@ module Jekyll
           if content =~ /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
             front_matter = YAML.load(Regexp.last_match[1])
           end
-  
+
           title = front_matter['title']
           permalink = front_matter['permalink']
           categories = front_matter['categories']
@@ -32,7 +32,7 @@ module Jekyll
           excerpt = front_matter['excerpt']
           lastUpdate = File.mtime(file_path)
           createTime = File.birthtime(file_path)
-  
+
           document_data = {
             'title' => title,
             'permalink' => permalink,

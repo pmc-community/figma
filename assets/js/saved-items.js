@@ -291,7 +291,12 @@ const addTag = (tag, pageInfo) => {
     const savedPageCustomTags = savedPage.customTags || [];
     
     const tagIndex =  _.findIndex(savedPageCustomTags, item => item.toLowerCase() === tag.toLowerCase());
-    if (tagIndex === -1) savedPageCustomTags.push(tag);
+    const tagGlobIndex =  _.findIndex(tagList, item => item.toLowerCase() === tag.toLowerCase());
+    if (tagGlobIndex !== -1) {
+        showToast('Can\'t add tag because this tag is already a site tag!', 'bg-warning', 'text-dark');
+        return false;
+    }
+    if (tagIndex === -1 && tagGlobIndex === -1) savedPageCustomTags.push(tag);
     savedPage.customTags = savedPageCustomTags.sort();
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
@@ -359,6 +364,12 @@ const updateTagForAllPages = (oldTag, newTag) => {
         return false;
     }
 
+    const tagGlobIndex =  _.findIndex(tagList, item => item.toLowerCase() === newTag.toLowerCase());
+    if (tagGlobIndex !== -1) {
+        showToast('Can\'t update tag because this tag is already a site tag!', 'bg-warning', 'text-dark');
+        return false;
+    }
+
     let pageIndex = 0;
     savedItems.forEach( page => {
         let savedPageCustomTags = page.customTags || [];
@@ -396,8 +407,14 @@ const updateTagForPage = (oldTag, newTag, pageInfo={}) => {
 
     const savedPage = savedItems[pageIndex];
     let savedPageCustomTags = savedPage.customTags || [];
-    savedPageCustomTags = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomTags, oldTag, newTag));
+    const tagGlobIndex =  _.findIndex(tagList, item => item.toLowerCase() === newTag.toLowerCase());
 
+    if (tagGlobIndex !== -1) {
+        showToast('Can\'t update tag! There is nothing in saved items...', 'bg-warning', 'text-dark');
+        return false;
+    }
+
+    savedPageCustomTags = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomTags, oldTag, newTag));
     savedPage.customTags = savedPageCustomTags;
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));

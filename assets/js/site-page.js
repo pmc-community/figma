@@ -9,7 +9,7 @@ const showPageCustomTags = (crtPage) => {
                         href="/tag-info?tag=${tag}" 
                         sitefunction="pageTagButton" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-success position-relative">
+                        class="focus-ring focus-ring-warning px-3 my-2 mr-5 btn btn-sm btn-success position-relative">
                         ${tag}
                     </a> 
                     <span 

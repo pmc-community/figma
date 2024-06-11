@@ -5,11 +5,18 @@ module Jekyll
 
   class CategoryListGenerator < Generator
     priority :high
+
+    attr_accessor :allCats
+
+    def initialize(allCats)
+      @allCats = []
+    end
+
     def generate(site)
-      categories = extract_categories(Globals::DOCS_DIR)
+      extract_categories(Globals::DOCS_DIR)
 
       # storing the list of categories in site.data and not in site.config which is used for static site configuration
-      site.data["category_list"] = categories.to_json
+      site.data["category_list"] = @allCats.flatten.uniq.sort.to_json
     end
 
     private
@@ -24,9 +31,10 @@ module Jekyll
         elsif (File.extname(entry) == ".md" || File.extname(entry) == ".html") && valid_front_matter?(full_path)
           front_matter = YAML.load_file(full_path)
           categories <<  front_matter['categories'] if front_matter && front_matter['categories']
+          @allCats << categories.flatten.uniq.sort
         end
       end
-      return categories.flatten.uniq.sort
+      #return categories.flatten.uniq.sort
     end
 
     def valid_front_matter?(file_path)

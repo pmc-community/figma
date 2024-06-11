@@ -12,7 +12,9 @@ module ContentUtilities
         uri = URI.parse(raw_url)
 
         request = Net::HTTP::Get.new(uri)
-        request['Authorization'] = "token #{ENV["JEKYLL_ACCESS_TOKEN"]}"
+        if (file_info["needAuth"]) 
+            request['Authorization'] = "token #{ENV["JEKYLL_ACCESS_TOKEN"]}"
+        end
 
         response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
             http.request(request)
@@ -49,7 +51,9 @@ module ContentUtilities
         raw_url = "https://raw.githubusercontent.com/#{file_info["owner"]}/#{file_info["repo"]}/#{file_info["branch"]}/#{file_info["file_path"]}"
         uri = URI.parse(raw_url)
         request = Net::HTTP::Get.new(uri)
-        request.basic_auth(ENV["JEKYLL_GIT_USER"], ENV["JEKYLL_ACCESS_TOKEN"])
+        if (file_info["needAuth"]) 
+            request['Authorization'] = "token #{ENV["JEKYLL_ACCESS_TOKEN"]}"
+        end
         response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
             http.request(request)
         end

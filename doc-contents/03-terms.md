@@ -2,6 +2,7 @@
 layout: page
 title: Terms
 permalink: /terms/
+tags: [legal,bootstrap]
 ---
 
 {% 

@@ -1,3 +1,4 @@
+<!-- page tags list shown under each page, called from footer_custom.html -->
 <div id="pageTags" class="container px-5">
   
   {% capture permalink_param %}
@@ -13,7 +14,7 @@
 
   {% assign pageTagsArray = pageTags | json_string_to_object  %}
   {% assign hasTags = pageTagsArray | size %}
-  {%if hasTags > 0 %}
+  {% if hasTags > 0 %}
     <hr siteFunction="pageTagsSeparator">
     <span class="mr-5 fs-6 fw-medium">Tags:</span>
     {% for pageTag in pageTagsArray %}
@@ -24,7 +25,7 @@
           href="{{sanitizedPageTagUrl}}" 
           siteFunction="pageTagButton" 
           type="button" 
-          class="focus-ring focus-ring-warning px-3 mr-5 btn btn-sm btn-primary position-relative">
+          class="focus-ring focus-ring-warning px-3 my-2 mr-5 btn btn-sm btn-primary position-relative">
           {{ pageTag }}
         </a>
         <span siteFunction="tagBadgeOnPage" class="position-relative translate-middle badge rounded-pill text-bg-warning">

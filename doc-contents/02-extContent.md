@@ -16,6 +16,7 @@ Content from an exernal private repo
         "file_path":"Get-Started/eng/get-started-with-innohub.space.md", 
         "ignore_wp_shortcodes": true, 
         "start_marker": "<!-- START EXPOSED SECTION -->", 
-        "end_marker": "<!-- END EXPOSED SECTION -->" 
+        "end_marker": "<!-- END EXPOSED SECTION -->",
+        "needAuth": true 
     }
 %}

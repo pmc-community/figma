@@ -59,6 +59,10 @@
         height: $tocContainerMaxHeight;
         overflow-y: $tocContainerOverflowY;
     }
+
+    #{$tocBase}_container_heading {
+        text-align: $tocContainerHeadingTextAlignment;
+    }
 }
 
 @mixin tocItem($tocBase) {

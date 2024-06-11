@@ -1,17 +1,23 @@
-# _plugins/page_list_generator.rb
 require_relative "../../tools/modules/globals"
 
 module Jekyll
 
   class TagListGenerator < Generator
-    priority :normal
+    priority :normal  
+    
+    attr_accessor :allTags
+
+    def initialize(allTags)
+      @allTags = []
+    end
+
     def generate(site)
-      tags = extract_tags(Globals::DOCS_DIR)
-      site.data["tag_list"] = tags.to_json
+      extract_tags(Globals::DOCS_DIR)
+      site.data["tag_list"] = @allTags.flatten.uniq.sort.to_json
     end
 
     private
-
+    
     def extract_tags(dir)
       tags = []
       Dir.foreach(dir) do |entry|
@@ -22,9 +28,10 @@ module Jekyll
         elsif (File.extname(entry) == ".md" || File.extname(entry) == ".html") && valid_front_matter?(full_path)
           front_matter = YAML.load_file(full_path)
           tags <<  front_matter['tags'] if front_matter && front_matter['tags']
+          @allTags << tags.flatten.uniq.sort
         end
       end
-      return tags.flatten.uniq.sort
+      #return tags.flatten.uniq.sort
     end
 
     def valid_front_matter?(file_path)
