@@ -207,8 +207,17 @@ const removeTagFromAllPages = (tag, pageInfo = {}) => {
 
 const fillTagList = (pageInfo) => {
     const $tagItemsContainer = $('div[siteFunction="offcanvasPageFullInfoPageTagsList"]');
-    const $tagItemElement = $('a[siteFunction="offcanvasPageFullInfoPageTagButton"]')[0];
-    const html = $tagItemElement.outerHTML;
+    const html = 
+        `
+            <a 
+                siteFunction="offcanvasPageFullInfoPageTagButton" 
+                type="button" 
+                class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm position-relative"
+                href="#">
+                tag
+            </a>
+        `;
+    
     $tagItemsContainer.empty();
 
     siteTags = pageInfo.siteInfo.tags || [];

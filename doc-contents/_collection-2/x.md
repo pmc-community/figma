@@ -4,6 +4,7 @@ title: Collection-2/X
 permalink: collection-2/X/x/
 has_children: true
 has_toc: false
+tags: [tag1]
 ---
 
 <!-- START_EXPOSED_SECTION -->

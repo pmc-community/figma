@@ -293,7 +293,7 @@ const addTag = (tag, pageInfo) => {
     const tagIndex =  _.findIndex(savedPageCustomTags, item => item.toLowerCase() === tag.toLowerCase());
     const tagGlobIndex =  _.findIndex(tagList, item => item.toLowerCase() === tag.toLowerCase());
     if (tagGlobIndex !== -1) {
-        showToast('Can\'t add tag because this tag is already a site tag!', 'bg-warning', 'text-dark');
+        showToast(`Can\'t add tag ${tag} because this tag is already a site tag!`, 'bg-warning', 'text-dark');
         return false;
     }
     if (tagIndex === -1 && tagGlobIndex === -1) savedPageCustomTags.push(tag);
@@ -366,7 +366,7 @@ const updateTagForAllPages = (oldTag, newTag) => {
 
     const tagGlobIndex =  _.findIndex(tagList, item => item.toLowerCase() === newTag.toLowerCase());
     if (tagGlobIndex !== -1) {
-        showToast('Can\'t update tag because this tag is already a site tag!', 'bg-warning', 'text-dark');
+        showToast(`Can\'t update tag ${oldTag} with ${newTag} because ${newTag} is already a site tag!`, 'bg-warning', 'text-dark');
         return false;
     }
 
@@ -410,7 +410,7 @@ const updateTagForPage = (oldTag, newTag, pageInfo={}) => {
     const tagGlobIndex =  _.findIndex(tagList, item => item.toLowerCase() === newTag.toLowerCase());
 
     if (tagGlobIndex !== -1) {
-        showToast('Can\'t update tag! There is nothing in saved items...', 'bg-warning', 'text-dark');
+        showToast(`Can\'t update tag ${oldTag} with ${newTag} because ${newTag} is already a site tag!`, 'bg-warning', 'text-dark');
         return false;
     }
 

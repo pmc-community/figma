@@ -1,5 +1,10 @@
 <!-- Executing scripts from main.js -->
-<script>customiseTheme();</script>
+<script>
+    customiseTheme({
+        "permalink": "{{page.permalink}}", 
+        "title": "{{page.title}}"
+    });
+</script>
 
 <!-- Page Toc -->
 {% include siteIncludes/partials/page-toc.html %} 
@@ -10,5 +15,8 @@
 <!-- Page Tags -->
 {% include siteIncludes/partials/page-common/page-tags.html %} 
 
-<!-- off canvas for page full information -->
+<!-- offcanvas for page full information -->
 {% include siteIncludes/partials/page-full-info.html %} 
+
+<!-- page last update -->
+{% include siteIncludes/partials/page-common/page-last-update.html %} 

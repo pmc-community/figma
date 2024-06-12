@@ -22,7 +22,7 @@ $(window).on('scroll', () => {
 })
 
 /* LET'S DO SOME WORK */
-const customiseTheme = () => {
+const customiseTheme = (pageObj = null) => {
 
     if (isMobileOrTablet()) {
         console.log("Mobile or Tablet detected");
@@ -74,6 +74,18 @@ const customiseTheme = () => {
             $('body').css('visibility','visible');
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
+        // set the reference to the page main info
+        $(settings.layouts.contentArea.contentContainer)
+            .attr('pagePermalinkRef', pageObj.permalink)
+            .attr('pageTitleRef', pageObj.title);
+
+        // set the global pageInfo object
+        pageInfo = pageObj ?
+            {
+                siteInfo: getObjectFromArray ({permalink: pageObj.permalink, title: pageObj.title}, pageList),
+                savedInfo: getPageSavedInfo (pageObj.permalink, pageObj.title),
+            } : 
+            null;
     });
 }
 

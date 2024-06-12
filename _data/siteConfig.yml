@@ -74,6 +74,7 @@ layouts:
     contentArea:
       mainContainer: '.main-content-wrap'
       contentContainer: '.main-content main'
+      contentWrapper: ".main-content"
       desktop:
         padding: 'px-5'
         widthOnHome: '100%'

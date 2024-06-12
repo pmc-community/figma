@@ -826,6 +826,9 @@ const createGlobalLists = () => {
     globCustomTags = _.uniq(getCustomTags());
     globAllCats = _.uniq(Array.from(new Set([...catList, ...globCustomCats].slice().sort())));
     globAllTags = _.uniq(Array.from(new Set([...tagList, ...globCustomTags].slice().sort()))); // here to check if a site tag is the same as a custom tag and to rename the custom tag with CT_
+
+    // do some cleaning since datatables are, usually, created with saveState configuration
+    // and modifications of tags may lead to orphan tables in slocal storage
     getOrphanDataTables('tag').forEach( table => { localStorage.removeItem(table); });
 }
 

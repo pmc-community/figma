@@ -153,7 +153,8 @@ $hiddenElements: (
 }
 
 $visibleElements: (
-    'hr[siteFunction="pageTagsSeparator"]', 
+    'hr[siteFunction="pageTagsSeparator"]',
+    'hr[siteFunction="pageLastUpdateSeparator"]',
     '.dropdown-divider', 
     'hr[siteFunction="pageTocHeaderSeparator"]',
     'hr[siteFunction="contextMenuSeparator"]'

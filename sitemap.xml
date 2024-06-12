@@ -29,21 +29,14 @@
 </url>
 
 <url>
-  <loc>http://localhost:4000collection-2/X/x/</loc>
-  <lastmod>2024-05-01</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/tag-info</loc>
+  <loc>http://localhost:4000/cat-info</loc>
   <lastmod>2024-05-03</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
 </url>
 
 <url>
-  <loc>http://localhost:4000/cat-info</loc>
+  <loc>http://localhost:4000/tag-info</loc>
   <lastmod>2024-05-03</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
@@ -71,7 +64,7 @@
 </url>
 
 <url>
-  <loc>http://localhost:4000/sf/f1/</loc>
+  <loc>http://localhost:4000/collection-1/g1/</loc>
   <lastmod>2024-06-10</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
@@ -85,22 +78,29 @@
 </url>
 
 <url>
-  <loc>http://localhost:4000/terms/</loc>
-  <lastmod>2024-06-10</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/collection-1/g1/</loc>
-  <lastmod>2024-06-10</lastmod>
+  <loc>http://localhost:4000collection-2/X/x/</loc>
+  <lastmod>2024-06-11</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
 </url>
 
 <url>
   <loc>http://localhost:4000/collection1/g11/</loc>
-  <lastmod>2024-06-10</lastmod>
+  <lastmod>2024-06-11</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/terms/</loc>
+  <lastmod>2024-06-11</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/sf/f1/å</loc>
+  <lastmod>2024-06-12</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
 </url>
