@@ -1,5 +1,39 @@
 // Let's do some work
 const setCatSupport = () => {
+
+    $(document).ready(() => {
+        setCatSearchList();
+        setCatInfoPageButtonsFunctions();
+
+
+        requestedCat = readQueryString('cat');
+        if (requestedCat) showCatDetails(requestedCat);
+    });
+    
+}
+// work ends here
+
+// FUNCTIONS
+const setCatInfoPageButtonsFunctions = () => {
+
+    // click "Categories" button and show the cat cloud container
+    $('#openCatCloud').off('click').click(function() {
+        $('#cloud_cat_container').fadeIn();
+    });
+
+    // click on cat button in the tag cloud and show the cat details table
+    // delegate listener at document level since buttons are dynamically added/removed/modified
+    $(document)
+        .off('click', 'button[siteFunction="catButton"]')
+        .on('click', 'button[siteFunction="catButton"]', function() {
+            const selectedCat = $(this).attr('id');
+            showCatDetails(selectedCat);
+            //setPageSavedButtonsStatus(); 
+        });
+
+}
+
+const setCatSearchList = () => {
     setSearchList(
         '#catSearchInput', 
         '#catSearchResults', 
@@ -7,70 +41,17 @@ const setCatSupport = () => {
         '<li siteFunction="searchCatListItem">',
         '</li>',
         false,
-        function(result) { console.log(result); },
-        null
+        (result) => { showCatDetails(result); },
+        (filteredList) => { updateCatSearchListItems(filteredList); }
     );
-    
-    /*
-    setTagDetailsDataTable();
-    setOpenTagCloudBtn();
-    setTagButtons();
-    setPageTagButtons();
-    showTagDetails(readQueryString());
-
-    // from saved-items.js
-    setSaveForLaterReadStatus();
-    setRemoveFromSavedItemsStatus();
-    setSaveForLaterRead();
-    setRemoveFromSavedItems();
-    */
-}
-// work ends here
-
-/*
-const setPageTagButtons = () => {
-    $(window).on('load', () => {
-        $('button[siteFunction="pageTagButton"]').click( function() {
-            const selectedTag = $(this).attr('id');
-            showTagDetails(selectedTag.match(/pageTag_(.*)/)[1]);
-            setSaveForLaterReadStatus();
-            setRemoveFromSavedItemsStatus();
-        } );
-    });
 }
 
-const setTagButtons = () => {
-    $(window).on('load', () => {
-        $('button[siteFunction="tagButton"]').click( function() {
-            const selectedTag = $(this).attr('id');
-            showTagDetails(selectedTag);
-            setSaveForLaterReadStatus();
-            setRemoveFromSavedItemsStatus();
-        } );
-    });
-}
+const showCatDetails = (cat) => {
+    console.log(cat);
 
-const showTagDetails = (tag) => {
-    if ( !tag ) return
-    $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
-    $(`div[siteFunction="tagDetails"][tagReference!="${tag}"]`).addClass('d-none');
-    $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).fadeIn();
     history.replaceState({}, document.title, window.location.pathname);
 }
 
-const setTagDetailsDataTable = () => {
-    setDataTable(
-        'TagInfo', 
-        'table[siteFunction="tagDetailsPageTable"]', 
-        [null, { searchable: false }, null, null]
-    )
+const updateCatSearchListItems = (filteredList) => {
+    console.log(filteredList)
 }
-
-const setOpenTagCloudBtn = () => {
-    $(document).ready(function ()  {
-        $('#openTagCloud').click(function() {
-            $('#cloud_tag_container').fadeIn();
-        });
-    });
-}
-*/

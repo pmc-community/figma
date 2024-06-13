@@ -1,5 +1,9 @@
 <!-- page last update, info and offcanvas button shown on each page before content, called from footer_custom.html -->
 
 <script>
-    getPageLastUpdateAndPageInfo();
+    getPageLastUpdateAndPageInfo(
+    {
+        permalink: "{{ page.permalink }}",
+        title: "{{ page.title }}"
+    });
 </script>

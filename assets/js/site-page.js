@@ -1,19 +1,21 @@
 
 // FUNCTIONS FOR EACH PAGE
-const getPageLastUpdateAndPageInfo = () => {
+// called from _includes/siteIncludes/partials/page-common/page-info.html
+// pageInfo global is not available yet when this function is called from the html template
+const getPageLastUpdateAndPageInfo = (pageObj = null) => {
 
     const pageSavedInfoBadges = (page) => {
         if (page.savedInfo === 'none') return '';
         let savedInfoBadges = '';
 
         if (page.savedInfo.customTags.length > 0 ) 
-            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom tags" class="m-1 fw-normal badge rounded-pill text-bg-success">Tags</span>`;
+            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom tags" class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success">Tags</span>`;
         
         if (page.savedInfo.customCategories.length > 0 ) 
-            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom categories" class="m-1 fw-normal badge rounded-pill text-bg-danger">Categories</span>`;
+            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom categories" class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger">Categories</span>`;
         
         if (page.savedInfo.customNotes.length > 0 ) 
-            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom notes" class="m-1 fw-normal badge rounded-pill text-bg-warning">Notes</span>`;
+            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom notes" class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning">Notes</span>`;
 
         return savedInfoBadges === '' ?
             '' :
@@ -21,16 +23,78 @@ const getPageLastUpdateAndPageInfo = () => {
 
     }
 
+    const pageCategories = (page) => {
+
+        const pageCatItem = (cat, isLast) => {
+
+            const isNotLast = '<span class="fw-normal"> | </span>';
+
+            const catColor = _.findIndex(globCustomCats, item => item.toLowerCase() === cat.trim().toLowerCase()) === -1 ?
+                'text-danger' :
+                'text-success';
+
+            const numPages = _.findIndex(globCustomCats, item => item.toLowerCase() === cat.trim().toLowerCase()) === -1 ?
+                catDetails[cat].numPages:
+                getCatPages(cat);
+            
+            return (
+                `
+                    <div class="m-1 fw-medium">
+                        <a
+                            href="/cat-info?cat=${cat}"
+                            class="${catColor}"
+                            title="Click for details for category ${cat}\nPages in category: ${numPages}">
+                            ${cat}
+                            <span 
+                                sitefunction="catBadgeOnPage" 
+                                class="fw-normal border px-2 rounded bg-warning-subtle text-dark"> 
+                                ${numPages} 
+                        </span>
+                        </a>
+                    </div>
+                    ${!isLast ? isNotLast : '' } 
+                `
+            );
+        }
+
+        const allPageCategories = [...page.siteInfo.categories || [], ...page.savedInfo.customCategories || []];
+        let pageCatsHtml = '';
+
+        allPageCategories.forEach( (cat, index) => {
+            if (index === allPageCategories.length - 1) pageCatsHtml += pageCatItem(cat, true);
+            else pageCatsHtml += pageCatItem(cat, false);
+        });
+
+        return pageCatsHtml;
+    }
+
+    
     const pageLastUpdateAndPageInfoContainer = (page) => {
         return (
             `
-                <div id="pageLastUpdateAndPageInfo" class="container px-5">
-                    <div class="d-flex justify-content-between">
+                <div id="pageLastUpdateAndPageInfo" class="container px-5 mb-4">
+                    <div class="d-flex align-items-center">
+                        ${pageCategories(page)}
+                    </div>
+                    <hr siteFunction="pageLastUpdateSeparator">
+                    <div class="fw-medium fs-2 mb-2">${page.siteInfo.title}</div>
+                    <div class="mb-2">${page.siteInfo.excerpt}</div>
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="fw-medium fs-6">
-                                Last update: ${formatDate(page.siteInfo.lastUpdate)}
+                            <div class="d-flex align-items-center">
+                                <div 
+                                    class="badge 
+                                    rounded-pill 
+                                    text-bg-secondary 
+                                    px-3 py-2 
+                                    fw-medium">
+                                    Last update: ${formatDate(page.siteInfo.lastUpdate)}
+                                </div>
+                                <div>
+                                    ${pageSavedInfoBadges(page)}
+                                </div>
                             </div>
-                            ${pageSavedInfoBadges(page)}
+                            
                         </div>
                         <div>
                             <button 
@@ -38,7 +102,7 @@ const getPageLastUpdateAndPageInfo = () => {
                                 type="button" 
                                 class="btn btn-sm btn-primary position-relative" 
                                 title="Details for page ${page.siteInfo.title}">
-                                Page info
+                                Info
                             </button>
                         </div>
                     </div>
@@ -70,6 +134,8 @@ const refreshPageAfterOffCanvasClose = () => {
     });
 }
 
+
+// called from _includes/siteIncludes/partials/page-common/page-tags.html
 const showPageCustomTags = () => {
 
     const createPageTagsContainer = () => {

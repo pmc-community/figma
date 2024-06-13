@@ -92,6 +92,9 @@ const customiseTheme = (pageObj = null) => {
         $(document).off('click','.buttons-columnVisibility').on('click', '.buttons-columnVisibility', function() {
             applyColorSchemaCorrections();            
         });
+
+        // just to align breadcrumbs to the content
+        $('.breadcrumb-nav').addClass('px-5');
     });
 }
 

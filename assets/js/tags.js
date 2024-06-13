@@ -459,12 +459,8 @@ const setTagSearchList = () => {
         '<li siteFunction="searchTagListItem">',
         '</li>',
         false, // case insensitive
-        function(result) { 
-            showTagDetails(result);
-        },
-        (filteredList) => {
-            updateTagSearchListItems(filteredList);
-        }
+        (result) => { showTagDetails(result); },
+        (filteredList) => { updateTagSearchListItems(filteredList); }
     );
 }
 

@@ -228,6 +228,24 @@ const getPageTags = (pageInfo) => {
     return customTags;
 }
 
+const getPageCats = (pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return [];
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) return [];
+
+    const savedPage = savedItems[pageIndex];
+    const customCats = savedPage.customCategories || [];
+    customCats.sort();
+    return customCats;
+}
+
 const getTagPages = (tag) => {
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
@@ -239,6 +257,22 @@ const getTagPages = (tag) => {
             return str.toLowerCase();
           });
         if ( customTags.includes(tag.toLowerCase()) ) numPages++;
+    });
+
+    return numPages;
+}
+
+const getCatPages = (cat) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return 0;
+
+    let numPages = 0;
+    savedItems.forEach(page => {
+        let customCats= _.map(page.customCategories || [], function(str) {
+            return str.toLowerCase();
+          });
+        if ( customCats.includes(cat.toLowerCase()) ) numPages++;
     });
 
     return numPages;

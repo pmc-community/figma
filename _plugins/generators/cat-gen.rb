@@ -47,8 +47,11 @@ module Jekyll
     priority :normal
     def generate(site)
       categoriesDetails = getCategoriesDetails(site.data["category_list"], site.data['page_list'])
-      #puts categoriesDetails
       site.data["categories_details"] = categoriesDetails
+
+      # order the categories based on the number of pages (DESC) and alphabetical for the same value of numPages
+      orderedCategories = categoriesDetails.sort_by { |category, details| [-details["numPages"], category] }.map(&:first)
+      site.data["ordered_categories"] = orderedCategories.flatten.uniq.to_json
     end
 
     private

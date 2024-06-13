@@ -1,4 +1,4 @@
-{% assign catMenu = site.data.category_list | cat_main_menu %}
+{% assign catMenu = site.data.ordered_categories | cat_main_menu %}
 
 {% if site.data.siteConfig.catMenu %}
     {% if catMenu.catNo > 0 %}
