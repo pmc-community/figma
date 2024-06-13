@@ -248,6 +248,10 @@
     #{map-get($tagSearchElements, searchResults)} li.selected {
         background-color: $tagSearchResultsItemMarkedBackground;
     }
+
+    #{map-get($tagSearchElements, showTagCloudButton)}{
+        width: $tagCloudShowButtonWidth;
+    }
 }
 
 // tags on page
@@ -349,6 +353,10 @@
 
     #{map-get($catSearchElements, searchResults)} li.selected {
         background-color: $catSearchResultsItemMarkedBackground;
+    }
+
+    #{map-get($catSearchElements, showCatCloudButton)}{
+        width: $catCloudShowButtonWidth;
     }
 }
 

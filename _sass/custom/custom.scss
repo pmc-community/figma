@@ -95,7 +95,8 @@ $alwaysBlackTextElements: (
     '.ck-button__label',
     '.context-menu-item a',
     '.context-menu-header',
-    '.context-menu-footer'
+    '.context-menu-footer',
+    '.buttons-columnVisibility span'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {

@@ -617,6 +617,7 @@ const showTagDetails = (tag) => {
         // excerpt
         {
             data: 'pageExcerpt',
+            type: 'string',
             title:'Excerpt',
             exceptWhenRowSelect: true,
             width: '30%',
@@ -633,6 +634,7 @@ const showTagDetails = (tag) => {
         {
             data: 'pageOtherTags',
             title:'Other Tags',
+            type: 'string',
             exceptWhenRowSelect: true,
             createdCell: function(td, cellData, rowData, row, col) {
                 const permalink = $(rowData.pageActions).find('[siteFunction="tagPageItemLinkToDoc"]').attr('href');

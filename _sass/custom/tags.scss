@@ -22,10 +22,12 @@ $tagSearchResultsItemMargin: $m-0px;
 $tagSearchResultsItemCursor: $cr-pointer;
 $tagSearchResultsItemMarkedBackground: $c-light-grey;
 $tagSearchResultsOverflowY: $ov-auto;
+$tagCloudShowButtonWidth: $sz-6rem;
 
 $tagSearchElements: (
     searchInput: '#tagSearchInput', 
-    searchResults: '#tagSearchResults'
+    searchResults: '#tagSearchResults',
+    showTagCloudButton: 'button[siteFunction="openTagCloud"]'
 );
 
 // tags on page

@@ -23,10 +23,12 @@ $catSearchResultsItemCursor: $cr-pointer;
 $catSearchResultsItemMarkedBackground: $c-light-grey;
 
 $catSearchResultsOverflowY: $ov-auto;
+$catCloudShowButtonWidth: $sz-6rem;
 
 $catSearchElements: (
     searchInput: '#catSearchInput', 
-    searchResults: '#catSearchResults'
+    searchResults: '#catSearchResults',
+    showCatCloudButton: 'button[siteFunction="openCatCloud"]'
 );
 
 // tags on page

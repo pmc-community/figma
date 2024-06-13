@@ -66,7 +66,8 @@ const customiseTheme = (pageObj = null) => {
             // remove some elements
             removeUselessElements();
         }
-         // necessary on mobile for datatables cells, when responsive mode is true for tables
+        
+        // necessary on mobile for datatables cells, when responsive mode is true for tables
         applyColorSchemaCorrectionsOnTD();
 
         // just to mask the flicker a little, but a preloader should be here
@@ -86,6 +87,11 @@ const customiseTheme = (pageObj = null) => {
                 savedInfo: getPageSavedInfo (pageObj.permalink, pageObj.title),
             } : 
             null;
+        
+        // when display hidden table columns in dark mode, the column backgroud may be light, so corrections should be applied
+        $(document).off('click','.buttons-columnVisibility').on('click', '.buttons-columnVisibility', function() {
+            applyColorSchemaCorrections();            
+        });
     });
 }
 
