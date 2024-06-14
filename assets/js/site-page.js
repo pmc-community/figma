@@ -2,20 +2,48 @@
 // FUNCTIONS FOR EACH PAGE
 // called from _includes/siteIncludes/partials/page-common/page-info.html
 // pageInfo global is not available yet when this function is called from the html template
-const getPageLastUpdateAndPageInfo = (pageObj = null) => {
+const page__getPageNotes = () => {
+    $(document).ready(function() {
+        console.log('notes');
+    });
+}
+
+const page__getPageInfo = () => {
 
     const pageSavedInfoBadges = (page) => {
         if (page.savedInfo === 'none') return '';
         let savedInfoBadges = '';
 
         if (page.savedInfo.customTags.length > 0 ) 
-            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom tags" class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success">Tags</span>`;
+            savedInfoBadges += 
+                `
+                    <span
+                        siteFunction="pageHasCustomTagsBadge"
+                        title = "Page ${page.siteInfo.title} has custom tags" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success alwaysCursorPointer">
+                        Tags
+                    </span>
+                `;
         
         if (page.savedInfo.customCategories.length > 0 ) 
-            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom categories" class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger">Categories</span>`;
+            savedInfoBadges += 
+                `
+                    <span 
+                        title = "Page ${page.siteInfo.title} has custom categories" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger">
+                        Categories
+                    </span>
+                `;
         
         if (page.savedInfo.customNotes.length > 0 ) 
-            savedInfoBadges += `<span title = "Page ${page.siteInfo.title} has custom notes" class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning">Notes</span>`;
+            savedInfoBadges += 
+                `
+                    <span 
+                        title = "Page ${page.siteInfo.title} has custom notes" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning">
+                        Notes
+                    </span>
+                `;
 
         return savedInfoBadges === '' ?
             '' :
@@ -27,7 +55,7 @@ const getPageLastUpdateAndPageInfo = (pageObj = null) => {
 
         const pageCatItem = (cat, isLast) => {
 
-            const isNotLast = '<span class="fw-normal"> | </span>';
+            const isNotLast = '<span class="fw-normal">  </span>';
 
             const catColor = _.findIndex(globCustomCats, item => item.toLowerCase() === cat.trim().toLowerCase()) === -1 ?
                 'text-danger' :
@@ -39,10 +67,10 @@ const getPageLastUpdateAndPageInfo = (pageObj = null) => {
             
             return (
                 `
-                    <div class="m-1 fw-medium">
+                    <div >
                         <a
                             href="/cat-info?cat=${cat}"
-                            class="${catColor}"
+                            class="${catColor} fw-medium btn btn-sm border-0 shadow-none px-0 my-1 mr-3"
                             title="Click for details for category ${cat}\nPages in category: ${numPages}">
                             ${cat}
                             <span 
@@ -68,26 +96,28 @@ const getPageLastUpdateAndPageInfo = (pageObj = null) => {
         return pageCatsHtml;
     }
 
-    
-    const pageLastUpdateAndPageInfoContainer = (page) => {
+    const pageInfoContainer = (page) => {
+        const siteCats = getObjectFromArray({permalink: page.siteInfo.permalink, title: page.siteInfo.title}, pageList).categories.length || 0;
+        const customCats = getPageCats(page).length || 0;
+
+        const catsHtml = siteCats + customCats === 0 ?
+            '' :
+            `
+                <div class="d-flex align-items-center">
+                    ${pageCategories(page)}
+                </div>
+            `;
+
         return (
             `
                 <div id="pageLastUpdateAndPageInfo" class="container px-5 mb-4">
-                    <div class="d-flex align-items-center">
-                        ${pageCategories(page)}
-                    </div>
-                    <hr siteFunction="pageLastUpdateSeparator">
+                    ${catsHtml}
                     <div class="fw-medium fs-2 mb-2">${page.siteInfo.title}</div>
                     <div class="mb-2">${page.siteInfo.excerpt}</div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="d-flex align-items-center">
-                                <div 
-                                    class="badge 
-                                    rounded-pill 
-                                    text-bg-secondary 
-                                    px-3 py-2 
-                                    fw-medium">
+                                <div class="badge rounded-pill text-bg-secondary px-3 py-2 fw-medium">
                                     Last update: ${formatDate(page.siteInfo.lastUpdate)}
                                 </div>
                                 <div>
@@ -114,8 +144,9 @@ const getPageLastUpdateAndPageInfo = (pageObj = null) => {
 
     $(document).ready(function() {
         //console.log(pageInfo);
+        setPageButtonsFunctions();
         if (pageInfo.siteInfo === 'none') return;
-        $(settings.layouts.contentArea.contentWrapper).prepend($(pageLastUpdateAndPageInfoContainer(pageInfo)));
+        $(settings.layouts.contentArea.contentWrapper).prepend($(pageInfoContainer(pageInfo)));
         $(document)
             .off('click', 'button[sitefunction="pageShowPageFullInfo"]')
             .on('click', 'button[sitefunction="pageShowPageFullInfo"]', function() {
@@ -134,9 +165,8 @@ const refreshPageAfterOffCanvasClose = () => {
     });
 }
 
-
 // called from _includes/siteIncludes/partials/page-common/page-tags.html
-const showPageCustomTags = () => {
+const page__showPageCustomTags = () => {
 
     const createPageTagsContainer = () => {
         return (
@@ -202,6 +232,18 @@ const showPageCustomTags = () => {
 };
 
 const refreshPageDynamicInfo = () => {
-    showPageCustomTags();
-    getPageLastUpdateAndPageInfo();
+    page__showPageCustomTags();
+    page__getPageInfo();
+}
+
+const setPageButtonsFunctions = () => {
+    // click "Tags" badge
+    $(document)
+        .off('click', 'span[siteFunction="pageHasCustomTagsBadge"]')
+        .on('click', 'span[siteFunction="pageHasCustomTagsBadge"]', function() {
+            $('html, body').animate({
+                scrollTop: $('#pageTags').offset().top
+            }, 100);
+        });
+
 }

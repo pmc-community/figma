@@ -13,10 +13,10 @@
                         tagType="siteCat" 
                         id="{{ catItem[0] }}" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm btn-primary position-relative"
-                        title = "Details for tag {{ catItem[0] }}">
+                        class="btn btn-sm position-relative text-danger fw-medium border-0 shadow-none"
+                        title = "Details for category {{ catItem[0] }}">
                         {{ catItem[0] }}
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-warning">
+                        <span class="fw-normal border px-2 rounded bg-warning-subtle text-dark">
                             {{ catItem[1]["numPages"] }}
                         </span>
                     </button>
