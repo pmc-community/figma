@@ -5,7 +5,7 @@ module Jekyll
     module JSONStringToObject
         def json_string_to_object(input)
             begin
-                JSON.parse(input)
+                JSON.parse(input) if input
             rescue
                 Globals.putsColText(Globals::YELLOW, "#{input} string is not a valid JSON\n")
             end

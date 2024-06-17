@@ -51,3 +51,7 @@ gem 'jekyll-sass-converter', '2.0.0'
 gem 'rack', '~> 2.2.9'
 gem 'rack-livereload', require: 'rack/livereload'
 gem 'rack-cors'
+
+gem 'tf-idf-similarity'
+gem 'nokogiri'
+gem 'matrix'

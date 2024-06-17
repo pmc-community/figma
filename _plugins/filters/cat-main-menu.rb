@@ -6,7 +6,7 @@ module Jekyll
         def cat_main_menu(input)
             begin
                 catMenu = {}
-                catArray= JSON.parse(input)
+                catArray= input ? JSON.parse(input) : []
                 catNo = catArray.length
                 catMenu["catNo"] = catNo
 

@@ -25,7 +25,7 @@ module Jekyll
                                 Globals.putsColText(Globals::RED, "SitePages tag got bad json string as input\n")
                         end
                 end
-                context.registers[:site].data["page_list"]
+                context.registers[:site].data["page_list"] if context && context.registers[:site] && context.registers[:site].data
                 
             end
         end
@@ -42,7 +42,9 @@ module Jekyll
                     if( !@input.nil? && !@input.empty? )
                         param = Liquid::Template.parse(@input).render(context)
                         permalink = JSON.parse(param.gsub('=>', ':'))["permalink"]
-                        pages = JSON.parse(context.registers[:site].data["page_list"])
+                        pages = context && context.registers[:site] && context.registers[:site].data ?
+                            JSON.parse(context.registers[:site].data["page_list"]) :
+                            []
                         matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     end
                     rescue

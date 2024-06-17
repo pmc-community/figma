@@ -52,10 +52,24 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    matrix (0.4.2)
     mercenary (0.4.0)
+    nokogiri (1.16.6-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.6-arm-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.6-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.6-x86-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.6-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.6-x86_64-linux)
+      racc (~> 1.4)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (5.0.5)
+    racc (1.8.0)
     rack (2.2.9)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
@@ -74,7 +88,10 @@ GEM
     strscan (3.1.0)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
+    tf-idf-similarity (0.3.0)
+      unicode_utils (~> 1.4)
     unicode-display_width (2.5.0)
+    unicode_utils (1.4.0)
     webrick (1.8.1)
 
 PLATFORMS
@@ -91,9 +108,12 @@ DEPENDENCIES
   jekyll (~> 4.3.3)
   jekyll-sass-converter (= 2.0.0)
   just-the-docs
+  matrix
+  nokogiri
   rack (~> 2.2.9)
   rack-cors
   rack-livereload
+  tf-idf-similarity
   tzinfo (>= 1, < 3)
   tzinfo-data
   wdm (~> 0.1.1)

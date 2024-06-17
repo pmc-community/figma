@@ -1,13 +1,74 @@
+// HEADS UP!!!
+// pageInfo global is available only after document ready
+
+// do some common work
+$(document).ready(function(){
+    setPageButtonsFunctions();
+    refreshPageAfterOffCanvasClose();
+});
+// end common work
 
 // FUNCTIONS FOR EACH PAGE
-// called from _includes/siteIncludes/partials/page-common/page-info.html
-// pageInfo global is not available yet when this function is called from the html template
+// called from _includes/siteIncludes/partials/page-common/page-notes.html
 const page__getPageNotes = () => {
+
+    const customNoteItem = (note) => {
+        return (
+            `
+                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-1 px-2  bg-body rounded bg-warning-subtle">
+                    <div class="h-100 align-top mb-2">
+                        <span class="fw-bold text-dark">${note.date}</span>
+                    </div>
+                    <div class="h-100 align-top">
+                        <p class="text-dark">${note.note}</p>
+                    </div>
+                </div>
+            `
+        );
+    }
+
+    const createNotesContainer = (page) => {
+        const customNotes = _.orderBy(page.savedInfo.customNotes || [],  [obj => new Date(obj.date)], ['desc']);
+        let customNotesHtml = '';
+        customNotes.forEach(note => {
+            customNotesHtml += customNoteItem(note);
+        });
+
+        return (
+            `   
+                <div id="pageNotes" class="px-5">
+                    <hr siteFunction="pageNotesSeparator">
+                    <span class="fs-6 fw-medium">
+                        Notes:
+                    </span>
+                    <div 
+                        siteFunction="pageNotesContainer"
+                        class="container-fluid">
+                        <div
+                            siteFunction="pageNotesRow"
+                            class="row d-flex justify-content-between">
+                            ${customNotesHtml}
+                        </div>
+                    </div>
+                </div>
+            `
+        );
+    }
+
     $(document).ready(function() {
-        console.log('notes');
+
+        const customNotes = _.orderBy(pageInfo.savedInfo.customNotes || [],  [obj => new Date(obj.date)], ['desc']) ;
+        if (customNotes.length === 0) {
+            $('#pageNotes').remove();
+            return;
+        }
+        $('#pageNotes').remove();
+        $('footer[class!="site-footer"]').append(createNotesContainer(pageInfo)); 
+
     });
 }
 
+// called from _includes/siteIncludes/partials/page-common/page-info.html
 const page__getPageInfo = () => {
 
     const pageSavedInfoBadges = (page) => {
@@ -28,7 +89,8 @@ const page__getPageInfo = () => {
         if (page.savedInfo.customCategories.length > 0 ) 
             savedInfoBadges += 
                 `
-                    <span 
+                    <span
+                        siteFunction="pageHasCustomCategoriesBadge"
                         title = "Page ${page.siteInfo.title} has custom categories" 
                         class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger">
                         Categories
@@ -38,9 +100,10 @@ const page__getPageInfo = () => {
         if (page.savedInfo.customNotes.length > 0 ) 
             savedInfoBadges += 
                 `
-                    <span 
+                    <span
+                        siteFunction="pageHasCustomNotesBadge"
                         title = "Page ${page.siteInfo.title} has custom notes" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning">
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning alwaysCursorPointer">
                         Notes
                     </span>
                 `;
@@ -142,9 +205,7 @@ const page__getPageInfo = () => {
         );
     }
 
-    $(document).ready(function() {
-        //console.log(pageInfo);
-        setPageButtonsFunctions();
+    $(document).ready(function() {        
         if (pageInfo.siteInfo === 'none') return;
         $(settings.layouts.contentArea.contentWrapper).prepend($(pageInfoContainer(pageInfo)));
         $(document)
@@ -152,17 +213,7 @@ const page__getPageInfo = () => {
             .on('click', 'button[sitefunction="pageShowPageFullInfo"]', function() {
                 showPageFullInfoCanvas(pageInfo);
             });
-        refreshPageAfterOffCanvasClose();
     })
-}
-
-const refreshPageAfterOffCanvasClose = () => {
-    removeObservers('.offcanvas class=hiding getClass=true');
-    setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
-        $('div[siteFunction="pageCustomTagButton"]').remove();
-        $('div[id="pageLastUpdateAndPageInfo"]').remove();
-        refreshPageDynamicInfo();
-    });
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-tags.html
@@ -231,9 +282,11 @@ const page__showPageCustomTags = () => {
     });
 };
 
+// INTERNAL FUNCTIONS, NOT CALLED FROM HTML TEMPLATES
 const refreshPageDynamicInfo = () => {
     page__showPageCustomTags();
     page__getPageInfo();
+    page__getPageNotes();
 }
 
 const setPageButtonsFunctions = () => {
@@ -245,5 +298,23 @@ const setPageButtonsFunctions = () => {
                 scrollTop: $('#pageTags').offset().top
             }, 100);
         });
+    
+    // click "Notes" badge
+    $(document)
+        .off('click', 'span[siteFunction="pageHasCustomNotesBadge"]')
+        .on('click', 'span[siteFunction="pageHasCustomNotesBadge"]', function() {
+            $('html, body').animate({
+                scrollTop: $('#pageNotes').offset().top
+            }, 100);
+        });
 
+}
+
+const refreshPageAfterOffCanvasClose = () => {
+    removeObservers('.offcanvas class=hiding getClass=true');
+    setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
+        $('div[siteFunction="pageCustomTagButton"]').remove();
+        $('div[id="pageLastUpdateAndPageInfo"]').remove();
+        refreshPageDynamicInfo();
+    });
 }
