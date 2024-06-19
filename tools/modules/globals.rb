@@ -100,4 +100,14 @@ module Globals
         return content.gsub(/^---.*?---\n/m, '')
     end
 
+    def self.find_object_by_key_value(objArray, key, value)
+        objArray.find { |item| item["#{key}"] == value }
+      end
+
+    def self.find_object_by_multiple_key_value(objArray, criteria)
+        objArray.find do |obj|
+            criteria.all? { |key, value| obj[key] == value }
+        end
+    end
+
 end

@@ -1,13 +1,15 @@
 require_relative "../../tools/modules/globals"
+require_relative "../../tools/modules/file-utilities"
 require 'nokogiri'
 require 'tf-idf-similarity'
 require 'matrix'
+
 
 module Jekyll
 
     class PageListGenerator < Generator
       safe true
-      priority :high
+      priority :highest
 
       # HEADS UP!!!
       # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE
@@ -57,7 +59,7 @@ module Jekyll
     
     class RelatedPagesGenerator < Generator
       safe true
-      priority :medium
+      priority :normal #must be after PageKeyordsGenerator from _plugins/generators/page-keywords-gen.rb
   
       def generate(site)
         @site = site
@@ -70,7 +72,7 @@ module Jekyll
         content_files.each do |file_path|
           content = File.read(file_path)
           relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(site.source)).to_s
-          front_matter, content = parse_front_matter(content)
+          front_matter, content = FileUtilities.parse_front_matter(content)
           
           next if front_matter.nil? || front_matter.empty?
   
@@ -78,7 +80,7 @@ module Jekyll
           front_matters[relative_path] = front_matter
   
           # Render the content with Liquid tags
-          rendered_content = render_page_content(site, content, front_matter)
+          rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content)
   
           # Extract text content
           text_content = Nokogiri::HTML(rendered_content).text
@@ -98,32 +100,13 @@ module Jekyll
   
           next if page_document.nil?
   
-          related_pages = find_related_pages(content_files, relative_path, model, page_document, similarity_matrix, front_matters) 
+          related_pages = find_related_pages(site, content_files, relative_path, model, page_document, similarity_matrix, front_matters) 
           add_related_pages(site, relative_path, related_pages)
           
         end
       end
-  
-      def parse_front_matter(content)
-        if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
-          front_matter = YAML.safe_load($1)
-          content = $'
-          [front_matter, content]
-        else
-          [nil, content]
-        end
-      end
-  
-      def render_page_content(site, content, front_matter)
-        layout = (front_matter['layout'] && site.layouts[front_matter['layout']]) ? site.layouts[front_matter['layout']] : nil
-        payload = site.site_payload.merge({ 'page' => front_matter, 'paginator' => nil })
-        info = { :filters => [Jekyll::Filters], :registers => { :site => site, :page => front_matter } }
-  
-        content = site.liquid_renderer.file(front_matter['path']).parse(content).render!(payload, info)
-        layout ? site.liquid_renderer.file(layout.path).parse(layout.content).render!(payload.merge({ 'content' => content }), info) : content
-      end
-  
-      def find_related_pages(content_files, page_path, model, page_document, similarity_matrix, front_matters)
+    
+      def find_related_pages(site, content_files, page_path, model, page_document, similarity_matrix, front_matters)
         related_by_tags_categories = content_files.select do |other_file|
           next if other_file == page_path
   
@@ -148,14 +131,31 @@ module Jekyll
           other_front_matter = front_matters[other_relative_path]
           next unless other_front_matter
   
-          -(common_tags_count(front_matters[page_document.id], other_front_matter) + 
-            common_categories_count(front_matters[page_document.id], other_front_matter) + 
-            text_similarity_score(model, page_document, other_relative_path, similarity_matrix))
+          -(
+            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["keywords"] * common_keywords_count(front_matters[page_document.id], other_front_matter) +
+            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["tags"] * common_tags_count(front_matters[page_document.id], other_front_matter) + 
+            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["cats"] * common_categories_count(front_matters[page_document.id], other_front_matter) + 
+            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["content"] * text_similarity_score(model, page_document, other_relative_path, similarity_matrix)
+          )
+            
         end.compact
+
       end
   
       def common_tags_count(page_front_matter, other_page_front_matter)
         (Array(page_front_matter['tags']) & Array(other_page_front_matter['tags'])).size
+      end
+
+      def common_keywords_count(page_front_matter, other_page_front_matter)
+        page_keywords = page_front_matter['excerpt'].nil? || page_front_matter['excerpt'].strip.empty? ? 
+          [] : 
+          page_front_matter['excerpt'].split(", ")
+
+        other_page_keywords = other_page_front_matter['excerpt'].nil? || other_page_front_matter['excerpt'].strip.empty? ? 
+          [] : 
+          other_page_front_matter['excerpt'].split(", ")
+
+        (page_keywords & other_page_keywords).size
       end
   
       def common_categories_count(page_front_matter, other_page_front_matter)
@@ -169,12 +169,12 @@ module Jekyll
   
         index_related_page = model.documents.index(related_page_document)
         return 0 if index_related_page.nil?
-  
+        
         similarity_matrix[index_page, index_related_page]
       end
   
       def add_related_pages(site, page_path, related_pages)
-        front_matter, _ = parse_front_matter(File.read(page_path)) || {}
+        front_matter, _ = FileUtilities.parse_front_matter(File.read(page_path)) || {}
         if (front_matter == {}) 
           return 
         end
@@ -187,9 +187,11 @@ module Jekyll
           return
         end
 
+        relPageNo = site.data['siteConfig']["relatedPages"]["relPagesNo"]
+        related_pages = related_pages.length > relPageNo ? related_pages.take(relPageNo) : related_pages;
         related_pages_permalinks = []
         related_pages.each do |page|
-          front_matter_rel_page, _ = parse_front_matter(File.read(page)) || {}
+          front_matter_rel_page, _ = FileUtilities.parse_front_matter(File.read(page)) || {}
           permalink_rel_page = front_matter_rel_page["permalink"] || ""
           related_pages_permalinks << permalink_rel_page
         end
@@ -199,7 +201,7 @@ module Jekyll
 
         related_pages_obj = []
         related_pages_permalinks.each do |permalink|
-          title = find_object_by_permalink(JSON.parse(site.data['page_list']), permalink)["title"] || ""
+          title = Globals.find_object_by_multiple_key_value(JSON.parse(site.data['page_list']), {"permalink" => permalink})["title"] || ""
           rel_page_data = {
             "title" => title,
             "permalink" => permalink
@@ -216,10 +218,6 @@ module Jekyll
         end
 
         site.data['page_list'] = pageList.to_json
-      end
-
-      def find_object_by_permalink(array, permalink)
-        array.find { |item| item["permalink"] == permalink }
       end
 
     end

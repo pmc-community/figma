@@ -14,7 +14,7 @@ module Jekyll
 
     def generate(site)
       extract_categories(Globals::DOCS_DIR)
-
+      site.data["category_list"] = []
       # storing the list of categories in site.data and not in site.config which is used for static site configuration
       site.data["category_list"] = @allCats.flatten.uniq.sort.to_json
     end
@@ -50,7 +50,15 @@ module Jekyll
       site.data["categories_details"] = categoriesDetails
 
       # order the categories based on the number of pages (DESC) and alphabetical for the same value of numPages
-      orderedCategories = categoriesDetails.sort_by { |category, details| [-details["numPages"], category] }.map(&:first)
+      #orderedCategories = categoriesDetails.sort_by { |category, details| [-details["numPages"], category] }.map(&:first) if categoriesDetails
+      orderedCategories = categoriesDetails.sort_by do |category, details|
+        if details && details.key?("numPages")
+          [-details["numPages"], category]
+        else
+          # Handle cases where details or numPages is nil (optional)
+          [0, category]  # Example: assign a default value (0) for missing pages
+        end
+      end.map(&:first) if categoriesDetails
       site.data["ordered_categories"] = orderedCategories.flatten.uniq.to_json
     end
 

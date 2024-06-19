@@ -13,6 +13,7 @@ module Jekyll
 
     def generate(site)
       extract_tags(Globals::DOCS_DIR)
+      site.data["tag_list"] = []
       site.data["tag_list"] = @allTags.flatten.uniq.sort.to_json
     end
 

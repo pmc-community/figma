@@ -52,6 +52,11 @@ gem 'rack', '~> 2.2.9'
 gem 'rack-livereload', require: 'rack/livereload'
 gem 'rack-cors'
 
+# for related pages based on TF-IDF algorithm
 gem 'tf-idf-similarity'
 gem 'nokogiri'
 gem 'matrix'
+
+# for page keywords generator
+gem 'text_rank'
+gem 'engtagger'

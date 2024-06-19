@@ -84,5 +84,16 @@ toBeRemovedAfterLoad:
   - "h1":
     - "testAttr"
     - "testAttr_1"
-marker404: "site-this-is-404-page" # should be allocated as id to one element in 404.html
+marker404: "site-this-is-404-page" #should be allocated as id to one element in 404.html
 catMenu: true
+relatedPages:
+  "relPagesNo": 4
+  "tf_idf_weigths": #sum of weights must be 1
+    "keywords": 0.4
+    "tags": 0.2
+    "cats": 0.2
+    "content": 0.2
+autoExcerpt:
+  keywords: 10
+  minKeywordLength: 3
+tagsToRemoveOnDryRender: ["script", "style"]

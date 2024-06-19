@@ -1,6 +1,6 @@
 require_relative 'globals'
-#require_relative 'file-utilities'
 require 'find'
+require 'jekyll'
 
 module FileUtilities
 
@@ -58,4 +58,62 @@ module FileUtilities
         end
        
     end
+
+    def self.parse_front_matter(content)
+        if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
+          front_matter = YAML.safe_load($1)
+          content = $'
+          [front_matter, content]
+        else
+          [nil, content]
+        end
+    end
+
+    def self.extract_main_content(site, rendered_content)
+        doc = Nokogiri::HTML(rendered_content)
+        tags_to_remove = site.data['siteConfig']["tagsToRemoveOnDryRender"]
+        tags_to_remove.each do |tag|
+            doc.search(tag).remove
+          end
+        main_content = doc.css('main').text
+        main_content.strip
+    end
+
+    def self.render_jekyll_page(site, file_path, front_matter, content_body)
+        # Create a temporary page to render
+        page = Jekyll::PageWithoutAFile.new(site, site.source, File.dirname(file_path), File.basename(file_path))
+        page.content = content_body
+        page.data = front_matter
+  
+        # Determine the layout to use (default to 'default' layout if not specified)
+        layout_name = front_matter['layout'] || 'default'
+  
+        # Find the layout
+        layout = find_layout(site, layout_name)
+        raise "Layout '#{layout_name}' not found." unless layout
+  
+        # Assign the layout to the page
+        page.data['layout'] = layout_name
+  
+        # Render the page with the assigned layout
+        page.render(site.layouts, site.site_payload)
+        extract_main_content(site, page.output)
+    end
+  
+    # Method to find a layout (including from themes)
+    def self.find_layout(site, layout_name)
+        # First, check if the layout exists in the site's layouts
+        layout = site.layouts[layout_name]
+
+        # If not found in site layouts, check in theme layouts
+        if layout.nil? && site.theme&.layouts
+            layout = site.theme.layouts[layout_name]
+        end
+        layout
+    end
+
+    def self.valid_front_matter?(content)
+        content =~ /\A---\s*\n.*?\n---\s*\n/m
+    end
+
 end

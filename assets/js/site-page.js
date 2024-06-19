@@ -1,21 +1,84 @@
-// HEADS UP!!!
-// pageInfo global is available only after document ready
-
-// do some common work
-$(document).ready(function(){
-    setPageButtonsFunctions();
-    refreshPageAfterOffCanvasClose();
-});
-// end common work
-
 // FUNCTIONS FOR EACH PAGE
+// called from _includes/siteIncludes/partials/page-common/page-related-pages.html
+const page__getRelatedPages = () => {
+
+    const relatedPageItem = (relatedPage) => {
+
+        const relatedPageLinkWidth = isMobileOrTablet() ? 'col-12' : 'col-4';
+
+        return (
+            `
+                <a siteFunction="pageRelatedPageLink" href="${relatedPage.permalink.indexOf('/') === 0 ? relatedPage.permalink : '/'+relatedPage.permalink}" class="${relatedPageLinkWidth} p-2">
+                    <div siteFunction="pageRelatedPage" class="my-2 card h-100 py-3 px-3 bg-body rounded bg-transparent shadow-sm">
+                        <div class="h-100 align-top mb-2">
+                            <span siteFunction="pageRelatedPageLinkPageTitle" class="fw-bold text-primary fs-6">${relatedPage.title}</span>
+                        </div>
+                        <div class="h-100 align-top mb-2">
+                            <span siteFunction="pageRelatedPageLinkPageExcerpt" class="fw-medium">${getObjectFromArray({permalink:relatedPage.permalink, title: relatedPage.title}, pageList).excerpt}</span>
+                        </div>
+                    </div>
+                </a>
+            
+            `
+        );
+    }
+
+    const relatedPagesHtml = (page) => {
+        let html = '';
+        const relatedPages = page.siteInfo.relatedPages || [];
+        if (relatedPages.length === 0) return html;
+        relatedPages.forEach(relatedPage => {
+            html += relatedPageItem(relatedPage);
+        });
+
+        return html;
+    }
+
+    const createRelatedPageContainer = (page) => {
+        const relatedPages = page.siteInfo.relatedPages || [];
+        const relatedPageItemsAlign = relatedPages.length > 3 ? 'justify-content-between' : 'justify-content-around';
+        
+        return (
+            `   
+                <div id="pageRelatedPages" class="px-5">
+                    <hr siteFunction="pageRelatedPagesSeparator">
+                    <span class="fs-6 fw-medium">
+                        Related pages:
+                    </span>
+                    <div 
+                        siteFunction="pageRelatedPagesContainer"
+                        class="container-fluid">
+                        <div
+                            siteFunction="pageRelatedPagesRow"
+                            class="row d-flex ${relatedPageItemsAlign}">
+                            ${relatedPagesHtml(page)}
+                        </div>
+                    </div>
+                </div>
+            `
+        );
+    }
+
+    $(document).ready(function() {
+        const relatedPages = pageInfo.siteInfo.relatedPages || [];
+        if (relatedPages.length === 0) {
+            $('#pageRelatedPages').remove();
+            return;
+        }
+        $('#pageRelatedPages').remove();
+        $('footer[class!="site-footer"]').append(createRelatedPageContainer(pageInfo)); 
+
+    });
+
+}
+
 // called from _includes/siteIncludes/partials/page-common/page-notes.html
 const page__getPageNotes = () => {
 
     const customNoteItem = (note) => {
         return (
             `
-                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-1 px-2  bg-body rounded bg-warning-subtle">
+                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-body rounded bg-warning-subtle border-0">
                     <div class="h-100 align-top mb-2">
                         <span class="fw-bold text-dark">${note.date}</span>
                     </div>
@@ -56,7 +119,6 @@ const page__getPageNotes = () => {
     }
 
     $(document).ready(function() {
-
         const customNotes = _.orderBy(pageInfo.savedInfo.customNotes || [],  [obj => new Date(obj.date)], ['desc']) ;
         if (customNotes.length === 0) {
             $('#pageNotes').remove();
@@ -70,6 +132,37 @@ const page__getPageNotes = () => {
 
 // called from _includes/siteIncludes/partials/page-common/page-info.html
 const page__getPageInfo = () => {
+
+    const pageSiteInfoBadges = (page) => {
+        if (page.siteInfo === 'none') return '';
+        let siteInfoBadges = '';
+        
+        if (page.siteInfo.tags.length > 0 ) 
+        siteInfoBadges += 
+            `
+                <span
+                    siteFunction="pageHasSiteTagsBadge"
+                    title = "Page ${page.siteInfo.title} has site tags" 
+                    class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer">
+                    Tags
+                </span>
+            `;
+
+        if (page.siteInfo.relatedPages.length > 0 ) 
+        siteInfoBadges += 
+            `
+                <span
+                    siteFunction="pageHasRelatedPagesBadge"
+                    title = "Page ${page.siteInfo.title} has related pages" 
+                    class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger alwaysCursorPointer">
+                    Related
+                </span>
+            `;
+        
+        return siteInfoBadges === '' ?
+            '' :
+            '<div>' + siteInfoBadges + '</div>';
+    }
 
     const pageSavedInfoBadges = (page) => {
         if (page.savedInfo === 'none') return '';
@@ -183,8 +276,9 @@ const page__getPageInfo = () => {
                                 <div class="badge rounded-pill text-bg-secondary px-3 py-2 fw-medium">
                                     Last update: ${formatDate(page.siteInfo.lastUpdate)}
                                 </div>
-                                <div>
+                                <div class="d-flex">
                                     ${pageSavedInfoBadges(page)}
+                                    ${pageSiteInfoBadges(page)}
                                 </div>
                             </div>
                             
@@ -213,6 +307,8 @@ const page__getPageInfo = () => {
             .on('click', 'button[sitefunction="pageShowPageFullInfo"]', function() {
                 showPageFullInfoCanvas(pageInfo);
             });
+        setPageButtonsFunctions();
+        refreshPageAfterOffCanvasClose();
     })
 }
 
@@ -287,6 +383,7 @@ const refreshPageDynamicInfo = () => {
     page__showPageCustomTags();
     page__getPageInfo();
     page__getPageNotes();
+    page__getRelatedPages();
 }
 
 const setPageButtonsFunctions = () => {
@@ -298,6 +395,14 @@ const setPageButtonsFunctions = () => {
                 scrollTop: $('#pageTags').offset().top
             }, 100);
         });
+
+    $(document)
+        .off('click', 'span[siteFunction="pageHasSiteTagsBadge"]')
+        .on('click', 'span[siteFunction="pageHasSiteTagsBadge"]', function() {
+            $('html, body').animate({
+                scrollTop: $('#pageTags').offset().top
+            }, 100);
+        });
     
     // click "Notes" badge
     $(document)
@@ -305,6 +410,15 @@ const setPageButtonsFunctions = () => {
         .on('click', 'span[siteFunction="pageHasCustomNotesBadge"]', function() {
             $('html, body').animate({
                 scrollTop: $('#pageNotes').offset().top
+            }, 100);
+        });
+
+    // click "Related" badge
+    $(document)
+        .off('click', 'span[siteFunction="pageHasRelatedPagesBadge"]')
+        .on('click', 'span[siteFunction="pageHasRelatedPagesBadge"]', function() {
+            $('html, body').animate({
+                scrollTop: $('#pageRelatedPages').offset().top
             }, 100);
         });
 
