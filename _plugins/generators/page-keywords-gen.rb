@@ -5,7 +5,6 @@ require_relative "../../tools/modules/globals"
 require_relative "../../tools/modules/file-utilities"
 require 'text_rank'
 
-
 module Jekyll
 
   class PageKeyordsGenerator < Generator
