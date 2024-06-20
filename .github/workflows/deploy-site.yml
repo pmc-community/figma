@@ -28,6 +28,7 @@ jobs:
           pyEnable=$(grep -Po 'pyEnable:\s*\K(true|false)' _data/siteConfig.yml) 
           echo "pyEnable=$pyEnable" >> $GITHUB_ENV
           echo $pyEnable
+          echo ::set-output name=pyEnable::$pyEnable
       
       - name: Show local variables
         id: show-vars
