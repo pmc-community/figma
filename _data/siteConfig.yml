@@ -87,13 +87,16 @@ toBeRemovedAfterLoad:
 marker404: "site-this-is-404-page" #should be allocated as id to one element in 404.html
 catMenu: true
 relatedPages:
-  "relPagesNo": 4
+  "relPagesNo": 3
+  "scoreLimit": -0.1
   "tf_idf_weigths": #sum of weights must be 1
-    "keywords": 0.4
+    "keywords": 0.3
     "tags": 0.2
     "cats": 0.2
-    "content": 0.2
+    "content": 0.3
 autoExcerpt:
   keywords: 10
   minKeywordLength: 3
 tagsToRemoveOnDryRender: ["script", "style"]
+siteVars:
+  siteTestBadge: "xxx"

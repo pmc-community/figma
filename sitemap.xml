@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-  <loc>http://localhost:4000/collection-2/y/y/</loc>
-  <lastmod>2024-04-10</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/collection-2/Z/z/</loc>
-  <lastmod>2024-04-26</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
   <loc>http://localhost:4000/cat-info</loc>
   <lastmod>2024-05-03</lastmod>
   <changefreq>weekly</changefreq>
@@ -50,42 +36,7 @@
 </url>
 
 <url>
-  <loc>http://localhost:4000/sf/f1/</loc>
-  <lastmod>2024-06-18</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/intro/</loc>
-  <lastmod>2024-06-18</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/intro/introChild/</loc>
-  <lastmod>2024-06-18</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
   <loc>http://localhost:4000/intro/introChild/introGrandChild/</loc>
-  <lastmod>2024-06-18</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/pwc/</loc>
-  <lastmod>2024-06-18</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.5</priority>
-</url>
-
-<url>
-  <loc>http://localhost:4000/terms/</loc>
   <lastmod>2024-06-18</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>
@@ -99,7 +50,56 @@
 </url>
 
 <url>
+  <loc>http://localhost:4000/terms/</loc>
+  <lastmod>2024-06-18</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/intro/introChild/</loc>
+  <lastmod>2024-06-18</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/intro/</loc>
+  <lastmod>2024-06-18</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/sf/f1/</loc>
+  <lastmod>2024-06-19</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/pwc/</loc>
+  <lastmod>2024-06-19</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
   <loc>http://localhost:4000/collection-1/g1/</loc>
+  <lastmod>2024-06-19</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/collection-2/y/y/</loc>
+  <lastmod>2024-06-19</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.5</priority>
+</url>
+
+<url>
+  <loc>http://localhost:4000/collection-2/Z/z/</loc>
   <lastmod>2024-06-19</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.5</priority>

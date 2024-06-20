@@ -36,7 +36,7 @@ const page__getRelatedPages = () => {
 
     const createRelatedPageContainer = (page) => {
         const relatedPages = page.siteInfo.relatedPages || [];
-        const relatedPageItemsAlign = relatedPages.length > 3 ? 'justify-content-between' : 'justify-content-around';
+        const relatedPageItemsAlign = relatedPages.length > 3 ? 'justify-content-between' : 'justify-content-start';
         
         return (
             `   
