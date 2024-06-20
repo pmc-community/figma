@@ -36,6 +36,20 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' # Use the appropriate version of Python you need
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tensorflow tensorflow-hub numpy pandas markdown
+      
+      - name: Run Python script
+        run: |
+          python3 tools_py/test.py
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
@@ -51,7 +65,7 @@ jobs:
           TEST_VAL: ${{ secrets.TEST_VAL}}
           JEKYLL_ACCESS_TOKEN: ${{secrets.JEKYLL_ACCESS_TOKEN}}
           JEKYLL_GIT_USER: ${{secrets.JEKYLL_GIT_USER}}
-          
+
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3
