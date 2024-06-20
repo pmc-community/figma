@@ -42,19 +42,19 @@ jobs:
           cache-version: 0
               
       - name: Setup Python (conditionally)
-        if: ${{ steps.set-vars.outputs.pyEnable == 'true' }}
+        if: steps.set-vars.outputs.pyEnable == 'true'
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
         
       - name: Install Python dependencies (conditionally)
-        if: ${{ steps.set-vars.outputs.pyEnable == 'true' }}
+        if: steps.set-vars.outputs.pyEnable == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install tensorflow tensorflow-hub numpy pandas markdown
 
       - name: Run Python script (conditionally)
-        if: ${{ steps.set-vars.outputs.pyEnable == 'true' }}
+        if: steps.set-vars.outputs.pyEnable == 'true'
         run: |
           python3 tools_py/test.py
 
