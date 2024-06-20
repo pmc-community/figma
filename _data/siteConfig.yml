@@ -100,3 +100,4 @@ autoExcerpt:
 tagsToRemoveOnDryRender: ["script", "style"]
 siteVars:
   siteTestBadge: "xxx"
+pyEnable: true
