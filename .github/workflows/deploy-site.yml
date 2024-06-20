@@ -28,6 +28,11 @@ jobs:
           pyEnable=$(grep -Po 'pyEnable:\s*\K(true|false)' _data/siteConfig.yml) 
           echo "pyEnable=$pyEnable" >> $GITHUB_ENV
           echo $pyEnable
+      
+      - name: Show local variables
+        id: show-vars
+        run: |
+          echo ${{ steps.set-vars.outputs.pyEnable}}
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42
