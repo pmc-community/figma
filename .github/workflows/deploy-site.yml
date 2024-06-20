@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Define local workflow variable
+      # Define local workflow variables
       - name: Set local variables
         id: set-vars
         run: |
