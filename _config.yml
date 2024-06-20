@@ -32,6 +32,7 @@ theme: just-the-docs
 
 exclude:
   - tools/
+  - tools_py/
   - check
   - test
   - netlify.toml

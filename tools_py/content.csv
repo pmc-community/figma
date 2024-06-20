@@ -1,0 +1,534 @@
+filename,content
+../doc-contents/00-intro.md,"<hr />
+<p>layout: page
+title: Introduction
+permalink: /intro/</p>
+<p>has_children: true</p>
+<h1>has_toc must be false, otherwise a list of child pages will be added automatically</h1>
+<p>has_toc: false
+nav_order: 2</p>
+<p>categories: [general, intro]</p>
+<h2>tags: [t a g 1, tag2]</h2>
+<!-- START_EXPOSED_SECTION -->
+
+<h1>A</h1>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h2>level 2</h2>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<!-- END_EXPOSED_SECTION -->
+
+<h3>level3</h3>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h4>level 4</h4>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h5>level 5</h5>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h6>level 6</h6>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h1>B</h1>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h1>C</h1>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h1>A</h1>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>
+<h2>level 2</h2>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h1>D</h1>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h2>level 2</h2>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h2>level 2</h2>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h2>level 2</h2>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h2>level 2</h2>
+<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from ""de Finibus Bonorum et Malorum"" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+<h1>B</h1>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>"
+../doc-contents/02-extContent.md,"<hr />
+<p>layout: page
+title: External content
+permalink: /ec/
+tags: [tag1, tag4, tag3]
+categories: [c10, c12]
+excerpt: ""a very nice excerpt for a dynamically created file, having the content imported from an external private GitHub repo""</p>
+<hr />
+<p><code>Content from an exernal private repo</code></p>
+<p>{% 
+    ExternalRepoContent  { 
+        ""owner"":""PMCDevOnlineServices"", 
+        ""repo"":""Ihs-docs"", 
+        ""branch"":""main"", 
+        ""file_path"":""Get-Started/eng/get-started-with-innohub.space.md"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""start_marker"": ""<!-- START EXPOSED SECTION -->"", 
+        ""end_marker"": ""<!-- END EXPOSED SECTION -->"",
+        ""needAuth"": true 
+    }
+%}</p>"
+../doc-contents/03-terms.md,"<hr />
+<p>layout: page
+title: Terms
+permalink: /terms/
+tags: [legal]</p>
+<hr />
+<p>{% 
+    ExternalRepoContent  { 
+        ""owner"":""PMCDevOnlineServices"", 
+        ""repo"":""innohub-space"", 
+        ""branch"":""main"", 
+        ""file_path"":""legal/general-terms/eng/general-terms-of-service.md"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""start_marker"": ""fullFile"", 
+        ""end_marker"": ""fullFile"",
+        ""needAuth"": true 
+    }
+%}</p>"
+../doc-contents/00.01-introChild.md,"<hr />
+<p>layout: page
+title: Intro Child Page
+permalink: /intro/introChild/
+parent: Introduction</p>
+<p>has_children: true
+has_toc: false</p>
+<h1>if we want to be always the first child, we can use nav_order</h1>
+<h2>nav_order: 1</h2>
+<h2>child 1</h2>
+<p>ch 1</p>"
+../doc-contents/00-dev-test.md,"<hr />
+<p>layout: page
+permalink: /devtest/
+title: DevTest
+nav_order: 1
+excerpt: ""a very nice excerpt used in dev""</p>
+<hr />
+<p>{% CatList %}</p>
+<p>{% CatDetails %}</p>
+<p>{% TagList %}</p>
+<p>{% TagDetails %}</p>
+<p>{% SitePages %}</p>
+<p><a href=""http://localhost:4000/tag-info?tag=t%20a%20g%201"">T a g 1</a>{: .btn .btn-green }
+<a href=""http://localhost:4000/tag-info?tag=tag1"">Tag1</a>{: .btn .btn-green }</p>
+<p>{%assign s = ""/collection1/g11/"" %}
+{% capture json_string %}
+{
+    ""permalink"": ""{{ s }}""
+}
+{% endcapture %}</p>
+<p>{% assign my_object = json_string | json_string_to_object %}
+{{my_object}}</p>
+<p>{% PageExcerpt {{ my_object }} %}</p>
+<p>{% 
+    PageExcerpt {
+        ""permalink"":""/collection1/g11/""
+    } 
+%}</p>
+<p>{{ site.data.category_list | cat_main_menu }}</p>"
+../doc-contents/00.01.01-introGrandChild.md,"<hr />
+<p>layout: page
+title: Intro Grand Child Page
+permalink: /intro/introChild/introGrandChild/
+parent: Intro Child Page
+grand_parent: Introduction</p>
+<h1>if we want to be always the first child, we can use nav_order</h1>
+<h2>nav_order: 1</h2>
+<p>grand child page</p>"
+../doc-contents/01-p1.md,"<hr />
+<p>layout: page
+title: Play with content
+permalink: /pwc/</p>
+<p>callouts:
+  warning:
+    title: Warning
+    color: red</p>
+<p>categories: [general, content]
+tags: [tag1, tag3, alfa]</p>
+<hr />
+<p><code>Markdown content direct included in the page</code></p>
+<p>Stable
+{: .label .label-green }</p>
+<p><code>HEADS UP!!!
+LINKS TO OTHER SITE DOCS MUST BE GIVEN USING THE PERMALINKS, NOT THE FILE NAME</code></p>
+<p><a href=""/intro/"">Link to file in the same folder</a>{: .btn .btn-purple }</p>
+<p><a href=""/collection-2/Z/z/"">Link to file in different folder</a>{: .btn .btn-green }</p>
+<p><a href=""/collection-2/Z/z/r"">broken link</a></p>
+<p><a href=""https://innohub.space"">good external link</a></p>
+<p><a href=""https://me.pmc-expert.com/abc"">broken external link</a></p>
+<!--- HEADS UP!!!
+    When loading inline external content, the placeholder must be defined in the main md file 
+    which can be a site page or a partial. The id of the partial must be passed as
+    parameter to the getExternalContent(...), see on the bottom of this file.
+--->
+<div id=""test_inline_external_content""></div>
+
+<!--- Markdown comment -->
+<p><code>HEADS UP!!!!
+- Liquid tags may generate unexpected behaviour sometimes due to dry rendering during site build.
+- Dry rendering is used in the site build process to generate related pages and keywords
+- It may be possible to have the front matter rendered also</code>
+using site vars from siteConfig: {{ site.data[""siteConfig""].siteVars.siteTestBadge }}</p>
+<p><code>Markdown content generated from one part of another site page</code></p>
+<!--- Include only part from another md file using a ""function"" from another liquid file-->
+<p>{% capture included_content %}
+    {% include_relative 00-intro.md %}
+{% endcapture %}</p>
+<p>{% include siteIncludes/modules/utilities.liquid fileContent=included_content %}
+{{ file_content_result }}</p>
+<!--- Include only part from a collection -->
+<p><code>Markdown content generated from a file from a collection. This file has its own content but loads external content too.</code></p>
+<p>{% capture included_content %}
+    {% include_relative _collection-2/Z/z.md %}
+{% endcapture %}</p>
+<p>{% include siteIncludes/modules/utilities.liquid fileContent=included_content %}
+{{ file_content_result }}</p>
+<p><code>Markdown content generated from one part a partial which is not a site page</code></p>
+<!--- Include part from a partial which is not processed as a page and does not appear in the left sidebar -->
+<p>{% capture included_content %}
+    {% include_relative partials/part1.md %}
+{% endcapture %}
+{% include siteIncludes/modules/utilities.liquid fileContent=included_content %}
+{{ file_content_result }}</p>
+<!--- Include content from a partial which is loaded from an external file (i.e. md file from another public repo+branch)
+
+    IMPORTANT!!!
+    - THIS CONTENT WILL NOT RETURN ANY RESULT IN ALGOLIA OR SITE SEARCH SINCE IS GENERATED ON CLIENT SIDE
+    - UPDATING ALGOLIA INSTANT SEARCH IS NOT POSSIBLE SINCE WE CANNOT MAKE BACKEND CALLS FROM GITHUB PAGES, FRONTEND CALLS MEANS EXPOSING ALGOLIA WRITE KEY
+--->
+<p>{% include_relative partials/extFile.md %}</p>
+<!--- Include content from a partial which is loaded from an external file (i.e. md file from another public repo+branch) -->
+<p>{% include_relative partials/partExtFile.md %}</p>"
+../doc-contents/_collection-2/x.md,"<hr />
+<p>layout: page
+title: Collection-2/X
+permalink: collection-2/X/x/
+has_children: true
+has_toc: false
+tags: [tag1]</p>
+<hr />
+<!-- START_EXPOSED_SECTION -->
+
+<p><code>Own markdown content.</code>
+This the content directly typed in {{ page.title }}.</p>
+<h1 class=""bd-callout bd-callout-warning"">Using bootstrap classes</h1>
+<p class =""p-5 bg-success-subtle border border-successsubtle rounded text-dark"" >
+This is one good inline external link to https://pmc-expert.com and one good inline internal link to /collection-2/Z/z/. These are no tconverted into a tags, so will be not checked by broken llinks utilities.
+</p>
+
+<p>{: .highlight .p-5 }
+Using jtd classes </p>
+<p>| head1        | head two          | three |
+|:-------------|:------------------|:------|
+| ok           | good swedish fish | nice  |
+| out of stock | good and plenty   | nice  |
+| ok           | good <code>oreos</code>              |
+| ok           | good <code>zoute</code> drop | yumm  |</p>
+<p><code>Markdown content loaded from another md file from the same collection.
+HEADS UP!
+WATCH OUT THE LIMITATIONS FOR LOADING CONTENT FROM ANOTHER FILE, THE SOURCE FILE MUST BE BELOW THE DESTINATION FILE IN THE FOLDER STRUCTURE.
+OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE AND USE getExternalContent(...) FUNCTION.</code>
+{% capture included_content %}
+    {% include_relative Y/y.md %}
+{% endcapture %}</p>
+<p>{% include siteIncludes/modules/utilities.liquid fileContent=included_content %}
+{{ file_content_result }}</p>
+<script siteAttr = ""externalContent"">
+    getExternalContent (
+        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
+        'before',
+        '{{ site.data.siteConfig.extContentMarkers.startExposedSection }}',
+        '{{ site.data.siteConfig.extContentMarkers.endExposedSection }}',
+        '```Markdown content generated from a part of partial which loads a part from an external md file and place it on top of the content area```',
+        '',
+        'doc-contents/partials/partExtFile.md'
+    );
+</script>
+<!-- END_EXPOSED_SECTION -->"
+../doc-contents/_collection-2/Z/z.md,"<hr />
+<p>layout: page
+title: Collection-2/Z
+permalink: /collection-2/Z/z/</p>
+<p>parent: Collection-2/X</p>
+<h2>categories: [general, intro]</h2>
+<!-- START_EXPOSED_SECTION -->
+<h1>General</h1>
+<p>This is a file from a collection</p>
+<!-- START MARKER 1 -->
+<div id=""test_inline_external_content-1""></div>
+
+<h2>External content</h2>
+<p>This file loads some external content from another repo and place it inline.</p>
+<p><a href=""/pwc/"">Link to file in different folder</a>{: .btn .btn-green }</p>
+<!--- HEADS UP!
+    siteAttr = ""externalContent"" will force the removal of the script tag after loading page 
+    This should be the normal approach since the script will be totally useless after loading page 
+--->
+<script siteAttr = ""externalContent"">
+    getExternalContent (
+        'https://raw.githubusercontent.com/pmc-community/business-booster/main/LICENSE', 
+        'inline',
+        'fullFile',
+        'fullFile',
+        '```Markdown content generated from a part of partial which loads a part from an external md file and place it inline```\n',
+        'test_inline_external_content-1',
+        'doc-contents/_collection-2/Z/z.md'
+    );
+</script>
+<!-- END MARKER 1 -->
+
+<script siteAttr = ""externalContent"">
+    getExternalContent (
+        'https://raw.githubusercontent.com/pmc-community/business-booster/main/LICENSE_XXX', 
+        'after',
+        'fullFile',
+        'fullFile',
+        '```Markdown content generated from a part of partial which loads a part from an external md file and place it inline```\n',
+        'test_inline_external_content-1',
+        'doc-contents/_collection-2/Z/z.md'
+    );
+</script>
+
+<!-- END_EXPOSED_SECTION -->"
+../doc-contents/_collection-2/Y/y.md,"<hr />
+<p>layout: page
+title: Collection-2/Y
+permalink: /collection-2/y/y/</p>
+<hr />
+<!-- START_EXPOSED_SECTION -->
+<p>That's the page.url file from collection_2</p>
+<!-- END_EXPOSED_SECTION -->
+
+<p>{% 
+    ExternalSiteContent  {
+        ""markdown"": true,
+        ""file_path"":""_collection-2/Z/z.md"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""start_marker"": ""<!-- START MARKER 1 -->"", 
+        ""include_start_marker"": false,
+        ""end_marker"": ""<!-- END MARKER 1 -->"",
+        ""include_end_marker"": false,
+        ""needAuth"": true 
+    }
+%}</p>"
+../doc-contents/sf/f1.md,"<hr />
+<p>layout: page
+title: Subfolder/F1
+permalink: /sf/f1/</p>
+<hr />
+<h1>Links</h1>
+<p>Either PMC or any third parties may provide links to other websites and/or resources. Thus, you acknowledge and agree that we are not responsible for the availability of any such external sites or resources, and as such, we do not endorse nor are we responsible or liable for any content, products, advertising or any other materials, on or available from such third party sites or resources. Furthermore, you acknowledge and agree that PMC shall not be responsible or liable, directly or indirectly, for any such damage or loss which may be a result of, caused or allegedly to be caused by or in connection with the use of or the reliance on any such content, goods or services made available on or through any such site or resource.</p>
+<p>We will provide the services to you, which are subject to the conditions stated below in this document. Every time you visit this website, use its services or make a purchase, you accept the following conditions. This is why we urge you to read them carefully. Any and all visitors to our site shall be deemed as “users” of the herein contained Services provided for the purpose of this TOS.</p>
+<p>The user acknowledges and agrees that the Services provided and made available through our website and applications, which may include some mobile applications and that those applications may be made available on various social media networking sites and numerous other platforms and downloadable programs, are the sole property of PMC. At its discretion, PMC may offer additional website Services and/or products, or update, modify or revise any current content and Services, and this Agreement shall apply to any and all additional Services and/or products and any and all updated, modified or revised Services unless otherwise stipulated. PMC does hereby reserve the right to cancel and cease offering any of the aforementioned Services and/or products. You, as the end user acknowledge, accept and agree that PMC shall not be held liable for any such updates, modifications, revisions, suspensions or discontinuance of any of our Services and/or products. Your continued use of the Services provided, after such posting of any updates, changes, and/or modifications shall constitute your acceptance of such updates, changes and/or modifications, and as such, frequent review of this Agreement and any and all applicable terms and policies should be made by you to ensure you are aware of all terms and policies currently in effect. Should you not agree to the updated, revised or modified terms, you must stop using the provided Services forthwith.</p>
+<p>Furthermore, the user understands, acknowledges and agrees that the Services offered shall be provided “AS IS” and as such PMC shall not assume any responsibility or obligation for the timeliness, missed delivery, deletion and/or any failure to store user content, communication or personalisation settings.</p>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ""de Finibus Bonorum et Malorum"" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, ""Lorem ipsum dolor sit amet.."", comes from a line in section 1.10.32.</p>"
+../doc-contents/_collection-1/g11.md,"<hr />
+<p>layout: page
+title: Collection-1/G11
+permalink: /collection1/g11/</p>
+<p>categories: [general, content]
+tags: [bootstrap,tag1, exa]
+excerpt: ""this a sample excerpt for a file. this will be shown wherever exerpt is needed""</p>
+<hr />
+<p>test G11</p>
+<p>{% 
+    ExternalRepoContent  { 
+        ""markdown"": true,
+        ""owner"":""twbs"", 
+        ""repo"":""bootstrap"", 
+        ""branch"":""main"", 
+        ""file_path"":""site/content/docs/5.3/components/accordion.md"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""start_marker"": ""How it works"",
+        ""include_start_marker"": true,
+        ""end_marker"": ""scss/_variables.scss"" ,
+        ""include_end_marker"": true,
+        ""needAuth"": false
+    }
+%}</p>"
+../doc-contents/_collection-1/g1.md,"<hr />
+<p>layout: page
+title: Collection-1/G1
+permalink: /collection-1/g1/</p>
+<hr />
+<p><code>External Site Content</code>
+{% 
+    ExternalSiteContent  {
+        ""markdown"": true,
+        ""file_path"":""_collection-2/Z/z.md"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""start_marker"": ""<!-- START MARKER 1 -->"", 
+        ""include_start_marker"": false,
+        ""end_marker"": ""<!-- END MARKER 1 -->"",
+        ""include_end_marker"": false,
+        ""needAuth"": true 
+    }
+%}</p>
+<p><code>External Site Content MM</code>
+{% 
+    ExternalSiteContentMM  {
+        ""needAuth"": true,
+        ""markdown"": true, 
+        ""file_path"":""00-intro.md"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""markers"": [
+            {
+                ""start_marker"": ""# A"",
+                ""include_start_marker"": true, 
+                ""end_marker"": ""## level 2"",
+                ""include_end_marker"": false 
+            },</p>
+<pre><code>        {
+            ""start_marker"": ""# B"",
+            ""include_start_marker"": true, 
+            ""end_marker"": ""# C"",
+            ""include_end_marker"": false 
+        }
+    ]
+}
+</code></pre>
+<p>%}</p>
+<p><code>External Repo Content</code>
+{% 
+    ExternalRepoContent  { 
+        ""markdown"": true,
+        ""owner"":""PMCDevOnlineServices"", 
+        ""repo"":""Ihs-docs"", 
+        ""branch"":""main"", 
+        ""file_path"":""Register-to-innohub/eng/register-to-innohub.md"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""start_marker"": "" to benefit of our services."",
+        ""include_start_marker"": true,
+        ""end_marker"": ""Nevertheless, the initial registration"" ,
+        ""include_end_marker"": true,
+        ""needAuth"": true
+    }
+%}</p>
+<p><code>External Repo Content MM</code>
+{% 
+    ExternalRepoContentMM  {
+        ""needAuth"": true,
+        ""markdown"": true,
+        ""owner"":""PMCDevOnlineServices"", 
+        ""repo"":""Ihs-docs"", 
+        ""branch"":""main"", 
+        ""file_path"":""Register-to-innohub/eng/register-to-innohub.md"", 
+        ""ignore_wp_shortcodes"": true,
+        ""markers"": [
+            {
+                ""start_marker"": ""# Registration to innohub"",
+                ""include_start_marker"": true, 
+                ""end_marker"": ""Be aware that the registration will not give you"",
+                ""include_end_marker"": false
+            },
+            {
+                ""start_marker"": ""by providing your email address and a password."",
+                ""include_start_marker"": false,
+                ""end_marker"": ""Be aware that, if you are already logged in"",
+                ""include_end_marker"": false
+            },
+            {
+                ""start_marker"": ""the protected content and to innohub services."",
+                ""include_start_marker"": false, 
+                ""end_marker"": ""# How to register"",
+                ""include_end_marker"": true
+            }
+        ]</p>
+<pre><code>}
+</code></pre>
+<p>%}</p>
+<p><code>External Repo Content CODE</code></p>
+<p><code>javascript
+{%
+    ExternalRepoContent  { 
+        ""markdown"": true,
+        ""owner"":""florinhoinarescu"", 
+        ""repo"":""IHS-Master"", 
+        ""branch"":""master"", 
+        ""file_path"":""app/ihs-main-app/src/loader/app-loader.js"", 
+        ""ignore_wp_shortcodes"": true, 
+        ""start_marker"": ""fullFile"",
+        ""include_start_marker"": false,
+        ""end_marker"": ""fullFile"" ,
+        ""include_end_marker"": false,
+        ""needAuth"": true
+    }
+%}</code>
+<code>javascript
+const setTagDetailsDataTable = () =&gt; {
+    setDataTable('TagInfo', 'table[siteFunction=""tagDetailsPageTable""]')
+}</code></p>"
+../doc-contents/partials/extFile.md,"<!--- 
+    HEADS UP!!!
+
+    IN THE SCRIPT BELOW, THE SYNTAX MUST BE 100% STRICT
+    EACH LINE MUST END WITH ';'
+    NOO JAVASCRIPT COMMENTS ARE ALLOWED
+    OTHERWISE, PARSING CAN BE WRONG AND THE SCRIPT MAY BE NOT EXECUTED 
+
+    ANY CONTENT TO BE RENDERED BEFORE THE EXTERNAL CONTENT MUST BE GIVEN
+    AS THE LAST PARAMETER TO THE FUNCTION, OTHERWISE MAY NOT STICK TOGETHER
+    WITH THE EXTERNAL CONTENT DUE TO THE ASYNC NATURE OF HTTP REQUEST 
+
+    IF YOU DON'T HAVE A BACKEND AVAILABLE (THAT'S THE CASE WITH GITHUB PAGES DEPLOYED FROM BRANCH)
+    BE SURE THAT YOU HAVE ACCESS TO THE EXTERNAL CONTENT WITHOUT AUTHENTICATION/AUTHORIZATION
+    BECAUSE YOU WILL NOT BE ABLE TO DO IT ON CLIENT SIDE WITHOUT EXPOSING PASSWORD OR KEYS
+
+    IF THE SITE IS DEPLOYED TO GITHUB PAGES WITH ACTIONS (NOT FROM BRANCH), BACKEND AND SECRETS ARE AVAILABLE
+    HOWEVER, GETTING EXTERNAL CONTENT AFTER OR BEFORE THE OTHER CONTENT MAY BE DONE BETTER ON CLIENT SIDE
+--->
+
+<script siteAttr = ""externalContent"">
+    getExternalContent (
+        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
+        'after',
+        'fullFile',
+        'fullFile',
+        '```Markdown content generated from a partial which loads from a full external md file and place the content at the bottom of the content area```',
+        '',
+        'doc-contents/partials/extFile.md'
+    );
+</script>"
+../doc-contents/partials/part1.md,"<!-- START_EXPOSED_SECTION -->
+<p><strong>partial 1</strong></p>
+<h2>h2 from partial md file</h2>
+<p>I am a paragraph from a partial file under a h2 title. The h2 title will be placed in ToC under the first h1 found in the document above this h2 title.</p>
+<h1>h1 from partial file</h1>
+<p>I am a paragraph from a partial file under a h1 title. The h1 title will be placed on the 1st level of Toc.</p>
+<!-- END_EXPOSED_SECTION -->"
+../doc-contents/partials/partExtFile.md,"<!--
+    HEADS UP!!!
+    IN THE SCRIPT BELOW, THE SYNTAX MUST BE 100% STRICT:
+        EACH LINE MUST END WITH ';'
+        NO JAVASCRIPT COMMENTS ARE ALLOWED
+        OTHERWISE, PARSING CAN BE WRONG AND THE SCRIPT MAY BE NOT EXECUTED 
+
+    HEADS UP!!!
+    ANY CONTENT TO BE RENDERED BEFORE THE EXTERNAL CONTENT MUST BE GIVEN
+    AS THE LAST PARAMETER TO THE FUNCTION, OTHERWISE MAY NOT STICK TOGETHER
+    WITH THE EXTERNAL CONTENT DUE TO THE ASYNC NATURE OF HTTP REQUEST 
+
+    HEADS UP!!!
+    IF YOU DON'T HAVE A BACKEND AVAILABLE (THAT'S THE CASE WITH GITHUB PAGES)
+    BE SURE THAT YOU HAVE ACCESS TO THE EXTERNAL CONTENT WITHOUT AUTHENTICATION/AUTHORIZATION
+    BECAUSE YOU WILL NOT BE ABLE TO DO IT ON CLIENT SIDE WITHOUT EXPOSING PASSWORD OR KEYS 
+
+    HEADS UP!!!
+    ANY PARAMETERS TO BE PASSED TO JS FUNCTIONS MUST BE INITIALIZED BEFORE CALLING THE FUNCTION
+    OTHERWISE THEY MAY BE NOT PASSED CORRECTLY 
+-->
+
+<script siteAttr = ""externalContent"">
+    getExternalContent (
+        'https://raw.githubusercontent.com/pmc-community/figma/main/ReactPluginTemplate/README.md', 
+        'before',
+        '{{ site.data.siteConfig.extContentMarkers.startExposedSection }}',
+        '{{ site.data.siteConfig.extContentMarkers.endExposedSection }}',
+        '```Markdown content generated from a part of partial which loads a part from an external md file and place it on top of the content area```',
+        '',
+        'doc-contents/partials/partExtFile.md'
+    );
+</script>"
