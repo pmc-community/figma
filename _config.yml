@@ -42,6 +42,7 @@ exclude:
   - serve
   - serve-rack
   - config.ru
+  - .github/
 
 
 aux_links:

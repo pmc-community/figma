@@ -21,11 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Define local workflow variables
       - name: Set local variables
         id: set-vars
         run: |
-          pyEnable=$(grep -Po 'pyEnable:\s*\K(true|false)' _data/siteConfig.yml) 
+          pyEnable=$(grep -Po 'pyEnable:\s*\K(true|false)' _data/buildConfig.yml) 
           echo "pyEnable=$pyEnable" >> $GITHUB_OUTPUT
       
       - name: Setup Ruby
@@ -47,10 +46,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install tensorflow tensorflow-hub numpy pandas markdown
 
-      - name: Run Python script (conditionally)
+      - name: Run Python pre-build scripts (conditionally)
         if: steps.set-vars.outputs.pyEnable == 'true'
         run: |
-          python3 tools_py/test.py
+          ./tools_py/pyScripts
 
       - name: Setup Pages
         id: pages
