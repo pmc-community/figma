@@ -6,7 +6,7 @@ require_relative 'modules/extContent-utilities'
 require 'pp'
 
 site_dir = ARGV[0] || 'doc-contents'
-clearScreen = ARGV[1]
+#clearScreen = ARGV[1]
 silent = ARGV[2]&.downcase == 'true'? true : false
 
 Globals.clearConsole() if ARGV[1]&.downcase == 'true'

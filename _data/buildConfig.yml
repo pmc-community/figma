@@ -1,1 +1,2 @@
-pyEnable: false
+pyEnable: true
+preFlight: true

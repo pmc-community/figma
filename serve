@@ -1,14 +1,24 @@
 #!/bin/bash
 
-# Read the pyEnable value from _data/siteConfig.yml
+# PYTHON PRE-BUILD SCRIPTS
 pyEnable=$(grep 'pyEnable' _data/buildConfig.yml | awk '{print $2}')
 
-# Check if pyEnable is true
 if [ "$pyEnable" = "true" ]; then
-  # Run the tools_py/test.py script
   ./tools_py/pyScripts
 else
   echo "pyEnable is false. Skipping the execution of python scripts."
 fi
+
+# PRE-FLIGHT CHECKS
+# that's good only for local dev environment
+# the deployment Github action ignores preFlight check flag
+preFlight=$(grep 'preFlight' _data/buildConfig.yml | awk '{print $2}')
+
+if [ "$preFlight" = "true" ]; then
+  ./check
+else
+  echo "preFlight check is false. Skipping the execution of python scripts."
+fi
+
 
 bundle exec jekyll serve --trace

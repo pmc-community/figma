@@ -49,7 +49,7 @@ module LinkUtilities
     def self.check_valid_uri(uri)
         uri = "http://#{uri}" unless uri.start_with?("http://", "https://")
         begin
-            parsed_uri = URI.parse(uri)
+            #parsed_uri = URI.parse(uri)
             return 0
         rescue URI::InvalidURIError
             return 1
@@ -153,7 +153,7 @@ module LinkUtilities
         rescue URI::InvalidURIError
             # "#{url} is not a valid URI."
             return 1
-        rescue SocketError, Net::OpenTimeout, Net::ReadTimeout => e
+        rescue #SocketError, Net::OpenTimeout, Net::ReadTimeout => e
             # "Error: #{e.message}. The link #{url} could not be checked."
             return 1
         end

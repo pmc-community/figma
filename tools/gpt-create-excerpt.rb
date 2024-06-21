@@ -1,3 +1,4 @@
+# NOT USED
 require 'openai'
 require_relative "modules/globals"
 require "dotenv"
