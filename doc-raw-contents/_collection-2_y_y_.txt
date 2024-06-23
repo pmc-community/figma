@@ -1,0 +1,1 @@
+That’s the page.url file from collection_2    This file loads some external content from another repo and place it inline. Link to file in different folder

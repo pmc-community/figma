@@ -12,7 +12,7 @@ module Jekyll
 
       # HEADS UP!!!
       # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE
-      # THE FILE IS siteConfig.yml AND IS LOCATED IN _data FOLDER
+      # THE FILE IS buildConfig.yml AND IS LOCATED IN _data FOLDER
       # content.index(site.data["siteConfig"]["marker404"])
   
       def generate(site)
@@ -144,13 +144,13 @@ module Jekyll
           #puts "p:#{File.basename(page_path)} op:#{File.basename(other_relative_path)} kw:#{common_keywords_score(site, front_matters[page_document.id], other_front_matter)} tags: #{common_tags_score(front_matters[page_document.id], other_front_matter)} cat: #{commonn_categories_score(front_matters[page_document.id], other_front_matter)} text: #{text_similarity_score(model, page_document, other_relative_path, similarity_matrix)}"
 
           score = -(
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["keywords"] * common_keywords_score(site, front_matters[page_document.id], other_front_matter) +
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["tags"] * common_tags_score(front_matters[page_document.id], other_front_matter) +
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["cats"] * commonn_categories_score(front_matters[page_document.id], other_front_matter) +
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["content"] * text_similarity_score(model, page_document, other_relative_path, similarity_matrix)
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["keywords"] * common_keywords_score(site, front_matters[page_document.id], other_front_matter) +
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["tags"] * common_tags_score(front_matters[page_document.id], other_front_matter) +
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["cats"] * commonn_categories_score(front_matters[page_document.id], other_front_matter) +
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["content"] * text_similarity_score(model, page_document, other_relative_path, similarity_matrix)
           )
       
-          score < site.data['siteConfig']["relatedPages"]["scoreLimit"] # Filter based on score threshold
+          score < site.data['buildConfig']["relatedPages"]["scoreLimit"] # Filter based on score threshold
         end
 
         related_pages.sort_by do |related_page|
@@ -158,10 +158,10 @@ module Jekyll
           other_front_matter = front_matters[other_relative_path]
       
           score = -(
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["keywords"] * common_keywords_score(site, front_matters[page_document.id], other_front_matter) +
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["tags"] * common_tags_score(front_matters[page_document.id], other_front_matter) +
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["cats"] * commonn_categories_score(front_matters[page_document.id], other_front_matter) +
-            site.data['siteConfig']["relatedPages"]["tf_idf_weigths"]["content"] * text_similarity_score(model, page_document, other_relative_path, similarity_matrix)
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["keywords"] * common_keywords_score(site, front_matters[page_document.id], other_front_matter) +
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["tags"] * common_tags_score(front_matters[page_document.id], other_front_matter) +
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["cats"] * commonn_categories_score(front_matters[page_document.id], other_front_matter) +
+            site.data['buildConfig']["relatedPages"]["tf_idf_weigths"]["content"] * text_similarity_score(model, page_document, other_relative_path, similarity_matrix)
           )
           score
         end
@@ -260,7 +260,7 @@ module Jekyll
         return if !front_matter["permalink"] || front_matter["permalink"] == ""
         return if !related_pages || related_pages.length == 0
 
-        relPageNo = site.data['siteConfig']["relatedPages"]["relPagesNo"]
+        relPageNo = site.data['buildConfig']["relatedPages"]["relPagesNo"]
         related_pages = related_pages.length > relPageNo ? related_pages.take(relPageNo) : related_pages;
         related_pages_permalinks = []
         related_pages.each do |page|

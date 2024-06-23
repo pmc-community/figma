@@ -27,8 +27,8 @@ module Jekyll
             rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content_body)            
             excerpt = generate_key_words(
                 rendered_content, 
-                site.data['siteConfig']["autoExcerpt"]["keywords"], 
-                site.data['siteConfig']["autoExcerpt"]["minKeywordLength"]
+                site.data['buildConfig']["autoExcerpt"]["keywords"], 
+                site.data['buildConfig']["autoExcerpt"]["minKeywordLength"]
             )
                         
             if (front_matter["permalink"] && front_matter["permalink"] != "" && excerpt.length >0 )

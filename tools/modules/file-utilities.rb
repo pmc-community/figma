@@ -1,8 +1,17 @@
 require_relative 'globals'
 require 'find'
 require 'jekyll'
+require 'fileutils'
 
 module FileUtilities
+
+    def self.create_empty_folder (folder_path)             
+        if Dir.exist?(folder_path)
+          FileUtils.rm_rf(Dir.glob("#{folder_path}/*"))
+        else
+          FileUtils.mkdir_p(folder_path)
+        end
+    end
 
     def self.clear_or_create_file(file_path)
         File.open(file_path, "w") { |f| }
@@ -12,7 +21,7 @@ module FileUtilities
         if File.exist?(file_path)
             File.open(file_path, "a") { |file| file.write(content) }
         else
-            puts "OUPS!!! Can't find file checks/broken-includes.txt ..."
+            puts "OUPS!!! Can't find file #{file_path} ..."
         end
     end
 
@@ -71,7 +80,7 @@ module FileUtilities
 
     def self.extract_main_content(site, rendered_content)
         doc = Nokogiri::HTML(rendered_content)
-        tags_to_remove = site.data['siteConfig']["tagsToRemoveOnDryRender"]
+        tags_to_remove = site.data['buildConfig']["tagsToRemoveOnDryRender"]
         tags_to_remove.each do |tag|
             doc.search(tag).remove
           end
@@ -94,7 +103,7 @@ module FileUtilities
   
         # Assign the layout to the page
         page.data['layout'] = layout_name
-  
+
         # Render the page with the assigned layout
         page.render(site.layouts, site.site_payload)
         extract_main_content(site, page.output)

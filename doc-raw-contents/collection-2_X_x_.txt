@@ -1,0 +1,6 @@
+Own markdown content.
+ This the content directly typed in Collection-2/X.   This is one good inline external link to https://pmc-expert.com and one good inline internal link to /collection-2/Z/z/. These are no tconverted into a tags, so will be not checked by broken llinks utilities.  Using jtd classes    head1 head two three     ok good swedish fish nice   out of stock good and plenty nice   ok good oreos     ok good zoute drop yumm    Markdown content loaded from another md file from the same collection.
+HEADS UP!
+WATCH OUT THE LIMITATIONS FOR LOADING CONTENT FROM ANOTHER FILE, THE SOURCE FILE MUST BE BELOW THE DESTINATION FILE IN THE FOLDER STRUCTURE.
+OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE AND USE getExternalContent(...) FUNCTION. 
+ That’s the page.url file from collection_2

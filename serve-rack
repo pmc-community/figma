@@ -1,9 +1,25 @@
 #!/bin/bash
-#bundle exec jekyll build
-#rackup config.ru
 
+# PYTHON PRE-BUILD SCRIPTS
+pyEnable=$(grep 'pyEnable' _data/buildConfig.yml | awk '{print $2}')
 
-#!/bin/bash
+if [ "$pyEnable" = "true" ]; then
+  ./tools_py/pyScripts
+else
+  echo "pyEnable is false. Skipping the execution of python scripts."
+fi
+
+# PRE-FLIGHT CHECKS
+# that's good only for local dev environment
+# the deployment Github action ignores preFlight check flag
+preFlight=$(grep 'preFlight' _data/buildConfig.yml | awk '{print $2}')
+
+if [ "$preFlight" = "true" ]; then
+  ./check
+else
+  echo "preFlight check is false. Skipping pre-build site checking."
+fi
+
 
 # Function to run Jekyll build with watch
 run_jekyll() {
