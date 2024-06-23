@@ -44,6 +44,7 @@ exclude:
   - serve-rack
   - config.ru
   - .github/
+  - doc-raw-contents/
 
 
 aux_links:
