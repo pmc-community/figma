@@ -12,39 +12,49 @@ module Jekyll
     priority :high #must be after PageListGenerator from _plugins/generators/pages-gen.rb
 
     def generate(site)
-      doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT) 
-      doc_files = Dir.glob("#{doc_contents_dir}/**/*.{md,html}")
-      
-      doc_files.each do |file_path|
-        next unless File.file?(file_path)  # Skip if it's not a file      
-        content = File.read(file_path)
-        
-        if FileUtilities.valid_front_matter?(content)
-          front_matter, content_body = FileUtilities.parse_front_matter(content)
-          
-          # Check if the front matter already contains an excerpt
-          if front_matter['excerpt'].nil? || front_matter['excerpt'].strip.empty?
-            rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content_body)            
-            excerpt = generate_key_words(
-                rendered_content, 
-                site.data['buildConfig']["autoExcerpt"]["keywords"], 
-                site.data['buildConfig']["autoExcerpt"]["minKeywordLength"]
-            )
-                        
-            if (front_matter["permalink"] && front_matter["permalink"] != "" && excerpt.length >0 )
-                pageList = JSON.parse(site.data['page_list'])
-                pageList.each do |obj|
-                    if obj["permalink"] == front_matter["permalink"]
-                        obj["excerpt"] = excerpt.join(", ")
-                        break
-                    end
-                end
-                site.data['page_list'] = pageList.to_json
-            end
+      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ...")
+      numPages = 0;
+      Globals.show_spinner do
 
+        doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT) 
+        doc_files = Dir.glob("#{doc_contents_dir}/**/*.{md,html}")
+        
+        doc_files.each do |file_path|
+          next unless File.file?(file_path)  # Skip if it's not a file      
+          content = File.read(file_path)
+          
+          if FileUtilities.valid_front_matter?(content)
+            front_matter, content_body = FileUtilities.parse_front_matter(content)
+            
+            # Check if the front matter already contains an excerpt
+            if front_matter['excerpt'].nil? || front_matter['excerpt'].strip.empty?
+              rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content_body)            
+              excerpt = generate_key_words(
+                  rendered_content, 
+                  site.data['buildConfig']["autoExcerpt"]["keywords"], 
+                  site.data['buildConfig']["autoExcerpt"]["minKeywordLength"]
+              )
+                          
+              if (front_matter["permalink"] && front_matter["permalink"] != "" && excerpt.length >0 )
+                  pageList = JSON.parse(site.data['page_list'])
+                  pageList.each do |obj|
+                      if obj["permalink"] == front_matter["permalink"]
+                          obj["excerpt"] = excerpt.join(", ")
+                          break
+                      end
+                  end
+                  site.data['page_list'] = pageList.to_json
+                  numPages += 1
+              end
+
+            end
           end
         end
       end
+      Globals.moveUpOneLine
+      Globals.clearLine
+      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ... done (#{numPages} pages)")
+
     end
 
     private

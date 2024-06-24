@@ -29,6 +29,20 @@ module Globals
         puts col + text + RESET
     end
 
+    def self.clearLine()
+        #print "\e[2K"
+        print "\e[2K\e[G"
+
+    end
+
+    def self.moveUpOneLine()
+        print "\e[1A"
+    end
+
+    def self.newLine()
+        puts ""
+    end
+
     def self.clearConsole()
         puts "\e[H\e[2J"
     end
@@ -102,12 +116,19 @@ module Globals
 
     def self.find_object_by_key_value(objArray, key, value)
         objArray.find { |item| item["#{key}"] == value }
-      end
+    end
 
     def self.find_object_by_multiple_key_value(objArray, criteria)
         objArray.find do |obj|
             criteria.all? { |key, value| obj[key] == value }
         end
+    end
+
+    def self.text_pre_process(text)
+        text = text.gsub(/\s\s+/, ". ") # better mark sentences, replace multiple spaces with '. '
+        text= text.downcase # everyhing to lowercase
+
+        text
     end
 
 end

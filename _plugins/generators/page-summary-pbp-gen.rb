@@ -10,6 +10,7 @@ module Jekyll
   
         def generate(site)
             if (site.data['buildConfig']["pyEnable"] && site.data['buildConfig']["pyPageSummary"]["pageByPage"])
+                Globals.putsColText(Globals::PURPLE,"Generating page summaries (page-by-page) ...")
                 doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)  
                 Dir.glob(File.join(doc_contents_dir, '**', '*.{md, html}')).each do |file_path|
                     front_matter, content = FileUtilities.parse_front_matter(File.read(file_path)) || {}

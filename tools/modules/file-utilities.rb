@@ -25,6 +25,11 @@ module FileUtilities
         end
     end
 
+    def self.overwrite_file(file_path, content)
+        clear_or_create_file(file_path)
+        write_file(file_path, content)
+    end
+
     # Function to check file existence (including relative paths)
     def self.file_exists?(file_path, base_dir)
         full_path = File.join(base_dir, file_path)

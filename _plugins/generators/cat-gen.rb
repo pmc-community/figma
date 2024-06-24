@@ -13,10 +13,14 @@ module Jekyll
     end
 
     def generate(site)
+      Globals.putsColText(Globals::PURPLE,"Generating list of categories ...")
       extract_categories(Globals::DOCS_DIR)
       site.data["category_list"] = []
       # storing the list of categories in site.data and not in site.config which is used for static site configuration
       site.data["category_list"] = @allCats.flatten.uniq.sort.to_json
+      Globals.moveUpOneLine
+      Globals.clearLine
+      Globals.putsColText(Globals::PURPLE,"Generating list of categories ... done (#{JSON.parse(site.data["category_list"]).size} categories)")
     end
 
     private
@@ -46,6 +50,7 @@ module Jekyll
   class CategoryDetailsGenerator < Generator
     priority :normal
     def generate(site)
+      Globals.putsColText(Globals::PURPLE,"Generating categories details ...")
       categoriesDetails = getCategoriesDetails(site.data["category_list"], site.data['page_list'])
       site.data["categories_details"] = categoriesDetails
 
@@ -60,6 +65,9 @@ module Jekyll
         end
       end.map(&:first) if categoriesDetails
       site.data["ordered_categories"] = orderedCategories.flatten.uniq.to_json
+      Globals.moveUpOneLine
+      Globals.clearLine
+      Globals.putsColText(Globals::PURPLE,"Generating categories details ... done")
     end
 
     private

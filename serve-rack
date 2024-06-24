@@ -17,6 +17,7 @@ preFlight=$(grep 'preFlight' _data/buildConfig.yml | awk '{print $2}')
 if [ "$preFlight" = "true" ]; then
   ./check
 else
+  echo "HEADS UP!!! PRE-FLIGHT CHECKS WILL NOT RUN WHEN BUILDING IN PRODUCTION,  IT IS ONLY FOR DEV ..."
   echo "preFlight check is false. Skipping pre-build site checking."
 fi
 

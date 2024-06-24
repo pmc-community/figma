@@ -3,7 +3,7 @@ require_relative "../../tools/modules/globals"
 module Jekyll
 
   class TagListGenerator < Generator
-    priority :normal  
+    priority :high  
     
     attr_accessor :allTags
 
@@ -12,9 +12,14 @@ module Jekyll
     end
 
     def generate(site)
+      Globals.putsColText(Globals::PURPLE,"Generating list of tags ...")
       extract_tags(Globals::DOCS_DIR)
       site.data["tag_list"] = []
       site.data["tag_list"] = @allTags.flatten.uniq.sort.to_json
+      Globals.moveUpOneLine
+      Globals.clearLine
+      Globals.putsColText(Globals::PURPLE,"Generating list of tags ... done (#{JSON.parse(site.data["tag_list"]).size} tags)")
+
     end
 
     private
@@ -44,9 +49,13 @@ module Jekyll
   class TagDetailsGenerator < Generator
     priority :normal
     def generate(site)
+      Globals.putsColText(Globals::PURPLE,"Generating tags details ...")
       tagsDetails = getTagsDetails(site.data["tag_list"], site.data['page_list'])
       #puts categoriesDetails
       site.data["tags_details"] = tagsDetails
+      Globals.moveUpOneLine
+      Globals.clearLine
+      Globals.putsColText(Globals::PURPLE,"Generating tags details ... done")
     end
 
     private

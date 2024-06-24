@@ -46,7 +46,6 @@ exclude:
   - .github/
   - doc-raw-contents/
 
-
 aux_links:
   "GitHub":
     - "//github.com/pmc-community/figma"
