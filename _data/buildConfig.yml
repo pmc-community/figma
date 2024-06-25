@@ -1,3 +1,4 @@
+verbose: true #not used
 pyEnable: true
 pyPageSummary:
   pageByPage: false

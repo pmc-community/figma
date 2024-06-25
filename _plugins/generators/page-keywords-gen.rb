@@ -12,7 +12,7 @@ module Jekyll
     priority :high #must be after PageListGenerator from _plugins/generators/pages-gen.rb
 
     def generate(site)
-      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ...")
+      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ...") if site.data['buildConfig']["verbose"]
       numPages = 0;
       Globals.show_spinner do
 
@@ -53,7 +53,7 @@ module Jekyll
       end
       Globals.moveUpOneLine
       Globals.clearLine
-      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ... done (#{numPages} pages)")
+      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ... done (#{numPages} pages)") if site.data['buildConfig']["verbose"]
 
     end
 

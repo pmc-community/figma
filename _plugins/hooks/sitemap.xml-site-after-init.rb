@@ -6,7 +6,7 @@ require 'yaml'
 require_relative "../../tools/modules/globals"
 
 Jekyll::Hooks.register :site, :after_init do |site|
-    Globals.putsColText(Globals::PURPLE,"Generating list sitemap.xml ...")
+    Globals.putsColText(Globals::PURPLE,"Generating sitemap.xml ...")
     numPages = 0
     doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
     sitemap = []
@@ -50,7 +50,7 @@ Jekyll::Hooks.register :site, :after_init do |site|
     File.write(File.join(Globals::ROOT_DIR, 'sitemap.xml'), sitemap_content)
     Globals.moveUpOneLine
     Globals.clearLine
-    Globals.putsColText(Globals::PURPLE,"Generating list sitemap.xml ... done (#{numPages} pages)")
+    Globals.putsColText(Globals::PURPLE,"Generating sitemap.xml ... done (#{numPages} pages)")
   
 end
 

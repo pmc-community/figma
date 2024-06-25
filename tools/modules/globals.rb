@@ -125,10 +125,18 @@ module Globals
     end
 
     def self.text_pre_process(text)
-        text = text.gsub(/\s\s+/, ". ") # better mark sentences, replace multiple spaces with '. '
-        text= text.downcase # everyhing to lowercase
+        
+        text = text.downcase # everyhing to lowercase
+        text = text
+            .gsub(/\{\{([^}]*)\}\}/, "")
+            .gsub(/\{\{([^}]*)/, "")
+            .gsub(/([^}]*)\}\}/, "") # remove all not rendered tags
+        text = text.gsub(/\s\s+/, " ") # better mark sentences, replace multiple spaces with '. '
+        text = text.gsub(/\n\s+/, "")
 
-        text
+        text = text.delete("\n\r\t")
+
+        text.strip
     end
 
 end
