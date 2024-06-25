@@ -4,12 +4,21 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from transformers import TFAutoModelForSeq2SeqLM, AutoTokenizer
-from multiprocessing import Pool, cpu_count
+from multiprocessing import cpu_count
+
+# Get settings (considering that this script runs from project root directory)
+build_settings_path = '_data/buildConfig.yml'
+tools_py_path = os.path.abspath(os.path.join('tools_py'))
+if tools_py_path not in sys.path:
+    sys.path.append(tools_py_path)
+from modules.globals import get_key_value_from_yml
+
+rawContentFolder = get_key_value_from_yml(build_settings_path, 'rawContentFolder')
+summaryLength = get_key_value_from_yml(build_settings_path, 'pyPageSummary')['summaryLength']
 
 # Load the model and tokenizer globally
 #print("loading model")
 model_name = 't5-small'
-tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = TFAutoModelForSeq2SeqLM.from_pretrained(model_name)
 #print("model loaded")
 
@@ -21,26 +30,27 @@ def preprocess_text(text):
 
 # Function to generate summary using Transformers
 def summarize_text(text):
-    if len(text.split()) <= 20:
+    if len(text.split()) <= summaryLength:
         return text
     
+    tokenizer = AutoTokenizer.from_pretrained(model_name) # tokenizer to be loaded here to avoid inter-processes issues
     #print("start processing text")
-    inputs = tokenizer.encode(text, return_tensors="tf", max_length=512, truncation=True)
+    inputs = tokenizer.encode('paraphrase: ' + text, return_tensors="tf", max_length=256, truncation=True)
     
     # Generate the interpretation with an appropriate token limit
-    outputs = model.generate(inputs, max_length=50, min_length=10, length_penalty=2.0, num_beams=4, early_stopping=True)
+    outputs = model.generate(inputs, max_length=20, min_length=10, length_penalty=0.9, num_beams=2, early_stopping=True)
     interpretation = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     # Ensure interpretation is within 20 words
     words = interpretation.split()
-    if len(words) > 20:
+    if len(words) > summaryLength:
         interpretation = interpretation[:interpretation.rfind(' ', 0, 20*4)] + ' ...'
     
     #print("end processing text")
     return interpretation
 
 def process_file(file_name):
-    file_path = os.path.join('doc-raw-contents', file_name)
+    file_path = os.path.join(rawContentFolder, file_name)
     with open(file_path, 'r') as file:
         text = file.read()
     interpretation = summarize_text(text)
@@ -54,7 +64,7 @@ def process_file(file_name):
     }
 
 def process_files(pageList=None):
-    folder_path = 'doc-raw-contents'
+    folder_path = rawContentFolder
 
     if not os.path.exists(folder_path):
         return 

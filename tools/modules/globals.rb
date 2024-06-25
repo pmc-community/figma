@@ -1,5 +1,7 @@
 require 'thread'
 require 'yaml'
+require 'dotenv'
+Dotenv.load
 
 module Globals
     RESET = "\e[0m"
@@ -13,6 +15,7 @@ module Globals
 
     # Spinner character sequence
     CHARS = %w(- \\ | /)
+    BLANK_CHARS = ['']
 
     # removing last 15 chars '/tools/modules/'
     ROOT_DIR = __dir__[0..-15]
@@ -72,11 +75,19 @@ module Globals
     # Create a new thread for the spinner
     spinner_thread = Thread.new do
         loop do
-        CHARS.each do |char|
-            print char
-            sleep interval
-            print "\b"
-        end
+            if (ENV["CONSOLE_BLANK_SPINNER_CHARS"] != "true")
+                CHARS.each do |char|
+                    print char
+                    sleep interval
+                    print "\b"
+                end
+            else
+                BLANK_CHARS.each do |char|
+                    print char
+                    sleep interval
+                    print "\b"
+                end
+            end
         end
     end
 

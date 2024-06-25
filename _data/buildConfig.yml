@@ -1,8 +1,9 @@
 verbose: true #not used
-pyEnable: true
+pyEnable: false
 pyPageSummary:
   pageByPage: false
   allInOneStep: true
+  summaryLength: 20
 rawContentFolder: "doc-raw-contents"
 preFlight: false
 relatedPages:
