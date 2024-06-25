@@ -22,7 +22,7 @@ def preprocess_text(text):
 # Function to generate summary using Transformers
 def summarize_text(text):
     if len(text.split()) <= 20:
-         return text
+        return text
     
     #print("start processing text")
     inputs = tokenizer.encode(text, return_tensors="tf", max_length=512, truncation=True)
