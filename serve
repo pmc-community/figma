@@ -14,7 +14,7 @@ print_color_enclosed "$PURPLE" "PY pre-build scripts"
 pyEnable=$(grep 'pyEnable' _data/buildConfig.yml | awk '{print $2}')
 
 if [ "$pyEnable" = "true" ]; then
-  ./tools_py/pyScripts
+  ./tools_py/preBuild-pyScripts
 else
   echo "pyEnable is false. Skipping the execution of python scripts. Some site features may not be available."
 fi

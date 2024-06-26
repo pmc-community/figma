@@ -141,9 +141,10 @@ module Globals
         text = text
             .gsub(/\{\{([^}]*)\}\}/, "")
             .gsub(/\{\{([^}]*)/, "")
-            .gsub(/([^}]*)\}\}/, "") # remove all not rendered tags
-        text = text.gsub(/\s\s+/, " ") # better mark sentences, replace multiple spaces with '. '
+            .gsub(/([^}]*)\}\}/, "")    # remove all not rendered tags
+        text = text.gsub(/\s\s+/, ". ") # better mark sentences, replace multiple spaces with '. '
         text = text.gsub(/\n\s+/, "")
+        text = text.gsub(/\.{2,}/, '.') # replace multiple dost with single dot
 
         text = text.delete("\n\r\t")
 

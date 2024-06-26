@@ -1,6 +1,7 @@
 from langdetect import detect
 import yaml
-
+import string
+import re
 
 def detect_language_with_confidence(text, num_runs=5):
   detected_languages = []
@@ -34,3 +35,12 @@ def get_key_value_from_yml(file_path, key):
   except yaml.YAMLError as e:
     print(f"Error parsing YAML file: {e}")
     return None
+
+def clean_up_text(text, to_remove_from_start=[]):
+  for prefix in to_remove_from_start:
+    if text.lower().startswith(prefix.lower()):
+        text = text[len(prefix):].lstrip()
+  text = text.strip()
+  pattern = f'^[{re.escape(string.punctuation)}]+'
+  text = re.sub(pattern, '', text).strip()
+  return text

@@ -45,6 +45,8 @@ exclude:
   - config.ru
   - .github/
   - doc-raw-contents/
+  - _data/
+  - _plugins/
 
 aux_links:
   "GitHub":

@@ -26,7 +26,7 @@ module Jekyll
                         page = Globals.find_object_by_multiple_key_value(JSON.parse(site.data['page_list']), {"permalink" => front_matter["permalink"]}) || {}
                         next if page.nil? || page == {}
                         Globals.moveUpOneLine
-                        Globals.putsColText(Globals::PURPLE,"-Generating raw content ... #{front_matter["permalink"]}")
+                        Globals.putsColText(Globals::PURPLE,"- Generating raw content ... #{front_matter["permalink"]}")
                         Globals.show_spinner do
                             rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content)
 
@@ -41,21 +41,23 @@ module Jekyll
                     end
                     Globals.moveUpOneLine
                     Globals.clearLine
-                    Globals.putsColText(Globals::PURPLE,"-Generating raw content ... done (#{numPages} pages)")
+                    Globals.putsColText(Globals::PURPLE,"- Generating raw content ... done (#{numPages} pages)")
                 end
 
                 Globals.show_spinner do
                     json_input = { "pageList" => site.data['page_list'] }.to_json
                     python_script = "python3 tools_py/page-summary/summary-aio.py '#{json_input}'"
 
+                    pageNo = 0
                     Open3.popen3(python_script) do |stdin, stdout, stderr, wait_thr|
                         stdout.each do |line|
                             begin
+                                pageNo += 1
                                 response = JSON.parse(line)
                                 Globals.clearLine
                                 Globals.putsColText(
-                                    Globals::YELLOW,
-                                    "-permalink: #{response["payload"]["permalink"]}, summary: #{response["payload"]["summary"]}"
+                                    Globals::PURPLE,
+                                    "- (#{pageNo}) PERMALINK: #{response["payload"]["permalink"]} SUMMARY: #{response["payload"]["summary"]}"
                                 )
 
                             rescue JSON::ParserError => e
