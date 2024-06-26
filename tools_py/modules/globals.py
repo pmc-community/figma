@@ -43,4 +43,5 @@ def clean_up_text(text, to_remove_from_start=[]):
   text = text.strip()
   pattern = f'^[{re.escape(string.punctuation)}]+'
   text = re.sub(pattern, '', text).strip()
+  text = text.replace('"', "'").strip()
   return text

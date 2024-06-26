@@ -20,6 +20,7 @@ module Jekyll
         doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
         documents = []
         numPages = 0
+        site.data['page_list'] = [].to_json
         Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
             
           # HEADS UP!!!
@@ -47,9 +48,9 @@ module Jekyll
             'excerpt' => excerpt || "",
             'lastUpdate' => lastUpdate || "",
             'createTime' => createTime || "",
-            'relatedPages' => []
+            'relatedPages' => [],
+            'autoSummary' => ""
           } 
-          
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
           numPages += 1
         end  

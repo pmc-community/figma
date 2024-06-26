@@ -160,7 +160,9 @@ $visibleElements: (
     'hr[siteFunction="pageLastUpdateSeparator"]',
     '.dropdown-divider', 
     'hr[siteFunction="pageTocHeaderSeparator"]',
-    'hr[siteFunction="contextMenuSeparator"]'
+    'hr[siteFunction="contextMenuSeparator"]',
+    'hr[siteFunction="offcanvasPageFullInfoPageGeneralSeparator"]',
+    'hr[siteFunction="pageAutoSummarySeparator"]'
 );
 @each $element in $visibleElements {
         #{$element} {

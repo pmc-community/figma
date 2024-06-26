@@ -1,4 +1,34 @@
 // FUNCTIONS FOR EACH PAGE
+// called from _includes/siteIncludes/partials/page-common/page-auto-summary.html
+const page__getAutoSummary = () => {
+
+    const createAutoSummaryPageContainer = (page) => {
+        const autoSummary = page.siteInfo.autoSummary || [];
+        
+        return (
+            `   
+                <div id="pageAutoSummary">
+                    <span class="fw-medium text-secondary">
+                        ${autoSummary}
+                    </span>
+                </div>
+            `
+        );
+    }
+
+    $(document).ready(function() {
+        const autoSummary = pageInfo.siteInfo.autoSummary || '';
+        if (autoSummary === 0) {
+            $('#pageAutoSummary').remove();
+            return;
+        }
+        $('#pageAutoSummary').remove();
+        $('#pageLastUpdateAndPageInfo').append(createAutoSummaryPageContainer(pageInfo)); 
+
+    });
+
+}
+
 // called from _includes/siteIncludes/partials/page-common/page-related-pages.html
 const page__getRelatedPages = () => {
 
@@ -138,26 +168,37 @@ const page__getPageInfo = () => {
         let siteInfoBadges = '';
         
         if (page.siteInfo.tags.length > 0 ) 
-        siteInfoBadges += 
-            `
-                <span
-                    siteFunction="pageHasSiteTagsBadge"
-                    title = "Page ${page.siteInfo.title} has site tags" 
-                    class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer">
-                    Tags
-                </span>
-            `;
+            siteInfoBadges += 
+                `
+                    <span
+                        siteFunction="pageHasSiteTagsBadge"
+                        title = "Page ${page.siteInfo.title} has site tags" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer">
+                        Tags
+                    </span>
+                `;
 
         if (page.siteInfo.relatedPages.length > 0 ) 
-        siteInfoBadges += 
-            `
-                <span
-                    siteFunction="pageHasRelatedPagesBadge"
-                    title = "Page ${page.siteInfo.title} has related pages" 
-                    class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger alwaysCursorPointer">
-                    Related
-                </span>
-            `;
+            siteInfoBadges += 
+                `
+                    <span
+                        siteFunction="pageHasRelatedPagesBadge"
+                        title = "Page ${page.siteInfo.title} has related pages" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger alwaysCursorPointer">
+                        Related
+                    </span>
+                `;
+        
+        if (page.siteInfo.autoSummary !== '' ) 
+            siteInfoBadges += 
+                `
+                    <span
+                        siteFunction="pageHasAutoSummaryBadge"
+                        title = "Page ${page.siteInfo.title} has auto generated summary" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark">
+                        Summary
+                    </span>
+                `;
         
         return siteInfoBadges === '' ?
             '' :
@@ -353,7 +394,6 @@ const page__showPageCustomTags = () => {
     }
 
     $(document).ready(function() {
-        //console.log(pageInfo)
         const siteTags = pageInfo.siteInfo.tags || [];
         let customTags = pageInfo.savedInfo.customTags || [];
         if (siteTags.length + customTags.length === 0 ) {
@@ -364,10 +404,11 @@ const page__showPageCustomTags = () => {
         // if the page doesn't have siteTags but has customTags
         // we need to re-create the pageTags container
         // because _/includes/siteIncludes/partials/page-common/page-tags.html template will not create it in full
-        // and will create only the duv with the id=pageTags
+        // and will create only the div with the id=pageTags
         if ( pageInfo.siteInfo.tags.length === 0) {
             $('#pageTags').remove();
-            // JTD has 2 footers, the $('footer[class="site-footer "]') is the one on the bottom of the left side bar
+            // JTD has 2 footers
+            // $('footer[class="site-footer "]') is the one on the bottom of the left sidebar
             // so we need to avoid that one
             $('footer[class!="site-footer"]').append(createPageTagsContainer()); 
         }
@@ -384,6 +425,8 @@ const refreshPageDynamicInfo = () => {
     page__getPageInfo();
     page__getPageNotes();
     page__getRelatedPages();
+    page__getAutoSummary();
+    
 }
 
 const setPageButtonsFunctions = () => {

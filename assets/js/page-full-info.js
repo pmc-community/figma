@@ -118,6 +118,8 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
     fillPageTitle(pageInfo);
     fillPageLastUpdate(pageInfo);
     fillPageExcerpt(pageInfo);
+    fillPageAutoSummary(pageInfo);
+    fillPageRelatedPages(pageInfo);
     setCustomNoteTextAreaLimits();
     initCustomNotesTable(pageInfo);
     setCanvasGeneralCustomNotesVisibility(pageInfo);
@@ -406,6 +408,39 @@ const fillPageLastUpdate = (pageInfo) => {
 const fillPageExcerpt = (pageInfo) => {
     pageExcerpt = pageInfo.siteInfo.excerpt || '---';
     $('span[siteFunction="offcanvasPageFullInfoPageGeneralExcerptText"]').text(pageExcerpt);
+}
+
+const fillPageRelatedPages = (pageInfo) => {
+    const relatedPagesHtml = (relatedPages) => {
+        let html = ''
+        relatedPages.forEach(page => {
+            const relatedPageExcerpt = getObjectFromArray(
+                {
+                    permalink: page.permalink, 
+                    title: page.title
+                }, 
+                pageList
+            ).excerpt || '';
+            
+            html = html + 
+                `
+                    <a 
+                        title="${relatedPageExcerpt}" 
+                        class="m-1 py-1 px-2 bg-light-subtle rounded-pill" 
+                        href="${page.permalink}">
+                        ${page.title}
+                    </a>
+                `
+        });
+        return html;
+    }
+    pageRelatedPages = pageInfo.siteInfo.relatedPages || [];
+    $('span[siteFunction="offcanvasPageFullInfoPageGeneralRelatedPagesText"]').html(relatedPagesHtml(pageRelatedPages));
+}
+
+const fillPageAutoSummary = (pageInfo) => {
+    pageAutoSummary = pageInfo.siteInfo.autoSummary || '---';
+    $('span[siteFunction="offcanvasPageFullInfoPageGeneralAutoSummaryText"]').text(pageAutoSummary);
 }
 
 const initCustomNotesTable = (pageInfo) => {

@@ -6,11 +6,13 @@ module Jekyll
 
     class PageSummaryAllInOneStep < Generator
       safe true
-      priority :normal
+      priority :high
   
         def generate(site)
             if (site.data['buildConfig']["pyEnable"] && site.data['buildConfig']["pyPageSummary"]["allInOneStep"])
                 Globals.putsColText(Globals::PURPLE,"Generating summaries ... ")
+                
+                # RAW CONTENT
                 Globals.show_spinner do
                     doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
                     FileUtilities.create_empty_folder (site.data['buildConfig']["rawContentFolder"])
@@ -44,32 +46,43 @@ module Jekyll
                     Globals.putsColText(Globals::PURPLE,"- Generating raw content ... done (#{numPages} pages)")
                 end
 
+                # SUMMARIES
+                autoSummaries = [];
                 Globals.show_spinner do
-                    json_input = { "pageList" => site.data['page_list'] }.to_json
-                    python_script = "python3 tools_py/page-summary/summary-aio.py '#{json_input}'"
+                    json_input = { "pageList" => site.data['page_list'] }
+                    python_script = site.data["buildConfig"]["pyPageSummary"]["allInOneStepScript"]
 
-                    pageNo = 0
-                    Open3.popen3(python_script) do |stdin, stdout, stderr, wait_thr|
-                        stdout.each do |line|
-                            begin
-                                pageNo += 1
-                                response = JSON.parse(line)
-                                Globals.clearLine
-                                Globals.putsColText(
-                                    Globals::PURPLE,
-                                    "- (#{pageNo}) PERMALINK: #{response["payload"]["permalink"]} SUMMARY: #{response["payload"]["summary"]}"
-                                )
+                    page_summary_callback = Proc.new do |python_script_response|
+                        permalink = python_script_response["payload"]["payload"]["permalink"]
+                        pageNo = python_script_response["outputNo"]
+                        summary = python_script_response["payload"]["payload"]["summary"]
+                        
+                        autoSummaryObj = {
+                            "permalink" => permalink,
+                            "summary" => summary
+                        }
+                        autoSummaries << autoSummaryObj
 
-                            rescue JSON::ParserError => e
-                                puts "Failed to parse JSON returned by tools_py/page-summary/summary-aio.py: #{e.message}"
+                        Globals.clearLine
+                        Globals.putsColText(
+                            Globals::PURPLE,
+                            "- PERMALINK: #{permalink} ... done (#{pageNo})"
+                        )
+                    
+                    end
+
+                    Globals.run_python_script(site, python_script, json_input, page_summary_callback)
+
+                    pageList = JSON.parse(site.data['page_list'])
+                    autoSummaries.each do |summary|
+                        pageList.each do |page|
+                            if page["permalink"] == summary["permalink"]
+                                page["autoSummary"] = summary["summary"]
+                                break
                             end
                         end
-                
-                        exit_status = wait_thr.value
-                        unless exit_status.success?
-                            puts "Error running tools_py/page-summary/summary-aio.py: #{stderr.read}"
-                        end
                     end
+                    site.data['page_list'] = pageList.to_json
                 end
                 Globals.clearLine
             end        

@@ -81,10 +81,10 @@ module Jekyll
                         begin
                             param = JSON.parse(@input)
                             permalink = param["permalink"]
-                            tagExcept = JSON.parse(param["except"].to_json)
+                            tagExcept = JSON.parse(param["except"].to_json) || []
                             matched_page = pages.find { |obj| obj["permalink"] == permalink }
                         rescue
-                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageTags tag got bad json string as input\n")
+                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageTags tag got bad json string as input(#{param})\n")
                         end
                 end
                 tags = matched_page["tags"] ? matched_page["tags"] : [] if matched_page
