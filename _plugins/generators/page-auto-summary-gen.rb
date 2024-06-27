@@ -4,11 +4,13 @@ require 'open3'
 
 module Jekyll
 
-    class PageSummaryAllInOneStep < Generator
+    class PageAutoSummary < Generator
       safe true
       priority :high
   
         def generate(site)
+
+            # GENERATE SUMMARIES
             if (site.data['buildConfig']["pyEnable"] && site.data['buildConfig']["pyPageSummary"]["allInOneStep"])
                 Globals.putsColText(Globals::PURPLE,"Generating summaries ... ")
                 
@@ -85,30 +87,32 @@ module Jekyll
                     end
 
                     Globals.run_python_script(site, python_script, json_input, page_summary_callback)
-
-                    autoSummaries = [];
-                    summary_path = "#{site.data["buildConfig"]["rawContentFolder"]}/autoSummary.json"
-                    return if !File.exist?(summary_path)
-                    summaries = File.read(summary_path)
-                    begin
-                        summaries_json = JSON.parse(summaries)
-                    rescue
-                        Globals.putsColText(Globals::RED, "- Cannot parse #{site.data["buildConfig"]["rawContentFolder"]}/autoSummary.json")
-                    end
-                    pageList = JSON.parse(site.data['page_list'])
-                    autoSummaries = summaries_json["summaries"]
-                    autoSummaries.each do |summary|
-                        pageList.each do |page|
-                            if page["permalink"] == summary["permalink"]
-                                page["autoSummary"] = summary["summary"]
-                                break
-                            end
-                        end
-                    end
-                    site.data['page_list'] = pageList.to_json
                 end
                 Globals.clearLine
-            end        
+            end
+
+            # UPDATE PAGE LIST
+            autoSummaries = [];
+            summary_path = "#{site.data["buildConfig"]["rawContentFolder"]}/autoSummary.json"
+            return if !File.exist?(summary_path)
+            summaries = File.read(summary_path)
+            begin
+                summaries_json = JSON.parse(summaries)
+            rescue
+                Globals.putsColText(Globals::RED, "- Cannot parse #{site.data["buildConfig"]["rawContentFolder"]}/autoSummary.json")
+            end
+            pageList = JSON.parse(site.data['page_list'])
+            autoSummaries = summaries_json["summaries"]
+            autoSummaries.each do |summary|
+                pageList.each do |page|
+                    if page["permalink"] == summary["permalink"]
+                        page["autoSummary"] = summary["summary"]
+                        break
+                    end
+                end
+            end
+            site.data['page_list'] = pageList.to_json
+
         end
     end
 

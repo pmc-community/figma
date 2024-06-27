@@ -12,54 +12,61 @@ module Jekyll
     priority :high #must be after PageListGenerator from _plugins/generators/pages-gen.rb
 
     def generate(site)
-      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ...") if site.data['buildConfig']["verbose"]
-      numPages = 0;
+      Globals.putsColText(Globals::PURPLE, "Generating keywords for pages ...") if site.data['buildConfig']["verbose"]
+      numPages = 0
       Globals.show_spinner do
-
-        doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT) 
+        @site = site
+        doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
         doc_files = Dir.glob("#{doc_contents_dir}/**/*.{md,html}")
-        
-        doc_files.each do |file_path|
-          next unless File.file?(file_path)  # Skip if it's not a file      
-          content = File.read(file_path)
-          
-          if FileUtilities.valid_front_matter?(content)
-            front_matter, content_body = FileUtilities.parse_front_matter(content)
-            
-            # Check if the front matter already contains an excerpt
-            if front_matter['excerpt'].nil? || front_matter['excerpt'].strip.empty?
-              rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content_body)            
-              excerpt = generate_key_words(
-                  rendered_content, 
-                  site.data['buildConfig']["autoExcerpt"]["keywords"], 
+  
+        mutex = Mutex.new # Mutex for thread-safe access to numPages and site.data['page_list']
+  
+        threads = doc_files.map do |file_path|
+          Thread.new(file_path) do |path|
+            next unless File.file?(path)
+  
+            content = File.read(path)
+  
+            if FileUtilities.valid_front_matter?(content)
+              front_matter, content_body = FileUtilities.parse_front_matter(content)
+  
+              if front_matter['excerpt'].nil? || front_matter['excerpt'].strip.empty?
+                rendered_content = FileUtilities.render_jekyll_page(site, path, front_matter, content_body)
+                excerpt = generate_keywords(
+                  rendered_content,
+                  site.data['buildConfig']["autoExcerpt"]["keywords"],
                   site.data['buildConfig']["autoExcerpt"]["minKeywordLength"]
-              )
-                          
-              if (front_matter["permalink"] && front_matter["permalink"] != "" && excerpt.length >0 )
-                  pageList = JSON.parse(site.data['page_list'])
-                  pageList.each do |obj|
+                )
+  
+                if front_matter["permalink"] && !front_matter["permalink"].empty? && excerpt.length > 0
+                  mutex.synchronize do
+                    pageList = JSON.parse(site.data['page_list'])
+                    pageList.each do |obj|
                       if obj["permalink"] == front_matter["permalink"]
-                          obj["excerpt"] = excerpt.join(", ")
-                          break
+                        obj["excerpt"] = excerpt.join(", ")
+                        break
                       end
+                    end
+                    site.data['page_list'] = pageList.to_json
+                    numPages += 1
                   end
-                  site.data['page_list'] = pageList.to_json
-                  numPages += 1
+                end
               end
-
             end
           end
         end
+  
+        threads.each(&:join) # Wait for all threads to finish
       end
+  
       Globals.moveUpOneLine
       Globals.clearLine
-      Globals.putsColText(Globals::PURPLE,"Generating keywords for pages ... done (#{numPages} pages)") if site.data['buildConfig']["verbose"]
-
+      Globals.putsColText(Globals::PURPLE, "Generating keywords for pages ... done (#{numPages} pages)") if site.data['buildConfig']["verbose"]
     end
 
     private
 
-    def generate_key_words(content, words, minLength)
+    def generate_keywords(content, words, minLength)
         # Fully customized extraction:
         extractor = TextRank::KeywordExtractor.new(
             strategy:   :dense,  # Specify PageRank strategy (dense or sparse)

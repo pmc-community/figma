@@ -2,9 +2,8 @@ verbose: true #not used
 pyEnable: true
 pyLaunch: "python3"
 pyPageSummary:
-  pageByPage: false
   allInOneStep: true
-  allInOneStepScript: "tools_py/page-summary/summary-aio.py"
+  allInOneStepScript: "tools_py/page-summary/auto-summary.py"
   summaryLength: 30
   model: 
     name: "t5-small"
@@ -34,3 +33,11 @@ autoExcerpt:
   keywords: 10
   minKeywordLength: 3
 tagsToRemoveOnDryRender: ["script", "style", "h1", "h2", "h3", "h4", "h5", "h6"]
+pySimilarPagesByContent:
+  enable: true
+  similarity_threshold: 0.6
+  files_batch: 10
+  chunk_size_in_files_batch: 10
+  threadMultiplicator: 4
+  model_url: "https://tfhub.dev/google/universal-sentence-encoder/4"
+

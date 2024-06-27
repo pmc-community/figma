@@ -9,14 +9,21 @@ import threading
 
 write_lock = threading.Lock()
 
-# Get settings (considering that this script runs from project root directory)
-build_settings_path = '_data/buildConfig.yml'
+# Suppress TensorFlow logging messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+# Enable XLA (Accelerated Linear Algebra) compilation
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
+
+# import what is needed from tools_py/globals.py
 tools_py_path = os.path.abspath(os.path.join('tools_py'))
 if tools_py_path not in sys.path:
     sys.path.append(tools_py_path)
 from modules.globals import get_key_value_from_yml, clean_up_text
 
+# Get settings (considering that this script runs from project root directory)
 # general settings
+build_settings_path = '_data/buildConfig.yml'
 rawContentFolder = get_key_value_from_yml(build_settings_path, 'rawContentFolder')
 summaryLength = get_key_value_from_yml(build_settings_path, 'pyPageSummary')['summaryLength']
 threadMultiplicator = get_key_value_from_yml(build_settings_path, 'pyPageSummary')['threadMultiplicator']
@@ -52,9 +59,8 @@ def get_the_modified_files():
     file_names = json.loads(modified_files_content)["files"]
     return file_names
 
-# Load the model and tokenizer globally
+# Load the model globally
 modified_files = get_the_modified_files()
-
 if ( len(modified_files) > 0 ):
     model_name = model
     model = TFAutoModelForSeq2SeqLM.from_pretrained(model_name)
@@ -71,7 +77,6 @@ def summarize_text(text):
         return clean_up_text(text)
     
     tokenizer = AutoTokenizer.from_pretrained(model_name) # tokenizer to be loaded here to avoid inter-processes issues
-    #print("start processing text")
     inputs = tokenizer.encode(
         f'{prompt}: ' + text, 
         return_tensors = return_tensors, 
@@ -93,14 +98,12 @@ def summarize_text(text):
         skip_special_tokens = skip_special_tokens
     )
 
-    # Ensure interpretation is within 20 words
+    # Ensure interpretation is within _data/buildConfig.yml['pyPageSummary']['summaryLength'] words
     words = interpretation.split()
     if len(words) > summaryLength:
         interpretation = interpretation[:interpretation.rfind(' ', 0, summaryLength*4)]
 
     interpretation = clean_up_text(interpretation, [f'{prompt}:']) + ' ...'
-    
-    #print("end processing text")
     return interpretation
 
 def process_file(file_name):
@@ -131,24 +134,17 @@ def write_summary(payload):
         with open(summaries_path, 'r') as file:
             summaries_data = json.load(file)
 
-    # Check if the entry already exists and update it if so
-    for entry in summaries_data["summaries"]:
-        if entry["permalink"] == payload["permalink"]:
-            entry["summary"] = payload["summary"]
-            break
+        for entry in summaries_data["summaries"]:
+            if entry["permalink"] == payload["permalink"]:
+                entry["summary"] = payload["summary"]
+                break
     else:
-        # If the entry does not exist, append the new payload
         summaries_data["summaries"].append(payload)
 
-    # Write the updated data back to the file
     with open(summaries_path, 'w') as file:
         json.dump(summaries_data, file, indent=4)
 
 def process_files(file_names, pageList=None):
-
-    # not used, it scans the whole raw content folder and process all files
-    #file_names = [f for f in os.listdir(folder_path) if f.endswith('.txt')]
-
     # Use ThreadPoolExecutor to process files concurrently
     max_workers = cpu_count() * threadMultiplicator
     with ThreadPoolExecutor(max_workers = max_workers) as executor:
@@ -161,7 +157,7 @@ if __name__ == "__main__":
     try:
         json_data = json.loads(sys.argv[1])
     except (IndexError, json.JSONDecodeError):
-        json_data = None  # Use an empty dictionary as default
+        json_data = None
     pageList = json_data['pageList'] if json_data is not None else None
     modified_files = get_the_modified_files()
     process_files(modified_files, pageList)

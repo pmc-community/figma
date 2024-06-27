@@ -341,7 +341,6 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
         createGlobalLists();
     });
-    
 }
 
 const refreshNotesTable = (pageInfo) => {

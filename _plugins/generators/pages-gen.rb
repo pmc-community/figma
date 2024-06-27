@@ -102,16 +102,20 @@ module Jekyll
           similarity_matrix = model.similarity_matrix
     
           # Process each document for related pages
+          threads = []
           content_files.each do |file_path|
             relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(site.source)).to_s
             page_document = documents.find { |doc| doc.id == relative_path }
     
             next if page_document.nil?
             
-            related_pages = find_related_pages(site, content_files, relative_path, model, page_document, similarity_matrix, front_matters) 
-            add_related_pages(site, relative_path, related_pages)
-            numPages += 1
+            threads << Thread.new(file_path, page_document) do |path, doc|
+              related_pages = find_related_pages(site, content_files, path, model, doc, similarity_matrix, front_matters)
+              add_related_pages(site, path, related_pages)
+              numPages += 1
+            end
           end
+          threads.each(&:join) # Wait for all threads to finish
         end  
         Globals.moveUpOneLine
         Globals.clearLine
