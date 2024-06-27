@@ -7,7 +7,7 @@ const page__getAutoSummary = () => {
         
         return (
             `   
-                <div id="pageAutoSummary">
+                <div id="pageAutoSummary" class="p-2 bg-light-subtle rounded">
                     <span class="fw-medium text-secondary">
                         ${autoSummary}
                     </span>
@@ -108,7 +108,7 @@ const page__getPageNotes = () => {
     const customNoteItem = (note) => {
         return (
             `
-                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-body rounded bg-warning-subtle border-0">
+                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-body rounded bg-light-subtle border-0">
                     <div class="h-100 align-top mb-2">
                         <span class="fw-bold text-dark">${note.date}</span>
                     </div>

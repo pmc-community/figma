@@ -5,10 +5,16 @@ require 'fileutils'
 
 module FileUtilities
 
-    def self.create_empty_folder (folder_path)             
+    def self.clear_and_create_empty_folder (folder_path)             
         if Dir.exist?(folder_path)
           FileUtils.rm_rf(Dir.glob("#{folder_path}/*"))
         else
+          FileUtils.mkdir_p(folder_path)
+        end
+    end
+
+    def self.create_folder_if_not_exist (folder_path)             
+        if !Dir.exist?(folder_path)
           FileUtils.mkdir_p(folder_path)
         end
     end
@@ -128,6 +134,14 @@ module FileUtilities
 
     def self.valid_front_matter?(content)
         content =~ /\A---\s*\n.*?\n---\s*\n/m
+    end
+
+    def self.file_raw_content_needs_update(site, current_raw_content, file_front_matter)
+        raw_content_file_path = "#{site.data["buildConfig"]["rawContentFolder"]}/#{file_front_matter["permalink"].gsub("/", "_")}.txt"
+        return true if !File.exist?(raw_content_file_path)
+        saved_raw_content = File.read(raw_content_file_path)
+        return true if saved_raw_content != current_raw_content
+        return false
     end
 
 end

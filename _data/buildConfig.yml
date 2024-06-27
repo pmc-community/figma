@@ -3,7 +3,7 @@ pyEnable: true
 pyLaunch: "python3"
 pyPageSummary:
   pageByPage: false
-  allInOneStep: false
+  allInOneStep: true
   allInOneStepScript: "tools_py/page-summary/summary-aio.py"
   summaryLength: 30
   model: 

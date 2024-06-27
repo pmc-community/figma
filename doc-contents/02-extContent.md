@@ -6,8 +6,9 @@ tags: [tag1, tag4, tag3]
 categories: [c10, c12]
 excerpt: "a very nice excerpt for a dynamically created file, having the content imported from an external private GitHub repo"
 ---
+
 ```
-Content from an exernal private repo
+Content from an exernal private repository
 ```
 
 {% 

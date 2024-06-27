@@ -5,6 +5,9 @@ import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from transformers import TFAutoModelForSeq2SeqLM, AutoTokenizer
 from multiprocessing import cpu_count
+import threading
+
+write_lock = threading.Lock()
 
 # Get settings (considering that this script runs from project root directory)
 build_settings_path = '_data/buildConfig.yml'
@@ -33,12 +36,28 @@ model_length_penalty = get_key_value_from_yml(build_settings_path, 'pyPageSummar
 model_num_beams = get_key_value_from_yml(build_settings_path, 'pyPageSummary')['model']['num_beams']
 model_early_stopping =  get_key_value_from_yml(build_settings_path, 'pyPageSummary')['model']['early_stopping']
 
+def get_the_modified_files():
+    folder_path = rawContentFolder
+    modified_files_path = f"{rawContentFolder}/modified_files.json"
+
+    if not os.path.exists(folder_path):
+        return []
+    
+    if not os.path.exists(modified_files_path):
+        return []
+
+    with open(modified_files_path, 'r') as file:
+        modified_files_content = file.read()
+
+    file_names = json.loads(modified_files_content)["files"]
+    return file_names
 
 # Load the model and tokenizer globally
-#print("loading model")
-model_name = model
-model = TFAutoModelForSeq2SeqLM.from_pretrained(model_name)
-#print("model loaded")
+modified_files = get_the_modified_files()
+
+if ( len(modified_files) > 0 ):
+    model_name = model
+    model = TFAutoModelForSeq2SeqLM.from_pretrained(model_name)
 
 # Function to preprocess the content
 def preprocess_text(text):
@@ -85,26 +104,50 @@ def summarize_text(text):
     return interpretation
 
 def process_file(file_name):
-    file_path = os.path.join(rawContentFolder, file_name)
+    file_path = file_name
     with open(file_path, 'r') as file:
         text = file.read()
     interpretation = summarize_text(text)
-    modified_file_name = os.path.splitext(file_name)[0].replace('_', '/')
-    return {
-        "message": f"processed {modified_file_name}", 
+    permalink = os.path.basename(file_path)
+    permalink = permalink[:-4]
+    permalink = permalink.replace('_', '/')
+    result =  {
+        "message": f"processed {permalink}", 
         "payload": {
-            "permalink": modified_file_name, 
+            "permalink": permalink, 
             "summary": interpretation
         }
     }
+    with write_lock:
+        write_summary(result['payload'])
+    return result
 
-def process_files(pageList=None):
-    folder_path = rawContentFolder
+def write_summary(payload):
+    summaries_path = f'{rawContentFolder}/autoSummary.json'
+    summaries_data = {"summaries": []}
 
-    if not os.path.exists(folder_path):
-        return 
+    # Read the existing data if the file exists
+    if os.path.exists(summaries_path):
+        with open(summaries_path, 'r') as file:
+            summaries_data = json.load(file)
 
-    file_names = [f for f in os.listdir(folder_path) if f.endswith('.txt')]
+    # Check if the entry already exists and update it if so
+    for entry in summaries_data["summaries"]:
+        if entry["permalink"] == payload["permalink"]:
+            entry["summary"] = payload["summary"]
+            break
+    else:
+        # If the entry does not exist, append the new payload
+        summaries_data["summaries"].append(payload)
+
+    # Write the updated data back to the file
+    with open(summaries_path, 'w') as file:
+        json.dump(summaries_data, file, indent=4)
+
+def process_files(file_names, pageList=None):
+
+    # not used, it scans the whole raw content folder and process all files
+    #file_names = [f for f in os.listdir(folder_path) if f.endswith('.txt')]
 
     # Use ThreadPoolExecutor to process files concurrently
     max_workers = cpu_count() * threadMultiplicator
@@ -120,4 +163,5 @@ if __name__ == "__main__":
     except (IndexError, json.JSONDecodeError):
         json_data = None  # Use an empty dictionary as default
     pageList = json_data['pageList'] if json_data is not None else None
-    process_files(pageList)
+    modified_files = get_the_modified_files()
+    process_files(modified_files, pageList)
