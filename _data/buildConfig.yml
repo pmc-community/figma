@@ -35,6 +35,7 @@ autoExcerpt:
 tagsToRemoveOnDryRender: ["script", "style", "h1", "h2", "h3", "h4", "h5", "h6"]
 pySimilarPagesByContent:
   enable: true
+  script: "tools_py/similar-pages/similar-pages.py"
   similarity_threshold: 0.6
   files_batch: 10
   chunk_size_in_files_batch: 10

@@ -96,10 +96,15 @@ def transform_data(data):
         permalink = permalink.replace('_', '/')
         # Convert similar files to a list of filenames (without similarity)
         similar_files_list = [f[0][:-4].replace('_', '/') for f in similar_files]
-        transformed_data.append({
-            "permalink": permalink,
-            "similarFiles": similar_files_list
-        })
+        result =  {
+            "message": f"processed {permalink}", 
+            "payload": {
+                "permalink": permalink,
+                "similarFiles": similar_files_list
+            }
+        }
+        print(json.dumps(result), flush=True)
+        transformed_data.append(result["payload"])
     return transformed_data
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 tools_py_path = os.path.abspath(os.path.join('tools_py'))
 if tools_py_path not in sys.path:
     sys.path.append(tools_py_path)
-from modules.globals import get_key_value_from_yml, clean_up_text
+from modules.globals import get_key_value_from_yml, clean_up_text, get_the_modified_files
 
 # Get settings (considering that this script runs from project root directory)
 # general settings
@@ -42,22 +42,6 @@ model_min_length = get_key_value_from_yml(build_settings_path, 'pyPageSummary')[
 model_length_penalty = get_key_value_from_yml(build_settings_path, 'pyPageSummary')['model']['length_penalty']
 model_num_beams = get_key_value_from_yml(build_settings_path, 'pyPageSummary')['model']['num_beams']
 model_early_stopping =  get_key_value_from_yml(build_settings_path, 'pyPageSummary')['model']['early_stopping']
-
-def get_the_modified_files():
-    folder_path = rawContentFolder
-    modified_files_path = f"{rawContentFolder}/modified_files.json"
-
-    if not os.path.exists(folder_path):
-        return []
-    
-    if not os.path.exists(modified_files_path):
-        return []
-
-    with open(modified_files_path, 'r') as file:
-        modified_files_content = file.read()
-
-    file_names = json.loads(modified_files_content)["files"]
-    return file_names
 
 # Load the model globally
 modified_files = get_the_modified_files()
@@ -134,13 +118,17 @@ def write_summary(payload):
         with open(summaries_path, 'r') as file:
             summaries_data = json.load(file)
 
-        for entry in summaries_data["summaries"]:
-            if entry["permalink"] == payload["permalink"]:
-                entry["summary"] = payload["summary"]
-                break
-    else:
+    # Update or add the new payload
+    updated = False
+    for entry in summaries_data["summaries"]:
+        if entry["permalink"] == payload["permalink"]:
+            entry["summary"] = payload["summary"]
+            updated = True
+            break
+    if not updated:
         summaries_data["summaries"].append(payload)
 
+    # Write the updated data back to the file
     with open(summaries_path, 'w') as file:
         json.dump(summaries_data, file, indent=4)
 
@@ -154,10 +142,12 @@ def process_files(file_names, pageList=None):
             print(json.dumps(result), flush=True)
 
 if __name__ == "__main__":
-    try:
-        json_data = json.loads(sys.argv[1])
-    except (IndexError, json.JSONDecodeError):
-        json_data = None
-    pageList = json_data['pageList'] if json_data is not None else None
     modified_files = get_the_modified_files()
-    process_files(modified_files, pageList)
+    if len(modified_files) > 0: 
+        try:
+            json_data = json.loads(sys.argv[1])
+        except (IndexError, json.JSONDecodeError):
+            json_data = None
+        pageList = json_data['pageList'] if json_data is not None else None
+        modified_files = get_the_modified_files()
+        process_files(modified_files, pageList)

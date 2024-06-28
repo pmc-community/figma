@@ -12,83 +12,32 @@ module Jekyll
 
             # GENERATE SUMMARIES
             if (site.data['buildConfig']["pyEnable"] && site.data['buildConfig']["pyPageSummary"]["allInOneStep"])
-                Globals.putsColText(Globals::PURPLE,"Generating summaries ... ")
                 
-                # RAW CONTENT
-                Globals.show_spinner do
-                    doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
-                    FileUtilities.create_folder_if_not_exist (site.data['buildConfig']["rawContentFolder"])
-                    Globals.newLine
-                    numPages = 0
-                    modified_files = []
-                    modified_files_object = {
-                        "files" => modified_files
-                    }
-
-                    FileUtilities.overwrite_file(
-                        "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json", 
-                        modified_files_object.to_json
-                    )
-
-                    Dir.glob(File.join(doc_contents_dir, '**', '*.{md, html}')).each do |file_path|
-                        front_matter, content = FileUtilities.parse_front_matter(File.read(file_path)) || {}
-                        next if front_matter == {}
-                        next if front_matter.nil? || front_matter.empty?
-                        next if content.nil? || content.empty?
-                        next if front_matter["permalink"].nil? || front_matter["permalink"].empty?
-                        next if front_matter["title"].nil? || front_matter["title"].empty?
-                        page = Globals.find_object_by_multiple_key_value(JSON.parse(site.data['page_list']), {"permalink" => front_matter["permalink"]}) || {}
-                        next if page.nil? || page == {}
-                        Globals.moveUpOneLine
-                        Globals.putsColText(Globals::PURPLE,"- Generating raw content ... #{front_matter["permalink"]}")
-                        Globals.show_spinner do
-                            rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content)
-                            text_content = Globals.text_pre_process(Nokogiri::HTML(rendered_content).text)
-                            if (FileUtilities.file_raw_content_needs_update(site, text_content, front_matter ))
-                                
-                                FileUtilities.overwrite_file(
-                                    "#{site.data["buildConfig"]["rawContentFolder"]}/#{front_matter["permalink"].gsub("/", "_")}.txt", 
-                                    text_content
-                                )
-                                modified_files << "#{site.data["buildConfig"]["rawContentFolder"]}/#{front_matter["permalink"].gsub("/", "_")}.txt"
-                                modified_files_object = {
-                                    "files" => modified_files
-                                }
-
-                                FileUtilities.overwrite_file(
-                                    "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json", 
-                                    modified_files_object.to_json
-                                )
-                                numPages +=1
-                            end
-                        end
-                        Globals.clearLine # clear whatever spinner character is still visible   
-                    end
-                    Globals.moveUpOneLine
-                    Globals.clearLine
-                    Globals.putsColText(Globals::PURPLE,"- Generating raw content ... done (#{numPages} pages)")
-                end
-
-                # SUMMARIES
-                Globals.show_spinner do
-                    json_input = { "pageList" => site.data['page_list'] }
-                    python_script = site.data["buildConfig"]["pyPageSummary"]["allInOneStepScript"]
-
-                    page_summary_callback = Proc.new do |python_script_response|
-                        permalink = python_script_response["payload"]["payload"]["permalink"]
-                        pageNo = python_script_response["outputNo"]
-                        
-                        Globals.clearLine
-                        Globals.putsColText(
-                            Globals::PURPLE,
-                            "- PERMALINK: #{permalink} ... done (#{pageNo})"
-                        )
+                modified_files = FileUtilities.read_json_file("#{site.data['buildConfig']["rawContentFolder"]}/modified_files.json")["files"]
+                return if !modified_files
+                if (modified_files.length == 0)
+                    Globals.putsColText(Globals::PURPLE,"Generating summaries ... nothing to do! (no content changes)")
                     
-                    end
+                else
 
-                    Globals.run_python_script(site, python_script, json_input, page_summary_callback)
+                    Globals.putsColText(Globals::PURPLE,"Generating summaries ... for #{modified_files.length} pages")
+                    # SUMMARIES
+                    Globals.show_spinner do
+                        json_input = { "pageList" => site.data['page_list'] }
+                        python_script = site.data["buildConfig"]["pyPageSummary"]["allInOneStepScript"]
+
+                        page_summary_callback = Proc.new do |python_script_response|
+                            permalink = python_script_response["payload"]["payload"]["permalink"]
+                            pageNo = python_script_response["outputNo"]
+                            Globals.clearLine
+                            Globals.putsColText( Globals::PURPLE, "- PERMALINK: #{permalink} ... done (#{pageNo})")
+                        end
+
+                        Globals.run_python_script(site, python_script, json_input, page_summary_callback)
+                    end
+                
+                    Globals.clearLine
                 end
-                Globals.clearLine
             end
 
             # UPDATE PAGE LIST

@@ -2,6 +2,8 @@ from langdetect import detect
 import yaml
 import string
 import re
+import json
+import os
 
 def detect_language_with_confidence(text, num_runs=5):
   detected_languages = []
@@ -45,3 +47,23 @@ def clean_up_text(text, to_remove_from_start=[]):
   text = re.sub(pattern, '', text).strip()
   text = text.replace('"', "'").strip()
   return text
+
+def get_the_modified_files():
+  build_settings_path = '_data/buildConfig.yml'
+  rawContentFolder = get_key_value_from_yml(build_settings_path, 'rawContentFolder')
+  folder_path = rawContentFolder
+  modified_files_path = f"{rawContentFolder}/modified_files.json"
+
+  if not os.path.exists(folder_path):
+      return []
+  
+  if not os.path.exists(modified_files_path):
+      return []
+
+  with open(modified_files_path, 'r') as file:
+      modified_files_content = file.read()
+  try:
+    file_names = json.loads(modified_files_content)["files"]
+    return file_names
+  except:
+    return []

@@ -18,13 +18,9 @@ const page__getAutoSummary = () => {
 
     $(document).ready(function() {
         const autoSummary = pageInfo.siteInfo.autoSummary || '';
-        if (autoSummary === 0) {
-            $('#pageAutoSummary').remove();
-            return;
-        }
         $('#pageAutoSummary').remove();
+        if (autoSummary === '') return;
         $('#pageLastUpdateAndPageInfo').append(createAutoSummaryPageContainer(pageInfo)); 
-
     });
 
 }

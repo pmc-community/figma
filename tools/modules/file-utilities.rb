@@ -144,4 +144,74 @@ module FileUtilities
         return false
     end
 
+    def self.generate_raw_content(site)
+        Globals.show_spinner do
+            doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
+            FileUtilities.create_folder_if_not_exist (site.data['buildConfig']["rawContentFolder"])
+            Globals.newLine
+            numPages = 0
+            modified_files = []
+            modified_files_object = {
+                "files" => modified_files
+            }
+
+            FileUtilities.overwrite_file(
+                "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json", 
+                modified_files_object.to_json
+            )
+
+            Dir.glob(File.join(doc_contents_dir, '**', '*.{md, html}')).each do |file_path|
+                front_matter, content = FileUtilities.parse_front_matter(File.read(file_path)) || {}
+                next if front_matter == {}
+                next if front_matter.nil? || front_matter.empty?
+                next if content.nil? || content.empty?
+                next if front_matter["permalink"].nil? || front_matter["permalink"].empty?
+                next if front_matter["title"].nil? || front_matter["title"].empty?
+                page = Globals.find_object_by_multiple_key_value(JSON.parse(site.data['page_list']), {"permalink" => front_matter["permalink"]}) || {}
+                next if page.nil? || page == {}
+                Globals.moveUpOneLine
+                Globals.putsColText(Globals::PURPLE,"Generating raw content ... #{front_matter["permalink"]}")
+                Globals.show_spinner do
+                    rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content)
+                    text_content = Globals.text_pre_process(Nokogiri::HTML(rendered_content).text)
+                    if (FileUtilities.file_raw_content_needs_update(site, text_content, front_matter ))
+                        
+                        FileUtilities.overwrite_file(
+                            "#{site.data["buildConfig"]["rawContentFolder"]}/#{front_matter["permalink"].gsub("/", "_")}.txt", 
+                            text_content
+                        )
+                        modified_files << "#{site.data["buildConfig"]["rawContentFolder"]}/#{front_matter["permalink"].gsub("/", "_")}.txt"
+                        modified_files_object = {
+                            "files" => modified_files
+                        }
+
+                        FileUtilities.overwrite_file(
+                            "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json", 
+                            modified_files_object.to_json
+                        )
+                        numPages +=1
+                    end
+                end
+                Globals.clearLine # clear whatever spinner character is still visible   
+            end
+            Globals.moveUpOneLine
+            Globals.clearLine
+            Globals.putsColText(Globals::PURPLE,"Generating raw content ... done (#{numPages} pages)")
+        end
+    end
+
+    def self.read_json_file(file_path)
+        begin
+          file_contents = File.read(file_path)
+          data = JSON.parse(file_contents)
+          return data
+        rescue Errno::ENOENT
+          puts "File not found: #{file_path}"
+          return nil
+        rescue JSON::ParserError
+          puts "Error parsing JSON file: #{file_path}"
+          return nil
+        end
+    end
+
 end

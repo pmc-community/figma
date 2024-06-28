@@ -49,7 +49,8 @@ module Jekyll
             'lastUpdate' => lastUpdate || "",
             'createTime' => createTime || "",
             'relatedPages' => [],
-            'autoSummary' => ""
+            'autoSummary' => "",
+            'similarByContent': []
           } 
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
           numPages += 1
@@ -58,6 +59,10 @@ module Jekyll
         Globals.moveUpOneLine
         Globals.clearLine
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (#{numPages} pages)")
+
+        # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
+        FileUtilities.generate_raw_content(site)
+
       end
 
     end

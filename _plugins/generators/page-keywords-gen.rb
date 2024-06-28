@@ -7,12 +7,12 @@ require 'text_rank'
 
 module Jekyll
 
-  class PageKeyordsGenerator < Generator
+  class PageKeywordsGenerator < Generator
     safe true
     priority :high #must be after PageListGenerator from _plugins/generators/pages-gen.rb
 
     def generate(site)
-      Globals.putsColText(Globals::PURPLE, "Generating keywords for pages ...") if site.data['buildConfig']["verbose"]
+      Globals.putsColText(Globals::PURPLE, "Generating keywords for pages ...")
       numPages = 0
       Globals.show_spinner do
         @site = site
@@ -51,6 +51,7 @@ module Jekyll
                     numPages += 1
                   end
                 end
+                
               end
             end
           end
@@ -61,50 +62,47 @@ module Jekyll
   
       Globals.moveUpOneLine
       Globals.clearLine
-      Globals.putsColText(Globals::PURPLE, "Generating keywords for pages ... done (#{numPages} pages)") if site.data['buildConfig']["verbose"]
+      Globals.putsColText(Globals::PURPLE, "Generating keywords for pages ... done (#{numPages} pages)")
     end
 
     private
 
     def generate_keywords(content, words, minLength)
-        # Fully customized extraction:
-        extractor = TextRank::KeywordExtractor.new(
-            strategy:   :dense,  # Specify PageRank strategy (dense or sparse)
-            damping:    0.95,     # The probability of following the graph vs. randomly choosing a new node
-            tolerance:  0.00001,   # The desired accuracy of the results
-            graph_strategy: :Coocurrence,
-            tokenizers: [
-                :Word,
-                :Url
-            ],
-            rank_filters: [
-                :CollapseAdjacent, 
-                :NormalizeProbability, 
-                :NormalizeUnitVector, 
-                :SortByValue
-            ],
-            char_filters: [
-                :AsciiFolding, 
-                :Lowercase, 
-                :StripHtml, 
-                :StripEmail, 
-                :UndoContractions
-            ],
-            token_filters: [
-                :Stopwords, 
-                TextRank::TokenFilter::PartOfSpeech.new(parts_to_keep: %w[nn nns])
-            ]
-        )
-        
-        # Perform the extraction with at most 100 iterations
-        extractor.extract(content, max_iterations: 100)
-            .select { |word, score| word.length > minLength }
-            .sort_by { |word, score| -score }
-            .first(words)
-            .map(&:first)
-        
+      # Fully customized extraction:
+      extractor = TextRank::KeywordExtractor.new(
+        strategy:   :dense,  # Specify PageRank strategy (dense or sparse)
+        damping:    0.95,     # The probability of following the graph vs. randomly choosing a new node
+        tolerance:  0.00001,   # The desired accuracy of the results
+        graph_strategy: :Coocurrence,
+        tokenizers: [
+          :Word,
+          :Url
+        ],
+        rank_filters: [
+          :CollapseAdjacent, 
+          :NormalizeProbability, 
+          :NormalizeUnitVector, 
+          :SortByValue
+        ],
+        char_filters: [
+          :AsciiFolding, 
+          :Lowercase, 
+          :StripHtml, 
+          :StripEmail, 
+          :UndoContractions
+        ],
+        token_filters: [
+          :Stopwords, 
+          TextRank::TokenFilter::PartOfSpeech.new(parts_to_keep: %w[nn nns])
+        ]
+      )
+      
+      # Perform the extraction with at most 100 iterations
+      extractor.extract(content, max_iterations: 100)
+        .select { |word, score| word.length > minLength }
+        .sort_by { |word, score| -score }
+        .first(words)
+        .map(&:first)
     end
-    
   end
-
 end

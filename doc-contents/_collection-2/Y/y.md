@@ -6,6 +6,7 @@ permalink: /collection-2/y/y/
 
 ---
 
+
 ```
 Content for this file
 ```
