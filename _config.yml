@@ -47,6 +47,7 @@ exclude:
   - doc-raw-contents/
   - _data/
   - _plugins/
+  - _sass/custom/*.css
 
 aux_links:
   "GitHub":

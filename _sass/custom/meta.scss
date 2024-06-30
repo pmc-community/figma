@@ -21,8 +21,8 @@
 @mixin goToTopBtn($btnID) {
     #{$btnID} {
         position: $pos-fixed;
-        bottom: $m-20px;
-        right: $m-50px;
+        bottom: $m-2-5rem;
+        right: $m-2-5rem;
         width: $s-30px;
         cursor: $cr-pointer;
     }
@@ -106,17 +106,45 @@
 }
 
 // sidebar
-@mixin sidebar($sidebarContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, $sidebarLogo, $sideBarFooter) {
+@mixin sidebar(
+    $sidebarContainer, 
+    $sidebarDocListContainer, 
+    $sidebarElements, 
+    $sidebarContentList, 
+    $sidebarCustomFooter, 
+    $sidebarTitle, 
+    $sidebarLogo, 
+    $sideBarFooter,
+    $sideBarHeader,
+    $sideBarDocLink,
+    $sideBarCategoryBtn
+) {
     
     #{$sidebarContainer} {
         width: $sidebarWidth;
         min-width: $sidebarMinWidth;
     }
 
-    @each $element in $sidebarElements {
-        #{$element} {
-            padding-left: $sidebarPaddingToAlignElementsLeft;
-        }
+
+    #{$sidebarDocListContainer} {
+        @extend .py-6 !optional;
+        @extend .px-6 !optional;
+    }
+
+    #{$sideBarHeader} {
+        @extend .px-6 !optional;
+    }
+
+    #{$sideBarDocLink} {
+        @extend .px-0 !optional;
+    }
+    
+    #{$sideBarCategoryBtn} {
+        @extend .px-0 !optional;
+    }
+    
+    #{$sidebarContentList} {
+        padding-right: 0 !important;
     }
 
     @each $element in $sidebarContentList {
@@ -164,7 +192,8 @@
 
     // style aux links container and links
     #{map-get($siteHeaderElements, auxLinksContainer)} {
-        padding-right: $auxContainerPaddingRight;
+        //padding-right: $auxContainerPaddingRight;
+        @extend .px-6 !optional;
     }
 
     // style algolia search button and contaner

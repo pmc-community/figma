@@ -9,16 +9,8 @@
             "summary": "this is a file from a collection. this file loads some external content from another repo and place it inline. link to file in different folder"
         },
         {
-            "permalink": "/intro/introChild/",
-            "summary": "lorem ipsum comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bonorum et malorum\u201d by ..."
-        },
-        {
-            "permalink": "/intro/",
-            "summary": "lorem ipsum comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bonorum et malorum\u201d by ..."
-        },
-        {
             "permalink": "/collection-2/y/y/",
-            "summary": "lorem ipsum comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bonorum et malorum\u201d by ..."
+            "summary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ..."
         },
         {
             "permalink": "/ec/",
@@ -26,31 +18,39 @@
         },
         {
             "permalink": "/pwc/",
-            "summary": "lorem ipsum is not simply random text. it has roots in a piece of classical latin literature from 45 bc. ..."
-        },
-        {
-            "permalink": "/terms/",
-            "summary": "these general terms of service may apply for each service we provide to you. please read these terms of service (\u201cterms\u201d, \u201cterms of service\u201d, \u201cto ..."
-        },
-        {
-            "permalink": "/sf/f1/",
-            "summary": "either pmc or any third parties may provide links to other websites and/or resources. you acknowledge and agree that we are not responsible for the availability of such external ..."
-        },
-        {
-            "permalink": "/devtest/",
-            "summary": "\u201d\u201d\u201d:\u201d2024-06-26 14:02:10 +0300\u201d,\u201dcreatetime\u201d:\u201d2024-06-20 17:01: ..."
-        },
-        {
-            "permalink": "/collection1/g11/",
-            "summary": "test g11 how it works the accordion uses internally to make it collapsible. click the accordions below to expand/collapse the ..."
+            "summary": "markdown content direct included in the page. heads up!!!links to other site docs must be given using the permalinks, not the ..."
         },
         {
             "permalink": "/collection-1/g1/",
-            "summary": "lorem ipsum comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bonorum et malorum\u201d by ..."
+            "summary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from ..."
         },
         {
             "permalink": "collection-2/X/x/",
-            "summary": "markdown content loaded from another md file from the same collection.heads up!watch out the limitations for loading content from another file, the source file must ..."
+            "summary": "own markdown content. this the content directly typed in collection-2/x. this is one good inline external link to https://pmc ..."
+        },
+        {
+            "permalink": "/intro/introChild/",
+            "summary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bon ..."
+        },
+        {
+            "permalink": "/intro/",
+            "summary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bon ..."
+        },
+        {
+            "permalink": "/devtest/",
+            "summary": "\u201d,\u201d\u201d2024-06-26 14:02:10 +0300\u201d,\u201dcreatetime\u201d:\u201d2024-06-20 17:01:59 + ..."
+        },
+        {
+            "permalink": "/terms/",
+            "summary": "these terms of service are applicable from the date shown on this page. these terms of service are applicable from the date shown on this page. these ..."
+        },
+        {
+            "permalink": "/collection1/g11/",
+            "summary": "g11 how it works the accordion uses internally to make it collapsible. click the accordions below to expand/collapse accord ..."
+        },
+        {
+            "permalink": "/sf/f1/",
+            "summary": "goods or services made available on or through such third party sites or resources. either pmc or any third parties may provide links to other websites and/or ..."
         }
     ]
 }

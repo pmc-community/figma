@@ -22,7 +22,7 @@ pageToc:
     dark: 'pageTocActiveDark'
   desktop:
     referenceContainer: '.main-content'
-    offsetFromHeader: 25
+    offsetFromHeader: 35
     offsetFromReferenceContainer: 100
     leftSideBar: '.side-bar'
   pagesWithoutToc:
@@ -88,3 +88,5 @@ marker404: "site-this-is-404-page" #should be allocated as id to one element in 
 catMenu: true
 siteVars:
   siteTestBadge: "xxx"
+similarByContent:
+  maxPages: 4

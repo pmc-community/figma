@@ -21,6 +21,8 @@ module Jekyll
         documents = []
         numPages = 0
         site.data['page_list'] = [].to_json
+
+         # LSIT OF PAGES
         Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
             
           # HEADS UP!!!
@@ -62,6 +64,9 @@ module Jekyll
 
         # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
         FileUtilities.generate_raw_content(site)
+
+        # PAGE DEPENDENCIES
+        FileUtilities.generate_doc_dependencies(site)
 
       end
 

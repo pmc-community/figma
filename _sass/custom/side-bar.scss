@@ -12,10 +12,26 @@ $sidebarFooterBorderTop:$b-SolThinGrey;
 
 // STYLE SIDEBAR
 $sidebarContainer: '.side-bar';
+$sidebarDocListContainer: '#site-nav';
 $sidebarElements: ('.site-header', '.site-footer', '#site-nav' );
 $sidebarContentList: '.nav-list';
 $sidebarCustomFooter: 'footer';
 $sidebarTitle: '.site-title';
 $sidebarLogo: '.site_logo';
 $sideBarFooter: '.site-footer';
-@include sidebar($sidebarContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, $sidebarLogo, $sideBarFooter);
+$sideBarHeader: '.site-header';
+$sideBarDocLink: '.nav-list-link';
+$sideBarCategoryBtn: '.nav-category';
+@include sidebar(
+    $sidebarContainer,
+    $sidebarDocListContainer, 
+    $sidebarElements, 
+    $sidebarContentList, 
+    $sidebarCustomFooter, 
+    $sidebarTitle, 
+    $sidebarLogo, 
+    $sideBarFooter,
+    $sideBarHeader,
+    $sideBarDocLink,
+    $sideBarCategoryBtn
+);

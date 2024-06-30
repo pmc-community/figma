@@ -109,7 +109,7 @@ const initPageFullInfoCanvasAfterShow = (pageInfo) => {
 
 const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
     $('#offcanvasPageFullInfoPageGeneralCustomNotesEdit').val('');
-    // for custom notes
+    // for general and custom notes
     setPageStatusButtons(pageInfo);
     setCanvasSectionsOpeners();
     resetCustomNotesInputAreas();
@@ -120,6 +120,7 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
     fillPageExcerpt(pageInfo);
     fillPageAutoSummary(pageInfo);
     fillPageRelatedPages(pageInfo);
+    fillPageSimilarPages(pageInfo);
     setCustomNoteTextAreaLimits();
     initCustomNotesTable(pageInfo);
     setCanvasGeneralCustomNotesVisibility(pageInfo);
@@ -426,7 +427,7 @@ const fillPageRelatedPages = (pageInfo) => {
                     <a 
                         title="${relatedPageExcerpt}" 
                         class="m-1 py-1 px-2 bg-light-subtle rounded-pill" 
-                        href="${page.permalink}">
+                        href="${page.permalink.indexOf('/') === 0 ? page.permalink : '/'+page.permalink}">
                         ${page.title}
                     </a>
                 `
@@ -435,6 +436,34 @@ const fillPageRelatedPages = (pageInfo) => {
     }
     pageRelatedPages = pageInfo.siteInfo.relatedPages || [];
     $('span[siteFunction="offcanvasPageFullInfoPageGeneralRelatedPagesText"]').html(relatedPagesHtml(pageRelatedPages));
+}
+
+const fillPageSimilarPages = (pageInfo) => {
+    const similarPagesHtml = (similarPages) => {
+        let html = ''
+        similarPages.forEach(page => {
+            const similarPageExcerpt = getObjectFromArray(
+                {
+                    permalink: page.permalink, 
+                    title: page.title
+                }, 
+                pageList
+            ).excerpt || '';
+            
+            html = html + 
+                `
+                    <a 
+                        title="${similarPageExcerpt}" 
+                        class="m-1 py-1 px-2 bg-body-secondary rounded-pill" 
+                        href="${page.permalink.indexOf('/') === 0 ? page.permalink : '/'+page.permalink}">
+                        ${page.title}
+                    </a>
+                `
+        });
+        return html;
+    }
+    pageSimilarPages = pageInfo.siteInfo.similarByContent.slice(0, settings.similarByContent.maxPages) || [];
+    $('span[siteFunction="offcanvasPageFullInfoPageGeneralSimilarPagesText"]').html(similarPagesHtml(pageSimilarPages));
 }
 
 const fillPageAutoSummary = (pageInfo) => {

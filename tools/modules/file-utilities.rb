@@ -2,6 +2,7 @@ require_relative 'globals'
 require 'find'
 require 'jekyll'
 require 'fileutils'
+require 'liquid'
 
 module FileUtilities
 
@@ -211,6 +212,92 @@ module FileUtilities
         rescue JSON::ParserError
           puts "Error parsing JSON file: #{file_path}"
           return nil
+        end
+    end
+      
+    # Function to extract the included file paths from content
+    def self.extract_included_paths(file_path, content)
+        included_paths = []
+
+        pattern = /
+            \{\%\s*                                  
+            (ExternalSiteContent|ExternalSiteContentMM)\s*  
+            \{                                       
+            .*?                                      
+            "file_path"\s*:\s*"([^"]+)"              
+            .*?                                      
+            \}\s*\%\}                                
+        /mx                                        
+        matches = content.scan(pattern)
+        included_paths = matches.map { |match| match[1] }
+      
+        pattern = /
+            \{\%\s*                              
+            (include_relative|include)\s*         
+            (?:"([^"]+)"|'([^']+)'|([^"'\s]+))   
+            \s*\%\}                              
+        /x                                                 
+          
+        matches = content.scan(pattern)
+        file_paths = matches.map do |match|
+            match[1] || match[2] || match[3]  # Prioritize capturing groups based on quote presence
+        end.compact.uniq || []
+
+        base_path = "#{Globals::DOCS_DIR}/"
+        relative_path = "#{File.dirname(file_path.sub(base_path, ''))}/"
+        # create full relative paths since {% include %} works only with relative path to the current file and not with relative path to the root dir 
+        file_paths.map! { |value| relative_path + value }
+        file_paths.map! { |element| element.sub(/\A\.\.?\//, '') } # remove ./ or ../ from paths
+
+        #puts "#{file_path} #{file_paths}"
+        (included_paths | file_paths).compact.uniq
+    end
+
+    def self.generate_doc_dependencies(site)
+        Globals.show_spinner do
+            Globals.putsColText(Globals::PURPLE,"Generating dependencies ...")
+            doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
+            relationships = Hash.new { |hash, key| hash[key] = [] }
+            numPages = 0
+            Dir.glob("#{doc_contents_dir}/**/*.md").each do |file_path|
+                front_matter, content = parse_front_matter(File.read(file_path))
+                next unless front_matter
+                permalink = front_matter["permalink"]
+                next unless permalink
+                page = Globals.find_object_by_multiple_key_value(JSON.parse(site.data['page_list']), {"permalink" => permalink}) || {}
+                next unless page != {}
+                
+                Globals.moveUpOneLine
+                Globals.putsColText(Globals::PURPLE,"Generating dependencies ... #{permalink}")
+                included_paths = extract_included_paths(file_path, content)
+
+                included_paths.each do |included_path|
+                    # Convert the included_path to its permalink
+                    included_file_path = File.join(doc_contents_dir, included_path)
+                    included_front_matter, _ = parse_front_matter(File.read(included_file_path)) if File.exist?(included_file_path)
+                    next unless included_front_matter
+                    included_permalink = included_front_matter["permalink"]
+                    next unless included_permalink
+                    included_page = Globals.find_object_by_multiple_key_value(JSON.parse(site.data['page_list']), {"permalink" => permalink}) || {}
+                    next unless included_page != {}
+
+                    relationships[included_permalink] << permalink
+                end
+                numPages +=1
+            end
+
+            # Convert the relationships hash to the desired JSON array format
+            result = relationships.map do |source_permalink, target_permalinks|
+                { permalink: source_permalink, imported_by: target_permalinks }
+            end
+            #puts JSON.pretty_generate(result)
+            FileUtilities.overwrite_file(
+                "#{site.data["buildConfig"]["rawContentFolder"]}/dependencies.json", 
+                result.to_json
+            )
+            Globals.moveUpOneLine
+            Globals.clearLine
+            Globals.putsColText(Globals::PURPLE,"Generating dependencies ... done (#{numPages} pages)")
         end
     end
 

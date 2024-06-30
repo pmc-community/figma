@@ -4,6 +4,7 @@ import tensorflow_hub as hub
 import numpy as np
 from multiprocessing import Pool, cpu_count
 import json
+import sys
 
 # Suppress TensorFlow logging messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -16,7 +17,22 @@ num_threads = cpu_count()
 tf.config.threading.set_inter_op_parallelism_threads(num_threads)
 tf.config.threading.set_intra_op_parallelism_threads(num_threads)
 
-def load_text_files(directory, max_files_per_batch=100): # files_batch
+# import what is needed from tools_py/globals.py
+tools_py_path = os.path.abspath(os.path.join('tools_py'))
+if tools_py_path not in sys.path:
+    sys.path.append(tools_py_path)
+from modules.globals import get_key_value_from_yml
+
+# Get settings (considering that this script runs from project root directory)
+build_settings_path = '_data/buildConfig.yml'
+rawContentFolder = get_key_value_from_yml(build_settings_path, 'rawContentFolder')
+threadMultiplicator = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['threadMultiplicator']
+max_files_per_batch = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['files_batch']
+similarity_threshold = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['similarity_threshold']
+model_url = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['model_url']
+max_files_per_chunk = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['chunk_size_in_files_batch']
+
+def load_text_files(directory, max_files_per_batch=max_files_per_batch): # files_batch
     # Load all text files from the specified directory in batches.
     files_content = {}
     file_list = [filename for filename in os.listdir(directory) if filename.endswith(".txt")]
@@ -51,7 +67,6 @@ def process_chunk(chunk_data):
     similarity_matrix = calculate_similarity_matrix(embeddings)
     similar_files = {}
 
-    similarity_threshold = 0.6  # Adjust similarity threshold as needed
     for i, filename in enumerate(filenames):
         similar_files[filename] = []
         for j, similarity in enumerate(similarity_matrix[i]):
@@ -71,14 +86,14 @@ def main(directory):
         filenames = list(files_content.keys())
 
         # Split filenames and contents into chunks
-        batch_size = 100  # Adjust batch size based on your system's memory capacity (chunk_size_in_files_batch)
+        batch_size = max_files_per_chunk  # Adjust batch size based on your system's memory capacity (chunk_size_in_files_batch)
         chunks_data = [
-            (chunk_filenames, [files_content[filename] for filename in chunk_filenames], "https://tfhub.dev/google/universal-sentence-encoder/4")
+            (chunk_filenames, [files_content[filename] for filename in chunk_filenames], model_url)
             for chunk_filenames in chunks(filenames, batch_size)
         ]
 
         # Use multiprocessing Pool to process chunks in parallel
-        max_processes = cpu_count() # * threadMultiplicator 
+        max_processes = cpu_count() * threadMultiplicator 
         with Pool(processes=max_processes) as pool:
             similar_files_chunks = pool.map(process_chunk, chunks_data)
 
@@ -108,7 +123,7 @@ def transform_data(data):
     return transformed_data
 
 if __name__ == "__main__":
-    directory = "doc-raw-contents"
+    directory = rawContentFolder
     similar_files = main(directory)
     autoSimilarFiles = transform_data(similar_files)
     output_file_path = os.path.join(directory, "autoSimilar.json")

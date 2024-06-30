@@ -7,7 +7,7 @@ const page__getAutoSummary = () => {
         
         return (
             `   
-                <div id="pageAutoSummary" class="p-2 bg-light-subtle rounded">
+                <div id="pageAutoSummary" class="p-2 bg-light-subtle border border-light-subtle rounded">
                     <span class="fw-medium text-secondary">
                         ${autoSummary}
                     </span>
@@ -40,7 +40,7 @@ const page__getRelatedPages = () => {
                             <span siteFunction="pageRelatedPageLinkPageTitle" class="fw-bold text-primary fs-6">${relatedPage.title}</span>
                         </div>
                         <div class="h-100 align-top mb-2">
-                            <span siteFunction="pageRelatedPageLinkPageExcerpt" class="fw-medium">${getObjectFromArray({permalink:relatedPage.permalink, title: relatedPage.title}, pageList).excerpt}</span>
+                            <span siteFunction="pageRelatedPageLinkPageExcerpt" class="fw-medium text-secondary">${getObjectFromArray({permalink:relatedPage.permalink, title: relatedPage.title}, pageList).excerpt}</span>
                         </div>
                     </div>
                 </a>
@@ -69,7 +69,7 @@ const page__getRelatedPages = () => {
                 <div id="pageRelatedPages" class="px-5">
                     <hr siteFunction="pageRelatedPagesSeparator">
                     <span class="fs-6 fw-medium">
-                        Related pages:
+                        Related:
                     </span>
                     <div 
                         siteFunction="pageRelatedPagesContainer"
@@ -104,12 +104,12 @@ const page__getPageNotes = () => {
     const customNoteItem = (note) => {
         return (
             `
-                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-body rounded bg-light-subtle border-0">
+                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-body rounded bg-light-subtle border-0 shadow-sm">
                     <div class="h-100 align-top mb-2">
-                        <span class="fw-bold text-dark">${note.date}</span>
+                        <span class="fw-bold text-primary">${note.date}</span>
                     </div>
                     <div class="h-100 align-top">
-                        <p class="text-dark">${note.note}</p>
+                        <p class="text-secondary">${note.note}</p>
                     </div>
                 </div>
             `
@@ -191,7 +191,7 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasAutoSummaryBadge"
                         title = "Page ${page.siteInfo.title} has auto generated summary" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark">
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark alwaysCursorPointer">
                         Summary
                     </span>
                 `;
@@ -289,6 +289,55 @@ const page__getPageInfo = () => {
         return pageCatsHtml;
     }
 
+    const pageSimilarByContent = (page) => {
+        pageSimilarPages = page.siteInfo.similarByContent.slice(0, settings.similarByContent.maxPages) || [];
+
+        const similarPagesHtml = (similarPages) => {
+            let html = ''
+            similarPages.forEach(page => {
+                const similarPageExcerpt = getObjectFromArray(
+                    {
+                        permalink: page.permalink, 
+                        title: page.title
+                    }, 
+                    pageList
+                ).excerpt || '';
+                
+                html = html + 
+                    `
+                        <a 
+                            title="${similarPageExcerpt}" 
+                            class="fw-medium text-primary badge py-2 px-3 m-1 bg-body-secondary rounded-pill" 
+                            href="${page.permalink.indexOf('/') === 0 ? page.permalink : '/'+page.permalink}">
+                            ${page.title}
+                        </a>
+                    `
+            });
+            return html;
+        }
+
+        return pageSimilarPages.length === 0 ?
+            '' :
+            (
+                `
+                    <div 
+                        sitefunction="pageFullInfoPageGeneralSimilarPages" 
+                        class="my-2 d-flex">
+                        <span 
+                            class="fw-medium align-self-center" 
+                            title="Similar pages based on content"> 
+                            Similar: 
+                        </span>
+                        <span 
+                            sitefunction="pageFullInfoPageGeneralSimilarPagesText"
+                            class="d-flex">
+                            ${similarPagesHtml(pageSimilarPages)}           
+                        </span>
+                    </div>
+                `
+            );
+    }
+
     const pageInfoContainer = (page) => {
         const siteCats = getObjectFromArray({permalink: page.siteInfo.permalink, title: page.siteInfo.title}, pageList).categories.length || 0;
         const customCats = getPageCats(page).length || 0;
@@ -301,6 +350,7 @@ const page__getPageInfo = () => {
                 </div>
             `;
 
+        const pageSimilarPages = page.siteInfo.similarByContent.slice(0, settings.similarByContent.maxPages) || []
         return (
             `
                 <div id="pageLastUpdateAndPageInfo" class="container px-5 mb-4">
@@ -330,6 +380,9 @@ const page__getPageInfo = () => {
                             </button>
                         </div>
                     </div>
+
+                    ${pageSimilarPages.length === 0 ? '' : pageSimilarByContent(page)}
+                    
                     <hr siteFunction="pageLastUpdateSeparator">
                 </div>
             `
@@ -459,6 +512,17 @@ const setPageButtonsFunctions = () => {
             $('html, body').animate({
                 scrollTop: $('#pageRelatedPages').offset().top
             }, 100);
+        });
+
+    // hover "Summary" badge
+    $(document)
+        .off('mouseenter', 'span[siteFunction="pageHasAutoSummaryBadge"]')
+        .off('mouseleave', 'span[siteFunction="pageHasAutoSummaryBadge"]')
+        .on('mouseenter', 'span[siteFunction="pageHasAutoSummaryBadge"]', function() {
+            $('#pageAutoSummary').removeClass('border-light-subtle').addClass('border-secondary-subtle')
+        })
+        .on('mouseleave', 'span[siteFunction="pageHasAutoSummaryBadge"]', function() {
+            $('#pageAutoSummary').removeClass('border-secondary-subtle').addClass('border-light-subtle')
         });
 
 }

@@ -61,12 +61,14 @@ def summarize_text(text):
         return clean_up_text(text)
     
     tokenizer = AutoTokenizer.from_pretrained(model_name) # tokenizer to be loaded here to avoid inter-processes issues
+    
     inputs = tokenizer.encode(
         f'{prompt}: ' + text, 
         return_tensors = return_tensors, 
         max_length = max_length, 
         truncation = truncation
     )
+
     
     # Generate the interpretation with an appropriate token limit
     outputs = model.generate(

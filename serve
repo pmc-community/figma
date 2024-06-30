@@ -37,4 +37,4 @@ echo ""
 
 print_color_enclosed "$PURPLE" "Time to build the site. Sit back and relax ... "
 bundle exec jekyll clean
-bundle exec jekyll serve --trace
+bundle exec jekyll serve --incremental --trace

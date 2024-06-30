@@ -14,9 +14,9 @@
         "similarFiles": [
             "/intro/introChild/",
             "/intro/",
+            "/sf/f1/",
             "/pwc/",
-            "/collection-1/g1/",
-            "/sf/f1/"
+            "/collection-1/g1/"
         ]
     },
     {
@@ -40,25 +40,31 @@
     {
         "permalink": "/intro/",
         "similarFiles": [
-            "/intro/introChild/",
             "/collection-2/y/y/",
+            "/intro/introChild/",
             "/pwc/",
             "/sf/f1/"
         ]
     },
     {
         "permalink": "collection-2/X/x/",
-        "similarFiles": []
+        "similarFiles": [
+            "/pwc/",
+            "/collection-2/Z/z/"
+        ]
     },
     {
         "permalink": "/collection-2/Z/z/",
-        "similarFiles": []
+        "similarFiles": [
+            "collection-2/X/x/"
+        ]
     },
     {
         "permalink": "/pwc/",
         "similarFiles": [
-            "/collection-2/y/y/",
             "/intro/",
+            "/collection-2/y/y/",
+            "collection-2/X/x/",
             "/intro/introChild/"
         ]
     },
@@ -74,8 +80,8 @@
     {
         "permalink": "/collection-1/g1/",
         "similarFiles": [
-            "/collection-2/y/y/",
-            "/sf/f1/"
+            "/sf/f1/",
+            "/collection-2/y/y/"
         ]
     },
     {

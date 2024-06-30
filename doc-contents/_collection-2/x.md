@@ -54,3 +54,16 @@ OTHERWISE THE CONTENT SHOULD BE LOADED CONSIDERING THE SOURCE AS EXTERNAL FILE A
     );
 </script>
 <!-- END_EXPOSED_SECTION -->
+
+{% 
+    ExternalSiteContent  {
+        "markdown": true,
+        "file_path":"_collection-2/Z/z.md", 
+        "ignore_wp_shortcodes": true, 
+        "start_marker": "<!-- START MARKER 1 -->", 
+        "include_start_marker": false,
+        "end_marker": "<!-- END MARKER 1 -->",
+        "include_end_marker": false,
+        "needAuth": true 
+    }
+%}
