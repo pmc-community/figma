@@ -16,21 +16,39 @@ module Jekyll
                 modified_files = FileUtilities.read_json_file("#{site.data['buildConfig']["rawContentFolder"]}/modified_files.json")["files"]
                 return if !modified_files
                 if (modified_files.length == 0)
-                    Globals.putsColText(Globals::PURPLE,"Generating similar by content ... nothing to do! (no content changes)")
-                    
+                    Globals.putsColText(Globals::PURPLE,"Generating similar by content ... nothing to do! (no content changes)")            
                 else
+                    current_similar_pages = FileUtilities.read_json_file("#{site.data['buildConfig']["rawContentFolder"]}/autoSimilar.json") || []
+                    modified_files_permalinks = modified_files.map do |file_path|
+                        File.basename(file_path, ".txt").gsub('_', '/')
+                    end
 
-                    Globals.putsColText(Globals::PURPLE,"Generating similar by content ... because #{modified_files.length} pages changed")
+                    files_to_be_processed = modified_files
+
+                    modified_files_permalinks.each do |permalink|
+                        similar_pages = Globals.find_object_by_multiple_key_value(current_similar_pages, {"permalink" => permalink})["similarFiles"] || []
+                        processed_similar_pages = similar_pages.map do |path|
+                            "doc-raw-contents/#{path.gsub('/', '_')}.txt"
+                        end
+                        files_to_be_processed = files_to_be_processed + processed_similar_pages
+                    end
+
+                    files_to_be_processed = files_to_be_processed.compact.uniq
+
+                    return if !files_to_be_processed
+                    return if files_to_be_processed.length == 0
                     # SUMMARIES
                     Globals.show_spinner do
-                        json_input = { "pageList" => site.data['page_list'] }
+                        Globals.putsColText(Globals::PURPLE,"Generating similar by content ... for #{files_to_be_processed.length} pages")
+                        json_input = { "pageList" => site.data['page_list'], "fileList" => files_to_be_processed}
                         python_script = site.data["buildConfig"]["pySimilarPagesByContent"]["script"]
 
                         page_similarByContent_callback = Proc.new do |python_script_response|
-                            permalink = python_script_response["payload"]["payload"]["permalink"]
-                            pageNo = python_script_response["outputNo"]
+                            permalink = python_script_response["payload"]["payload"]["permalink"] || ""
+                            pageNo = python_script_response["outputNo"] if permalink != ""
                             Globals.clearLine
-                            Globals.putsColText( Globals::PURPLE, "- PERMALINK: #{permalink} ... done (#{pageNo})")
+                            Globals.putsColText( Globals::PURPLE, "- PERMALINK: #{permalink} ... done (#{pageNo})") if permalink != ""
+                            Globals.putsColText( Globals::PURPLE, "#{python_script_response["payload"]["message"]}") if permalink == ""
                         end
 
                         Globals.run_python_script(site, python_script, json_input, page_similarByContent_callback)

@@ -21,7 +21,7 @@ tf.config.threading.set_intra_op_parallelism_threads(num_threads)
 tools_py_path = os.path.abspath(os.path.join('tools_py'))
 if tools_py_path not in sys.path:
     sys.path.append(tools_py_path)
-from modules.globals import get_key_value_from_yml
+from modules.globals import get_key_value_from_yml, get_the_modified_files
 
 # Get settings (considering that this script runs from project root directory)
 build_settings_path = '_data/buildConfig.yml'
@@ -32,10 +32,13 @@ similarity_threshold = get_key_value_from_yml(build_settings_path, 'pySimilarPag
 model_url = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['model_url']
 max_files_per_chunk = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['chunk_size_in_files_batch']
 
-def load_text_files(directory, max_files_per_batch=max_files_per_batch): # files_batch
-    # Load all text files from the specified directory in batches.
+def load_text_files(files_to_be_processed, max_files_per_batch=max_files_per_batch): # files_batch
+    # Load text files from files_to_be_processed in batches.
     files_content = {}
-    file_list = [filename for filename in os.listdir(directory) if filename.endswith(".txt")]
+    file_list = [os.path.basename(file_path) for file_path in files_to_be_processed]
+
+    # the following full scans the doc-raw-contents directory for .txt files -- not used anymore
+    #file_list = [filename for filename in os.listdir(rawContentFolder) if filename.endswith(".txt")]
     
     for i in range(0, len(file_list), max_files_per_batch):
         batch_files = file_list[i:i + max_files_per_batch]
@@ -78,13 +81,11 @@ def process_chunk(chunk_data):
 
     return similar_files
 
-def main(directory):
-    # Initialize an empty dictionary to hold all similar files
+def get_similar_by_content(files_to_be_processed):
     all_similar_files = {}
 
-    for files_content in load_text_files(directory):
+    for files_content in load_text_files(files_to_be_processed):
         filenames = list(files_content.keys())
-
         # Split filenames and contents into chunks
         batch_size = max_files_per_chunk  # Adjust batch size based on your system's memory capacity (chunk_size_in_files_batch)
         chunks_data = [
@@ -106,7 +107,7 @@ def main(directory):
 def transform_data(data):
     transformed_data = []
     for filename, similar_files in data.items():
-        # Extract permalink based on filename (assuming structure)
+        # Extract permalink based on filename
         permalink = filename[:-4]
         permalink = permalink.replace('_', '/')
         # Convert similar files to a list of filenames (without similarity)
@@ -123,9 +124,37 @@ def transform_data(data):
     return transformed_data
 
 if __name__ == "__main__":
-    directory = rawContentFolder
-    similar_files = main(directory)
-    autoSimilarFiles = transform_data(similar_files)
-    output_file_path = os.path.join(directory, "autoSimilar.json")
-    with open(output_file_path, 'w') as f:
-        json.dump(autoSimilarFiles, f, indent=4)
+
+    # gets the parameters sent by the ruby script
+    try:
+        json_data = json.loads(sys.argv[1])
+    except (IndexError, json.JSONDecodeError):
+        json_data = None
+    pageList = json_data['pageList'] if json_data is not None else None
+    files_to_be_processed = json_data['fileList'] if json_data is not None else []
+
+    if len(files_to_be_processed) > 0:
+        directory = rawContentFolder
+        output_file_path = os.path.join(directory, "autoSimilar.json")
+        
+        if os.path.exists(output_file_path):
+            with open(output_file_path, 'r') as f:
+                existing_data = json.load(f)
+        else:
+            existing_data = []
+        
+        # Convert existing data to a dictionary for easy lookup by permalink
+        existing_data_dict = {item['permalink']: item for item in existing_data}
+        
+        similar_files = get_similar_by_content(files_to_be_processed)
+        autoSimilarFiles = transform_data(similar_files)
+        
+        # Update or append data based on the permalink
+        for new_item in autoSimilarFiles:
+            existing_data_dict[new_item['permalink']] = new_item
+        
+        # Convert the dictionary back to a list
+        updated_data = list(existing_data_dict.values())
+            
+        with open(output_file_path, 'w') as f:
+            json.dump(updated_data, f, indent=4)

@@ -1,40 +1,6 @@
 [
     {
-        "permalink": "/sf/f1/",
-        "similarFiles": [
-            "/collection-2/y/y/",
-            "/collection-1/g1/",
-            "/intro/introChild/",
-            "/terms/",
-            "/intro/"
-        ]
-    },
-    {
-        "permalink": "/collection-2/y/y/",
-        "similarFiles": [
-            "/intro/introChild/",
-            "/intro/",
-            "/sf/f1/",
-            "/pwc/",
-            "/collection-1/g1/"
-        ]
-    },
-    {
-        "permalink": "/collection1/g11/",
-        "similarFiles": []
-    },
-    {
-        "permalink": "/terms/",
-        "similarFiles": [
-            "/sf/f1/"
-        ]
-    },
-    {
-        "permalink": "/ec/",
-        "similarFiles": []
-    },
-    {
-        "permalink": "/intro/introChild/introGrandChild/",
+        "permalink": "/devtest/",
         "similarFiles": []
     },
     {
@@ -47,17 +13,17 @@
         ]
     },
     {
-        "permalink": "collection-2/X/x/",
+        "permalink": "/intro/introChild/",
         "similarFiles": [
-            "/pwc/",
-            "/collection-2/Z/z/"
+            "/collection-2/y/y/",
+            "/intro/",
+            "/sf/f1/",
+            "/pwc/"
         ]
     },
     {
-        "permalink": "/collection-2/Z/z/",
-        "similarFiles": [
-            "collection-2/X/x/"
-        ]
+        "permalink": "/intro/introChild/introGrandChild/",
+        "similarFiles": []
     },
     {
         "permalink": "/pwc/",
@@ -69,12 +35,13 @@
         ]
     },
     {
-        "permalink": "/intro/introChild/",
+        "permalink": "/ec/",
+        "similarFiles": []
+    },
+    {
+        "permalink": "/terms/",
         "similarFiles": [
-            "/collection-2/y/y/",
-            "/intro/",
-            "/sf/f1/",
-            "/pwc/"
+            "/sf/f1/"
         ]
     },
     {
@@ -85,7 +52,38 @@
         ]
     },
     {
-        "permalink": "/devtest/",
+        "permalink": "/collection1/g11/",
         "similarFiles": []
+    },
+    {
+        "permalink": "/collection-2/y/y/",
+        "similarFiles": [
+            "/intro/introChild/",
+            "/intro/",
+            "/sf/f1/",
+            "/pwc/",
+            "/collection-1/g1/"
+        ]
+    },
+    {
+        "permalink": "/collection-2/Z/z/",
+        "similarFiles": [
+            "collection-2/X/x/"
+        ]
+    },
+    {
+        "permalink": "collection-2/X/x/",
+        "similarFiles": [
+            "/pwc/"
+        ]
+    },
+    {
+        "permalink": "/sf/f1/",
+        "similarFiles": [
+            "/collection-2/y/y/",
+            "/collection-1/g1/",
+            "/intro/introChild/",
+            "/intro/"
+        ]
     }
 ]

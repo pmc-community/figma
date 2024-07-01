@@ -2,7 +2,7 @@ verbose: true #not used
 pyEnable: true
 pyLaunch: "python3"
 pyPageSummary:
-  allInOneStep: false
+  allInOneStep: true
   allInOneStepScript: "tools_py/page-summary/auto-summary.py"
   summaryLength: 30
   model: 
@@ -34,9 +34,9 @@ autoExcerpt:
   minKeywordLength: 3
 tagsToRemoveOnDryRender: ["script", "style", "h1", "h2", "h3", "h4", "h5", "h6"]
 pySimilarPagesByContent:
-  enable: false
+  enable: true
   script: "tools_py/similar-pages/similar-pages.py"
-  similarity_threshold: 0.6
+  similarity_threshold: 0.75
   files_batch: 100
   chunk_size_in_files_batch: 100
   threadMultiplicator: 4
