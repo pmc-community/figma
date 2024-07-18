@@ -55,7 +55,7 @@ module Jekyll
             'similarByContent': []
           } 
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
-          numPages += 1
+          numPages += 1 if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
         end  
         site.data['page_list'] = documents.to_json
         Globals.moveUpOneLine
@@ -77,59 +77,61 @@ module Jekyll
       priority :normal #must be after PageKeyordsGenerator from _plugins/generators/page-keywords-gen.rb
   
       def generate(site)
-        Globals.putsColText(Globals::PURPLE,"Generating related pages ...")
-        numPages = 0
-        Globals.show_spinner do
-          @site = site
-          documents = []
-          front_matters = {}
-    
-          content_dir = Globals::DOCS_ROOT
-          content_files = Dir.glob(File.join(site.source, content_dir, '**', '*.{md,html}'))
-    
-          content_files.each do |file_path|
-            content = File.read(file_path)
-            relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(site.source)).to_s
-            front_matter, content = FileUtilities.parse_front_matter(content)
-            
-            next if front_matter.nil? || front_matter.empty?
-    
-            # Store the front matter separately
-            front_matters[relative_path] = front_matter
-    
-            # Render the content with Liquid tags
-            rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content)
-    
-            # Extract text content
-            text_content = Nokogiri::HTML(rendered_content).text
-    
-            # Create document for tf-idf-similarity
-            documents << TfIdfSimilarity::Document.new(text_content, id: relative_path)
-          end
-    
-          # Build TF-IDF model and similarity matrix
-          model = TfIdfSimilarity::TfIdfModel.new(documents)
-          similarity_matrix = model.similarity_matrix
-    
-          # Process each document for related pages
-          threads = []
-          content_files.each do |file_path|
-            relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(site.source)).to_s
-            page_document = documents.find { |doc| doc.id == relative_path }
-    
-            next if page_document.nil?
-            
-            threads << Thread.new(file_path, page_document) do |path, doc|
-              related_pages = find_related_pages(site, content_files, path, model, doc, similarity_matrix, front_matters)
-              add_related_pages(site, path, related_pages)
-              numPages += 1
+        if (site.data['buildConfig']["relatedPages"]["enable"])
+          Globals.putsColText(Globals::PURPLE,"Generating related pages ...")
+          numPages = 0
+          Globals.show_spinner do
+            @site = site
+            documents = []
+            front_matters = {}
+      
+            content_dir = Globals::DOCS_ROOT
+            content_files = Dir.glob(File.join(site.source, content_dir, '**', '*.{md,html}'))
+      
+            content_files.each do |file_path|
+              content = File.read(file_path)
+              relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(site.source)).to_s
+              front_matter, content = FileUtilities.parse_front_matter(content)
+              
+              next if front_matter.nil? || front_matter.empty?
+      
+              # Store the front matter separately
+              front_matters[relative_path] = front_matter
+      
+              # Render the content with Liquid tags
+              rendered_content = FileUtilities.render_jekyll_page(site, file_path, front_matter, content)
+      
+              # Extract text content
+              text_content = Nokogiri::HTML(rendered_content).text
+      
+              # Create document for tf-idf-similarity
+              documents << TfIdfSimilarity::Document.new(text_content, id: relative_path)
             end
-          end
-          threads.each(&:join) # Wait for all threads to finish
-        end  
-        Globals.moveUpOneLine
-        Globals.clearLine
-        Globals.putsColText(Globals::PURPLE,"Generating related pages ... done (#{numPages} pages)")
+      
+            # Build TF-IDF model and similarity matrix
+            model = TfIdfSimilarity::TfIdfModel.new(documents)
+            similarity_matrix = model.similarity_matrix
+      
+            # Process each document for related pages
+            threads = []
+            content_files.each do |file_path|
+              relative_path = Pathname.new(file_path).relative_path_from(Pathname.new(site.source)).to_s
+              page_document = documents.find { |doc| doc.id == relative_path }
+      
+              next if page_document.nil?
+              
+              threads << Thread.new(file_path, page_document) do |path, doc|
+                related_pages = find_related_pages(site, content_files, path, model, doc, similarity_matrix, front_matters)
+                add_related_pages(site, path, related_pages)
+                numPages += 1
+              end
+            end
+            threads.each(&:join) # Wait for all threads to finish
+          end  
+          Globals.moveUpOneLine
+          Globals.clearLine
+          Globals.putsColText(Globals::PURPLE,"Generating related pages ... done (#{numPages} pages)")
+        end
       end
     
       def find_related_pages(site, content_files, page_path, model, page_document, similarity_matrix, front_matters)

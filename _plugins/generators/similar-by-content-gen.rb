@@ -18,6 +18,9 @@ module Jekyll
                 if (modified_files.length == 0)
                     Globals.putsColText(Globals::PURPLE,"Generating similar by content ... nothing to do! (no content changes)")            
                 else
+
+                    # generating the full list of pages for which similarByContent will be generated
+                    # full list of pages = modified_files + pages that had the as similar one of the modified_files
                     current_similar_pages = FileUtilities.read_json_file("#{site.data['buildConfig']["rawContentFolder"]}/autoSimilar.json") || []
                     modified_files_permalinks = modified_files.map do |file_path|
                         File.basename(file_path, ".txt").gsub('_', '/')
@@ -33,6 +36,8 @@ module Jekyll
                         files_to_be_processed = files_to_be_processed + processed_similar_pages
                     end
 
+                    # files_to_be_processed contains the full list of pages for which similarByContent will be generated
+                    # files_to_be_processed is sent as fileList array in the json parameter to the python script
                     files_to_be_processed = files_to_be_processed.compact.uniq
 
                     return if !files_to_be_processed

@@ -187,8 +187,8 @@ module FileUtilities
                         }
 
                         FileUtilities.overwrite_file(
-                            "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json", 
-                            modified_files_object.to_json
+                            "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json",
+                            JSON.pretty_generate(modified_files_object)
                         )
                         numPages +=1
                     end
@@ -197,7 +197,11 @@ module FileUtilities
             end
             Globals.moveUpOneLine
             Globals.clearLine
-            Globals.putsColText(Globals::PURPLE,"Generating raw content ... done (#{numPages} pages)")
+            if (numPages > 0 )
+                Globals.putsColText(Globals::PURPLE,"Generating raw content ... done (#{numPages} pages)")
+            else
+                Globals.putsColText(Globals::PURPLE,"Generating raw content ... nothing to do! (no content chages)")
+            end
         end
     end
 
@@ -293,11 +297,19 @@ module FileUtilities
             #puts JSON.pretty_generate(result)
             FileUtilities.overwrite_file(
                 "#{site.data["buildConfig"]["rawContentFolder"]}/dependencies.json", 
-                result.to_json
+                JSON.pretty_generate(result)
             )
             Globals.moveUpOneLine
             Globals.clearLine
             Globals.putsColText(Globals::PURPLE,"Generating dependencies ... done (#{numPages} pages)")
+        end
+    end
+
+    def self.get_real_files_from_raw_content_files(file_paths)
+        file_paths.map do |path|
+          file_name = File.basename(path, ".*") 
+          transformed_name = file_name.gsub('_', '/')
+          getFileFromPermalink(Globals::DOCS_DIR, transformed_name)
         end
     end
 
