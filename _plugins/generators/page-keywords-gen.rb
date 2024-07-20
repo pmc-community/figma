@@ -7,6 +7,7 @@ require_relative "../../tools/modules/file-utilities"
 require 'text_rank'
 
 module Jekyll
+
   class PageKeywordsGenerator < Generator
     safe true
     priority :high # Must be after PageListGenerator from _plugins/generators/pages-gen.rb
@@ -153,4 +154,5 @@ module Jekyll
         .map(&:first)
     end
   end
+  
 end

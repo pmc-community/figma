@@ -2,18 +2,71 @@
 const setCatSupport = () => {
 
     $(document).ready(() => {
-        setCatSearchList();
+        setCatPageSavedButtonsStatus();
+        setCustomCatCloud();
         setCatInfoPageButtonsFunctions();
+        setCatSearchList();
+        updateCatSearchList();
+        setCatSearchList()
 
+        //setTagCloudButtonsContextMenu();
+        //setPageTagButtonsContextMenu();
 
         requestedCat = readQueryString('cat');
         if (requestedCat) showCatDetails(requestedCat);
+    });
+
+    // from utilities.js
+    removeObservers('.offcanvas class=hiding getClass=true');
+    setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
+        setCatPageSavedButtonsStatus();
+        
+        // cat was passed to pageInfo global before opening the offcanvas 
+        // in order to preserve the reference to the active tag details datatable
+        // see processCatDetailsTableRowClick
+        updateAllCatInfoOnPage(pageInfo.cat);
     });
     
 }
 // work ends here
 
 // FUNCTIONS
+const updateAllCatInfoOnPage = (catForActiveCatDetailsTable = null) => {
+    createGlobalLists();
+    setCustomCatCloud(); //only custom cats are dynamic, site cats don't need update since cannot be modified
+    updateCatSearchList(); //update the cat search list items to have all custom cats modifications
+    setCatSearchList(); //cat search list must be recreated after the update of the list items
+    if (catForActiveCatDetailsTable)
+        addCustomCatsToPages(null, catForActiveCatDetailsTable); //update custom cats for the pages in the active cat details datatable
+}
+
+const setCustomCatCloud = () => {
+
+    const getCatCloudElement = (cat, numPages) => {
+         
+        return  (
+            `
+                <button 
+                    siteFunction="catButton" 
+                    catType="customCat"
+                    id="${cat}" type="button" 
+                    class="focus-ring focus-ring-warning px-2 mr-2 my-2 btn btn-sm btn btn-sm text-success fw-medium border-0 shadow-none position-relative"
+                    title = "Details for category ${cat}">
+                    ${cat}
+                    <span class="fw-normal border px-2 rounded bg-warning-subtle text-dark">
+                        ${numPages}
+                    </span>
+                </button>
+            `
+        );
+    } 
+
+    $('button[catType="customCat"]').remove();
+    globCustomCats.forEach(cat => {
+        $('div[siteFunction="catCloudContainerBody"]').append($(getCatCloudElement(cat, getCatPages(cat))));
+    });
+}
+
 const setCatInfoPageButtonsFunctions = () => {
 
     // click "Categories" button and show the cat cloud container
@@ -21,14 +74,62 @@ const setCatInfoPageButtonsFunctions = () => {
         $('#cloud_cat_container').fadeIn();
     });
 
-    // click on cat button in the tag cloud and show the cat details table
+    // click on cat button in the cat cloud and show the cat details table
     // delegate listener at document level since buttons are dynamically added/removed/modified
     $(document)
         .off('click', 'button[siteFunction="catButton"]')
         .on('click', 'button[siteFunction="catButton"]', function() {
             const selectedCat = $(this).attr('id');
             showCatDetails(selectedCat);
-            //setPageSavedButtonsStatus(); 
+            setCatPageSavedButtonsStatus(); 
+        });
+
+    // click on the cat button in cat details table and show the details table for the clicked cat
+    // delegate listener at document level since buttons are dynamically added/removed/modified
+    $(document)
+        .off('click', 'button[siteFunction="pageCatButton"]')
+        .on('click', 'button[siteFunction="pageCatButton"]', function(event) {
+            const handlePageCatButtonClick = (event) => {
+                const selectedCat = $(event.target).attr('id');
+                showCatDetails(selectedCat.match(/pageCat_(.*)/)[1]);
+                setCatPageSavedButtonsStatus(); 
+            }   
+            handlePageCatButtonClick(event);
+        });
+    
+    // remove page from saved items
+    // delegate event handler to document since the buttons are not available when setting the listener
+    $(document)
+        .off('click', 'button[siteFunction="catPageItemRemoveFromSavedItems"]')
+        .on('click', 'button[siteFunction="catPageItemRemoveFromSavedItems"]', function() {
+            const pageToRemove = {
+                siteInfo: {
+                    permalink: $(this).attr('pageRefPermalink'),
+                    title: $(this).attr('pageRefTitle')
+                }
+            }
+            removePageFromSavedItems(pageToRemove);
+            setCatPageSavedButtonsStatus();
+            updateAllCatInfoOnPage($(this).attr('catForCatTableDetailsReference'));
+        });
+    
+    // save page to saved items
+    // delegate event handler to document since the buttons are not available when setting the listener
+    $(document)
+        .off('click', 'button[siteFunction="catPageItemSaveForLaterRead"]')
+        .on('click', 'button[siteFunction="catPageItemSaveForLaterRead"]', function() {
+            const pageToSave = {
+                siteInfo: {
+                    permalink: sanitizeURL($(this).attr('pageRefPermalink')),
+                    title: DOMPurify.sanitize($(this).attr('pageRefTitle')),
+                    customTags: [],
+                    customCategories: [],
+                    customNotes:[]
+                }
+            }
+            savePageToSavedItems(pageToSave);
+            setCatPageSavedButtonsStatus();
+            updateAllCatInfoOnPage($(this).attr('catForCatTableDetailsReference'));
         });
 
 }
@@ -47,11 +148,536 @@ const setCatSearchList = () => {
 }
 
 const showCatDetails = (cat) => {
-    console.log(cat);
+
+    if ( !cat ) return;
+    if ( cat === 'undefined' ) return;
+    if ( cat === '' ) return;
+
+    const siteCatPageNo = catList.includes(cat) ? catDetails[cat].numPages : 0;
+    const customCatPageNo = catList.includes(cat) ? 0 : getCatPages(cat);
+    if (siteCatPageNo + customCatPageNo === 0 ) return;
+
+    if( $.fn.DataTable.isDataTable(`table[catReference="${cat}"]`) ) {
+        $(`table[catReference="${cat}"]`).DataTable().destroy();
+        $(`table[catReference="${cat}"]`).removeAttr('id').removeAttr('aria-describedby');
+    }
+
+    let tableData = [];
+    if (siteCatPageNo === 0 && customCatPageNo > 0 ) {
+        tableData = buildCatPagesListForCustomCat(cat);
+        createSimpleCatTable(cat, tableData);
+    }
+
+    $(`div[siteFunction="catDetails"][catReference="${cat}"]`).removeClass('d-none');
+    $(`div[siteFunction="catDetails"][catReference!="${cat}"]`).addClass('d-none');
+    $('div[siteFunction="catDetails"]').removeAttr('style'); // to clear some style values added by a potential previous close button click
+    $(`div[siteFunction="catDetails"][catReference="${cat}"]`).fadeIn();
+
+    const colDefinition = [
+        // page name
+        {
+            data: 'pageTitle',
+            className: 'alwaysCursorPointer',
+            title:'Title',
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('siteFunction', 'catInfoCatTablePageTitle')
+                    .attr('title', `Click here for more info about page ${cellData.replace(/<\/?[^>]+(>|$)/g, "")}`)
+                    .attr('catReference', `${cat}`)
+                    .attr('colFunction', 'pageTitle')
+                    .addClass('fw-normal align-self-center align-middle');
+            }
+        }, 
+
+        // last update
+        {
+            data: 'pageLastUpdate',
+            title:'Last Update',
+            type: 'date', 
+            className: 'dt-left', 
+            exceptWhenRowSelect: true,
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('siteFunction', 'tableDateField')
+                    .attr('catReference', `${cat}`)
+                    .attr('colFunction', 'pageLastUpdate')
+                    .addClass('fw-normal align-self-center align-middle');
+            }
+        }, 
+
+        // action buttons
+        { 
+            data: 'pageActions',
+            title:'Actions',
+            type: 'string',
+            searchable: false, 
+            orderable: false, 
+            exceptWhenRowSelect: true,
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('catReference', `${cat}`)
+                    .attr('colFunction', 'pageActions')
+                    .addClass('fw-normal align-self-center align-middle')
+                    .removeClass('dt-type-numeric');
+            }
+
+        }, 
+        
+        // excerpt
+        {
+            data: 'pageExcerpt',
+            type: 'string',
+            title:'Excerpt',
+            exceptWhenRowSelect: true,
+            width: '30%',
+            visible: false,
+            createdCell: function(td, cellData, rowData, row, col) {
+                $(td)
+                    .attr('catReference', `${cat}`)
+                    .attr('colFunction', 'pageExcerpt')
+                    .addClass('fw-normal align-self-center align-middle');
+            }
+        }, 
+
+        // other cays
+        {
+            data: 'pageOtherCats',
+            title:'Other Categories',
+            type: 'string',
+            exceptWhenRowSelect: true,
+            createdCell: function(td, cellData, rowData, row, col) {
+                const permalink = $(rowData.pageActions).find('[siteFunction="catPageItemLinkToDoc"]').attr('href');
+                $(td)
+                    .attr('catReference', `${cat}`)
+                    .attr('colFunction', 'catInfoCatTablePageOtherCats')
+                    .attr('pageTitleReference', `${rowData.pageTitle.replace(/<\/?[^>]+(>|$)/g, "").trim()}`)
+                    .attr('pagePermalinkReference', `${permalink.trim()}`)
+                    .addClass('fw-normal align-self-center align-middle');
+            }
+        }
+    ];
+
+    const commonAdditionalTableSettings = {
+        scrollX:true,
+        fixedColumns: {
+            "left": 1
+        },
+        "createdRow": function(row, data, dataIndex) {
+            const permalink = $(data.pageActions).find('[siteFunction="catPageItemLinkToDoc"]').attr('href');
+            $(row)
+                .attr('siteFunction', 'catInfoCatTablePageRow')
+                .attr('catReference', `${cat}`)
+                .attr('pageTitleReference', `${data.pageTitle.replace(/<\/?[^>]+(>|$)/g, "").trim()}`)
+                .attr('pagePermalinkReference', `${permalink.trim()}`);
+        }
+    }; 
+
+    const additionalTableSettings = tableData.length === 0 ? 
+        commonAdditionalTableSettings : 
+        {...commonAdditionalTableSettings, data:tableData};
+
+    setDataTable(
+        `table[catReference="${cat}"]`,
+        `CatPages_${cat.trim()}`,     
+        colDefinition,
+        (table) => { postProcessCatDetailsTable(table, cat) }, // will execute after the table is created
+        (rowData) => { processCatDetailsTableRowClick(rowData, `table[catReference="${cat}"]`, cat) }, // will execute when click on row
+        additionalTableSettings // additional datatable settings for this table instance
+    );
 
     history.replaceState({}, document.title, window.location.pathname);
 }
 
-const updateCatSearchListItems = (filteredList) => {
-    console.log(filteredList)
+const createSimpleCatTable = (cat, tableData) => {
+
+    const catDetailsCardHeader = (cat) => {
+        return (
+            `
+                <div class="card-header d-flex justify-content-between">
+                    <span class="fs-6 fw-medium">Category:
+                        <button 
+                            siteFunction="catForActiveCatDetailsDatatable" id="${cat}" 
+                            type="button" 
+                            class="px-3 ml-1 btn btn-sm text-success fw-medium border-0 shadow-none position-relative">
+                            ${cat}       
+                        </button>
+                    </span>
+                    <button 
+                        siteFunction="btnClose" 
+                        whatToClose="div[catReference=&quot;${cat.trim()}&quot;]" 
+                        type="button" class="btn-close" 
+                        aria-label="Close">
+                    </button>
+                 </div>
+            `
+        );
+    }
+
+    const cardDetailsCardBody = (cat) => {
+        return (
+            `
+                <div class="card-body">
+                    <table style="display:none" siteFunction="catDetailsPageTable" class="table table-hover" catReference="${cat}">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th siteFunction="tableDateField">Last Update</th>
+                                <th>Actions</th>
+                                <th>Excerpt</th>
+                                <th>Other Categories</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `
+        );
+    }
+
+    $(`div[siteFunction="catDetails"][catReference="${cat}"]`).remove();
+    const $catDetailsContainer = $(`<div catReference="${cat}" siteFunction="catDetails" class="d-none card shadow bg-transparent">`);
+    $catDetailsContainer.append($(catDetailsCardHeader(cat)));
+    $catDetailsContainer.append($(cardDetailsCardBody(cat)));
+    $('div[id="cat_details"]').append($catDetailsContainer);
+    // small delay to avoid visibility of white table background for dummy table on dark theme
+    setTimeout(()=>{$(`table[siteFunction="catDetailsPageTable"][catReference="${cat}"]`).removeAttr('style')} ,100);
+
+}
+
+const postProcessCatDetailsTable = (table, cat) => {
+    if(table) {
+        addAdditionalCatButtons(table, cat);
+        addCustomCatsToPages(table, cat);
+    }   
+}
+
+const processCatDetailsTableRowClick = (rowData, tableSelector, cat) => {
+
+    // cats may contain spaces 
+    // so we need to extract them from the html to prevent .split(' ') to provide wrong cats
+    // NOT USED
+    const extractCats = (cats) => {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = `${cats}`;
+        const buttons = tempElement.querySelectorAll('button');
+        const buttonTexts = Array.from(buttons).map(button => button.textContent.trim());
+        return buttonTexts;
+    }
+
+    const extractPermalink = (actionsHtml) => {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = `${actionsHtml}`;
+        const linkToDoc = tempElement.querySelector('a[siteFunction="catPageItemLinkToDoc"]');
+        return linkToDoc.getAttribute('href');
+    }
+
+    const stripHtml = (html) => {
+        return html.replace(/<\/?[^>]+(>|$)/g, "").trim();
+      };
+
+    // process rowData when click on row
+    const cleanRowData  = _.mapValues(rowData.data, stripHtml);
+    const permalink = extractPermalink(rowData.data.pageActions);
+    const title = cleanRowData.pageTitle;
+    
+    pageInfo = {
+        siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
+        savedInfo: getPageSavedInfo (permalink, title),
+        cat:cat //need to pass cat too because we need a reference to the cat details datatable when returning from page info offcanvas
+    };
+    
+    showPageFullInfoCanvas(pageInfo);
+}
+
+const addAdditionalCatButtons = (table, cat) => {
+    // post processing table: adding 2 buttons in the bottom2 zone
+    gotToTagBtn = {
+       attr: {
+           siteFunction: 'tableNavigateToTags',
+           title: 'Go to tags'
+       },
+       className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
+       text: 'Tags info',
+       action: () => {
+           window.location.href = '/tag-info'
+       }
+   }
+
+   gotToSavedItemsBtn = {
+       attr: {
+           siteFunction: 'tableNavigateToSavedItems',
+           title: 'Go to saved items'
+       },
+       className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
+       text: 'Saved items',
+       action: () => {
+           window.location.href = '/tag-info'
+       }
+   }
+   const btnArray = [];
+   btnArray.push(gotToTagBtn);
+   btnArray.push(gotToSavedItemsBtn);
+   addAdditionalButtonsToTable(table, `table[catReference="${cat}"]`, 'bottom2', btnArray);
+}
+
+const updateCatSearchList = () => {
+    getCatType = (cat) => {
+        return _.findIndex(globCustomCats, item => item.toLowerCase() === cat.toLowerCase()) === -1 ? 'siteCat' : 'customCat'
+    }
+
+    getCustomCatListElement = (cat) => {
+        return (
+            `
+                <li 
+                    siteFunction="searchCatListItem"
+                    catType="${getCatType(cat)}"
+                    catReference="${cat}">
+                    ${cat}
+                </li>
+            `
+        );
+    }
+
+    $('li[catType="customCat"]').remove();
+    globCustomCats.forEach(cat => {
+        $('ul[siteFunction="searchCatList"]').append($(getCustomCatListElement(cat)));
+    });
+}
+
+const updateCatSearchListItems = (list) => {
+    $('li[sitefunction="searchCatListItem"]').each(function() {
+        $(this).attr('catReference', $(this).text().trim());
+        $(this).attr(
+            'catType', 
+            _.findIndex(globCustomCats, item => item.toLowerCase() === $(this).text().trim().toLowerCase()) === -1 ? 
+                'siteCat' : 
+                'customCat'
+        );
+    });
+}
+
+const setCatPageSavedButtonsStatus = () => {
+
+    const setRemoveFromSavedItemsStatus = () => {
+        $('button[siteFunction="catPageItemRemoveFromSavedItems"]').each( function() {
+            const pageToSave = {
+                permalink: $(this).attr('pageRefPermalink'),
+                title: $(this).attr('pageRefTitle')
+            }
+            const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];        
+            if (!findObjectInArray(pageToSave, savedItems)) $(this).addClass('disabled');
+            else $(this).removeClass('disabled')
+        });
+    }
+    
+    const setSaveForLaterReadStatus = () => {
+        $('button[siteFunction="catPageItemSaveForLaterRead"]').each( function() {
+            const pageToSave = {
+                permalink: $(this).attr('pageRefPermalink'),
+                title: $(this).attr('pageRefTitle')
+            }
+            const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    
+            if (findObjectInArray(pageToSave, savedItems)) $(this).addClass('disabled');
+            else $(this).removeClass('disabled')
+        });
+    }
+    
+    setRemoveFromSavedItemsStatus();
+    setSaveForLaterReadStatus();
+}
+
+const buildCatPagesListForCustomCat = (cat) => {
+    let tableData = [];
+
+    const colPageTitle = (title) => {
+        return `<span>${title}</span>`
+    }
+
+    const colPageLastUpdate = (date) => {
+        return `<span>${date}</span>`
+    }
+
+    const colPageExcerpt = (excerpt) => {
+        return `<span>${excerpt}</span>`
+    }
+    
+    const colPageActions = (cat, permalink, title) => {
+
+        return (
+            `
+                <div class="btn-group"> 
+                    <a 
+                        siteFunction="catPageItemLinkToDoc" 
+                        class="btn btn-sm btn-info" 
+                        href="${permalink}" 
+                        title="Read page ${title}" 
+                        catForCatTableDetailsReference="${cat}" 
+                        target="_blank"> 
+                        <i class="bi bi-book" style="font-size:1.2rem"></i> 
+                    </a> 
+                    
+                    <button 
+                        siteFunction="catPageItemSaveForLaterRead" 
+                        pageRefPermalink="${permalink}" 
+                        pageRefTitle="${title}" 
+                        class="btn btn-sm btn-success disabled" 
+                        title="Save page ${title} for later read" 
+                        catForCatTableDetailsReference="${cat}"> 
+                        <i class="bi bi-bookmark-plus" style="font-size:1.2rem"></i> 
+                    </button>
+                    
+                    <button 
+                        siteFunction="catPageItemRemoveFromSavedItems" 
+                        pageRefPermalink="${permalink}" 
+                        pageRefTitle="${title}" 
+                        class="btn btn-sm btn-warning" 
+                        title="Remove page ${title} from saved documents" 
+                        catForCatTableDetailsReference="${cat}"> 
+                        <i class="bi bi-bookmark-x" style="font-size:1.2rem"></i> 
+                    </button>
+                </div>
+            `
+        )   // format the output string to look nice
+            .replace(/[\n\t]/g, '') // remove newlines and tabs
+            .replace(/\s\s+/g, ' ') // replace multiple spaces with single space
+            .replace(/>\s+</g, '><') // remove spaces between > <
+            .replace(/\s+</g, '<') // remove spaces before <
+            .replace(/>\s+/g, '>'); // remove spaces after >
+    }
+
+    const colPageOtherCats = (cat, pageOtherCats) => {
+
+        const otherCatBtnItem = (cat) => {
+        
+            const catType = _.findIndex(globCustomCats, item => item.toLowerCase() === cat.trim().toLowerCase()) > 0 ?
+                'customCat' :
+                'siteCat';
+            
+            const catBtnType = _.findIndex(globCustomCats, item => item.toLowerCase() === cat.trim().toLowerCase()) > 0 ? 
+                'text-success' : 
+                'text-danger';
+    
+            return (
+                `
+                    <button 
+                        siteFunction="pageCatButton" 
+                        catType="${catType}" 
+                        catReference="${cat}" 
+                        id="pageCat_${cat}" 
+                        type="button" 
+                        class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm ${catBtnType} fw-medium border-0 shadow-none position-relative" 
+                        title="Details for category ${cat}"> 
+                        ${cat} 
+                    </button>
+                `
+            );
+        }
+
+        let buttons = '';
+        pageOtherCats.forEach(cat => { buttons += otherCatBtnItem(cat); });
+
+        buttons = '<span>' + buttons + '</span>';
+        buttons = buttons
+            .replace(/[\n\t]/g, '') // remove newlines and tabs
+            .replace(/\s\s+/g, ' ') // replace multiple spaces with single space
+            .replace(/>\s+</g, '><') // remove spaces between > <
+            .replace(/\s+</g, '<') // remove spaces before <
+            .replace(/>\s+/g, '>'); // remove spaces after >
+        return buttons;
+
+    }
+
+    getArrayOfCatSavedPages(cat).forEach(page => {
+        const sitePage = getObjectFromArray ({permalink: page.permalink, title: page.title}, pageList);
+
+        const pageTitle = colPageTitle(page.title);
+        const pageLastUpdate = colPageLastUpdate(formatDate(sitePage.lastUpdate));
+        const pageExcerpt = colPageExcerpt(sitePage.excerpt);
+        const pageActions = colPageActions(cat, page.permalink, page.title);
+        
+        const pageOtherCats = _.uniq(_.pull(
+            [
+                ...sitePage.categories.sort(), 
+                ...getPageCats({siteInfo:{permalink:page.permalink, title: page.title}}).sort()
+            ], 
+            cat
+        )); // get all site and custom cats, except for the one which was clicked
+        
+        tableData.push({
+            pageTitle: pageTitle,
+            pageLastUpdate: pageLastUpdate,
+            pageActions: pageActions,
+            pageExcerpt: pageExcerpt,
+            pageOtherCats: colPageOtherCats(cat, pageOtherCats)
+        });
+    });
+
+    return tableData;
+}
+
+const addCustomCatsToPages = (table = null, cat = null) => {
+    if (!table && !cat) return;
+
+    let nodes;
+    if (table) nodes = table.rows().nodes();
+    if (cat) nodes = $(`table[catReference="${cat}"]`).DataTable().rows().nodes();
+
+    $.each(nodes, function(index, node) {
+        const title = $(node.outerHTML).attr('pageTitleReference');
+        const permalink = $(node.outerHTML).attr('pagePermalinkReference');
+        const pageInformation = {
+            siteInfo: {
+                title: title,
+                permalink: permalink
+            }
+        };
+        
+        setPageOtherCustomCats(pageInformation, cat);
+
+    });
+}
+
+const setPageOtherCustomCats = (pageInformation, crtCat = null) => {
+
+    const getCustomCatButtonElement = (cat) => {
+        return (
+            `
+                <button 
+                    siteFunction="pageCatButton"
+                    catType="customCat" 
+                    catReference="${cat}"
+                    id="pageCat_${cat}" 
+                    type="button" 
+                    class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm text-success fw-medium border-0 shadow-none position-relative"
+                    title = "Details for category ${cat}">
+                    ${cat}
+                </button>
+            `
+        )
+    }
+
+    const customCats = _.pull(getPageCats(pageInformation), crtCat);
+
+    const $pageOtherCatsElement = $(`td[colFunction="catInfoCatTablePageOtherCats"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"]`);
+
+    const $pageOtherCustomCatElement = $(`td[colFunction="catInfoCatTablePageOtherCats"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageCatButton"][catType="customCat"]`);
+    
+    $pageOtherCustomCatElement.remove();
+    
+    customCats.forEach(cat => {        
+
+        $pageOtherCatsElement.each(function() {
+            $(this).children().first().append($(getCustomCatButtonElement(cat)));
+        })
+    });
+
 }

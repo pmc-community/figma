@@ -96,10 +96,46 @@ module Jekyll
             
         end
 
+        class PageCats < Liquid::Tag
+  
+            def initialize(tag_name, input, context)
+                super
+                @input = input
+            end
+
+            def render(context)
+                begin
+                    if( !@input.nil? && !@input.empty? )
+                        param = Liquid::Template.parse(@input).render(context)
+                        permalink = JSON.parse(param.gsub('=>', ':'))["permalink"]
+                        catExcept = JSON.parse(JSON.parse(param.gsub('=>', ':'))["except"].to_json)
+                        pages = JSON.parse(context.registers[:site].data["page_list"])
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                    end
+                    rescue
+                        begin
+                            param = JSON.parse(@input)
+                            permalink = param["permalink"]
+                            catExcept = JSON.parse(param["except"].to_json) || []
+                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                        rescue
+                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageCats tag got bad json string as input(#{param})\n")
+                        end
+                end
+                cats = matched_page["categories"] ? matched_page["categories"] : [] if matched_page
+                catExcept.each do |cat|
+                    cats.delete(cat)
+                end
+                cats.to_json
+            end
+            
+        end
+
     end
 end
   
 Liquid::Template.register_tag('SitePages', Jekyll::SitePages::SitePages)
 Liquid::Template.register_tag('PageExcerpt', Jekyll::SitePages::PageExcerpt)
 Liquid::Template.register_tag('PageTags', Jekyll::SitePages::PageTags)
+Liquid::Template.register_tag('PageCats', Jekyll::SitePages::PageCats)
   

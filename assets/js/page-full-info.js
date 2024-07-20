@@ -21,7 +21,8 @@ const REFRESH_PAGE_INFO_AFTER = (func) => {
         pageInfo = {
             siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
             savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-            tag: oldPageInfo.tag
+            tag: oldPageInfo.tag,
+            cat: oldPageInfo.cat
         };
 
         return result;
@@ -37,7 +38,8 @@ const REFRESH_PAGE_INFO_BEFORE = (func) => {
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-                tag: oldPageInfo.tag
+                tag: oldPageInfo.tag,
+                cat: oldPageInfo.cat
 
             };
 
@@ -60,7 +62,8 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-                tag: oldPageInfo.tag
+                tag: oldPageInfo.tag,
+                cat: oldPageInfo.cat
             };
 
             resolve(pageInfo);
@@ -75,7 +78,8 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-                tag: oldPageInfo.tag
+                tag: oldPageInfo.tag,
+                cat: oldPageInfo.cat
             };
         });
     };
@@ -100,11 +104,16 @@ const showPageFullInfoCanvas = (pageInfo) => {
 const initPageFullInfoCanvasAfterDocReady = (pageInfo) => {
     REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
     REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu(pageInfo);
+
+    REFRESH_PAGE_INFO_BEFORE__fillCatList(pageInfo);
 }
 
 const initPageFullInfoCanvasAfterShow = (pageInfo) => {
     // for tags
     setTagEditor('#offcanvasPageFullInfoPageTagsEditor', pageInfo);
+
+    // for cats
+    setCatEditor('#offcanvasPageFullInfoPageCatsEditor', pageInfo);
 }
 
 const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
@@ -127,6 +136,9 @@ const initPageFullInfoCanvasBeforeShow = (pageInfo) => {
 
     // for tags
     setCanvasPageCustomTagsVisibility(pageInfo);
+
+    // for cats
+    setCanvasPageCustomCatsVisibility(pageInfo);
     
 }
 
@@ -230,7 +242,7 @@ const fillTagList = (pageInfo) => {
         const $el = $(html);
         $el.text(tag);
         $el.attr('href',`/tag-info?tag=${tag}`);
-        $el.removeClass('btn-primarry').removeClass('btn-success').addClass('btn-primary');
+        $el.removeClass('btn-primary').removeClass('btn-success').addClass('btn-primary');
         $el.appendTo( $tagItemsContainer);
     });
 
@@ -240,11 +252,49 @@ const fillTagList = (pageInfo) => {
         $el.attr('href',`/tag-info?tag=${tag}`);
         $el.attr('customTagRef', tag);
         $el.attr('pageTagType', 'customTag');
-        $el.removeClass('btn-primarry').removeClass('btn-primary').addClass('btn-success');
+        $el.removeClass('btn-primary').removeClass('btn-primary').addClass('btn-success');
         $el.appendTo( $tagItemsContainer);
     });
 }
 const REFRESH_PAGE_INFO_BEFORE__fillTagList = REFRESH_PAGE_INFO_BEFORE(fillTagList);
+
+const fillCatList = (pageInfo) => {
+    const $catItemsContainer = $('div[siteFunction="offcanvasPageFullInfoPageCatsList"]');
+    const html = 
+        `
+            <a 
+                siteFunction="offcanvasPageFullInfoPageCatButton" 
+                type="button" 
+                class="focus-ring focus-ring-warning px-2 mr-1 my-2 btn btn-sm text-danger fw-medium border-0 shadow-none position-relative"
+                href="#">
+                cat
+            </a>
+        `;
+    
+    $catItemsContainer.empty();
+
+    siteCats = pageInfo.siteInfo.categories || [];
+    customCats = pageInfo.savedInfo.customCategories || [];
+
+    siteCats.sort().forEach( cat => {
+        const $el = $(html);
+        $el.text(cat);
+        $el.attr('href',`/cat-info?cat=${cat}`);
+        $el.removeClass('text-danger').removeClass('text-success').addClass('text-danger');
+        $el.appendTo( $catItemsContainer);
+    });
+
+    customCats.sort().forEach( cat => {
+        const $el = $(html);
+        $el.text(cat);
+        $el.attr('href',`/cat-info?cat=${cat}`);
+        $el.attr('customTagRef', cat);
+        $el.attr('pageCatType', 'customCat');
+        $el.removeClass('text-danger').removeClass('text-success').addClass('text-success');
+        $el.appendTo( $catItemsContainer);
+    });
+}
+const REFRESH_PAGE_INFO_BEFORE__fillCatList = REFRESH_PAGE_INFO_BEFORE(fillCatList);
 
 const setCanvasGeneralCustomNotesVisibility = (pageInfo) => {
     if ( getPageStatusInSavedItems(pageInfo)) {
@@ -265,6 +315,15 @@ const setCanvasPageCustomTagsVisibility = (pageInfo) => {
     }
     else {
         $('div[siteFunction="offcanvasPageFullInfoPageCustomTags"]').hide();
+    }
+}
+
+const setCanvasPageCustomCatsVisibility = (pageInfo) => {
+    if ( getPageStatusInSavedItems(pageInfo)) {
+        $('div[siteFunction="offcanvasPageFullInfoPageCustomCats"]').show();
+    }
+    else {
+        $('div[siteFunction="offcanvasPageFullInfoPageCustomCats"]').hide();
     }
 }
 
@@ -318,6 +377,7 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
+        setCanvasPageCustomCatsVisibility(pageInfo);
 
         // for custom notes
         refreshNotesTable(pageInfo);
@@ -325,6 +385,10 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         // for custom tags
         setTagEditor('#offcanvasPageFullInfoPageTagsEditor', pageInfo);
         REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
+
+        // for custom cats
+        setCatEditor('#offcanvasPageFullInfoPageCatsEditor', pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillCatList(pageInfo);
 
     });
     
@@ -334,12 +398,17 @@ const setCanvasButtonsFunctions = (pageInfo) => {
         setPageStatusButtons(pageInfo);
         setCanvasGeneralCustomNotesVisibility(pageInfo);
         setCanvasPageCustomTagsVisibility(pageInfo);
+        setCanvasPageCustomCatsVisibility(pageInfo);
 
         // for custom notes
         refreshNotesTable(pageInfo);
 
         // for custom tags
         REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
+        createGlobalLists();
+
+        // for custom cats
+        REFRESH_PAGE_INFO_BEFORE__fillCatList(pageInfo);
         createGlobalLists();
     });
 }
@@ -383,6 +452,7 @@ const REFRESH_PAGE_INFO_AFTER__deleteCustomNote  = REFRESH_PAGE_INFO_AFTER(delet
 const setInitialCanvasSectionsVisibility = () => {
     $('div[siteFunction="offcanvasPageFullInfoPageGeneral"]').hide();
     $('div[siteFunction="offcanvasPageFullInfoPageTags"]').hide();
+    $('div[siteFunction="offcanvasPageFullInfoPageCats"]').hide();
 }
 
 const setCanvasSectionsOpeners = () => {
@@ -392,6 +462,10 @@ const setCanvasSectionsOpeners = () => {
 
     $('span[siteFunction="offcanvasPageFullInfoPageTagsOpen"]').on('click', function() {
         $('div[siteFunction="offcanvasPageFullInfoPageTags"]').fadeIn();
+    })
+
+    $('span[siteFunction="offcanvasPageFullInfoPageCatsOpen"]').on('click', function() {
+        $('div[siteFunction="offcanvasPageFullInfoPageCats"]').fadeIn();
     })
 }
 
@@ -602,6 +676,30 @@ const setTagEditor = (editorSelector, pageInfo) => {
     }
 }
 
+const setCatEditor = (editorSelector, pageInfo) => {
+    if ( getPageStatusInSavedItems(pageInfo)) {
+        const options = {
+            toolbar: {
+                show: false,
+                selector: '#offcanvasPageFullInfoPageCatsEditorToolbar'
+            },
+            menuBar: {
+                get show() {return options.toolbar.show},
+                selector: '#offcanvasPageFullInfoPageCatsEditorMenubar'
+            },
+            builtInOptions: {}
+        };
+
+        setEditor(
+            editorSelector, 
+            options,
+            (editor) => { postProcessCatEditor(editor, editorSelector, pageInfo); }, 
+            (editor, callbackResponse) => { postProcessingEditorText(editor, editorSelector, pageInfo, callbackResponse); },
+            (editor) => { postProcessCatEditorTextOnHitEnter(editor, pageInfo); }
+        );
+    }
+}
+
 const postProcessTagEditor = (editor, editorSelector, pageInfo) => {
     // post processing editor after creation, 
     // runs only one time, after the editor is created
@@ -614,6 +712,21 @@ const postProcessTagEditor = (editor, editorSelector, pageInfo) => {
             else $(this).addClass('addTagLine');
         });
         $(".addTagLine:not(:last)").hide();
+    }); 
+}
+
+const postProcessCatEditor = (editor, editorSelector, pageInfo) => {
+    // post processing editor after creation, 
+    // runs only one time, after the editor is created
+
+    // setting the observer to see when cats are added in the editor (when hit enter key)
+    // and apply styles to the cats
+    setElementCreateBySelectorObserver (`${editorSelector} p`, () => {
+        $(`${editorSelector} p`).each( function() {
+            if ($(this).children().length === 0) $(this).addClass('btn bg-success-subtle btn-sm text-dark  m-2');
+            else $(this).addClass('addCatLine');
+        });
+        $(".addCatLine:not(:last)").hide();
     }); 
 }
 
@@ -643,6 +756,23 @@ const postProcessEditorTextOnHitEnter = (editor, pageInfo) => {
     }
 };
 
+const postProcessCatEditorTextOnHitEnter = (editor, pageInfo) => {
+    let editorText = editor.getData();
+    const matches = editorText.match(/<p>&nbsp;<\/p>$/g);
+    const count = matches ? matches.length : 0
+    if (count > 0) {
+        cats = transformEditorTextToArray(editorText);
+        if (cats.length > 0 ) {
+            editor.setData('');    
+            REFRESH_PAGE_INFO_BEFORE__processNewCats(cats, pageInfo);
+        }
+    }
+    else {
+        editor.setData(editorText.replace(/^(<p>&nbsp;<\/p>)+/, '').replace(/<p>&nbsp;<\/p>$/g, ''));
+        editor.model.change((writer) => { writer.setSelection(writer.createPositionAt(editor.model.document.getRoot(), 'end')); });
+    }
+};
+
 const processNewTags = (tags, pageInfo) => {
     tags.forEach ( tag => {
         const isPageTag = _.includes(_.map(getPageTags(pageInfo), _.toLower), _.toLower(tag));
@@ -650,6 +780,14 @@ const processNewTags = (tags, pageInfo) => {
     } );
 }
 const REFRESH_PAGE_INFO_BEFORE__processNewTags = REFRESH_PAGE_INFO_BEFORE(processNewTags);
+
+const processNewCats = (cats, pageInfo) => {
+    cats.forEach ( cat => {
+        const isPageCat = _.includes(_.map(getPageCats(pageInfo), _.toLower), _.toLower(cat));
+        if (!isPageCat) REFRESH_PAGE_INFO_BEFORE__addCatToPage(cat, pageInfo);
+    } );
+}
+const REFRESH_PAGE_INFO_BEFORE__processNewCats = REFRESH_PAGE_INFO_BEFORE(processNewCats);
 
 const addTagToPage = (tag, pageInfo) => {
     updateGlobalTagLists(tag);
@@ -660,6 +798,15 @@ const addTagToPage = (tag, pageInfo) => {
 }
 const REFRESH_PAGE_INFO_BEFORE__addTagToPage = REFRESH_PAGE_INFO_BEFORE(addTagToPage);
 
+const addCatToPage = (cat, pageInfo) => {
+    updateGlobalCatLists(cat);
+    if (addCat(cat, pageInfo)) {
+        pageInfo.savedInfo.customCategories = getPageTags(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillCatList(pageInfo);
+    }
+}
+const REFRESH_PAGE_INFO_BEFORE__addCatToPage = REFRESH_PAGE_INFO_BEFORE(addCatToPage);
+
 const updateGlobalTagLists = (tag) => {
     const isCustomTag = _.includes(_.map(globCustomTags, _.toLower), _.toLower(tag));
     if ( !isCustomTag ) { 
@@ -667,5 +814,15 @@ const updateGlobalTagLists = (tag) => {
         globCustomTags.sort();
         globAllTags.push(tag);
         globAllTags.sort();
+    }
+}
+
+const updateGlobalCatLists = (cat) => {
+    const isCustomCat = _.includes(_.map(globCustomCats, _.toLower), _.toLower(cat));
+    if ( !isCustomCat ) { 
+        globCustomCats.push(cat);
+        globCustomCats.sort();
+        globAllCats.push(cat);
+        globAllCats.sort();
     }
 }

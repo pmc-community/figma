@@ -8,12 +8,15 @@ $documentEditorBorderRadius: $brad-0px;
 $documentEditorBaloonZIndex: calc(#{$z-max} + 1000);
 $documentEditorAddTagLineBorderTop: $b-SolThinNeutral;
 $documentEditorAddTagLinePaddingTop: $p-8px;
+$documentEditorAddCatLineBorderTop: $b-SolThinNeutral;
+$documentEditorAddCatLinePaddingTop: $p-8px;
 
 $editorElements: (
     editZone: '.ck-editor__editable',
     documentEditor: '.documentEditor', // for the case when we need a full doc editor
     balloon: '.ck-balloon-panel',
-    addTagLine: '.addTagLine'
+    addTagLine: '.addTagLine',
+    addCatLine: '.addCatLine'
 );
 
 @import 'meta.scss';

@@ -294,6 +294,22 @@ const getArrayOfTagSavedPages= (tag) => {
     return pagesArray;
 }
 
+const getArrayOfCatSavedPages= (cat) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return [];
+
+    let pagesArray = [];
+    savedItems.forEach(page => {
+        let customCats= _.map(page.customCategories || [], function(str) {
+            return str.toLowerCase();
+          });
+        if ( customCats.includes(cat.toLowerCase()) ) pagesArray.push(page);
+    });
+
+    return pagesArray;
+}
+
 const getPageStatusInSavedItems = (pageInfo) => {
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     return findObjectInArray({permalink: pageInfo.siteInfo.permalink, title:pageInfo.siteInfo.title}, savedItems);
@@ -332,6 +348,45 @@ const addTag = (tag, pageInfo) => {
     }
     if (tagIndex === -1 && tagGlobIndex === -1) savedPageCustomTags.push(tag);
     savedPage.customTags = savedPageCustomTags.sort();
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+
+}
+
+const addCat = (cat, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast(`Can\'t add tag! There is nothing in saved items...`, 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast(`Can\'t add category! Page ${page.title} not found in saved items...`, 'bg-danger', 'text-light');
+        return false;
+    }
+
+    if (cat.trim() === '') {
+        //showToast('Nothing to add, write something ...', 'bg-warning', 'text-dark');
+        return false;
+    }
+    
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomCats = savedPage.customCategories || [];
+    
+    const catIndex =  _.findIndex(savedPageCustomCats, item => item.toLowerCase() === cat.toLowerCase());
+    const catGlobIndex =  _.findIndex(catList, item => item.toLowerCase() === cat.toLowerCase());
+    if (catGlobIndex !== -1) {
+        showToast(`Can\'t add category ${cat} because this category is already a site category!`, 'bg-warning', 'text-dark');
+        return false;
+    }
+    if (catIndex === -1 && catGlobIndex === -1) savedPageCustomCats.push(cat);
+    savedPage.customCategories = savedPageCustomCats.sort();
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
     return true;

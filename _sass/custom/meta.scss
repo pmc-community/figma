@@ -433,6 +433,11 @@
         border-top: $documentEditorAddTagLineBorderTop;
         padding-top: $documentEditorAddTagLinePaddingTop;        
     }
+
+    #{map-get($editorElements, addCatLine)} {
+        border-top: $documentEditorAddCatLineBorderTop;
+        padding-top: $documentEditorAddCatLinePaddingTop;        
+    }
 }
 
 // editor
