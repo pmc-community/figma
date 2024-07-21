@@ -828,8 +828,13 @@ const createGlobalLists = () => {
     globAllTags = _.uniq(Array.from(new Set([...tagList, ...globCustomTags].slice().sort()))); // here to check if a site tag is the same as a custom tag and to rename the custom tag with CT_
 
     // do some cleaning since datatables are, usually, created with saveState configuration
-    // and modifications of tags may lead to orphan tables in slocal storage
+    // and modifications of tags/cats may lead to orphan tables in local storage
     getOrphanDataTables('tag').forEach( table => { localStorage.removeItem(table); });
+    getOrphanDataTables('cat').forEach( table => { localStorage.removeItem(table); });
+    
+    // better to clean all notes tables to avoid cases when the user save the table configuration wih all columns visible
+    // and the note uuid remains visible although is not useful for anything
+    getOrphanDataTables('notes').forEach( table => { localStorage.removeItem(table); });
 }
 
 const getOrphanDataTables = (what) => {
@@ -840,6 +845,13 @@ const getOrphanDataTables = (what) => {
         case 'tag':
             substring = '_DataTables_TagPages_';
             break;
+        case 'cat':
+            substring = '_DataTables_CatPages_';
+            break;
+        case 'notes':
+            substring = '_DataTables_PageCustomNotes_';
+            break;
+        default: break;
     }
     
     if (!substring) return [];

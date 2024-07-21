@@ -222,7 +222,7 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasCustomCategoriesBadge"
                         title = "Page ${page.siteInfo.title} has custom categories" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger">
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success">
                         Categories
                     </span>
                 `;

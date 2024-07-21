@@ -414,10 +414,40 @@ const deleteTagFromPage = (tag, pageInfo) => {
     const savedPage = savedItems[pageIndex];
     const savedPageCustomTags = savedPage.customTags || [];
 
-    const tagIndex =  _.findIndex(savedPageCustomTags, item => item === tag);;
+    const tagIndex =  _.findIndex(savedPageCustomTags, item => item === tag);
     if (tagIndex !== -1)  _.pullAt(savedPageCustomTags, tagIndex);
 
     savedPage.customTags = savedPageCustomTags;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const deleteCatFromPage = (cat, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t delete category! There is nothing in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t delete category! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomCats = savedPage.customCategories || [];
+
+    const catIndex =  _.findIndex(savedPageCustomCats, item => item === cat);
+    if (catIndex !== -1)  _.pullAt(savedPageCustomCats, catIndex);
+
+    savedPage.customCategories = savedPageCustomCats;
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
     return true;
@@ -437,6 +467,28 @@ const deleteTagFromAllPages = (tag, pageInfo={}) => {
         const tagIndex =  _.findIndex(savedPageCustomTags, item => item.toLowerCase() === tag.toLowerCase());
         if (tagIndex !== -1)  _.pullAt(savedPageCustomTags, tagIndex);
         page.customTags = savedPageCustomTags;
+        savedItems[pageIndex] = page;
+        pageIndex += 1;
+    });
+
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const deleteCatFromAllPages = (cat, pageInfo={}) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t delete catgory! There is nothing in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    let pageIndex = 0;
+    savedItems.forEach( page => {
+        const savedPageCustomCats = page.customCategories || [];
+        const catIndex =  _.findIndex(savedPageCustomCats, item => item.toLowerCase() === cat.toLowerCase());
+        if (catIndex !== -1)  _.pullAt(savedPageCustomCats, catIndex);
+        page.customCategories = savedPageCustomCats;
         savedItems[pageIndex] = page;
         pageIndex += 1;
     });
@@ -466,6 +518,36 @@ const updateTagForAllPages = (oldTag, newTag) => {
         if (tagIndex !== -1) {
             savedPageCustomTags = _.uniq(_.map(savedPageCustomTags, item => item.toLowerCase() === oldTag.toLowerCase() ? newTag : item));
             page.customTags = savedPageCustomTags;
+            savedItems[pageIndex] = page;
+        } 
+        pageIndex += 1;
+    });
+
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const updateCatForAllPages = (oldCat, newCat) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t update category! There is nothing in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const catGlobIndex =  _.findIndex(catList, item => item.toLowerCase() === newCat.toLowerCase());
+    if (catGlobIndex !== -1) {
+        showToast(`Can\'t update category ${oldCat} with ${newCat} because ${newCat} is already a site category!`, 'bg-warning', 'text-dark');
+        return false;
+    }
+
+    let pageIndex = 0;
+    savedItems.forEach( page => {
+        let savedPageCustomCats = page.customCategories || [];
+        const catIndex =  _.findIndex(savedPageCustomCats, item => item.toLowerCase() === oldCat.toLowerCase());
+        if (catIndex !== -1) {
+            savedPageCustomCats = _.uniq(_.map(savedPageCustomCats, item => item.toLowerCase() === oldCat.toLowerCase() ? newCat : item));
+            page.customCategories = savedPageCustomCats;
             savedItems[pageIndex] = page;
         } 
         pageIndex += 1;
@@ -505,6 +587,41 @@ const updateTagForPage = (oldTag, newTag, pageInfo={}) => {
 
     savedPageCustomTags = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomTags, oldTag, newTag));
     savedPage.customTags = savedPageCustomTags;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+}
+
+const updateCatForPage = (oldCat, newCat, pageInfo={}) => {
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t update category! There is nothing in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t update category! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const savedPage = savedItems[pageIndex];
+    let savedPageCustomCats = savedPage.customCategories || [];
+    const catGlobIndex =  _.findIndex(catList, item => item.toLowerCase() === newCat.toLowerCase());
+
+    if (catGlobIndex !== -1) {
+        showToast(`Can\'t update category ${oldCat} with ${newCat} because ${newCat} is already a site category!`, 'bg-warning', 'text-dark');
+        return false;
+    }
+
+    savedPageCustomCats = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomCats, oldCat, newCat));
+    savedPage.customCategories = savedPageCustomCats;
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
     return true;

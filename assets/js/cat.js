@@ -8,9 +8,8 @@ const setCatSupport = () => {
         setCatSearchList();
         updateCatSearchList();
         setCatSearchList()
-
-        //setTagCloudButtonsContextMenu();
-        //setPageTagButtonsContextMenu();
+        setCatCloudButtonsContextMenu();
+        setPageCatButtonsContextMenu();
 
         requestedCat = readQueryString('cat');
         if (requestedCat) showCatDetails(requestedCat);
@@ -22,7 +21,7 @@ const setCatSupport = () => {
         setCatPageSavedButtonsStatus();
         
         // cat was passed to pageInfo global before opening the offcanvas 
-        // in order to preserve the reference to the active tag details datatable
+        // in order to preserve the reference to the active cat details datatable
         // see processCatDetailsTableRowClick
         updateAllCatInfoOnPage(pageInfo.cat);
     });
@@ -131,6 +130,24 @@ const setCatInfoPageButtonsFunctions = () => {
             setCatPageSavedButtonsStatus();
             updateAllCatInfoOnPage($(this).attr('catForCatTableDetailsReference'));
         });
+
+    // update cat for all pages when click "Update" in the context menu for custom cat in cat cloud
+    // delegate event handler to document since the buttons are not available when setting the listener
+    $(document)
+        .off('click', 'button[siteFunction="catCloudEditCustomCat"]')
+        .on('click', 'button[siteFunction="catCloudEditCustomCat"]', handleCatUpdate);
+
+    // update cat for a page when click "Update" in the context menu for custom cats in page cat column from a datatable
+    // delegate event handler to document since the buttons are not available when setting the listener
+    $(document)
+        .off('click', 'button[siteFunction="pageCatEditCustomCat"]')
+        .on('click', 'button[siteFunction="pageCatEditCustomCat"]', handlePageCatUpdate);
+
+    // add cat for a page when click "Add" in the context menu for custom cats in page cat column from a datatable
+    // delegate event handler to document since the buttons are not available when setting the listener
+    $(document)
+        .off('click', 'button[siteFunction="pageCatAddCustomCat"]')
+        .on('click', 'button[siteFunction="pageCatAddCustomCat"]', handlePageCatAdd);
 
 }
 
@@ -680,4 +697,296 @@ const setPageOtherCustomCats = (pageInformation, crtCat = null) => {
         })
     });
 
+}
+
+const setCatCloudButtonsContextMenu = () => {
+
+    const getMenuItemHtml = (title, text, icon) => {
+        return `
+            <li title="${title}">
+                <a class="icon-link">
+                    <i class="bi ${icon}"></i>
+                    ${text}
+                </a>
+            </li>`
+    }
+
+    const menuContent = 
+    {   
+        header: '',
+        menu:[
+            {
+                html: getMenuItemHtml(`Remove the category from all pages`,'Remove category', 'bi-trash'),
+                handler: handleCatRemoval
+            }
+        ],
+        footer: 
+            `
+                <input type="text" autocomplete="off" class="form-control my-2" id="catCloudEditCustomCatInput">
+                <button 
+                    siteFunction="catCloudEditCustomCat"
+                    catForCatTableDetailsReference="" 
+                    catReference=""
+                    id="catCloudEditCustomCat" 
+                    type="button" 
+                    class="focus-ring focus-ring-warning btn btn-sm btn-warning my-2 position-relative">
+                    Update      
+                </button>
+            `
+    };
+    
+    setContextMenu (
+        'button[sitefunction="catButton"][catType="customCat"]', 
+        'body', 
+        menuContent, 
+        (menuItem, itemClicked) => {
+            // get the menu item click handler and execute it            
+            getContextMenuItemHandler(
+                menuItem.text().replace(/[\n\r\t]/g, '').trim(), 
+                menuContent
+            ).bind(
+                null,
+                // cat to be processed
+                $(itemClicked.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim(),
+                // cat for the active cat details datatable
+                $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim() 
+            )();
+        },
+        (event) => {
+            // cat to be processed
+            const $catBtn = $(event.target).closest('button[sitefunction="catButton"][catType="customCat"]').clone();
+            const cat = $($catBtn.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim();
+            $('#catCloudEditCustomCatInput').val(cat);
+            $('#catCloudEditCustomCatInput').focus();
+
+            // cat for active cat details datatable
+            const catForActiveCatDetailsDatatable = $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim();
+            
+            $('button[siteFunction="catCloudEditCustomCat"]').attr('catForCatTableDetailsReference',catForActiveCatDetailsDatatable);
+            $('button[siteFunction="catCloudEditCustomCat"]').attr('catReference', cat);
+        },
+        ['catCloudContextMenu'] //additonal class for the context menu container
+    );
+}
+
+const handleCatRemoval = (cat, catForActiveCatDetailsDatatable = null) => {
+    if (!cat) return;
+    if (cat === 'undefined') return;
+    if (cat === '') return;
+
+    if (!deleteCatFromAllPages(cat)) return;
+    createGlobalLists();
+    updateAllCatInfoOnPage(catForActiveCatDetailsDatatable);
+
+    // remove the cat details container id it is open for the cat we delete
+    if (cat.toLowerCase() === catForActiveCatDetailsDatatable.toLowerCase())
+        $(`div[siteFunction="catDetails"][catReference="${cat}"]`).remove();
+
+}
+
+const handleCatUpdate = () => {
+    const cat = cleanText($('#catCloudEditCustomCatInput').val());
+
+    const oldCat = $('button[siteFunction="catCloudEditCustomCat"]').attr('catReference');
+    $('.context-menu').remove();
+
+    if (!cat) return;
+    if (cat === 'undefined') return;
+    if (cat === '') return;
+
+    
+    if (!oldCat) return;
+    if (oldCat === 'undefined') return;
+    if (oldCat === '' ) return;
+
+    if (!updateCatForAllPages(oldCat,cat)) return;
+    createGlobalLists();
+    
+    const catForActiveCatDetailsDatatable = $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim();
+
+    updateAllCatInfoOnPage(catForActiveCatDetailsDatatable);
+
+    // update the cat details card header if it is visible for the cat we update
+    if (oldCat.toLowerCase() === catForActiveCatDetailsDatatable.toLowerCase())
+        $('button[sitefunction="catForActiveCatDetailsDatatable"]').text(cat);
+}
+
+const setPageCatButtonsContextMenu = () => {
+
+    const getMenuItemHtml = (title, text, icon) => {
+        return `
+            <li title="${title}">
+                <a class="icon-link">
+                    <i class="bi ${icon}"></i>
+                    ${text}
+                </a>
+            </li>`
+    }
+
+    const menuContent = 
+    {   
+        header: '',
+        menu:[
+            {
+                html: getMenuItemHtml(`Remove the cat from page`,'Remove category', 'bi-x-circle'),
+                handler: handlePageCatDelete
+            }
+        ],
+        footer: 
+            `
+                <input type="text" autocomplete="off" class="form-control my-2" id="pageCatEditCustomCatInput">
+
+                <div class="mb-2">
+                    <button 
+                        siteFunction="pageCatEditCustomCat"
+                        catForCatTableDetailsReference="" 
+                        catReference=""
+                        id="pageCatEditCustomCat" 
+                        type="button" 
+                        class="focus-ring focus-ring-warning btn btn-sm btn-warning mt-2 position-relative pageCatContextMenuFooterBtn">
+                        Update      
+                    </button>
+
+                    <button 
+                        siteFunction="pageCatAddCustomCat"
+                        catForCatTableDetailsReference="" 
+                        catReference=""
+                        id="pageCatEditCustomCat" 
+                        type="button" 
+                        class="focus-ring focus-ring-warning btn btn-sm btn-success mt-2 position-relative pageCatContextMenuFooterBtn">
+                        Add      
+                    </button>
+                </div>
+            `
+    };
+    
+    setContextMenu (
+        'button[sitefunction="pageCatButton"]', 
+        'body', 
+        menuContent, 
+        (menuItem, itemClicked) => {
+            // get the menu item click handler and execute it            
+            getContextMenuItemHandler(
+                menuItem.text().replace(/[\n\r\t]/g, '').trim(), 
+                menuContent
+            ).bind(
+                null,
+                // page
+                {
+                    title: itemClicked.closest('td').attr('pageTitleReference'),
+                    permalink: itemClicked.closest('td').attr('pagePermalinkReference')
+                },
+
+                // cat to be processed
+                $(itemClicked.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim(),
+
+                // cat for the active cat details datatable
+                $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim() 
+            )();
+        },
+        (event) => {
+            // cat to be processed
+            const $catBtn = $(event.target).closest('button[sitefunction="pageCatButton"][catType="customCat"]').clone();
+            const cat = $($catBtn.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim();
+            $('#pageCatEditCustomCatInput').val(cat);
+            $('#pageCatEditCustomCatInput').focus();
+
+            // cat for active cat details datatable
+            const catForActiveCatDetailsDatatable = $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim();
+            
+            // set needed attributes to the context menu footer buttons
+            $('button[siteFunction="pageCatEditCustomCat"]').attr('catForCatTableDetailsReference',catForActiveCatDetailsDatatable);
+            $('button[siteFunction="pageCatEditCustomCat"]').attr('catReference', cat);
+
+            $('button[siteFunction="pageCatAddCustomCat"]').attr('catForCatTableDetailsReference',catForActiveCatDetailsDatatable);
+            $('button[siteFunction="pageCatAddCustomCat"]').attr('catReference', cat);
+
+            const page = {
+                title: $(event.target).closest('td').attr('pageTitleReference'),
+                permalink: $(event.target).closest('td').attr('pagePermalinkReference'),
+            };
+
+            $('button[siteFunction="pageCatEditCustomCat"]').attr('pageTitleReference', page.title);
+            $('button[siteFunction="pageCatEditCustomCat"]').attr('pagePermalinkReference', page.permalink);
+
+            $('button[siteFunction="pageCatAddCustomCat"]').attr('pageTitleReference', page.title);
+            $('button[siteFunction="pageCatAddCustomCat"]').attr('pagePermalinkReference', page.permalink);
+
+            // removing things that are not applicable to site cats
+            if (_.findIndex(globCustomCats, item => item.toLowerCase() === cat.trim().toLowerCase()) === -1 ) {
+                $('.context-menu-list').remove();
+                $('button[sitefunction="pageCatEditCustomCat"]').remove();
+                $('hr[sitefunction="contextMenuSeparator"]').remove();
+            }
+
+        },
+        ['pageCatContextMenu'] //additonal class for the context menu container
+    );
+}
+
+const handlePageCatDelete = (page = {}, cat, catForActiveCatDetailsDatatable) => {
+
+    if (!cat) return;
+    if (cat === 'undefined') return;
+    if (cat === '') return;
+
+    if (!page) return;    
+    if (!page.title) return;
+    if (page.title === 'undefined') return;
+    if (page.title === '') return;
+    
+    if (!page.permalink) return;
+    if (page.permalink === 'undefined') return;
+    if (page.permalink === '') return;
+
+    deleteCatFromPage(cat, {siteInfo:page});
+    updateAllCatInfoOnPage(catForActiveCatDetailsDatatable);
+    $('.context-menu').remove();
+
+}
+
+const handlePageCatUpdate = () => {
+    const cat = cleanText($('#pageCatEditCustomCatInput').val());
+    const oldCat = $('button[siteFunction="pageCatEditCustomCat"]').attr('catReference');
+    const title = $('button[siteFunction="pageCatEditCustomCat"]').attr('pageTitleReference');
+    const permalink = $('button[siteFunction="pageCatEditCustomCat"]').attr('pagePermalinkReference');
+    const page = {
+        title: title,
+        permalink: permalink
+    };
+    
+    const catForActiveCatDetailsDatatable = $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim();
+
+    updateCatForPage (oldCat, cat, {siteInfo:page})
+    updateAllCatInfoOnPage(catForActiveCatDetailsDatatable);
+    $('.context-menu').remove();
+}
+
+const handlePageCatAdd = () => {
+    const cat = cleanText($('#pageCatEditCustomCatInput').val());
+    const title = $('button[siteFunction="pageCatAddCustomCat"]').attr('pageTitleReference');
+    const permalink = $('button[siteFunction="pageCatAddCustomCat"]').attr('pagePermalinkReference');
+
+    if (!cat) return;
+    if (cat === 'undefined') return;
+    if (cat === '') return;
+    
+    if (!title) return;
+    if (title === 'undefined') return;
+    if (title === '') return;
+    
+    if (!permalink) return;
+    if (permalink === 'undefined') return;
+    if (permalink === '') return;
+    
+    const page = {
+        title: title,
+        permalink: permalink
+    };
+    
+    const catForActiveCatDetailsDatatable = $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim();
+
+    addCat(cat, {siteInfo: page});
+    updateAllCatInfoOnPage(catForActiveCatDetailsDatatable);
+    $('.context-menu').remove();
 }

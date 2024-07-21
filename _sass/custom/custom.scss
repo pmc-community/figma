@@ -1,7 +1,5 @@
 /* HEADS UP!
  * AS OF APRIL 2024, @use RULES CANNOT BE USED WHEN DEPLOYING TO GHP
- * BECAUSE GHP DOES NOT SUPPORT THE MINIMUM JEKYLL VERSION (4.X.X) WHICH
- * CAN PROCESS @use SASS RULES; WE USE @import RULE, ALTHOUGH IS KIND OF OLD STYLE
 */
 
 /* HEADS UP!
@@ -97,7 +95,8 @@ $alwaysBlackTextElements: (
     '.context-menu-item a',
     '.context-menu-header',
     '.context-menu-footer',
-    '.buttons-columnVisibility span'
+    '.buttons-columnVisibility span',
+    'button[siteFunction="tableNavigateToTags"] span'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {
