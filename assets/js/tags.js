@@ -427,8 +427,7 @@ const setPageOtherCustomTags = (pageInformation, crtTag = null) => {
                     id="pageTag_${tag}" 
                     type="button" 
                     class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm btn-success position-relative"
-                    title = "Details for tag ${tag}">
-                    ${tag}
+                    title = "Details for tag ${tag}">${tag}
                 </button>
             `
         )
@@ -443,6 +442,10 @@ const setPageOtherCustomTags = (pageInformation, crtTag = null) => {
     $pageOtherCustomTagElement.remove();
     
     customTags.forEach(tag => {        
+
+        // remove potential wrong display of a customTag as siteTag
+        const $pageOtherCustomTagElement__WRONG = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageTagButton"][tagType="siteTag"][tagReference=${tag}]`);
+        $pageOtherCustomTagElement__WRONG.remove();
 
         $pageOtherTagsElement.each(function() {
             $(this).children().first().append($(getCustomTagButtonElement(tag)))

@@ -675,8 +675,7 @@ const setPageOtherCustomCats = (pageInformation, crtCat = null) => {
                     id="pageCat_${cat}" 
                     type="button" 
                     class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm text-success fw-medium border-0 shadow-none position-relative"
-                    title = "Details for category ${cat}">
-                    ${cat}
+                    title = "Details for category ${cat}">${cat}
                 </button>
             `
         )
@@ -688,9 +687,13 @@ const setPageOtherCustomCats = (pageInformation, crtCat = null) => {
 
     const $pageOtherCustomCatElement = $(`td[colFunction="catInfoCatTablePageOtherCats"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageCatButton"][catType="customCat"]`);
     
-    $pageOtherCustomCatElement.remove();
+    $pageOtherCustomCatElement.each(function() { $(this).remove() });
     
     customCats.forEach(cat => {        
+
+        // remove potential wrong display of a customCat as siteCat
+        const $pageOtherCustomCatElement__WRONG = $(`td[colFunction="catInfoCatTablePageOtherCats"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageCatButton"][catType="siteCat"][catReference=${cat}]`);
+        $pageOtherCustomCatElement__WRONG.remove();
 
         $pageOtherCatsElement.each(function() {
             $(this).children().first().append($(getCustomCatButtonElement(cat)));

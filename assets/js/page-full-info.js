@@ -21,8 +21,8 @@ const REFRESH_PAGE_INFO_AFTER = (func) => {
         pageInfo = {
             siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
             savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-            tag: oldPageInfo.tag,
-            cat: oldPageInfo.cat
+            tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+            cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
         };
 
         return result;
@@ -38,8 +38,8 @@ const REFRESH_PAGE_INFO_BEFORE = (func) => {
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-                tag: oldPageInfo.tag,
-                cat: oldPageInfo.cat
+                tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+                cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
 
             };
 
@@ -62,8 +62,8 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-                tag: oldPageInfo.tag,
-                cat: oldPageInfo.cat
+                tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+                cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
             };
 
             resolve(pageInfo);
@@ -78,8 +78,8 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
             pageInfo = {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
-                tag: oldPageInfo.tag,
-                cat: oldPageInfo.cat
+                tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+                cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
             };
         });
     };
@@ -106,6 +106,7 @@ const initPageFullInfoCanvasAfterDocReady = (pageInfo) => {
     REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu(pageInfo);
 
     REFRESH_PAGE_INFO_BEFORE__fillCatList(pageInfo);
+    REFRESH_PAGE_INFO_BEFORE__setCustomCatContextMenu(pageInfo);
 }
 
 const initPageFullInfoCanvasAfterShow = (pageInfo) => {
@@ -187,6 +188,51 @@ const setCustomTagContextMenu = (pageInfo) => {
 }
 const REFRESH_PAGE_INFO_BEFORE__setCustomTagContextMenu = REFRESH_PAGE_INFO_BEFORE(setCustomTagContextMenu);
 
+const setCustomCatContextMenu = (pageInfo) => {
+    const getMenuItemHtml = (title, text, icon) => {
+        return `
+            <li title="${title}">
+                <a class="icon-link">
+                    <i class="bi ${icon}"></i>
+                    ${text}
+                </a>
+            </li>`
+    }
+
+    const menuContent = 
+    {   
+        header: '',
+        menu:[
+            {
+                html: getMenuItemHtml(`Remove the category from the page ${pageInfo.siteInfo.title} only`,'Remove from page', 'bi-x-circle'),
+                handler: removeCatFromPage
+            },
+            {
+                html: getMenuItemHtml('Remove the category from all pages','Remove from all pages', 'bi-trash'),
+                handler: removeCatFromAllPages
+            },
+        ],
+        footer: ''
+    };
+    
+    setContextMenu (
+        'div[sitefunction="offcanvasPageFullInfoPageCatsList"] a[pageCatType="customCat"]', 
+        '.offcanvas-body', 
+        menuContent, 
+        (menuItem, itemClicked) => {
+            REFRESH_PAGE_INFO_BEFORE_AND_AFTER__processSelectedCat( 
+                menuItem, 
+                itemClicked,
+                menuContent,
+                pageInfo
+            ); 
+        },
+        null, // nothing to post-process after context menu is shown
+        ['pageFullInfoCustomCatContextMenu'] //additonal class for the context menu container
+    );
+}
+const REFRESH_PAGE_INFO_BEFORE__setCustomCatContextMenu = REFRESH_PAGE_INFO_BEFORE(setCustomCatContextMenu);
+
 const processSelectedTag = (menuItem, itemClicked, menuContent, pageInfo) => {
     const tag = itemClicked.text().trim();
     const action = menuItem.text().trim();
@@ -196,7 +242,24 @@ const processSelectedTag = (menuItem, itemClicked, menuContent, pageInfo) => {
 }
 const REFRESH_PAGE_INFO_BEFORE_AND_AFTER__processSelectedTag = REFRESH_PAGE_INFO_BEFORE_AND_AFTER(processSelectedTag);
 
+const processSelectedCat = (menuItem, itemClicked, menuContent, pageInfo) => {
+    const cat = itemClicked.text().trim();
+    const action = menuItem.text().trim();
+    const handler = getCatContextMenuItemHandler(action, menuContent).bind(null, cat, pageInfo);
+    handler();
+    
+}
+const REFRESH_PAGE_INFO_BEFORE_AND_AFTER__processSelectedCat = REFRESH_PAGE_INFO_BEFORE_AND_AFTER(processSelectedCat);
+
 const getTagContextMenuItemHandler = (action, menuContent) => {
+    let handler = null;
+    menuContent.menu.forEach (menuItem => {
+        if ( $(menuItem.html).text().trim() === action ) handler = menuItem.handler
+    });
+    return handler;
+}
+
+const getCatContextMenuItemHandler = (action, menuContent) => {
     let handler = null;
     menuContent.menu.forEach (menuItem => {
         if ( $(menuItem.html).text().trim() === action ) handler = menuItem.handler
@@ -212,10 +275,26 @@ const removeTagFromPage = (tag, pageInfo = {}) => {
     }
 }
 
+const removeCatFromPage = (cat, pageInfo = {}) => {
+    if (deleteCatFromPage(cat, pageInfo)) {
+        pageInfo.savedInfo.customCategories = getPageCats(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillCatList(pageInfo);
+        createGlobalLists();
+    }
+}
+
 const removeTagFromAllPages = (tag, pageInfo = {}) => {
     if (deleteTagFromAllPages(tag)) {
         pageInfo.savedInfo.customTags = getPageTags(pageInfo);
         REFRESH_PAGE_INFO_BEFORE__fillTagList(pageInfo);
+        createGlobalLists();
+    }
+}
+
+const removeCatFromAllPages = (cat, pageInfo = {}) => {
+    if (deleteCatFromAllPages(cat)) {
+        pageInfo.savedInfo.customCategories = getPageCats(pageInfo);
+        REFRESH_PAGE_INFO_BEFORE__fillCatList(pageInfo);
         createGlobalLists();
     }
 }
