@@ -58,7 +58,7 @@ aux_links:
 # Makes Aux links open in a new tab. Default is false
 aux_links_new_tab: true
 
-# we go with agolia, otherwise set to true or remove it (true is default)
+# we go with algolia, otherwise set to true or remove it (true is default)
 search_enabled: false
 
 ga_tracking: G-T86D5YQ5WF # ihs

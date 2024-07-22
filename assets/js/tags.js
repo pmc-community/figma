@@ -23,6 +23,16 @@ const setTagsSupport = () => {
         // in order to preserve the reference to the active tag details datatable
         // see processTagDetailsTableRowClick
         updateAllTagInfoOnPage(pageInfo.tag);
+
+        // check if the active tag details is for a tag that still exists and close the details if not
+        const activeTagDetails = $('div[siteFunction="tagDetails"]:not(.d-none)').attr('tagReference').trim() || '';
+        if (!globAllTags.includes(activeTagDetails)) 
+            $('div[siteFunction="tagDetails"]:not(.d-none)').remove();
+        else {
+            $('div[siteFunction="tagDetails"]:not(.d-none)').addClass('d-none');
+            showTagDetails(pageInfo.tag)
+        }
+
     });
 
 }
@@ -540,6 +550,9 @@ const showTagDetails = (tag) => {
     const customTagPageNo = tagList.includes(tag) ? 0 : getTagPages(tag);
     if (siteTagPageNo + customTagPageNo === 0 ) return;
 
+    $(`div[siteFunction="tagDetails"]`).addClass('d-none');
+    $('div[siteFunction="tagDetails"]').removeAttr('style'); 
+
     if( $.fn.DataTable.isDataTable(`table[tagReference="${tag}"]`) ) {
         $(`table[tagReference="${tag}"]`).DataTable().destroy();
         $(`table[tagReference="${tag}"]`).removeAttr('id').removeAttr('aria-describedby');
@@ -550,11 +563,6 @@ const showTagDetails = (tag) => {
         tableData = buildTagPagesListForCustomTag(tag);
         createSimpleTable(tag, tableData);
     }
-
-    $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
-    $(`div[siteFunction="tagDetails"][tagReference!="${tag}"]`).addClass('d-none');
-    $('div[siteFunction="tagDetails"]').removeAttr('style'); // to clear some style values added by a potential previous close button click
-    $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).fadeIn();
 
     // columns settings
     // always a good idea to set the data mapping for each column
@@ -676,6 +684,16 @@ const showTagDetails = (tag) => {
     );
 
     history.replaceState({}, document.title, window.location.pathname);
+
+    $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
+    $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).fadeIn();
+}
+
+const showTagDetails__ASYNC = (tag) => {
+    return new Promise ( (resolve, reject) => {
+        showTagDetails(tag);
+        resolve();
+    });
 }
 
 const createSimpleTable = (tag, tableData) => {
@@ -960,7 +978,7 @@ const addAdditionalButtons = (table, tag) => {
         className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
         text: 'Saved items',
         action: () => {
-            window.location.href = '/cat-info'
+            window.location.href = '/saved-items'
         }
     }
     const btnArray = [];

@@ -24,6 +24,17 @@ const setCatSupport = () => {
         // in order to preserve the reference to the active cat details datatable
         // see processCatDetailsTableRowClick
         updateAllCatInfoOnPage(pageInfo.cat);
+
+        // check if the active cat details is for a cat that still exists and close the details if not
+        const activeCatDetails = $('div[siteFunction="catDetails"]:not(.d-none)').attr('catReference').trim() || '';
+        if (!globAllCats.includes(activeCatDetails)) 
+            $('div[siteFunction="catDetails"]:not(.d-none)').remove();
+        else
+            {
+                $('div[siteFunction="catDetails"]:not(.d-none)').addClass('d-none');
+                showCatDetails(pageInfo.cat);
+            }
+        
     });
     
 }
@@ -436,7 +447,7 @@ const addAdditionalCatButtons = (table, cat) => {
        className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
        text: 'Saved items',
        action: () => {
-           window.location.href = '/tag-info'
+           window.location.href = '/saved-items'
        }
    }
    const btnArray = [];
