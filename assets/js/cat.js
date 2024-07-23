@@ -7,7 +7,6 @@ const setCatSupport = () => {
         setCatInfoPageButtonsFunctions();
         setCatSearchList();
         updateCatSearchList();
-        setCatSearchList()
         setCatCloudButtonsContextMenu();
         setPageCatButtonsContextMenu();
 
@@ -26,8 +25,8 @@ const setCatSupport = () => {
         updateAllCatInfoOnPage(pageInfo.cat);
 
         // check if the active cat details is for a cat that still exists and close the details if not
-        const activeCatDetails = $('div[siteFunction="catDetails"]:not(.d-none)').attr('catReference').trim() || '';
-        if (!globAllCats.includes(activeCatDetails)) 
+        const activeCatDetails = $('div[siteFunction="catDetails"]:not(.d-none)').attr('catReference') || '';
+        if (!globAllCats.includes(activeCatDetails.trim())) 
             $('div[siteFunction="catDetails"]:not(.d-none)').remove();
         else
             {
@@ -175,6 +174,80 @@ const setCatSearchList = () => {
     );
 }
 
+const setCatInfoPageSearchList = (cat) => {
+    const listItem = (page) => {
+        return `<li siteFunction="searchPageListItem">${page.title} (${page.permalink})</li>`
+    }
+
+    const pageSearchListItems = () => {
+        let html=''
+        pageList.forEach(page => {
+            html += listItem(page);
+        });
+        return html;
+    }
+
+    const pageSearchHtml = (cat) => {
+        return (
+            `
+                <div id="${cat.replace(/ /g, "_")}_add_page_to_cat" class="p-3">
+                    <div class="mb-2 text-secondary fw-medium">Add document to category</div>
+                    <div>
+                        <input 
+                            type="text" 
+                            autocomplete="off" 
+                            class="form-control" 
+                            id="${cat.replace(/ /g, "_")}_pageSearchInput"  
+                            placeholder="type, select, hit enter ...">
+                        <ul 
+                            siteFunction="searchPageList" 
+                            id="${cat.replace(/ /g, "_")}_pageSearchResults">
+                            ${pageSearchListItems()}
+                        </ul>
+                    </div>
+                </div>
+            `
+        )
+    }
+
+    const setRawSearchList = () => {
+        return new Promise ( (resolve, reject) => {
+            $(document).ready(function() {$(`div[siteFunction="catDetails"][catReference="${cat}"]`).append(pageSearchHtml(cat));});
+            resolve();
+        });
+    }
+    
+    setRawSearchList().then(() => {
+            setSearchList(
+                `#${cat.replace(/ /g, "_")}_pageSearchInput`, 
+                `#${cat.replace(/ /g, "_")}_pageSearchResults`, 
+                `li[siteFunction="searchPageListItem"]`, 
+                `<li siteFunction="searchPageListItem">`,
+                '</li>',
+                false,
+                (result) => { catInfoAddPageToCat(result); },
+                (filteredList) => {}
+            );
+        });
+}
+
+const catInfoAddPageToCat = (result) => {
+    const activeCat = $('div[siteFunction="catDetails"]:not(.d-none)').attr('catReference') || '';
+    if (activeCat.trim() !== '') {
+        if (catList.includes(activeCat.trim()))
+            showToast('Cannot add a page to a site category', 'bg-danger', 'text-light');
+        else {
+            const page = transformStringFromPageSearchList(result);
+            addCat(activeCat.trim(), {siteInfo: page});
+            showCatDetails(activeCat.trim());
+            updateAllCatInfoOnPage();
+        }
+    }
+    else {
+        showToast('Select a custom category to use this feature!', 'bg-warning', 'text-dark');
+    }
+}
+
 const showCatDetails = (cat) => {
 
     if ( !cat ) return;
@@ -312,7 +385,7 @@ const showCatDetails = (cat) => {
         (rowData) => { processCatDetailsTableRowClick(rowData, `table[catReference="${cat}"]`, cat) }, // will execute when click on row
         additionalTableSettings // additional datatable settings for this table instance
     );
-
+    if (_.map(globCustomCats, _.toLower).includes(cat.toLowerCase())) setCatInfoPageSearchList(cat);
     history.replaceState({}, document.title, window.location.pathname);
 }
 
@@ -377,6 +450,7 @@ const createSimpleCatTable = (cat, tableData) => {
     $('div[id="cat_details"]').append($catDetailsContainer);
     // small delay to avoid visibility of white table background for dummy table on dark theme
     setTimeout(()=>{$(`table[siteFunction="catDetailsPageTable"][catReference="${cat}"]`).removeAttr('style')} ,100);
+    
 
 }
 
@@ -445,9 +519,9 @@ const addAdditionalCatButtons = (table, cat) => {
            title: 'Go to saved items'
        },
        className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
-       text: 'Saved items',
+       text: 'Site Pages',
        action: () => {
-           window.location.href = '/saved-items'
+           window.location.href = '/site-pages'
        }
    }
    const btnArray = [];
@@ -703,7 +777,7 @@ const setPageOtherCustomCats = (pageInformation, crtCat = null) => {
     customCats.forEach(cat => {        
 
         // remove potential wrong display of a customCat as siteCat
-        const $pageOtherCustomCatElement__WRONG = $(`td[colFunction="catInfoCatTablePageOtherCats"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageCatButton"][catType="siteCat"][catReference=${cat}]`);
+        const $pageOtherCustomCatElement__WRONG = $(`td[colFunction="catInfoCatTablePageOtherCats"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageCatButton"][catType="siteCat"][catReference="${cat}"]`);
         $pageOtherCustomCatElement__WRONG.remove();
 
         $pageOtherCatsElement.each(function() {

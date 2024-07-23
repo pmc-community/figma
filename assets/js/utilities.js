@@ -190,7 +190,7 @@ const setSearchList = (
     callbackFilteredList = null
 ) => {  
 
-    const handleSetTagSearcResults = (
+    const handleSetSearcResults = (
         searchInputSelector, // css selector for the search text input field
         searchResultsSelector, // css selector for the search results list
         searchResultsItemSelector, // usually li[some_attribute = "some_value"]
@@ -229,16 +229,19 @@ const setSearchList = (
             // Handle click outside search input or search results to hide the list
             $(document).on('click', function(event) {
                 const $target = $(event.target);
-                if (!$target.closest(`${searchInputSelector}, ${searchResultsSelector}`).length) { $searchResults.hide();} 
+                if (!$target.closest(`${searchInputSelector}, ${searchResultsSelector}`).length) {
+                    $searchResults.hide();
+                    $searchInput.val('');
+                } 
             });
         
             // Hide search results when pressing escape key
-            $(document).off('keydown').on('keydown', function(event) {
+            // delegate event to parent since cannot delegate all to document because
+            // we may have more than one search box on page and then esc key will behave in a wrong way
+            $searchInput.parent().off('keydown').on('keydown', function(event) {
                 if (event.which === 27) { // Escape key
                     $searchResults.hide();
                     $searchInput.val('');
-                    //_.remove(list); // first, clear the list since modification of the searchResultsItemSelector elements may occured meanwhile
-                    //$(searchResultsItemSelector).each(function() { list.push($(this).text().trim()); }); // re-build the list
                 }
             });
         
@@ -326,7 +329,7 @@ const setSearchList = (
             });
     }
 
-    $(document).off('ready', handleSetTagSearcResults).ready(handleSetTagSearcResults.bind(
+    $(document).off('ready', handleSetSearcResults).ready(handleSetSearcResults.bind(
         null, 
         searchInputSelector, 
         searchResultsSelector, 
@@ -496,7 +499,7 @@ const handleBtnClose = () => {
     });
 }
 
-const applyColorSchemaCorrections = (theme) => {
+const applyColorSchemaCorrections = (theme=null) => {
     
     // jtd forgets to change some colors when switching from light to dark and back
     if (!theme) {
@@ -1067,4 +1070,17 @@ const replaceAllOccurrencesCaseInsensitive = (array, target, replacement) => {
       }
       return item;
     });
+}
+
+function transformStringFromPageSearchList(input) {
+    // Use a regular expression to capture the title and permalink parts
+    const regex = /(.*) \((.*)\)/;
+    const match = input.match(regex);
+
+    if (match) {
+        const [_, title, permalink] = match;
+        return { title, permalink };
+    }
+
+    return null;
 }

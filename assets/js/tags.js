@@ -25,8 +25,8 @@ const setTagsSupport = () => {
         updateAllTagInfoOnPage(pageInfo.tag);
 
         // check if the active tag details is for a tag that still exists and close the details if not
-        const activeTagDetails = $('div[siteFunction="tagDetails"]:not(.d-none)').attr('tagReference').trim() || '';
-        if (!globAllTags.includes(activeTagDetails)) 
+        const activeTagDetails = $('div[siteFunction="tagDetails"]:not(.d-none)').attr('tagReference') || '';
+        if (!globAllTags.includes(activeTagDetails.trim())) 
             $('div[siteFunction="tagDetails"]:not(.d-none)').remove();
         else {
             $('div[siteFunction="tagDetails"]:not(.d-none)').addClass('d-none');
@@ -454,7 +454,7 @@ const setPageOtherCustomTags = (pageInformation, crtTag = null) => {
     customTags.forEach(tag => {        
 
         // remove potential wrong display of a customTag as siteTag
-        const $pageOtherCustomTagElement__WRONG = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageTagButton"][tagType="siteTag"][tagReference=${tag}]`);
+        const $pageOtherCustomTagElement__WRONG = $(`td[colFunction="tagInfoTagTablePageOtherTags"][pageTitleReference="${pageInformation.siteInfo.title}"][pagePermalinkReference="${pageInformation.siteInfo.permalink}"] button[siteFunction="pageTagButton"][tagType="siteTag"][tagReference="${tag}"]`);
         $pageOtherCustomTagElement__WRONG.remove();
 
         $pageOtherTagsElement.each(function() {
@@ -682,7 +682,8 @@ const showTagDetails = (tag) => {
         (rowData) => { processTagDetailsTableRowClick(rowData, `table[tagReference="${tag}"]`, tag) }, // will execute when click on row
         additionalTableSettings // additional datatable settings for this table instance
     );
-
+    
+    if (_.map(globCustomTags, _.toLower).includes(tag.toLowerCase())) setTagInfoPageSearchList(tag);
     history.replaceState({}, document.title, window.location.pathname);
 
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).removeClass('d-none');
@@ -976,9 +977,9 @@ const addAdditionalButtons = (table, tag) => {
             title: 'Go to saved items'
         },
         className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
-        text: 'Saved items',
+        text: 'Site Pages',
         action: () => {
-            window.location.href = '/saved-items'
+            window.location.href = '/site-pages'
         }
     }
     const btnArray = [];
@@ -1016,4 +1017,78 @@ const setPageSavedButtonsStatus = () => {
     
     setRemoveFromSavedItemsStatus();
     setSaveForLaterReadStatus();
+}
+
+const setTagInfoPageSearchList = (tag) => {
+    const listItem = (page) => {
+        return `<li siteFunction="searchPageListItem">${page.title} (${page.permalink})</li>`
+    }
+
+    const pageSearchListItems = () => {
+        let html=''
+        pageList.forEach(page => {
+            html += listItem(page);
+        });
+        return html;
+    }
+
+    const pageSearchHtml = (tag) => {
+        return (
+            `
+                <div id="${tag.replace(/ /g, "_")}_add_page_to_tag" class="p-3">
+                    <div class="mb-2 text-secondary fw-medium">Add document to tag</div>
+                    <div>
+                        <input 
+                            type="text" 
+                            autocomplete="off" 
+                            class="form-control" 
+                            id="${tag.replace(/ /g, "_")}_pageSearchInput"  
+                            placeholder="type, select, hit enter ...">
+                        <ul 
+                            siteFunction="searchPageList" 
+                            id="${tag.replace(/ /g, "_")}_pageSearchResults">
+                            ${pageSearchListItems()}
+                        </ul>
+                    </div>
+                </div>
+            `
+        )
+    }
+
+    const setRawSearchList = () => {
+        return new Promise ( (resolve, reject) => {
+            $(document).ready(function() {$(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).append(pageSearchHtml(tag));});
+            resolve();
+        });
+    }
+    
+    setRawSearchList().then(() => {
+            setSearchList(
+                `#${tag.replace(/ /g, "_")}_pageSearchInput`, 
+                `#${tag.replace(/ /g, "_")}_pageSearchResults`, 
+                `li[siteFunction="searchPageListItem"]`, 
+                `<li siteFunction="searchPageListItem">`,
+                '</li>',
+                false,
+                (result) => { tagInfoAddPageToTag(result); },
+                (filteredList) => {}
+            );
+        });
+}
+
+const tagInfoAddPageToTag = (result) => {
+    const activeTag = $('div[siteFunction="tagDetails"]:not(.d-none)').attr('tagReference') || '';
+    if (activeTag.trim() !== '') {
+        if (tagList.includes(activeTag.trim()))
+            showToast('Cannot add a page to a site tag', 'bg-danger', 'text-light');
+        else {
+            const page = transformStringFromPageSearchList(result);
+            addTag(activeTag.trim(), {siteInfo: page});
+            showTagDetails(activeTag.trim());
+            updateAllTagInfoOnPage();
+        }
+    }
+    else {
+        showToast('Select a custom tag to use this feature!', 'bg-warning', 'text-dark');
+    }
 }

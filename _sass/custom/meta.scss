@@ -467,3 +467,55 @@
         width: $contextMenuPageTagFooterBtnWidth;
     }
 }
+
+// page search
+@mixin pageSearch($pageSearchElements) {
+    ##{map-get($pageSearchElements, searchInput)}, input[id$="#{map-get($pageSearchElements, searchInput)}"] {
+        width: $pageSearchWidth;
+        padding: $pageSearchInputPadding;
+        background-color: $pageSearchBackground;
+        border: $pageSearchBorders;
+        color: $pageSearchTextColor;
+
+    }
+
+    ##{map-get($pageSearchElements, searchResults)}, ul[id$="#{map-get($pageSearchElements, searchResults)}"] {
+        position: $pageSearchResultsPosition;
+        z-index: $pageSearchResultsZIndex;
+        background-color: $pageSearchBackground;
+        border: $b-none;
+        border-top: $pageSearchBorders;
+        border-bottom: $pageSearchBorders;
+        border-left: $pageSearchBorders;
+        border-right: $pageSearchBorders;
+        width: $pageSearchWidth;
+        padding: $pageSearchResultsPadding;
+        margin: $pageSearchResultsMargin;
+        list-style: $pageSearchResultsListStyle;
+        max-height: $pageSearchResultsMaxHeight;
+        overflow-y: $pageSearchResultsOverflow;
+        display: $pageSearchResultsDefaultDisplay;
+      
+        margin-top: $pageSearchResultsMarginTop;
+        border-radius: $brad-0px $brad-0px $pageSearchResultsBorderBottomRadius $pageSearchResultsBorderBottomRadius;
+        border-top: $pageSearchBorders;
+
+        overflow-y: $pageSearchResultsOverflowY !important;
+    }
+
+    ##{map-get($pageSearchElements, searchResults)} li, ul[id$="#{map-get($pageSearchElements, searchResults)}"] li {
+        padding: $pageSearchResultsItemPadding;
+        cursor: $pageSearchResultsItemCursor;
+        color: $pageSearchTextColor !important;
+        margin: $pageSearchResultsItemMargin !important;
+    }
+
+    ##{map-get($pageSearchElements, searchResults)} li:hover, ul[id$="#{map-get($pageSearchElements, searchResults)}"] li:hover {
+        background-color: $pageSearchResultsItemMarkedBackground;
+    }
+
+    ##{map-get($pageSearchElements, searchResults)} li.selected, ul[id$="#{map-get($pageSearchElements, searchResults)}"] li.selected {
+        background-color: $pageSearchResultsItemMarkedBackground;
+    }
+
+}

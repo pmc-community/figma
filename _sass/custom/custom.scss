@@ -13,8 +13,9 @@
 @import 'header-above-content.scss';
 @import 'page-toc.scss';
 @import 'content-area.scss';
+@import 'pages.scss';
 @import 'tags.scss';
-@import 'cat.scss';
+@import 'cats.scss';
 @import 'tables.scss';
 @import 'editor.scss';
 @import 'context-menu.scss';
@@ -162,7 +163,8 @@ $visibleElements: (
     'hr[siteFunction="pageTocHeaderSeparator"]',
     'hr[siteFunction="contextMenuSeparator"]',
     'hr[siteFunction="offcanvasPageFullInfoPageGeneralSeparator"]',
-    'hr[siteFunction="pageAutoSummarySeparator"]'
+    'hr[siteFunction="pageAutoSummarySeparator"]',
+    'hr[siteFunction="addPageToCatOrTag"]'
 );
 @each $element in $visibleElements {
         #{$element} {
