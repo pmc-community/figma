@@ -7,7 +7,7 @@ const sitePages__pageSearch = () => {
     });
 
     // small delay to be sure that offcanvas is ready in the DOM, otherwise the observer will fail to set
-    setTimeout(()=>{sitePagesFn.handleOffCanvasClose()}, 100); 
+    setTimeout(()=>{sitePagesFn.handleOffCanvasClose()}, 200); 
 
     sitePagesFn.setPageSearchButtonsFunctions();
 }
@@ -17,6 +17,8 @@ const sitePages__pages = () => {
     $(document).ready( function() { 
         sitePagesFn.setPagesTableButtonsFunctions();
         sitePagesFn.setPagesTablePageBadges();
+        sitePagesFn.setPagesDataTable();
+        
     });
 }
 
@@ -53,13 +55,17 @@ sitePagesFn = {
         removeObservers('.offcanvas class=hiding getClass=true');
         setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
             sitePagesFn.updateInfoAfterOffCanvasClose(pageInfo.page);
+            $(`table[siteFunction="sitePagesDetailsPageTable"] td`).removeClass('table-active'); // remove any previous selection
         });
     },
 
     setPageSearchButtonsFunctions: () => {
         $('#openSitePagesDetails').off('click').click( function() {
+            $('#site_pages_details').removeClass('d-none');
+            // redraw the pages table to avoid worng table head sizing
+            sitePagesFn.redrawPagesTable();
             $('div[sitefunction="sitePagesDetails"]').fadeIn();
-        });
+        });            
     },
 
     setPagesTableButtonsFunctions: () => {
@@ -163,5 +169,140 @@ sitePagesFn = {
                 '</span>';
             $(this).html(badgesHtml);     
         })
+    },
+
+    setPagesDataTable: () => {
+
+        if( $.fn.DataTable.isDataTable(`table[siteFunction="sitePagesDetailsPageTable"]`) ) {
+            $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable().destroy();
+            $(`table[siteFunction="sitePagesDetailsPageTable"]`).removeAttr('id').removeAttr('aria-describedby');
+        }
+        const colDefinition = [
+            // page name
+            {
+                className: 'alwaysCursorPointer',
+                title:'Title',
+                width:'15%'
+            }, 
+    
+            // last update
+            {
+                title:'Last Update',
+                type: 'date-dd-MMM-yyyy', 
+                className: 'dt-left', 
+                exceptWhenRowSelect: true,
+                searchable: true
+            }, 
+    
+            // details
+            { 
+                title:'Details',
+                type: 'string',
+                searchable: true, 
+                orderable: false, 
+                exceptWhenRowSelect: true,
+                visible: false
+            }, 
+
+            // related
+            { 
+                title:'Related Pages',
+                type: 'string',
+                searchable: true, 
+                orderable: false, 
+                exceptWhenRowSelect: true
+            },
+
+            // similar
+            { 
+                title:'Similar Pages',
+                type: 'string',
+                searchable: true, 
+                orderable: false, 
+                exceptWhenRowSelect: true
+            },
+            
+            // excerpt
+            {
+                type: 'string',
+                title:'Excerpt',
+                exceptWhenRowSelect: true,
+                visible: false
+            }
+        ];
+
+        const commonAdditionalTableSettings = {
+            scrollX:true,
+            fixedColumns: {
+                "left": 1
+            },
+            autoWidth: true,
+            deferRender: true, // Defer rendering for speed up
+            
+            initComplete: function(settings, json) {
+                    // Adjust columns after initialization to ensure proper alignment
+                    const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+                    setTimeout(()=>{
+                        table.order([0, 'asc']).draw();
+                        table.columns.adjust().draw();
+                    },100);
+                    
+            },
+
+        };
+
+        const additionalTableSettings = commonAdditionalTableSettings;
+
+        setDataTable(
+            `table[siteFunction="sitePagesDetailsPageTable"]`,
+            `SitePages`,     
+            colDefinition,
+            (table) => {sitePagesFn.postProcessPagesTable(table)}, // will execute after the table is created
+            (rowData) => {}, // will execute when click on row
+            additionalTableSettings // additional datatable settings for this table instance
+            
+        );
+    },
+
+    postProcessPagesTable: (table) => {
+        if(table) {
+            sitePagesFn.addAdditionalPagesTableButtons(table);
+        }   
+    },
+
+    addAdditionalPagesTableButtons: (table) => {
+        // post processing table: adding 2 buttons in the bottom2 zone
+        gotToTagBtn = {
+           attr: {
+               siteFunction: 'tableNavigateToTags',
+               title: 'Go to tags'
+           },
+           className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
+           text: 'Tags info',
+           action: () => {
+               window.location.href = '/tag-info'
+           }
+       }
+    
+       gotToCatsBtn = {
+           attr: {
+               siteFunction: 'tableNavigateToCategoriesSP',
+               title: 'Go to categories'
+           },
+           className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
+           text: 'Categories',
+           action: () => {
+               window.location.href = '/cat-info'
+           }
+       }
+       const btnArray = [];
+       btnArray.push(gotToTagBtn);
+       btnArray.push(gotToCatsBtn);
+       addAdditionalButtonsToTable(table, 'table[siteFunction="sitePagesDetailsPageTable"]', 'bottom2', btnArray);
+    },
+
+    redrawPagesTable: () => {
+        const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+        setTimeout(()=>{ table.draw(); },100);
     }
 }

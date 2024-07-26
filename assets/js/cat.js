@@ -301,7 +301,7 @@ const showCatDetails = (cat) => {
         {
             data: 'pageLastUpdate',
             title:'Last Update',
-            type: 'date', 
+            type: 'date-dd-MMM-yyyy', 
             className: 'dt-left', 
             exceptWhenRowSelect: true,
             createdCell: function(td, cellData, rowData, row, col) {
@@ -347,7 +347,7 @@ const showCatDetails = (cat) => {
             }
         }, 
 
-        // other cays
+        // other cats
         {
             data: 'pageOtherCats',
             title:'Other Categories',

@@ -72,6 +72,7 @@ $alwaysWhiteTextElements: (
     'button[siteFunction="tableColumnsVisibility"] span', 
     'button[siteFunction="tableNavigateToSavedItems"] span', 
     'button[siteFunction="tablePageCustomNotesRemoveAllNotes"] span',
+    'button[siteFunction="tableNavigateToCategoriesSP"] span'
 );
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
@@ -90,14 +91,14 @@ $alwaysBlackTextElements: (
     'li[siteFunction="searchTagListItem"]', 
     '.page-link', 
     '.DocSearch-Button-Placeholder', 
-    'button[siteFunction="tableLockFirstColumn"] span', 
-    'button[siteFunction="tableNavigateToCategories"] span',
+    'button[siteFunction="tableLockFirstColumn"] span',
     '.ck-button__label',
     '.context-menu-item a',
     '.context-menu-header',
     '.context-menu-footer',
     '.buttons-columnVisibility span',
-    'button[siteFunction="tableNavigateToTags"] span'
+    'button[siteFunction="tableNavigateToTags"] span',
+    'button[siteFunction="tableNavigateToCategories"] span'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {

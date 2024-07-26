@@ -1,6 +1,6 @@
 {% assign pageArray= site.data.page_list  | json_string_to_object %}
 
-<div id="site_pages_details" class=" my-5 ">
+<div id="site_pages_details" class="my-5 d-none">
     <div siteFunction="sitePagesDetails" class="card shadow bg-transparent">
         
         <div class="card-header d-flex justify-content-between">
@@ -21,10 +21,11 @@
                 <thead>
                     <tr>
                         <th>Title</th>
-                        <th siteFunction="tableDateField">Last Update</th>
+                        <th class="text-start" siteFunction="tableDateField">Last Update</th>
                         <th>Details</th>
                         <th>Related</th>
                         <th>Similar</th>
+                        <th>Excerpt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,13 +40,14 @@
                                 siteFunction="sitePagesTablePageTitle" 
                                 class="fw-normal align-self-center align-middle"
                                 title="Click here for more info about page {{ page.title }}"
-                                colFunction="pageTitle">
+                                colFunction="pageTitle"
+                                data-raw="{{ page.title }}">
                                 <span>
                                     <span
                                         siteFunction="sitePagesPageLinkToOffCanvas"
                                         pageTitleReference="{{ page.title }}"
                                         pagePermalinkReference="{{ page.permalink }}"
-                                        class="alwaysCursorPointer">
+                                        class="alwaysCursorPointer text-nowrap">
                                         {{ page.title }}
                                     </span>
                                     <a 
@@ -61,7 +63,8 @@
                             <td 
                                 siteFunction="tableDateField" 
                                 class="fw-normal align-self-center align-middle"
-                                colFunction="pageLastUpdate">
+                                colFunction="pageLastUpdate"
+                                data-raw="{{ formatted_date }}">
                                 {% assign original_date = page.lastUpdate %}
                                 {% assign formatted_date = original_date | date: "%d-%b-%Y" %}
                                 <span>{{ formatted_date }}</span>
@@ -103,7 +106,7 @@
                                         pagePermalinkReference="{{ page.permalink }}"
                                         pageRelatedTitleReference="{{ pageR.title }}"
                                         pageRelatedPermalinkReference="{{ pageR.permalink }}"
-                                        class="m-2 py-1 px-2 bg-light-subtle rounded-pill text-nowrap d-inline-block">
+                                        class="m-2 px-2 bg-light-subtle rounded-pill text-nowrap d-inline-block">
                                         <span
                                             siteFunction="pageRelatedPageLinkToOffCanvas"
                                             pageTitleReference="{{ page.title }}"
@@ -150,7 +153,7 @@
                                         pagePermalinkReference="{{ page.permalink }}"
                                         pageSimilarTitleReference="{{ pageS.title }}"
                                         pageSimilarPermalinkReference="{{ pageS.permalink }}"
-                                        class="m-1 py-1 px-2 bg-body-secondary rounded-pill text-nowrap d-inline-block">
+                                        class="m-2 px-2 bg-body-secondary rounded-pill text-nowrap d-inline-block">
                                         <span
                                             siteFunction="pageSimilarPageLinkToOffCanvas"
                                             pageTitleReference="{{ page.title }}"
@@ -170,6 +173,20 @@
                                     </span>
                                 {% endfor %}
                             </td>
+                            
+                            <!-- page excerpt -->
+                            <td 
+                                class="fw-normal align-self-center align-middle"
+                                colFunction="pageInfoExcerpt">
+                                <span>
+                                    {% capture permalink_param %}
+                                        {
+                                            "permalink": "{{page.permalink | escape}}"
+                                        }
+                                    {% endcapture %}
+                                    {% PageExcerpt {{ permalink_param | json_string_to_object }} %}
+                                </span>
+                            </td>
 
                         </tr>
                     {% endfor %}
@@ -180,12 +197,6 @@
 
     </div>
 </div>
-    
-    
-    
-    
-        
-
-
 
 <script>sitePages__pages();</script>
+

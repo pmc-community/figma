@@ -591,7 +591,7 @@ const showTagDetails = (tag) => {
         {
             data: 'pageLastUpdate',
             title:'Last Update',
-            type: 'date', 
+            type: 'date-dd-MMM-yyyy', 
             className: 'dt-left', 
             exceptWhenRowSelect: true,
             createdCell: function(td, cellData, rowData, row, col) {

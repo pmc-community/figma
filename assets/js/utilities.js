@@ -352,7 +352,8 @@ const setSearchList = (
 // callback and callbackClickRow are set in the caller to do specific processing after the table is initialized
 const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow, additionalSettings = {}) => {
     const defaultSettings = {
-        paging: true, 
+        paging: true,
+        pageLength: 5,
         ordering: true,
         searching: true,
         colReorder: true,
@@ -360,6 +361,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         fixedHeader: true,
         colReorder: false,
         layout: {
+            
             topStart: {
                 pageLength: {
                     menu: [5, 10, 25, 50]
@@ -467,7 +469,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
             applyColorSchemaCorrections();
             // also on draw event to cover all potential cases
             table.on('draw', function () { applyColorSchemaCorrections(); });
-            resolve();
+            resolve(table);
             
         });
     }
@@ -1077,7 +1079,7 @@ const replaceAllOccurrencesCaseInsensitive = (array, target, replacement) => {
     });
 }
 
-function transformStringFromPageSearchList(input) {
+const transformStringFromPageSearchList = (input) => {
     // Use a regular expression to capture the title and permalink parts
     const regex = /(.*) \((.*)\)/;
     const match = input.match(regex);
@@ -1088,4 +1090,10 @@ function transformStringFromPageSearchList(input) {
     }
 
     return null;
+}
+
+const stripHtml = (data) => {
+    var tmp = document.createElement("DIV");
+    tmp.innerHTML = data;
+    return tmp.textContent || tmp.innerText || "";
 }
