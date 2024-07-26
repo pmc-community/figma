@@ -12,6 +12,7 @@ const setCatSupport = () => {
 
         requestedCat = readQueryString('cat');
         if (requestedCat) showCatDetails(requestedCat);
+
     });
 
     // from utilities.js
@@ -191,7 +192,7 @@ const setCatInfoPageSearchList = (cat) => {
         return (
             `
                 <div id="${cat.replace(/ /g, "_")}_add_page_to_cat" class="p-3">
-                    <div class="mb-2 text-secondary fw-medium">Add document to category</div>
+                    <div class="mb-2 fw-medium" siteFunction="labelForPageSearchList">Add document to category</div>
                     <div>
                         <input 
                             type="text" 
@@ -217,7 +218,8 @@ const setCatInfoPageSearchList = (cat) => {
         });
     }
     
-    setRawSearchList().then(() => {
+    setRawSearchList()
+        .then(() => {
             setSearchList(
                 `#${cat.replace(/ /g, "_")}_pageSearchInput`, 
                 `#${cat.replace(/ /g, "_")}_pageSearchResults`, 
@@ -228,6 +230,11 @@ const setCatInfoPageSearchList = (cat) => {
                 (result) => { catInfoAddPageToCat(result); },
                 (filteredList) => {}
             );
+        })
+        .then(() => {
+            setTimeout(()=>{
+                applyColorSchemaCorrections();
+            },100);
         });
 }
 

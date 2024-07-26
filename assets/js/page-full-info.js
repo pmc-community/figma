@@ -22,7 +22,8 @@ const REFRESH_PAGE_INFO_AFTER = (func) => {
             siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
             savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
             tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
-            cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
+            cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+            page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
         };
 
         return result;
@@ -39,7 +40,8 @@ const REFRESH_PAGE_INFO_BEFORE = (func) => {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
                 tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
-                cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
+                cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+                page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
 
             };
 
@@ -63,7 +65,8 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
                 tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
-                cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
+                cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+                page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
             };
 
             resolve(pageInfo);
@@ -79,7 +82,8 @@ const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
                 siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
                 savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title),
                 tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
-                cat: oldPageInfo.cat // used when pageFullInfo is called from cat-info page
+                cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+                page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
             };
         });
     };

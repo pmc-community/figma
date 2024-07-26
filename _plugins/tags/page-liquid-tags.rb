@@ -131,6 +131,76 @@ module Jekyll
             
         end
 
+        class PageRelated < Liquid::Tag
+  
+            def initialize(tag_name, input, context)
+                super
+                @input = input
+            end
+
+            def render(context)
+                begin
+                    if( !@input.nil? && !@input.empty? )
+                        param = Liquid::Template.parse(@input).render(context)
+                        permalink = JSON.parse(param.gsub('=>', ':'))["permalink"]
+                        relatedExcept = JSON.parse(JSON.parse(param.gsub('=>', ':'))["except"].to_json)
+                        pages = JSON.parse(context.registers[:site].data["page_list"])
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                    end
+                    rescue
+                        begin
+                            param = JSON.parse(@input)
+                            permalink = param["permalink"]
+                            relatedExcept = JSON.parse(param["except"].to_json) || []
+                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                        rescue
+                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageRelated tag got bad json string as input(#{param})\n")
+                        end
+                end
+                related = matched_page["relatedPages"] ? matched_page["relatedPages"] : [] if matched_page
+                relatedExcept.each do |page|
+                    related.delete(page)
+                end
+                related.to_json
+            end
+            
+        end
+
+        class PageSimilarByContent < Liquid::Tag
+  
+            def initialize(tag_name, input, context)
+                super
+                @input = input
+            end
+
+            def render(context)
+                begin
+                    if( !@input.nil? && !@input.empty? )
+                        param = Liquid::Template.parse(@input).render(context)
+                        permalink = JSON.parse(param.gsub('=>', ':'))["permalink"]
+                        similarExcept = JSON.parse(JSON.parse(param.gsub('=>', ':'))["except"].to_json)
+                        pages = JSON.parse(context.registers[:site].data["page_list"])
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                    end
+                    rescue
+                        begin
+                            param = JSON.parse(@input)
+                            permalink = param["permalink"]
+                            similarExcept = JSON.parse(param["except"].to_json) || []
+                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                        rescue
+                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageSimilarByContent tag got bad json string as input(#{param})\n")
+                        end
+                end
+                similarByContent = matched_page["similarByContent"] ? matched_page["similarByContent"] : [] if matched_page
+                similarExcept.each do |page|
+                    similarByContent.delete(page)
+                end
+                similarByContent.to_json
+            end
+            
+        end
+
     end
 end
   
@@ -138,4 +208,6 @@ Liquid::Template.register_tag('SitePages', Jekyll::SitePages::SitePages)
 Liquid::Template.register_tag('PageExcerpt', Jekyll::SitePages::PageExcerpt)
 Liquid::Template.register_tag('PageTags', Jekyll::SitePages::PageTags)
 Liquid::Template.register_tag('PageCats', Jekyll::SitePages::PageCats)
+Liquid::Template.register_tag('PageRelated', Jekyll::SitePages::PageRelated)
+Liquid::Template.register_tag('PageSimilarByContent', Jekyll::SitePages::PageSimilarByContent)
   

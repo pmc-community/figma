@@ -1,7 +1,7 @@
 {% assign catsArray= site.data.category_list  | json_string_to_object %}
 {% assign pageArray= site.data.page_list  | json_string_to_object %}
 
-<div id="cat_details" class="container my-5 ">
+<div id="cat_details" class="my-5 ">
     {% for catItem in site.data.categories_details %}
         <div catReference="{{ catItem[0] }}" siteFunction="catDetails" class="d-none card shadow bg-transparent">
             <div class="card-header d-flex justify-content-between">

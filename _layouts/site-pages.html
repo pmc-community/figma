@@ -5,9 +5,11 @@ layout: page
 <!-- content from the page using this template -->
 {{ content }}
 
-<!-- intro -->
-{% include siteIncludes/partials/site-pages/header.html %} 
+<!-- page search-->
+{% include siteIncludes/partials/site-pages/page-search.html %}
 
+<!-- pages table-->
+{% include siteIncludes/partials/site-pages/pages-details.html %}
 
-<!-- setting up the page -->
-<script>setSitePagesSupport();</script>
+<!-- off canvas for page full information -->
+{% include siteIncludes/partials/page-full-info.html %} 

@@ -1,6 +1,6 @@
 {% assign tagsArray= site.data.tag_list  | json_string_to_object %}
 
-<div id="tag_details" class="container my-5 ">
+<div id="tag_details" class="my-5 ">
     {% for tagItem in site.data.tags_details %}
         <div tagReference="{{ tagItem[0] }}" siteFunction="tagDetails" class="d-none card shadow bg-transparent">
             <div class="card-header d-flex justify-content-between">

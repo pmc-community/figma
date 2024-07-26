@@ -203,8 +203,13 @@ const setSearchList = (
             const $searchInput = $(searchInputSelector);
             const $searchResults = $(searchResultsSelector);
 
-            $searchResults.css('left', $(searchInputSelector).position().left + 'px');
-            $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');    
+            // small delay to be sure that the search input/list is set and we can calculate the position properly
+            // otherwise the search results position may not be related the final position of the search input and
+            // the search results may be shown somewhere on the page, not stick to the search imput
+            setTimeout(() => {
+                $searchResults.css('left', $(searchInputSelector).position().left + 'px');
+                $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');    
+            }, 100);
 
             let list = [];
             $(searchResultsItemSelector).each(function() { list.push($(this).text().trim()); });

@@ -1036,7 +1036,7 @@ const setTagInfoPageSearchList = (tag) => {
         return (
             `
                 <div id="${tag.replace(/ /g, "_")}_add_page_to_tag" class="p-3">
-                    <div class="mb-2 text-secondary fw-medium">Add document to tag</div>
+                    <div class="mb-2 fw-medium" siteFunction="labelForPageSearchList">Add document to tag</div>
                     <div>
                         <input 
                             type="text" 
@@ -1062,7 +1062,8 @@ const setTagInfoPageSearchList = (tag) => {
         });
     }
     
-    setRawSearchList().then(() => {
+    setRawSearchList()
+        .then(() => {
             setSearchList(
                 `#${tag.replace(/ /g, "_")}_pageSearchInput`, 
                 `#${tag.replace(/ /g, "_")}_pageSearchResults`, 
@@ -1073,6 +1074,11 @@ const setTagInfoPageSearchList = (tag) => {
                 (result) => { tagInfoAddPageToTag(result); },
                 (filteredList) => {}
             );
+        })
+        .then(() => {
+            setTimeout(()=>{ 
+                applyColorSchemaCorrections();
+            },100);
         });
 }
 
