@@ -46,6 +46,27 @@ $(function () {
     if ($(`${settings.pageToc.toc} ul`).children('li').length > 0 ) $(settings.pageToc.scrollSpyBase).scrollspy({target: navSelector,});
 });
 
+// CONVERSION FUNCTIONS FOR DATATABLES SORTING PURPOSES
+// type dd-mmm-yyyy to Unix Timestamp
+$.fn.dataTable.ext.type.order['date-dd-mmm-yyyy-pre'] = function(d) {
+    const months = {
+        "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3,
+        "May": 4, "Jun": 5, "Jul": 6, "Aug": 7,
+        "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+    };
+    const dateParts = stripHtml(d).split('-');
+    const day = parseInt(dateParts[0], 10);
+    const month = months[dateParts[1]];
+    const year = parseInt(dateParts[2], 10);
+
+    return new Date(year, month, day).getTime();
+};
+
+// type html-string to html stripped text
+$.fn.dataTable.ext.type.order['html-string-pre'] = function(s) {
+    return stripHtml(s);
+};
+
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);
     var $children = $node.children();

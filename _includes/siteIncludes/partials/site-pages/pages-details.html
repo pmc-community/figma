@@ -17,7 +17,7 @@
         <div class="card-body">
 
             <!-- site pages details table -->
-            <table siteFunction="sitePagesDetailsPageTable" class="table table-hover">
+            <table siteFunction="sitePagesDetailsPageTable" class="w-100 table table-hover">
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -26,10 +26,14 @@
                         <th>Related</th>
                         <th>Similar</th>
                         <th>Excerpt</th>
+                        <th>Summary</th>
+                        <th>Tags</th>
+                        <th>Categories</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for page in pageArray %}
+                        <!-- page row in pages table -->
                         <tr
                             siteFunction="sitePagesDetailsTablePageRow"
                             pageTitleReference="{{ page.title }}"
@@ -60,13 +64,13 @@
                             </td>
 
                             <!-- page last update -->
+                            {% assign original_date = page.lastUpdate %}
+                            {% assign formatted_date = original_date | date: "%d-%b-%Y" %}
                             <td 
                                 siteFunction="tableDateField" 
                                 class="fw-normal align-self-center align-middle"
                                 colFunction="pageLastUpdate"
-                                data-raw="{{ formatted_date }}">
-                                {% assign original_date = page.lastUpdate %}
-                                {% assign formatted_date = original_date | date: "%d-%b-%Y" %}
+                                data-raw="{{ formatted_date | date_to_utc_timestamp }}">
                                 <span>{{ formatted_date }}</span>
                             </td>
 
@@ -82,23 +86,22 @@
                             </td>
                             
                             <!-- page related -->
+                            {% capture permalink_param %}
+                                {
+                                    "permalink": "{{page.permalink | escape}}",
+                                    "except": [""]
+                                }
+                            {% endcapture %}
+                            {% capture pageRelated %}
+                                {% PageRelated {{ permalink_param | json_string_to_object }} %}
+                            {% endcapture %}
+                            {% assign pageRelatedArray = pageRelated | json_string_to_object  %}
                             <td 
                                 class="fw-normal align-self-center align-middle"
                                 colFunction="pageInfoRelatedPages"
                                 pageTitleReference="{{ page.title }}"
-                                pagePermalinkReference="{{ page.permalink }}">
-
-                                {% capture permalink_param %}
-                                    {
-                                        "permalink": "{{page.permalink | escape}}",
-                                        "except": [""]
-                                    }
-                                {% endcapture %}
-                                
-                                {% capture pageRelated %}
-                                    {% PageRelated {{ permalink_param | json_string_to_object }} %}
-                                {% endcapture %}
-                                {% assign pageRelatedArray = pageRelated | json_string_to_object  %}
+                                pagePermalinkReference="{{ page.permalink }}"
+                                data-raw="{{pageRelated | escape }}">
                                 {% for pageR in pageRelatedArray %}
                                     <span 
                                         siteFunction="pageRelatedPageInfo"
@@ -129,23 +132,22 @@
                             </td>
                             
                             <!-- page similar -->
+                            {% capture permalink_param %}
+                                {
+                                    "permalink": "{{page.permalink | escape}}",
+                                    "except": [""]
+                                }
+                            {% endcapture %}           
+                            {% capture pageSimilar %}
+                                {% PageSimilarByContent {{ permalink_param | json_string_to_object }} %}
+                            {% endcapture %}
+                            {% assign pageSimilarArray = pageSimilar | json_string_to_object  %}
                             <td
                                 class="fw-normal align-self-center align-middle"
                                 colFunction="pageInfoSimilarPages"
                                 pageTitleReference="{{ page.title }}"
-                                pagePermalinkReference="{{ page.permalink }}">
-
-                                {% capture permalink_param %}
-                                    {
-                                        "permalink": "{{page.permalink | escape}}",
-                                        "except": [""]
-                                    }
-                                {% endcapture %}
-                                
-                                {% capture pageSimilar %}
-                                    {% PageSimilarByContent {{ permalink_param | json_string_to_object }} %}
-                                {% endcapture %}
-                                {% assign pageSimilarArray = pageSimilar | json_string_to_object  %}
+                                pagePermalinkReference="{{ page.permalink }}"
+                                data-raw="{{pageSimilar | escape}}">
                                 {% for pageS in pageSimilarArray %}
                                     <span 
                                         siteFunction="pageSimilarPageInfo"
@@ -185,6 +187,42 @@
                                         }
                                     {% endcapture %}
                                     {% PageExcerpt {{ permalink_param | json_string_to_object }} %}
+                                </span>
+                            </td>
+
+                            <!-- page summary -->
+                            <td 
+                                class="fw-normal align-self-center align-middle"
+                                colFunction="pageInfoAutoSummary">
+                                <span>
+                                    {% capture permalink_param %}
+                                        {
+                                            "permalink": "{{page.permalink | escape}}"
+                                        }
+                                    {% endcapture %}
+                                    {% PageAutoSummary {{ permalink_param | json_string_to_object }} %}
+                                </span>
+                            </td>
+
+                            <!-- page tags-->
+                            <td 
+                                class="fw-normal align-self-center align-middle"
+                                colFunction="pageInfoTags"
+                                pageTitleReference="{{ page.title }}"
+                                pagePermalinkReference="{{ page.permalink }}">
+                                <span>
+                                    place for page tags
+                                </span>
+                            </td>
+
+                            <!-- page cats-->
+                            <td 
+                                class="fw-normal align-self-center align-middle"
+                                colFunction="pageInfoCats"
+                                pageTitleReference="{{ page.title }}"
+                                pagePermalinkReference="{{ page.permalink }}">
+                                <span>
+                                    place for page cats
                                 </span>
                             </td>
 

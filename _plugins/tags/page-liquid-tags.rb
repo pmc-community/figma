@@ -201,6 +201,37 @@ module Jekyll
             
         end
 
+        class PageAutoSummary < Liquid::Tag
+  
+            def initialize(tag_name, input, context)
+                super
+                @input = input
+            end
+
+            def render(context)
+                begin
+                    if( !@input.nil? && !@input.empty? )
+                        param = Liquid::Template.parse(@input).render(context)
+                        permalink = JSON.parse(param.gsub('=>', ':'))["permalink"]
+                        pages = context && context.registers[:site] && context.registers[:site].data ?
+                            JSON.parse(context.registers[:site].data["page_list"]) :
+                            []
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                    end
+                    rescue
+                        begin
+                            param = JSON.parse(@input)
+                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
+                        rescue
+                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageAutoSummary tag got bad json string as input\n")
+                        end
+                end
+                summary = matched_page["autoSummary"] ? matched_page["autoSummary"] : "" if matched_page
+                summary
+            end
+            
+        end
+
     end
 end
   
@@ -210,4 +241,5 @@ Liquid::Template.register_tag('PageTags', Jekyll::SitePages::PageTags)
 Liquid::Template.register_tag('PageCats', Jekyll::SitePages::PageCats)
 Liquid::Template.register_tag('PageRelated', Jekyll::SitePages::PageRelated)
 Liquid::Template.register_tag('PageSimilarByContent', Jekyll::SitePages::PageSimilarByContent)
+Liquid::Template.register_tag('PageAutoSummary', Jekyll::SitePages::PageAutoSummary)
   
