@@ -12,14 +12,26 @@
                         <li siteFunction="searchPageListItem">{{pageItem["title"]}} ({{pageItem["permalink"]}})</li>
                     {% endfor %}
                 </ul>
-                <button 
-                    siteFunction="openSitePagesDetails" 
-                    id="openSitePagesDetails" 
-                    type="button" 
-                    class="btn btn-sm btn-primary"
-                    title= "Open Site Pages List">
-                    Pages
-            </button>
+                <div>
+                    <button 
+                        siteFunction="openSitePagesDetails" 
+                        id="openSitePagesDetails" 
+                        type="button" 
+                        class="btn btn-sm btn-primary"
+                        title= "Open Site Pages List"
+                        style="width:8rem; height:100%">
+                        Site Pages
+                    </button>
+                    <button 
+                        siteFunction="openSitePagesSavedItems" 
+                        id="openSitePagesSavedItems" 
+                        type="button" 
+                        class="btn btn-sm btn-success"
+                        title= "Open Site Saved Items"
+                        style="width:8rem; height:100%">
+                        Saved Items
+                    </button>
+                </div>
             </div>
         </div>
     </div>

@@ -19,12 +19,14 @@ const sitePages__pages = () => {
         sitePagesFn.setPagesTablePageBadges();
         sitePagesFn.setPagesTags();
         sitePagesFn.setPagesCats();
-        sitePagesFn.setPagesDataTable();
+        sitePagesFn.setPagesDataTable();   
+        sitePagesFn.postProcessSearchPanes(); 
     });
 }
 
 // using a 'namespace' to avoid fn name duplicates
 sitePagesFn = {
+
     setPageSearchList: () => {
         setSearchList(
             `#pageSearchInput`, 
@@ -59,6 +61,7 @@ sitePagesFn = {
         setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
             sitePagesFn.updateInfoAfterOffCanvasClose(pageInfo.page);
             $(`table[siteFunction="sitePagesDetailsPageTable"] td`).removeClass('table-active'); // remove any previous selection
+            sitePagesFn.rebuildPagesTableSearchPanes();
         });
     },
 
@@ -95,9 +98,12 @@ sitePagesFn = {
                 siteInfoBadges += 
                     `
                         <span
+                            cellFunction="siteBadge"
                             siteFunction="pageHasSiteTagsBadge"
                             title = "Page ${page.siteInfo.title} has site tags" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary">
+                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary"
+                            pageTitleReference="${page.siteInfo.title}"
+                            pagePermaLinkReference="${page.siteInfo.permalink}">
                             Tags
                         </span>
                     `;
@@ -108,9 +114,12 @@ sitePagesFn = {
                 siteInfoBadges += 
                     `
                         <span
+                            cellFunction="siteBadge"
                             siteFunction="pageHasSiteCategoryBadge"
                             title = "Page ${page.siteInfo.title} has site categories" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger">
+                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger"
+                            pageTitleReference="${page.siteInfo.title}"
+                            pagePermaLinkReference="${page.siteInfo.permalink}">
                             Categories
                         </span>
                     `;
@@ -121,9 +130,12 @@ sitePagesFn = {
                 siteInfoBadges += 
                     `
                         <span
+                            cellFunction="siteBadge"
                             siteFunction="pageHasAutoSummaryBadge"
                             title = "Page ${page.siteInfo.title} has auto generated summary" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark">
+                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark"
+                            pageTitleReference="${page.siteInfo.title}"
+                            pagePermaLinkReference="${page.siteInfo.permalink}">
                             Summary
                         </span>
                     `;
@@ -134,9 +146,12 @@ sitePagesFn = {
                 siteInfoBadges += 
                     `
                         <span
+                            cellFunction="siteBadge"
                             siteFunction="pageHasExcerptBadge"
                             title = "Page ${page.siteInfo.title} has excerpt" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-secondary">
+                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-secondary"
+                            pageTitleReference="${page.siteInfo.title}"
+                            pagePermaLinkReference="${page.siteInfo.permalink}">
                             Excerpt
                         </span>
                     `;
@@ -155,9 +170,12 @@ sitePagesFn = {
                 savedInfoBadges += 
                     `
                         <span
+                            cellFunction="siteBadge"
                             siteFunction="pageHasCustomTagsBadge"
                             title = "Page ${page.siteInfo.title} has custom tags" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success">
+                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
+                            pageTitleReference="${page.savedInfo.title}"
+                            pagePermaLinkReference="${page.savedInfo.permalink}">
                             Tags
                         </span>
                     `;
@@ -168,9 +186,12 @@ sitePagesFn = {
                 savedInfoBadges += 
                     `
                         <span
+                            cellFunction="siteBadge"
                             siteFunction="pageHasCustomCategoriesBadge"
                             title = "Page ${page.siteInfo.title} has custom categories" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success">
+                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
+                            pageTitleReference="${page.savedInfo.title}"
+                            pagePermaLinkReference="${page.savedInfo.permalink}">
                             Categories
                         </span>
                     `;
@@ -181,15 +202,19 @@ sitePagesFn = {
                 savedInfoBadges += 
                     `
                         <span
+                            cellFunction="siteBadge"
                             siteFunction="pageHasCustomNotesBadge"
                             title = "Page ${page.siteInfo.title} has custom notes" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning">
+                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning"
+                            pageTitleReference="${page.savedInfo.title}"
+                            pagePermaLinkReference="${page.savedInfo.permalink}">
                             Notes
                         </span>
                     `;
                 flags.push('Has Custom Notes');
             }
-    
+            
+            if (flags.length > 0) flags.unshift('Is Saved');
             return [savedInfoBadges, flags];
     
         }
@@ -206,12 +231,15 @@ sitePagesFn = {
             siteInfo = pageSiteInfoBadges({ siteInfo: pageSiteInfo });
             savedInfo = pageSavedInfoBadges({ siteInfo: pageSiteInfo, savedInfo: pageSavedInfo });
             const badgesHtml = 
-                '<span>' +
+                `<span>` +
                 siteInfo[0] +
                 savedInfo[0] +
                 '</span>';
             $(this).html(badgesHtml);  
             $(this).attr('data-raw',JSON.stringify(_.union(siteInfo[1], savedInfo[1])));
+            $(`span[cellFunction="siteBadge"][pageTitleReference="${pageSiteInfo.title}"][pagePermaLinkReference="${pageSiteInfo.permalink}"]`).each(function() {
+                $(this).attr('data-raw',JSON.stringify(_.union(siteInfo[1], savedInfo[1])));
+            })
         })
     },
 
@@ -227,7 +255,8 @@ sitePagesFn = {
                 className: 'alwaysCursorPointer',
                 title:'Title',
                 width:'15%',
-                type: 'html-string'
+                type: 'html-string',
+                searchable: true,
             }, 
     
             // last update
@@ -246,7 +275,7 @@ sitePagesFn = {
                 searchable: true, 
                 orderable: false, 
                 exceptWhenRowSelect: true,
-                visible: false
+                visible: false,
             }, 
 
             // related
@@ -273,6 +302,7 @@ sitePagesFn = {
                 title:'Excerpt',
                 exceptWhenRowSelect: true,
                 orderable: false,
+                searchable: true,
                 visible: false
             },
 
@@ -316,14 +346,97 @@ sitePagesFn = {
             deferRender: true, // Defer rendering for speed up
             
             initComplete: function(settings, json) {
-                    // Adjust columns after initialization to ensure proper alignment
-                    const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-                    setTimeout(()=>{
-                        table.order([0, 'asc']).draw();
-                        table.columns.adjust().draw();
-                    },100);
+                // Adjust columns after initialization to ensure proper alignment
+                const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+                setTimeout(()=>{
+                    table.order([0, 'asc']).draw();
+                    table.columns.adjust().draw();
+                },100);
+                sitePagesFn.pagesTableFilter = {}
+
                     
             },
+
+            // USED ONLY FOR SEARCH PANES AND ONLY FOR MAINTAIN SEPARATE SETTINGS
+            // WITH THE PURPOSE OF A MORE EASY TO MAINTAIN CODE
+            // SEARCH PANES CAN BE DEFINED IN THE SAME WAY IN colDefinition OBJECT
+            // columns are defined in colDefinition object
+            columnDefs: [
+                {
+                    searchPanes: {
+                        options:  getOptionsFromArray('table[siteFunction="sitePagesDetailsPageTable"]', 2, (selectedRow, selectedSearchPaneValue)=>{
+                            console.log(selectedRow);
+                            console.log(selectedSearchPaneValue);
+                        }),
+                        show: true,
+                        collapse: true,
+                        viewCount: true,
+                        initCollapsed: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        }                       
+                    },
+                    targets: [2],
+                    
+                },
+                {
+                    searchPanes: {
+                        options: getOptionsFromObjectsArray('table[siteFunction="sitePagesDetailsPageTable"]', 3, 'title'),
+                        show: true,
+                        initCollapsed: false,
+                        
+                    },
+                    targets: [3],
+                    
+                },
+                {
+                    searchPanes: {
+                        options: getOptionsFromObjectsArray('table[siteFunction="sitePagesDetailsPageTable"]', 4, 'title'),
+                        show: true,
+                        initCollapsed: false 
+                    },
+                    targets: [4],
+                    
+                },
+                {
+                    searchPanes: {
+                        options: getOptionsFromArray('table[siteFunction="sitePagesDetailsPageTable"]', 7, (selectedRow, selectedSearchPaneValue)=>{}),
+                        show: true,
+                        initCollapsed: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        }
+                    },
+                    targets: [7],
+                    
+                },
+                {
+                    searchPanes: {
+                        options: getOptionsFromArray('table[siteFunction="sitePagesDetailsPageTable"]', 8, (selectedRow, selectedSearchPaneValue)=>{}),
+                        show: true,
+                        initCollapsed: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        }
+                    },
+                    targets: [8],
+                    
+                },
+                {
+                    searchPanes: {
+                        show: false
+                    },
+                    targets: '_all'    
+                },
+                
+            ]
+
 
         };
 
@@ -335,7 +448,8 @@ sitePagesFn = {
             colDefinition,
             (table) => {sitePagesFn.postProcessPagesTable(table)}, // will execute after the table is created
             (rowData) => {}, // will execute when click on row
-            additionalTableSettings // additional datatable settings for this table instance
+            additionalTableSettings, // additional datatable settings for this table instance
+            true // has SearchPanes
             
         );
     },
@@ -384,21 +498,26 @@ sitePagesFn = {
 
     setPagesTags: () => {
 
-        const tagElement = (tag, isSiteTag) => {
+        const tagElement = (page, allTags, tag, isSiteTag) => {
             const tagBtnColor = isSiteTag ? 'btn-primary' : 'btn-success';
-            return  (
+            return ( 
                 `
                     <a 
                         siteFunction="tagButton" 
+                        pagePermalinkReference="${page.permalink}"
+                        pageTitleReference="${page.title}"
                         tagType="${isSiteTag ? 'siteTag' : 'customTag'}"
-                        id="${tag}" type="button" 
+                        id="${tag}" 
+                        type="button" 
                         class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${tagBtnColor} position-relative"
                         title = "Details for tag ${tag}"
-                        href="tag-info?tag=${tag}">
+                        href="tag-info?tag=${tag}"
+                        data-raw="${JSON.stringify(allTags).replace(/"/g, '&quot;')}">
                         ${tag}
                     </a>
-                `
-            );
+                `);
+
+
         }
 
         $('td[colFunction="pageInfoTags"]').each(function() {
@@ -412,17 +531,27 @@ sitePagesFn = {
 
             let tagsHtml = '';
             siteTags.forEach( tag => {
-                tagsHtml += tagElement(tag, true);
+                tagsHtml += tagElement(pageSiteInfo, allTags, tag, true);
             });
 
             customTags.forEach( tag => {
-                tagsHtml += tagElement(tag, false);
+                tagsHtml += tagElement(pageSiteInfo, allTags, tag, false);
             });
 
-            tagsHtml = `<span>${tagsHtml}</span>`;
-            $(this).html(tagsHtml);
+            tagsHtml = 
+                `   <div>
+                        <span
+                            siteFunction="pageInfoTagsContainer"
+                            pagePermalinkReference="${permalink}"
+                            pageTitleReference="${title}">
+                            ${tagsHtml}
+                        </span>
+                    </div>
+                `;
+            $tempElement = $(tagsHtml)
+            $tempElement.attr('data-raw', JSON.stringify(allTags));
+            $(this).html($tempElement.html());
         });
-
     },
 
     setPagesCats: () => {
@@ -466,5 +595,18 @@ sitePagesFn = {
             $(this).html(catsHtml);
         });
 
+    },
+
+    postProcessSearchPanes: () => {
+        removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
+        setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
+            // ... here to add search pane post-processing
+            $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning');
+        });
+    },
+
+    rebuildPagesTableSearchPanes: () => {
+        table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable().destroy();
+        sitePagesFn.setPagesDataTable();
     }
 }

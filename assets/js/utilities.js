@@ -67,6 +67,26 @@ $.fn.dataTable.ext.type.order['html-string-pre'] = function(s) {
     return stripHtml(s);
 };
 
+$.fn.dataTable.ext.type.search['raw-data'] = function(data) {
+    console.log('here')
+    try {
+        var parsedData = JSON.parse(data);
+        if (Array.isArray(parsedData)) {
+            if (typeof parsedData[0] === 'object' && parsedData[0] !== null) {
+                // Extract titles from array of objects
+                return parsedData.map(function(item) { return item.title; }).join(' ');
+            } else {
+                // Union of arrays
+                return [...new Set(parsedData.flat())].join(' ');
+            }
+        }
+    } catch (e) {
+        return data;
+    }
+    return data;
+};
+// Extend DataTables with custom search function
+
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);
     var $children = $node.children();
@@ -371,7 +391,43 @@ const setSearchList = (
 
 // columnsConfig is set in the caller, to be fit to the specific table
 // callback and callbackClickRow are set in the caller to do specific processing after the table is initialized
-const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow, additionalSettings = {}) => {
+const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow, additionalSettings = {}, searchPanes = null) => {
+    bottom2Buttons = searchPanes ?
+        [
+            {
+                extend: ['colvis'],
+                columns: ':gt(0)', // except first column which will be always visible
+                text: 'Columns',
+                attr: {
+                    title: 'Show/Hide Columns',
+                    siteFunction: 'tableColumnsVisibility'
+                },
+                className: 'btn-primary btn-sm text-light mb-2'
+            },
+            {
+                extend: ['searchPanes'],
+                text: 'Filter',
+                attr: {
+                    title: 'Advanced filter',
+                    siteFunction: 'tableSearchPanes'
+                },
+                className: 'btn-danger btn-sm text-light mb-2',
+            }
+        ]:
+
+        [
+            {
+                extend: ['colvis'],
+                columns: ':gt(0)', // except first column which will be always visible
+                text: 'Columns',
+                attr: {
+                    title: 'Show/Hide Columns',
+                    siteFunction: 'tableColumnsVisibility'
+                },
+                className: 'btn-primary btn-sm text-light mb-2'
+            }
+        ];
+
     const defaultSettings = {
         paging: true,
         pageLength: 5,
@@ -382,25 +438,13 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         fixedHeader: true,
         colReorder: false,
         layout: {
-            
             topStart: {
                 pageLength: {
                     menu: [5, 10, 25, 50]
                 }
             },
             bottom2: {
-                buttons: [
-                    {
-                        extend: ['colvis'],
-                        columns: ':gt(0)', // except first column which will be always visible
-                        text: 'Columns',
-                        attr: {
-                            title: 'Show/Hide Columns',
-                            siteFunction: 'tableColumnsVisibility'
-                        },
-                        className: 'btn-primary btn-sm text-light focus-ring focus-ring-warning mb-2'
-                    }
-                ]
+                buttons: bottom2Buttons
             }
         },
         stateSave: true,
@@ -410,7 +454,15 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         stateLoadCallback: function (settings) {
             return JSON.parse(localStorage.getItem(`${window.location.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '_')}_DataTables_` + tableUniqueID));
         },
-        columns: columnsConfig
+        columns: columnsConfig,
+        language: {
+            searchPanes: {
+                clearMessage: 'Clear All',
+                collapse: { 0: 'Filter', _: 'Filters (%d)' },
+                count: '{total} found',
+                countFiltered: '{shown} / {total}'
+            }
+        }
     };
     const allSettings = {...defaultSettings, ...additionalSettings};
     
@@ -687,7 +739,10 @@ const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => 
         for(const mutation of mutationsList) {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                 mutation.addedNodes.forEach(node => {
-                    if (node instanceof Element && node.classList.contains(elementClass)) {
+                    if (
+                        node instanceof Element && node.classList.contains(elementClass) || 
+                        node instanceof Element &&  _.includes(node.classList.value, elementClass)
+                        ) {
                         callback();
                     }
                 });
@@ -1117,4 +1172,97 @@ const stripHtml = (data) => {
     var tmp = document.createElement("DIV");
     tmp.innerHTML = data;
     return tmp.textContent || tmp.innerText || "";
+}
+
+const getOptionsFromArray = (tableSelector, columnIndex, callback = null) => {
+    // THIS IS BEFORE DATATABLE INIT, 
+    // WE CAN ACCESS THE CELLS USING JQERY
+    // WE CANNOT ACCES CELLS USING datatable OBJECT SINCE DATATABLE DOES NOT EXIST YET
+    let table = $(tableSelector);
+    const rows = table.find('tbody tr');
+    const values = new Set();
+
+    // Iterate over all rows to collect unique values from the specified column
+    rows.each(function() {
+        // Get the array of <td> elements in this row
+        const cells = $(this).find('td').get(); // `.get()` to return an array of DOM elements
+        if (cells.length > columnIndex) {
+            const cell = $(cells[columnIndex]);
+            const rawData = cell.attr('data-raw');
+            
+            // Debugging: Log cell data and rawData
+            //console.log('Raw Data:', rawData);
+
+            let cellData;
+            try {
+                cellData = JSON.parse(rawData);
+            } catch (e) {
+                cellData = rawData;
+            }
+
+            if (cellData !== undefined) {
+                // If cellData is an array, add its items to the Set
+                if (Array.isArray(cellData)) {
+                    cellData.forEach(item => values.add(item));
+                } else {
+                    values.add(cellData);
+                }
+            }
+        }
+    });
+
+    // Convert set to array of options
+    // THIS IS AFTER DATATABLE INIT, 
+    // WE CANNOT ACCESS THE CELLS USING JQERY SINCE SOME COLUMNS MAY BE NOT VISIBLE = NOT IN THE DOM
+    // WE CAN ACCES CELLS USING datatable OBJECT
+    return Array.from(values).map(value => ({
+        label: `${value}`,
+        value: function(row) {
+            const cell = $(row[columnIndex]);
+            //if (columnIndex===7) console.log(row[columnIndex]);
+            //if (columnIndex===7) console.log(cell.html());
+            const rawData = cell.children().first().attr('data-raw');
+            // Debugging: Log rawData for the given row and column index
+            //if (columnIndex===7) console.log('Raw Data for value function:', rawData);
+
+            let cellData;
+            try {
+                cellData = JSON.parse(rawData);
+                //if (columnIndex===7) console.log(cellData);
+            } catch (e) {
+                cellData = rawData;
+                //if (columnIndex===7) console.log(cellData);
+            }
+
+            if (callback) {
+                const permalink = cell.attr('pagePermalinkReference');
+                const title = cell.attr('pageTitleReference');
+                callback({ permalink: permalink, title: title }, value);
+            }
+            
+            // Check if cellData is an array or a single value
+            if (Array.isArray(cellData)) {
+                return cellData.includes(value);
+            } else {
+                return cellData === value;
+            }
+        },
+        viewCount: 0
+    }));
+}
+
+function getOptionsFromObjectsArray(tableSelector, columnIndex, key) {
+    let options = [];
+    $(`${tableSelector} tr`).each(function() {
+        let dataRaw = $(this).find('td').eq(columnIndex).attr('data-raw');
+        if (dataRaw) {
+            let objects = JSON.parse(dataRaw);
+            objects.forEach(obj => {
+                if (!options.some(option => option.value === obj[`${key}`])) {
+                    options.push({ label: obj[`${key}`], value: obj[`${key}`] });
+                 }
+            });
+        }
+    });
+    return _.sortBy(options, key);
 }

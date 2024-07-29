@@ -332,6 +332,34 @@
     #{map-get($tableElements, colvisButton)} {
         font-size:$tableColvisBtnFontSize;
     }
+
+    #{map-get($tableElements, searchPaneButton)} {
+        width:$tableSearchPaneBtnWidth;
+    }
+
+    #{map-get($tableElements, searchPanesPaneSearchInput)} {
+        height:$tableSearchPaneSearchInputHeight !important;
+        background-color: $c-transparent !important;
+    }
+
+    #{map-get($tableElements, seachPanesButtons)} {
+        box-shadow:$tableSearchPaneButtonsBoxShadow !important;
+    }
+
+    #{map-get($tableElements, searchPanesGlobButtons)} {
+        padding: $tableSearchPanesGlobalBtnPadding !important;  /* Adjusts the padding inside the button */
+        font-size: $tableSearchPanesGlobalBtnFontSize !important;      /* Sets a smaller font size */
+        line-height: $tableSearchPanesGlobalBtnLineHeight!important;         /* Adjusts the line height */
+        border-radius: $tableSearchPanesGlobalBtnBorderRadius !important;
+    }
+
+    #{map-get($tableElements, searchPanesContainer)} {
+        background: $tableSearchPanesContainerBackground !important;
+    }
+
+    #{map-get($tableElements, searchPanesForcedBackground)} {
+        background: $tableSearchPanesMainContainerBackground !important;
+    }
 }
 
 // cat search

@@ -69,7 +69,8 @@ $alwaysWhiteTextElements: (
     '.site-header a', 
     'a[siteFunction="tagPageItemLinkToDoc"]', 
     'a[siteFunction="menuItemLevel1"]', 
-    'button[siteFunction="tableColumnsVisibility"] span', 
+    'button[siteFunction="tableColumnsVisibility"] span',
+    'button[siteFunction="tableSearchPanes"] span', 
     'button[siteFunction="tableNavigateToSavedItems"] span', 
     'button[siteFunction="tablePageCustomNotesRemoveAllNotes"] span',
     'button[siteFunction="tableNavigateToCategoriesSP"] span'

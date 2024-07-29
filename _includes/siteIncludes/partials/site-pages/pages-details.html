@@ -70,7 +70,7 @@
                                 siteFunction="tableDateField" 
                                 class="fw-normal align-self-center align-middle"
                                 colFunction="pageLastUpdate"
-                                data-raw="{{ formatted_date | date_to_utc_timestamp }}">
+                                data-raw="{{ formatted_date }}">
                                 <span>{{ formatted_date }}</span>
                             </td>
 
@@ -210,7 +210,10 @@
                                 colFunction="pageInfoTags"
                                 pageTitleReference="{{ page.title }}"
                                 pagePermalinkReference="{{ page.permalink }}">
-                                <span>
+                                <span
+                                    siteFunction="pageInfoTagsContainer"
+                                    pageTitleReference="{{ page.title }}"
+                                    pagePermalinkReference="{{ page.permalink }}">
                                     place for page tags
                                 </span>
                             </td>
