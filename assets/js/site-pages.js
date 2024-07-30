@@ -254,7 +254,6 @@ sitePagesFn = {
             {
                 className: 'alwaysCursorPointer',
                 title:'Title',
-                width:'15%',
                 type: 'html-string',
                 searchable: true,
             }, 
@@ -342,50 +341,66 @@ sitePagesFn = {
             fixedColumns: {
                 "left": 1
             },
-            //autoWidth: true,
+            autoWidth: true,
             deferRender: true, // Defer rendering for speed up
-            
+
             initComplete: function(settings, json) {
                 // Adjust columns after initialization to ensure proper alignment
                 const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
                 setTimeout(()=>{
                     table.order([0, 'asc']).draw();
-                    table.columns.adjust().draw();
+                    //table.columns.adjust().draw();
                 },100);
-                sitePagesFn.pagesTableFilter = {}
-
-                    
             },
 
-            // USED ONLY FOR SEARCH PANES AND ONLY FOR MAINTAIN SEPARATE SETTINGS
-            // WITH THE PURPOSE OF A MORE EASY TO MAINTAIN CODE
+            // columnDefs object IS USED ONLY FOR SEARCH PANES
+            // WITH THE PURPOSE OF A CLEANER CODE
             // SEARCH PANES CAN BE DEFINED IN THE SAME WAY IN colDefinition OBJECT
             // columns are defined in colDefinition object
             columnDefs: [
                 {
                     searchPanes: {
-                        options:  getOptionsFromArray('table[siteFunction="sitePagesDetailsPageTable"]', 2, (selectedRow, selectedSearchPaneValue)=>{
-                            console.log(selectedRow);
-                            console.log(selectedSearchPaneValue);
-                        }),
+                        options:  getSearchPaneOptionsFromArray(
+                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            2, 
+                            ()=>{
+                                return new Set([
+                                    'Has Auto Summary',
+                                    'Has Custom Categories',
+                                    'Has Custom Notes',
+                                    'Has Custom Tags',
+                                    'Has Excerpt',
+                                    'Has Site Categories',
+                                    'Has Site Tags',
+                                    'Is Saved'
+                                ]);
+                            }, 
+                            (selectedRow, selectedSearchPaneValue)=>{
+                                //console.log(selectedRow);
+                                //console.log(selectedSearchPaneValue);
+                            }
+                        ),
                         show: true,
                         collapse: true,
                         viewCount: true,
-                        initCollapsed: false,
-                        dtOpts: {
-                            select: {
-                                style: 'multi'
-                            }
-                        }                       
+                        initCollapsed: false,                    
                     },
                     targets: [2],
                     
                 },
                 {
                     searchPanes: {
-                        options: getOptionsFromObjectsArray('table[siteFunction="sitePagesDetailsPageTable"]', 3, 'title'),
+                        options: getSearchPaneOptionsFromArray(
+                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            3, 
+                            () => {
+                                return new Set (allPagesTitles(pageList, 'relatedPages'))
+                            },
+                            (selectedRow, selectedSearchPaneValue)=>{}
+                        ),
                         show: true,
                         initCollapsed: false,
+                        viewCount: true,
                         
                     },
                     targets: [3],
@@ -393,42 +408,54 @@ sitePagesFn = {
                 },
                 {
                     searchPanes: {
-                        options: getOptionsFromObjectsArray('table[siteFunction="sitePagesDetailsPageTable"]', 4, 'title'),
+                        options: getSearchPaneOptionsFromArray(
+                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            4, 
+                            () => {
+                                return new Set (allPagesTitles(pageList, 'similarByContent'))
+                            },
+                            (selectedRow, selectedSearchPaneValue)=>{}
+                        ),
                         show: true,
-                        initCollapsed: false 
+                        initCollapsed: false,
+                        viewCount: true,
                     },
-                    targets: [4],
-                    
+                    targets: [4],       
                 },
                 {
                     searchPanes: {
-                        options: getOptionsFromArray('table[siteFunction="sitePagesDetailsPageTable"]', 7, (selectedRow, selectedSearchPaneValue)=>{}),
+                        options: getSearchPaneOptionsFromArray(
+                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            7, 
+                            () => {
+                                return new Set(globAllTags);
+                            }, 
+                            (selectedRow, selectedSearchPaneValue)=>{}
+                        ),
                         show: true,
                         initCollapsed: false,
-                        dtOpts: {
-                            select: {
-                                style: 'multi'
-                            }
-                        }
+                        viewCount: true,
                     },
-                    targets: [7],
-                    
+                    targets: [7],                  
                 },
                 {
                     searchPanes: {
-                        options: getOptionsFromArray('table[siteFunction="sitePagesDetailsPageTable"]', 8, (selectedRow, selectedSearchPaneValue)=>{}),
+                        options: getSearchPaneOptionsFromArray(
+                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            8, 
+                            () => {
+                                return new Set(globAllCats);
+                            }, 
+                            (selectedRow, selectedSearchPaneValue)=>{}
+                        ),
                         show: true,
                         initCollapsed: false,
-                        dtOpts: {
-                            select: {
-                                style: 'multi'
-                            }
-                        }
+                        viewCount: true,
                     },
-                    targets: [8],
-                    
+                    targets: [8],           
                 },
                 {
+                    // cancel all other searchPanes
                     searchPanes: {
                         show: false
                     },
@@ -436,8 +463,6 @@ sitePagesFn = {
                 },
                 
             ]
-
-
         };
 
         const additionalTableSettings = commonAdditionalTableSettings;
@@ -449,7 +474,10 @@ sitePagesFn = {
             (table) => {sitePagesFn.postProcessPagesTable(table)}, // will execute after the table is created
             (rowData) => {}, // will execute when click on row
             additionalTableSettings, // additional datatable settings for this table instance
-            true // has SearchPanes
+            {
+                enable: true,
+                cascade: false // page load may become really slow
+            } // has SearchPanes
             
         );
     },
@@ -492,8 +520,17 @@ sitePagesFn = {
     },
 
     redrawPagesTable: () => {
-        const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-        setTimeout(()=>{ table.draw(); },100);
+
+        const hide__ASYNC = () => { return new Promise ( (resolve, reject) => {
+            $(`table[siteFunction="sitePagesDetailsPageTable"]`).hide();
+            const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+            resolve(table);
+         })};
+
+        hide__ASYNC()
+            .then((table) => table.draw())
+            .then(() => $(`table[siteFunction="sitePagesDetailsPageTable"]`).show());
+        
     },
 
     setPagesTags: () => {
@@ -556,21 +593,26 @@ sitePagesFn = {
 
     setPagesCats: () => {
 
-        const catElement = (cat, isSiteCat) => {
+        const catElement = (page, allCats, cat, isSiteCat) => {
             const catBtnColor = isSiteCat ? 'text-danger' : 'text-success';
-            return  (
+            return ( 
                 `
                     <a 
                         siteFunction="catButton" 
-                        catType= "${isSiteCat ? 'siteCat' : 'customCat'}"
-                        id="${cat}" type="button" 
-                        class="focus-ring focus-ring-warning px-2 mr-2 my-2 btn btn-sm btn btn-sm ${catBtnColor} fw-medium border-0 shadow-none position-relative"
+                        pagePermalinkReference="${page.permalink}"
+                        pageTitleReference="${page.title}"
+                        catType="${isSiteCat ? 'siteCat' : 'customCat'}"
+                        id="${cat}" 
+                        type="button" 
+                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${catBtnColor} position-relative"
                         title = "Details for category ${cat}"
-                        href="cat-info?cat=${cat}">
+                        href="cat-info?tag=${cat}"
+                        data-raw="${JSON.stringify(allCats).replace(/"/g, '&quot;')}">
                         ${cat}
                     </a>
-                `
-            );
+                `);
+
+
         }
 
         $('td[colFunction="pageInfoCats"]').each(function() {
@@ -584,24 +626,34 @@ sitePagesFn = {
 
             let catsHtml = '';
             siteCats.forEach( cat => {
-                catsHtml += catElement(cat, true);
+                catsHtml += catElement(pageSiteInfo, allCats, cat, true);
             });
 
             customCats.forEach( cat => {
-                catsHtml += catElement(cat, false);
+                catsHtml += catElement(pageSiteInfo, allCats, cat, false);
             });
 
-            catsHtml = `<span>${catsHtml}</span>`;
-            $(this).html(catsHtml);
+            catsHtml = 
+                `   <div>
+                        <span
+                            siteFunction="pageInfoCatsContainer"
+                            pagePermalinkReference="${permalink}"
+                            pageTitleReference="${title}">
+                            ${catsHtml}
+                        </span>
+                    </div>
+                `;
+            $tempElement = $(catsHtml)
+            $tempElement.attr('data-raw', JSON.stringify(allCats));
+            $(this).html($tempElement.html());
         });
-
     },
 
     postProcessSearchPanes: () => {
         removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
         setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
             // ... here to add search pane post-processing
-            $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning');
+            $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning').addClass('text-dark');
         });
     },
 

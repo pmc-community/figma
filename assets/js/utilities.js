@@ -412,6 +412,9 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
                     siteFunction: 'tableSearchPanes'
                 },
                 className: 'btn-danger btn-sm text-light mb-2',
+                config: {
+                    cascadePanes: searchPanes.cascade
+                }
             }
         ]:
 
@@ -459,8 +462,8 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
             searchPanes: {
                 clearMessage: 'Clear All',
                 collapse: { 0: 'Filter', _: 'Filters (%d)' },
-                count: '{total} found',
-                countFiltered: '{shown} / {total}'
+                //count: '{total} found',
+                //countFiltered: '{shown} / {total}'
             }
         }
     };
@@ -1174,66 +1177,70 @@ const stripHtml = (data) => {
     return tmp.textContent || tmp.innerText || "";
 }
 
-const getOptionsFromArray = (tableSelector, columnIndex, callback = null) => {
-    // THIS IS BEFORE DATATABLE INIT, 
-    // WE CAN ACCESS THE CELLS USING JQERY
-    // WE CANNOT ACCES CELLS USING datatable OBJECT SINCE DATATABLE DOES NOT EXIST YET
-    let table = $(tableSelector);
-    const rows = table.find('tbody tr');
-    const values = new Set();
+const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=null, callback = null) => {
+    
+    let values = new Set();
+    
+    // init the searchPane from data-raw attribute of each cell in coumnIndex column
+    // data-raw must contain an array json string
+    // or from a set returned by initCallback, if initCallBack is provided
+    // USING initCallback IS ALWAYS RECOMMENDED SINCE CAN BE MUCH FASTER THAN
+    // ITERATING THROUGH THE WHOLE TABLE EACH TIME WHEN FILTERING
+    if (!initCallback) {
+        // THIS IS BEFORE DATATABLE INIT, 
+        // WE CAN ACCESS THE CELLS USING JQERY
+        // WE CANNOT ACCES CELLS USING datatable OBJECT SINCE DATATABLE DOES NOT EXIST YET
+        let table = $(tableSelector);
+        const rows = table.find('tbody tr');
+        
+        // Iterate over all rows to collect unique values from the specified column
+        rows.each(function() {
+            // Get the array of <td> elements in this row
+            const cells = $(this).find('td').get(); // `.get()` to return an array of DOM elements
+            if (cells.length > columnIndex) {
+                const cell = $(cells[columnIndex]);
+                const rawData = cell.attr('data-raw');
+                
+                // Debugging: Log cell data and rawData
+                //console.log('Raw Data:', rawData);
 
-    // Iterate over all rows to collect unique values from the specified column
-    rows.each(function() {
-        // Get the array of <td> elements in this row
-        const cells = $(this).find('td').get(); // `.get()` to return an array of DOM elements
-        if (cells.length > columnIndex) {
-            const cell = $(cells[columnIndex]);
-            const rawData = cell.attr('data-raw');
-            
-            // Debugging: Log cell data and rawData
-            //console.log('Raw Data:', rawData);
+                let cellData;
+                try {
+                    cellData = JSON.parse(rawData);
+                } catch (e) {
+                    cellData = rawData;
+                }
 
-            let cellData;
-            try {
-                cellData = JSON.parse(rawData);
-            } catch (e) {
-                cellData = rawData;
-            }
-
-            if (cellData !== undefined) {
-                // If cellData is an array, add its items to the Set
-                if (Array.isArray(cellData)) {
-                    cellData.forEach(item => values.add(item));
-                } else {
-                    values.add(cellData);
+                if (cellData !== undefined) {
+                    // If cellData is an array, add its items to the Set
+                    if (Array.isArray(cellData)) {
+                        cellData.forEach(item => values.add(item));
+                    } else {
+                        values.add(cellData);
+                    }
                 }
             }
-        }
-    });
+        });
+    }
+    else values = initCallback();
 
     // Convert set to array of options
     // THIS IS AFTER DATATABLE INIT, 
     // WE CANNOT ACCESS THE CELLS USING JQERY SINCE SOME COLUMNS MAY BE NOT VISIBLE = NOT IN THE DOM
-    // WE CAN ACCES CELLS USING datatable OBJECT
+    // WE CAN ACCESS CELLS USING datatable OBJECT IF WE NEED TO DO SO
     return Array.from(values).map(value => ({
         label: `${value}`,
         value: function(row) {
             const cell = $(row[columnIndex]);
-            //if (columnIndex===7) console.log(row[columnIndex]);
-            //if (columnIndex===7) console.log(cell.html());
             const rawData = cell.children().first().attr('data-raw');
-            // Debugging: Log rawData for the given row and column index
-            //if (columnIndex===7) console.log('Raw Data for value function:', rawData);
 
             let cellData;
-            try {
-                cellData = JSON.parse(rawData);
-                //if (columnIndex===7) console.log(cellData);
-            } catch (e) {
-                cellData = rawData;
-                //if (columnIndex===7) console.log(cellData);
-            }
+            // trying to parse the data we will use for checking the value, should be a valid json array
+            try { cellData = JSON.parse(rawData); } 
+            catch (e) { cellData = rawData; }
 
+            // if callback is provided, we send back some info, maybe is needed for extra custom processing
+            // row reference is given by page object; the current searcPane selection is given by value
             if (callback) {
                 const permalink = cell.attr('pagePermalinkReference');
                 const title = cell.attr('pageTitleReference');
@@ -1251,18 +1258,13 @@ const getOptionsFromArray = (tableSelector, columnIndex, callback = null) => {
     }));
 }
 
-function getOptionsFromObjectsArray(tableSelector, columnIndex, key) {
-    let options = [];
-    $(`${tableSelector} tr`).each(function() {
-        let dataRaw = $(this).find('td').eq(columnIndex).attr('data-raw');
-        if (dataRaw) {
-            let objects = JSON.parse(dataRaw);
-            objects.forEach(obj => {
-                if (!options.some(option => option.value === obj[`${key}`])) {
-                    options.push({ label: obj[`${key}`], value: obj[`${key}`] });
-                 }
-            });
-        }
-    });
-    return _.sortBy(options, key);
+const allPagesTitles = (data, key) => {
+    return _.chain(data)
+        .flatMap(item => _.get(item, key, []))
+        .map(page => _.get(page, 'title', ''))
+        .filter(title => title.trim() !== '')
+        .uniq()
+        .sortBy()
+        .value();
 }
+  

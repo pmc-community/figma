@@ -96,12 +96,14 @@
                                 {% PageRelated {{ permalink_param | json_string_to_object }} %}
                             {% endcapture %}
                             {% assign pageRelatedArray = pageRelated | json_string_to_object  %}
+                            {% assign pageRelatedTitleArray = pageRelatedArray | map: 'title' %}
+                            {% assign pageRelatedTitleString = pageRelatedTitleArray | jsonify %}
                             <td 
                                 class="fw-normal align-self-center align-middle"
                                 colFunction="pageInfoRelatedPages"
                                 pageTitleReference="{{ page.title }}"
                                 pagePermalinkReference="{{ page.permalink }}"
-                                data-raw="{{pageRelated | escape }}">
+                                data-raw="{{pageRelatedTitleString | escape }}">
                                 {% for pageR in pageRelatedArray %}
                                     <span 
                                         siteFunction="pageRelatedPageInfo"
@@ -109,7 +111,8 @@
                                         pagePermalinkReference="{{ page.permalink }}"
                                         pageRelatedTitleReference="{{ pageR.title }}"
                                         pageRelatedPermalinkReference="{{ pageR.permalink }}"
-                                        class="m-2 px-2 bg-light-subtle rounded-pill text-nowrap d-inline-block">
+                                        class="m-2 px-2 bg-light-subtle rounded-pill text-nowrap d-inline-block"
+                                        data-raw="{{pageRelatedTitleString | escape }}">
                                         <span
                                             siteFunction="pageRelatedPageLinkToOffCanvas"
                                             pageTitleReference="{{ page.title }}"
@@ -117,15 +120,17 @@
                                             pageRelatedTitleReference="{{ pageR.title }}"
                                             pageRelatedPermalinkReference="{{ pageR.permalink }}"
                                             title = "Details for page {{ pageR.title }}"
-                                            class="alwaysCursorPointer text-primary">
+                                            class="alwaysCursorPointer text-primary"
+                                            data-raw="{{pageRelatedTitleString | escape }}">
                                             {{ pageR.title}}
                                         </span>
                                         <a 
                                             href="{{ pageR.permalink }}" 
                                             target=_blank
-                                            class="mx-1">
+                                            class="mx-1"
+                                            data-raw="{{pageRelatedTitleString | escape }}">
                                             <i class="bi bi-box-arrow-up-right" style="font-size:1.1rem"></i>
-                                    </a>
+                                        </a>
                                     </span>
                                 {% endfor %}
 
@@ -142,12 +147,14 @@
                                 {% PageSimilarByContent {{ permalink_param | json_string_to_object }} %}
                             {% endcapture %}
                             {% assign pageSimilarArray = pageSimilar | json_string_to_object  %}
+                            {% assign pageSimilarTitleArray = pageSimilarArray | map: 'title' %}
+                            {% assign pageSimilarTitleString = pageSimilarTitleArray | jsonify %}
                             <td
                                 class="fw-normal align-self-center align-middle"
                                 colFunction="pageInfoSimilarPages"
                                 pageTitleReference="{{ page.title }}"
                                 pagePermalinkReference="{{ page.permalink }}"
-                                data-raw="{{pageSimilar | escape}}">
+                                data-raw="{{pageSimilarTitleString | escape }}">
                                 {% for pageS in pageSimilarArray %}
                                     <span 
                                         siteFunction="pageSimilarPageInfo"
@@ -155,7 +162,8 @@
                                         pagePermalinkReference="{{ page.permalink }}"
                                         pageSimilarTitleReference="{{ pageS.title }}"
                                         pageSimilarPermalinkReference="{{ pageS.permalink }}"
-                                        class="m-2 px-2 bg-body-secondary rounded-pill text-nowrap d-inline-block">
+                                        class="m-2 px-2 bg-body-secondary rounded-pill text-nowrap d-inline-block"
+                                        data-raw="{{pageSimilarTitleString | escape }}">
                                         <span
                                             siteFunction="pageSimilarPageLinkToOffCanvas"
                                             pageTitleReference="{{ page.title }}"
@@ -163,13 +171,15 @@
                                             pageSimilarTitleReference="{{ pageS.title }}"
                                             pageSimilarPermalinkReference="{{ pageS.permalink }}"
                                             title = "Details for page {{ pageS.title }}"
-                                            class="alwaysCursorPointer text-primary text-nowrap">
+                                            class="alwaysCursorPointer text-primary text-nowrap"
+                                            data-raw="{{pageSimilarTitleString | escape }}">
                                             {{ pageS.title}}
                                         </span>
                                         <a 
                                             href="{{ pageS.permalink }}" 
                                             target=_blank
-                                            class="mx-1">
+                                            class="mx-1"
+                                            data-raw="{{pageSimilarTitleString | escape }}">
                                             <i class="bi bi-box-arrow-up-right" style="font-size:1.1rem"></i>
                                         </a>
                                     </span>
