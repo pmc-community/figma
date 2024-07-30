@@ -86,6 +86,7 @@ sitePagesFn = {
         $('span[siteFunction="pageSimilarPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
         });
+        
     },
 
     setPagesTablePageBadges: () => {
@@ -348,8 +349,8 @@ sitePagesFn = {
                 // Adjust columns after initialization to ensure proper alignment
                 const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
                 setTimeout(()=>{
-                    table.order([0, 'asc']).draw();
-                    //table.columns.adjust().draw();
+                    table.order([0, 'asc']);
+                    table.columns.adjust().draw();    
                 },100);
             },
 
@@ -652,8 +653,19 @@ sitePagesFn = {
     postProcessSearchPanes: () => {
         removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
         setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
-            // ... here to add search pane post-processing
-            $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning').addClass('text-dark');
+            // ... here to add search panes post-processing (after searchPanes container is created)
+            setTimeout(() => {
+                $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning').addClass('text-dark');
+                $('span[siteFunction="searchPanesLoader"]').addClass('d-none');
+                $('.dropdown-menu').draggable({
+                    containment: "window" // Restrict dragging to within the viewport
+                });
+            }, 0);
+        });
+
+        removeObservers('body (selector=div.dtsp-panesContainer)');
+        setElementCreateBySelectorObserver('div.dtsp-panes', () => {
+             // ... here to add search panes post-processing (after searchPanes are created inside the searchPanes container)
         });
     },
 

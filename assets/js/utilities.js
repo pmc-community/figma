@@ -406,7 +406,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
             },
             {
                 extend: ['searchPanes'],
-                text: 'Filter',
+                text: 'Filter', // this is actually set in defaultSettings object .language.searchPanes
                 attr: {
                     title: 'Advanced filter',
                     siteFunction: 'tableSearchPanes'
@@ -414,7 +414,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
                 className: 'btn-danger btn-sm text-light mb-2',
                 config: {
                     cascadePanes: searchPanes.cascade
-                }
+                },
             }
         ]:
 
@@ -448,7 +448,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
             },
             bottom2: {
                 buttons: bottom2Buttons
-            }
+            },
         },
         stateSave: true,
         stateSaveCallback: function (settings, data) {
@@ -461,7 +461,8 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         language: {
             searchPanes: {
                 clearMessage: 'Clear All',
-                collapse: { 0: 'Filter', _: 'Filters (%d)' },
+                collapse: { 0: `<span siteFunction="searchPanesLoader" class="d-none mr-2 spinner-border spinner-border-sm" aria-hidden="true"></span>
+                 Filter`, _: 'Filters (%d)' },
                 //count: '{total} found',
                 //countFiltered: '{shown} / {total}'
             }
@@ -769,6 +770,7 @@ const setElementCreateBySelectorObserver = (selector, callback = () => {}) => {
     function handleNewElements(mutationsList) {
         mutationsList.forEach(function(mutation) {
             if (mutation.type === 'childList') {
+                //console.log(mutation.addedNodes)
                 mutation.addedNodes.forEach(function(node) {
                     if (node.nodeType === 1 && node.matches(selector)) {
                         callback();
