@@ -950,6 +950,7 @@ const createGlobalLists = () => {
     // better to clean all notes tables to avoid cases when the user save the table configuration wih all columns visible
     // and the note uuid remains visible although is not useful for anything
     getOrphanDataTables('notes').forEach( table => { localStorage.removeItem(table); });
+
 }
 
 const getOrphanDataTables = (what) => {
@@ -966,7 +967,9 @@ const getOrphanDataTables = (what) => {
         case 'notes':
             substring = '_DataTables_PageCustomNotes_';
             break;
-        default: break;
+        default:
+            substring = '_DataTables_Table_'; 
+            break;
     }
     
     if (!substring) return [];

@@ -20,13 +20,23 @@ const sitePages__pages = () => {
         sitePagesFn.setPagesTags();
         sitePagesFn.setPagesCats();
         sitePagesFn.setPagesDataTable();   
-        sitePagesFn.postProcessSearchPanes(); 
+        sitePagesFn.postProcessSearchPanes();
+
     });
 }
+
+// called from siteIncludes/partials/site-pages/saved-items.html
+const sitePages__savedItems = () => {
+    $(document).ready( function() {
+        sitePagesFn.setSavedItemsButtonsFunctions();
+    });
+};
 
 // using a 'namespace' to avoid fn name duplicates
 sitePagesFn = {
 
+
+    // search page section
     setPageSearchList: () => {
         setSearchList(
             `#pageSearchInput`, 
@@ -39,7 +49,17 @@ sitePagesFn = {
             (filteredList) => {}
         );
     },
+
+    setPageSearchButtonsFunctions: () => {
+        $('#openSitePagesDetails').off('click').click( function() {
+            $('#site_pages_details').removeClass('d-none');
+            // redraw the pages table to avoid worng table head sizing
+            sitePagesFn.redrawPagesTable();
+            $('div[sitefunction="sitePagesDetails"]').fadeIn();
+        });            
+    },
     
+    // page offcanvas
     showPageInfo: (page) => {
         pageInfo = {
             siteInfo: getObjectFromArray ({permalink: page.permalink, title: page.title}, pageList),
@@ -65,15 +85,7 @@ sitePagesFn = {
         });
     },
 
-    setPageSearchButtonsFunctions: () => {
-        $('#openSitePagesDetails').off('click').click( function() {
-            $('#site_pages_details').removeClass('d-none');
-            // redraw the pages table to avoid worng table head sizing
-            sitePagesFn.redrawPagesTable();
-            $('div[sitefunction="sitePagesDetails"]').fadeIn();
-        });            
-    },
-
+    // pages details table
     setPagesTableButtonsFunctions: () => {
         $('span[siteFunction="sitePagesPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pagePermalinkReference'), title:$(this).attr('pageTitleReference')});
@@ -344,6 +356,7 @@ sitePagesFn = {
             },
             autoWidth: true,
             deferRender: true, // Defer rendering for speed up
+            processing: true,
 
             initComplete: function(settings, json) {
                 // Adjust columns after initialization to ensure proper alignment
@@ -383,7 +396,7 @@ sitePagesFn = {
                         ),
                         show: true,
                         collapse: true,
-                        viewCount: true,
+                        viewCount: false,
                         initCollapsed: false,                    
                     },
                     targets: [2],
@@ -401,7 +414,7 @@ sitePagesFn = {
                         ),
                         show: true,
                         initCollapsed: false,
-                        viewCount: true,
+                        viewCount: false,
                         
                     },
                     targets: [3],
@@ -419,7 +432,7 @@ sitePagesFn = {
                         ),
                         show: true,
                         initCollapsed: false,
-                        viewCount: true,
+                        viewCount: false,
                     },
                     targets: [4],       
                 },
@@ -435,7 +448,7 @@ sitePagesFn = {
                         ),
                         show: true,
                         initCollapsed: false,
-                        viewCount: true,
+                        viewCount: false,
                     },
                     targets: [7],                  
                 },
@@ -451,7 +464,7 @@ sitePagesFn = {
                         ),
                         show: true,
                         initCollapsed: false,
-                        viewCount: true,
+                        viewCount: false,
                     },
                     targets: [8],           
                 },
@@ -477,8 +490,8 @@ sitePagesFn = {
             additionalTableSettings, // additional datatable settings for this table instance
             {
                 enable: true,
-                cascade: false // page load may become really slow
-            } // has SearchPanes
+                cascade: false // page load may become very slow. better to use viewCount=false when cascade=false
+            } // has SearchPanes and these are or not cascaded
             
         );
     },
@@ -491,12 +504,27 @@ sitePagesFn = {
 
     addAdditionalPagesTableButtons: (table) => {
         // post processing table: adding 2 buttons in the bottom2 zone
+
+        clearFiltersBtn = {
+            attr: {
+                siteFunction: 'tableClearFiltersSP',
+                title: 'Clear All Filters'
+            },
+            className: 'btn-dark btn-sm text-light mb-2',
+            text: 'Clear all',
+            action: () => {
+                table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable()
+                table.searchPanes.clearSelections();
+                getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
+            }
+        }
+
         gotToTagBtn = {
            attr: {
-               siteFunction: 'tableNavigateToTags',
+               siteFunction: 'tableNavigateToTagsSP',
                title: 'Go to tags'
            },
-           className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
+           className: 'btn-warning btn-sm text-light mb-2',
            text: 'Tags info',
            action: () => {
                window.location.href = '/tag-info'
@@ -508,13 +536,14 @@ sitePagesFn = {
                siteFunction: 'tableNavigateToCategoriesSP',
                title: 'Go to categories'
            },
-           className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
+           className: 'btn-success btn-sm text-light mb-2',
            text: 'Categories',
            action: () => {
                window.location.href = '/cat-info'
            }
        }
        const btnArray = [];
+       btnArray.push(clearFiltersBtn);
        btnArray.push(gotToTagBtn);
        btnArray.push(gotToCatsBtn);
        addAdditionalButtonsToTable(table, 'table[siteFunction="sitePagesDetailsPageTable"]', 'bottom2', btnArray);
@@ -607,7 +636,7 @@ sitePagesFn = {
                         type="button" 
                         class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${catBtnColor} position-relative"
                         title = "Details for category ${cat}"
-                        href="cat-info?tag=${cat}"
+                        href="cat-info?cat=${cat}"
                         data-raw="${JSON.stringify(allCats).replace(/"/g, '&quot;')}">
                         ${cat}
                     </a>
@@ -663,14 +692,58 @@ sitePagesFn = {
             }, 0);
         });
 
-        removeObservers('body (selector=div.dtsp-panesContainer)');
-        setElementCreateBySelectorObserver('div.dtsp-panes', () => {
-             // ... here to add search panes post-processing (after searchPanes are created inside the searchPanes container)
-        });
     },
 
-    rebuildPagesTableSearchPanes: () => {
-        table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable().destroy();
-        sitePagesFn.setPagesDataTable();
-    }
+    rebuildPagesTableSearchPanes: () => { 
+        let table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+        table.searchPanes.clearSelections();
+        
+        // clean local storage, previous saved searchPanes datatables to not overload local storage
+        getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
+
+        // re-build all 
+        table.destroy();
+        sitePagesFn.setPagesDataTable(); 
+    },
+
+    pagesTableSearchPanesSelection: {},
+
+    getSearchPanesSelection: () => {
+        const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+        console.log(`div.${(table.searchPanes.container().children().last()).attr('class').split(/\s+/).join('.')}`);
+        const $panes = table.searchPanes.container().children().last().find('.dtsp-searchPane').not('.dtsp-hidden');
+        let selections = {};
+
+        console.log($('.dtsp-searchPanes > .dtsp-searchPane.dtsp-columns-1:nth-child(9) table'))
+        const panesContainerSelector = `.${(table.searchPanes.container().children().last()).attr('class').split(/\s+/).join('.')}`;
+        let paneIndex = [];
+        $panes.each( function() {
+            
+            console.log(`${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${$(this).index()+1})`);
+            const childSelector = `${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${$(this).index()+1})`;
+            console.log($(childSelector).children().last().attr('id'))
+           //const paneTableId = $(`${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${$(this).index()+1}) table`).attr('id');
+           //console.log(paneTableId)
+
+
+
+            //const paneIndex = $(this).attr('id').replace('searchPanes_', '');
+            //const pane = table.searchPanes.pane(parseInt(paneIndex, 10));
+            //const selectedItems = pane.selectedRows().data().toArray();
+
+            //if (selectedItems.length > 0) {
+            //    selections[pane.index()] = selectedItems;
+            //}
+        });
+
+        console.log(selections);
+    },
+
+    // saved items section
+    setSavedItemsButtonsFunctions: () => {
+        $('#openSitePagesSavedItems').off('click').click( function() {
+            $('#site_pages_saved_items').removeClass('d-none');
+            $('div[sitefunction="sitePagesSavedItems"]').fadeIn();
+        });            
+    },
 }

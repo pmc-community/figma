@@ -73,7 +73,8 @@ $alwaysWhiteTextElements: (
     'button[siteFunction="tableSearchPanes"] span', 
     'button[siteFunction="tableNavigateToSavedItems"] span', 
     'button[siteFunction="tablePageCustomNotesRemoveAllNotes"] span',
-    'button[siteFunction="tableNavigateToCategoriesSP"] span'
+    'button[siteFunction="tableNavigateToCategoriesSP"] span',
+    'button[siteFunction="tableClearFiltersSP"] span'
 );
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
@@ -99,6 +100,7 @@ $alwaysBlackTextElements: (
     '.context-menu-footer',
     '.buttons-columnVisibility span',
     'button[siteFunction="tableNavigateToTags"] span',
+    'button[siteFunction="tableNavigateToTagsSP"] span',
     'button[siteFunction="tableNavigateToCategories"] span'
 );
 @each $element in $alwaysBlackTextElements {

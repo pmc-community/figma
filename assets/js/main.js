@@ -30,7 +30,11 @@ const customiseTheme = (pageObj = null) => {
         console.log("Desktop detected");
     }
 
-    createGlobalLists(); // first things first
+    createGlobalLists(); // first things, first
+
+    // clean local storage, remove orphan datatables such as site-pages searchPanes tables
+    getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
+
     $('body').css('visibility','hidden'); // to avoid the fast display of unstyled page before styles are loaded and applied
     setTheTheme();
     addExtraPaddingToContentArea();

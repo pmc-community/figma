@@ -337,6 +337,10 @@
         width:$tableSearchPaneBtnWidth;
     }
 
+    #{map-get($tableElements, clearFiltersButton)} {
+        width:$tableClearFiltersBtnWidth;
+    }
+
     #{map-get($tableElements, searchPanesPaneSearchInput)} {
         height:$tableSearchPaneSearchInputHeight !important;
         background-color: $c-transparent !important;

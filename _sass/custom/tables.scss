@@ -12,6 +12,7 @@ $tableDateFieldTextAlignment: $tal-h-left;
 $tableFirstColumnCursor: $cr-pointer;
 $tableColvisBtnFontSize: $fs-body;
 $tableSearchPaneBtnWidth: $sz-6rem;
+$tableClearFiltersBtnWidth: $tableSearchPaneBtnWidth;
 $tableSearchPaneSearchInputHeight: $sz-full;
 $tableSearchPaneButtonsBoxShadow: $sh-none;
 $tableSearchPanesContainerBackground: $c-metal-grey;
@@ -30,6 +31,7 @@ $tableElements: (
     dateField: 'th[siteFunction="tableDateField"], td[siteFunction="tableDateField"]',
     colvisButton: '.buttons-columnVisibility',
     searchPaneButton: 'button[siteFunction="tableSearchPanes"]',
+    clearFiltersButton: 'button[siteFunction="tableClearFiltersSP"]',
     searchPanesPaneSearchInput: '.dtsp-searchCont input',
     seachPanesButtons: '.dtsp-searchIcon, .clearButton, .dtsp-nameButton, .dtsp-countButton, .dtsp-collapseButton',
     searchPanesGlobButtons: '.dtsp-collapseAll, .dtsp-clearAll, .dtsp-showAll',
