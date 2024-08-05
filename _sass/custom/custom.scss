@@ -102,6 +102,7 @@ $alwaysBlackTextElements: (
     'button[siteFunction="tableNavigateToTags"] span',
     'button[siteFunction="tableNavigateToTagsSP"] span',
     'button[siteFunction="tableNavigateToCategories"] span',
+    'a[sitefunction="menuItemLevel2"]'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {

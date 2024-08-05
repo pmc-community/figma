@@ -48,6 +48,8 @@ sitePagesFn = {
     },
 
     setPageSearchButtonsFunctions: () => {
+
+        // open page details section (pages table)
         $('#openSitePagesDetails').off('click').click( function() {
             $('#site_pages_details').removeClass('d-none');
             
@@ -157,14 +159,18 @@ sitePagesFn = {
     },
 
     setPagesTableButtonsFunctions: () => {
+
+        // open page info offcanvas for page row from pages table
         $('span[siteFunction="sitePagesPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pagePermalinkReference'), title:$(this).attr('pageTitleReference')});
         });
 
+        // open page info offcanvas when click on a related page of a page row from pages table
         $('span[siteFunction="pageRelatedPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageRelatedPermalinkReference'), title:$(this).attr('pageRelatedTitleReference')});
         });
 
+        // open page info offcanvas when click on a similar page of a page row from pages table
         $('span[siteFunction="pageSimilarPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
         });
@@ -807,6 +813,8 @@ sitePagesFn = {
 
     // saved items section
     setSavedItemsButtonsFunctions: () => {
+
+        // open saved items section and scroll until the section is in view
         $('#openSitePagesSavedItems').off('click').click( function() {
             $('#site_pages_saved_items').removeClass('d-none');
             $('div[sitefunction="sitePagesSavedItems"]').fadeIn();
@@ -815,9 +823,39 @@ sitePagesFn = {
             }, 100);
         });
         
-        
+        // save the saved items to a local file
         $('#saveStorageToFile').off('click').click( function() {
             saveLocalStorageKeyAsJsonFile('savedItems', 'si.json')
-        });    
+        });
+        
+        // loads from local file and save to local storage
+        $('#selectedLocalFile').off('change').on('change', function(event) {
+            const file = event.target.files[0];
+    
+            if (file) {
+                const reader = new FileReader();
+    
+                reader.onload = function(e) {
+                    try {
+                        const json = JSON.parse(e.target.result);
+                        const key = 'myLocalStorageKey'; // Replace with your desired key
+                        localStorage.setItem(key, JSON.stringify(json));
+                        alert('JSON data has been loaded into local storage');
+                    } catch (error) {
+                        alert('Error parsing JSON file');
+                        console.error('Error parsing JSON file:', error);
+                    }
+                };
+    
+                reader.onerror = function() {
+                    alert('Error reading file');
+                    console.error('Error reading file:', reader.error);
+                };
+    
+                reader.readAsText(file);
+            } else {
+                alert('No file selected');
+            }
+        });
     },
 }

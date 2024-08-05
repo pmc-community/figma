@@ -35,7 +35,7 @@ const page__getRelatedPages = () => {
         return (
             `
                 <a siteFunction="pageRelatedPageLink" href="${relatedPage.permalink.indexOf('/') === 0 ? relatedPage.permalink : '/'+relatedPage.permalink}" class="${relatedPageLinkWidth} p-2">
-                    <div siteFunction="pageRelatedPage" class="my-2 card h-100 py-3 px-3 bg-body rounded bg-transparent shadow-sm">
+                    <div siteFunction="pageRelatedPage" class="border border-secondary border-opacity-25 my-2 card h-100 py-3 px-3 bg-body rounded bg-transparent shadow-sm">
                         <div class="h-100 align-top mb-2">
                             <span siteFunction="pageRelatedPageLinkPageTitle" class="fw-bold text-primary fs-6">${relatedPage.title}</span>
                         </div>

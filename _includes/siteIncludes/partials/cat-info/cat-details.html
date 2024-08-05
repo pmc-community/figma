@@ -3,7 +3,7 @@
 
 <div id="cat_details" class="my-5 ">
     {% for catItem in site.data.categories_details %}
-        <div catReference="{{ catItem[0] }}" siteFunction="catDetails" class="d-none card shadow bg-transparent">
+        <div catReference="{{ catItem[0] }}" siteFunction="catDetails" class="border border-secondary border-opacity-25 d-none card shadow bg-transparent">
             <div class="card-header d-flex justify-content-between">
                 <span class="fs-6 fw-medium">Category:
                     <button siteFunction="catForActiveCatDetailsDatatable" id="{{ catItem[0] }}" type="button" class="px-3 ml-1 btn btn-sm text-danger fw-medium border-0 shadow-none position-relative">

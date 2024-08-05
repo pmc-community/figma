@@ -2,7 +2,7 @@
 
 <div id="tag_details" class="my-5 ">
     {% for tagItem in site.data.tags_details %}
-        <div tagReference="{{ tagItem[0] }}" siteFunction="tagDetails" class="d-none card shadow bg-transparent">
+        <div tagReference="{{ tagItem[0] }}" siteFunction="tagDetails" class="d-none card shadow bg-transparent border border-secondary border-opacity-25">
             <div class="card-header d-flex justify-content-between">
                 <span class="fs-6 fw-medium">Tag:
                     <button siteFunction="tagForActiveTagDetailsDatatable" id="{{ tagItem[0] }}" type="button" class="px-3 ml-1 btn btn-sm btn-primary position-relative">

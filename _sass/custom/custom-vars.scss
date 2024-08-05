@@ -2,6 +2,8 @@
 // colors
 $c-neutral: #eaeaea;
 $c-black: #000;
+$c-bright-black: #0d1117;
+$c-heavy-dark: #010409;
 $c-transparent: #00000000;
 $c-purple:#4e26af;
 $c-grey:#44434d;
@@ -19,11 +21,11 @@ $siteTitleFontWeight: 600;
 $f-thin:400;
 $f-medium:500;
 $f-semiBold: 600;
-$fs-body:14px;
+$fs-body:15px;
 $fs-small: 12px;
 $fs-btn-sm: 0.875rem;
 
-$siteHeaderBackground: $c-purple;
+$siteHeaderBackground: $c-heavy-dark; // here change the header background (above side bar, above content, aux nav)
 $siteHeaderTextColor: #fff;
 
 // spaces

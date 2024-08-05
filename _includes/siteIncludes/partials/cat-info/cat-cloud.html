@@ -1,7 +1,7 @@
 {% assign catsArray= site.data.category_list  | json_string_to_object %}
 
     <div id="cloud_cat_container" class="">         
-        <div class=" card shadow bg-transparent overflow-y-auto">
+        <div class="border border-secondary border-opacity-25 card shadow bg-transparent overflow-y-auto">
             <div class="card-header d-flex justify-content-between">
                 <span class="fs-6 fw-medium">Categories</span>
                 <button siteFunction="btnClose" whatToClose="#cloud_cat_container" type="button" class="btn-close" aria-label="Close"></button>
