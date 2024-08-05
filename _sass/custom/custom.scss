@@ -101,7 +101,7 @@ $alwaysBlackTextElements: (
     '.buttons-columnVisibility span',
     'button[siteFunction="tableNavigateToTags"] span',
     'button[siteFunction="tableNavigateToTagsSP"] span',
-    'button[siteFunction="tableNavigateToCategories"] span'
+    'button[siteFunction="tableNavigateToCategories"] span',
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {
@@ -168,7 +168,8 @@ $visibleElements: (
     'hr[siteFunction="contextMenuSeparator"]',
     'hr[siteFunction="offcanvasPageFullInfoPageGeneralSeparator"]',
     'hr[siteFunction="pageAutoSummarySeparator"]',
-    'hr[siteFunction="addPageToCatOrTag"]'
+    'hr[siteFunction="addPageToCatOrTag"]',
+    'hr[siteFunction="sitePagesDetailsLastFilterSeparator"]'
 );
 @each $element in $visibleElements {
         #{$element} {

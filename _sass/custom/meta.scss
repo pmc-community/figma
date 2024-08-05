@@ -364,6 +364,16 @@
     #{map-get($tableElements, searchPanesForcedBackground)} {
         background: $tableSearchPanesMainContainerBackground !important;
     }
+
+    #{map-get($tableElements, searchPanesFilterFakeBtn)} {
+        width: $tableFiltersFakeBtnWidth !important;
+    }
+
+    #{map-get($tableElements, searchPanesActiveFilterWarning)} {
+        width: $sideBarFixedWidth;
+        z-index: $tableSearchPanesActiveFilterWarningZIndex;
+        position: $tableSearchPanesActiveFilterWarningPosition;
+    }
 }
 
 // cat search

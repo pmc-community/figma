@@ -630,3 +630,25 @@ const updateCatForPage = (oldCat, newCat, pageInfo={}) => {
 const getAllSavedItems = () => {
     return JSON.parse(localStorage.getItem('savedItems')) || [];
 }
+
+// Function to save a local storage key as a JSON file
+const saveLocalStorageKeyAsJsonFile = (key, filename) => {
+    const data = localStorage.getItem(key);
+    let jsonData;
+    try {
+        jsonData = JSON.parse(data);
+    } catch (error) {
+        alert('Error parsing JSON data from local storage');
+        showToast(`Can\'t save local storage! Error parsing key ${key}`, 'bg-danger', 'text-light');
+        return;
+    }
+
+    const jsonString = JSON.stringify(jsonData, null, 4); // 4 spaces indentation
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}

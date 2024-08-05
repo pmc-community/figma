@@ -117,7 +117,7 @@ const arrayDuplicates = (arr) => {
     return duplicateValues;
 }
 
-// read external contents between markers
+// read external contents between markers to dynamically add it to documents on client side
 const getExternalContent = async (file, position, startMarker , endMarker, header, whereID, whoCalled) => {
     $(window).on('load', () => {
         // prevent returning unwanted quantity of content
@@ -392,7 +392,9 @@ const setSearchList = (
 // columnsConfig is set in the caller, to be fit to the specific table
 // callback and callbackClickRow are set in the caller to do specific processing after the table is initialized
 const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow, additionalSettings = {}, searchPanes = null) => {
-    bottom2Buttons = searchPanes ?
+    // ONLY searcPanes TRIGGERED BY BUTTON IS AVALILABLE
+    // OTHERWISE THE searchPanes LOGIC WILL FAIL AND WILL RAISE ERRORS
+    const bottom2Buttons = searchPanes ?
         [
             {
                 extend: ['colvis'],
@@ -461,8 +463,8 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
         language: {
             searchPanes: {
                 clearMessage: 'Clear All',
-                collapse: { 0: `<span siteFunction="searchPanesLoader" class="d-none mr-2 spinner-border spinner-border-sm" aria-hidden="true"></span>
-                 Filter`, _: 'Filters (%d)' },
+                collapse: { 0: `Filter`, _: 'Filter' },
+                //collapse: { 0: 'Filter', _: 'Filters (%d)' },
                 //count: '{total} found',
                 //countFiltered: '{shown} / {total}'
             }
@@ -546,6 +548,117 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
             applyColorSchemaCorrections();
             // also on draw event to cover all potential cases
             table.on('draw', function () { applyColorSchemaCorrections(); });
+
+            // searchPanes logic
+            // WE CAN USE HARD CODED CLASS NAMES BECAUSE 
+            // THERE WILL BE ONLY ONE searchPanes CONTAINER ACTIVE AT ONE MOMENT
+            // AND THE CLASSES ARE ALWAYS THE SAME
+            if (searchPanes && searchPanes.enable) {
+                let tableSearchPanesSelection = [];
+
+                const getSearchPanesSelection = () => {
+                    const table = $(tableSelector).DataTable();
+                    const $panes = table.searchPanes.container().children().last().find('.dtsp-searchPane').not('.dtsp-hidden');
+                    const panesContainerSelector = `.${(table.searchPanes.container().children().last()).attr('class').split(/\s+/).join('.')}`;
+                    $panes.each( function() {
+                        const mainTableColIndex = $(this).index();         
+                        const childSelector = `${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${mainTableColIndex+1})`;
+                        const searchPaneTableWrapper = $(childSelector).children().last().attr('id');
+                        const searchPaneTableId = searchPaneTableWrapper.replace(/_wrapper$/, '').trim();
+                        const searchPaneDataTable = $(`#${searchPaneTableId}`).DataTable();
+                        const selectedRows = searchPaneDataTable.rows({ selected: true });
+                        const selectedData = selectedRows.data().toArray();
+                        tableSearchPanesSelection.forEach(col => {
+                            if (col.column === mainTableColIndex) col.rows =  selectedData ? selectedData.map(item => item.display) : []
+                        });
+            
+                    });
+                }
+
+                const setSearchPanesSelection = (selection) => {
+                    const table = $(tableSelector).DataTable();
+                    const $panes = table.searchPanes.container().children().last().find('.dtsp-searchPane').not('.dtsp-hidden');
+                    const panesContainerSelector = `.${(table.searchPanes.container().children().last()).attr('class').split(/\s+/).join('.')}`;
+                    $panes.each( function() {
+                        const mainTableColIndex = $(this).index();         
+                        const childSelector = `${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${mainTableColIndex+1})`;
+                        const searchPaneTableWrapper = $(childSelector).children().last().attr('id');
+                        const searchPaneTableId = searchPaneTableWrapper.replace(/_wrapper$/, '').trim();
+                        const searchPaneDataTable = $(`#${searchPaneTableId}`).DataTable();
+                        let paneSelection = []
+                        selection.forEach( pane => {
+                            if (pane.column === mainTableColIndex) {
+                                paneSelection = pane.rows;
+                                searchPaneDataTable.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                                    const data = this.data();
+                                    if (paneSelection.includes(data.display)) {
+                                        this.select();
+                                    }
+                                });
+                            }
+                        });
+            
+                    });
+                }
+
+                // PROCESSING WHEN OPEN SEARCH PANES CONTAINER
+                removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
+                setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
+                    // ... here to add search panes post-processing (after searchPanes container is created)
+                    setTimeout(() => {
+
+                        $('.dropdown-menu').draggable({
+                            containment: "window"
+                        });
+
+                        tableSearchPanesSelection = searchPanes.searchPanesCurrentSelection || [];
+                        
+                        if (tableSearchPanesSelection.length === 0) {
+                            // init searchPanes selections
+                            const table = $(tableSelector).DataTable();
+                            const $panes = table.searchPanes.container().children().last().find('.dtsp-searchPane').not('.dtsp-hidden');
+                            $panes.each( function() {
+                                const mainTableColIndex = $(this).index();
+                                const colObject = {column: mainTableColIndex, rows: ''};
+                                tableSearchPanesSelection.push(colObject);
+                            });
+                            getSearchPanesSelection();
+                        }
+                        else {
+                            setSearchPanesSelection(tableSearchPanesSelection);
+                        }
+                        
+                        if (searchPanes.searchPanesOpenCallback) searchPanes.searchPanesOpenCallback();
+            
+                    }, 0);
+                });
+
+                // PROCESSING WHEN CLOSE SEARCH PANES CONTAINER
+                removeObservers('body removal (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
+                setElementRemovalByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
+                    setTimeout(() => {
+                        if (searchPanes.searchPanesCloseCallback) searchPanes.searchPanesCloseCallback(tableSearchPanesSelection);
+                    }, 0);
+                    
+                });
+
+                // PROCESSING WHEN SELECTION IS CHANGED IN ANY OF SEARCH PANES
+                // select option
+                removeObservers('div.dtsp-searchPane table tr class=selected getClass=true');
+                setElementChangeClassObserver('div.dtsp-searchPane table tr', 'selected', true, () => {
+                    getSearchPanesSelection();
+                    if (searchPanes.searchPanesSelectionChangeCallback) searchPanes.searchPanesSelectionChangeCallback(tableSearchPanesSelection);
+                });
+
+                // unselect option
+                removeObservers('div.dtsp-searchPane table tr class=selected getClass=false');
+                setElementChangeClassObserver('div.dtsp-searchPane table tr', 'selected', false, () => {
+                    getSearchPanesSelection();
+                    if (searchPanes.searchPanesSelectionChangeCallback) searchPanes.searchPanesSelectionChangeCallback(tableSearchPanesSelection);
+                });
+            }
+
+            // everything set, now we need to resolve the promise and pass the table to the next steps
             resolve(table);
             
         });
@@ -722,20 +835,33 @@ const keepTextInputLimits = (textInputSelector, maxWords, maxChars, wordCountSel
 // observes when elementSelector receive class cls (getClass=true) or lose class cls (getClass=false)
 // and executes callback function
 const setElementChangeClassObserver = (elementSelector, cls, getClass, callback = () => {}) => {
-    const targetElement = document.querySelector(elementSelector);
+    // Start observing the body for mutations
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            if (mutation.attributeName === 'class') {
-                const classList = Array.from(mutation.target.classList);                
-                if (!getClass) { if (!classList.includes(cls)) callback(); }
-                else { if (classList.includes(cls)) callback(); }
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const targetElement = mutation.target;
+                if (targetElement.matches(elementSelector)) {
+                    const classList = Array.from(targetElement.classList);
+                    if (!getClass) {
+                        if (!classList.includes(cls)) {
+                            callback();
+                        }
+                    } else {
+                        if (classList.includes(cls)) {
+                            callback();
+                        }
+                    }
+                }
             }
         });
     });
-    const config = { attributes: true, attributeFilter: ['class'] };
+
+    const config = { attributes: true, attributeFilter: ['class'], subtree: true };
     siteObservers.set(observer, `${elementSelector} class=${cls} getClass=${getClass}`);
-    observer.observe(targetElement, config);
-}
+    observer.observe(document.body, config);
+    return observer;
+};
+
 
 // observes when an element with class=element Class is created and executes callback function
 const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => {
@@ -763,6 +889,9 @@ const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => 
     const observer = new MutationObserver(mutationCallback); 
     siteObservers.set(observer, `body (class=${elementClass})`); 
     observer.observe(targetNode, observerOptions);
+
+    // Return the observer so it can be disconnected if needed
+    return observer;
 }
 
 // observes when the element with selector=selector is created and executes callback function
@@ -789,6 +918,32 @@ const setElementCreateBySelectorObserver = (selector, callback = () => {}) => {
     siteObservers.set(observer, `body (selector=${selector})`); 
     observer.observe(targetNode, config);
 
+}
+
+const setElementRemovalByClassObserver = (classString, removalCallback = null) => {
+    const classes = classString.split(' ');
+    const classSelector = classes.map(cls => '.' + cls).join('');
+    const targetNode = document.body; // You can specify a more specific parent if you know it
+    const config = { childList: true, subtree: true };
+
+    const callback = function(mutationsList, observer) {
+        mutationsList.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.removedNodes.forEach(function(removedNode) {
+                    if (removedNode.nodeType === Node.ELEMENT_NODE && removedNode.matches(classSelector)) {
+                        removalCallback()
+                    }
+                });
+            }
+        });
+    };
+
+    const observer = new MutationObserver(callback);
+    siteObservers.set(observer, `body removal (class=${classString})`); 
+    observer.observe(targetNode, config);
+
+    // Return the observer so it can be disconnected if needed
+    return observer;
 }
 
 // disconnect an observer having the id=observerID

@@ -20,8 +20,6 @@ const sitePages__pages = () => {
         sitePagesFn.setPagesTags();
         sitePagesFn.setPagesCats();
         sitePagesFn.setPagesDataTable();   
-        sitePagesFn.postProcessSearchPanes();
-
     });
 }
 
@@ -34,7 +32,6 @@ const sitePages__savedItems = () => {
 
 // using a 'namespace' to avoid fn name duplicates
 sitePagesFn = {
-
 
     // search page section
     setPageSearchList: () => {
@@ -53,8 +50,9 @@ sitePagesFn = {
     setPageSearchButtonsFunctions: () => {
         $('#openSitePagesDetails').off('click').click( function() {
             $('#site_pages_details').removeClass('d-none');
-            // redraw the pages table to avoid worng table head sizing
-            sitePagesFn.redrawPagesTable();
+            
+            // redraw the pages table to avoid wrong table head sizing
+            sitePagesFn.forceRedrawPagesTable();
             $('div[sitefunction="sitePagesDetails"]').fadeIn();
         });            
     },
@@ -82,10 +80,82 @@ sitePagesFn = {
             sitePagesFn.updateInfoAfterOffCanvasClose(pageInfo.page);
             $(`table[siteFunction="sitePagesDetailsPageTable"] td`).removeClass('table-active'); // remove any previous selection
             sitePagesFn.rebuildPagesTableSearchPanes();
+            sitePagesFn.setLastFilterInfo('Last filter');
         });
     },
 
     // pages details table
+    setLastFilterInfo: (lastFilterLabel) => {
+        const getFilterValue = (colIndex) => {
+
+            return sitePagesFn.pageTableSearchPanesSelection.length === 0 ?
+            '-' : 
+            getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ?
+                '-':
+                getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection).rows.join('; ')
+        }
+
+        const checkFilterItems = () => {
+            if ( sitePagesFn.pageTableSearchPanesSelection.length === 0 ||  _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0) return;
+
+            filterTagsObj = getObjectFromArray({column:7}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ? 
+                {} : 
+                getObjectFromArray({column:7}, sitePagesFn.pageTableSearchPanesSelection);
+    
+            filterCatsObj = getObjectFromArray({column:8}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ? 
+                {} : 
+                getObjectFromArray({column:8}, sitePagesFn.pageTableSearchPanesSelection);
+
+            if ( _.isEmpty(filterTagsObj) && _.isEmpty(filterCatsObj)) return;
+            
+            filterTags = filterTagsObj.rows || [];
+            filterCats = filterCatsObj.rows || [];
+
+            if ( filterTags.length === 0  && filterCats.lenght === 0) return;
+
+            if( filterTags.length > 0 ) _.find(sitePagesFn.pageTableSearchPanesSelection, { column: 7 }).rows = _.intersection(filterTags, globAllTags);
+            if( filterCats.length > 0 ) _.find(sitePagesFn.pageTableSearchPanesSelection, { column: 8 }).rows = _.intersection(filterCats, globAllCats);
+
+        }
+
+        checkFilterItems();
+        if ( sitePagesFn.pageTableSearchPanesSelection.length > 0 && _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) > 0) {
+            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageDetails"]').text(getFilterValue(2));
+            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages"]').text(getFilterValue(3));
+            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageSimilarPages"]').text(getFilterValue(4));
+            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageTags"]').text(getFilterValue(7));
+            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageCats"]').text(getFilterValue(8));
+            $('span[sitefunction="sitePagesDetailsLastFilterLabel"]').text(lastFilterLabel);
+
+            $('div[sitefunction="sitePagesDetailsLastFilter"]').draggable({
+                containment: "window"
+            });
+            
+            const topPos = $('div[sitefunction="sitePagesDetailsLastFilter"]').css('top');
+            const leftPos =  $('div[sitefunction="sitePagesDetailsLastFilter"]').css('left');
+            
+            // topPos === 'auto' && leftPos === 'auto' means showing the active/last filter details for the first time after page is loaded
+            if (topPos === 'auto' || leftPos === 'auto') {
+                const defaultLeft = 20;
+                // first display outside viewport to calculate the height 
+                $('div[sitefunction="sitePagesDetailsLastFilter"]')
+                    .css('top',`${$(window).height() + 200}px`)
+                    .css('left', `${defaultLeft}px`);
+                $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
+                const defaultTop = $(window).height() - $('div[sitefunction="sitePagesDetailsLastFilter"]').height() - 60;
+
+                // display on the right position
+                $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
+                $('div[sitefunction="sitePagesDetailsLastFilter"]')
+                    .css('top',`${defaultTop}px`)
+                    .css('left', `${defaultLeft}px`);
+            }
+            $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
+        }
+        else
+            $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
+    },
+
     setPagesTableButtonsFunctions: () => {
         $('span[siteFunction="sitePagesPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pagePermalinkReference'), title:$(this).attr('pageTitleReference')});
@@ -256,6 +326,8 @@ sitePagesFn = {
         })
     },
 
+    pageTableSearchPanesSelection: [], // object to keep the current pagesTable searchPanes current filter
+
     setPagesDataTable: () => {
 
         if( $.fn.DataTable.isDataTable(`table[siteFunction="sitePagesDetailsPageTable"]`) ) {
@@ -359,12 +431,7 @@ sitePagesFn = {
             processing: true,
 
             initComplete: function(settings, json) {
-                // Adjust columns after initialization to ensure proper alignment
-                const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-                setTimeout(()=>{
-                    table.order([0, 'asc']);
-                    table.columns.adjust().draw();    
-                },100);
+                sitePagesFn.forceRedrawPagesTable();
             },
 
             // columnDefs object IS USED ONLY FOR SEARCH PANES
@@ -372,6 +439,7 @@ sitePagesFn = {
             // SEARCH PANES CAN BE DEFINED IN THE SAME WAY IN colDefinition OBJECT
             // columns are defined in colDefinition object
             columnDefs: [
+                // page details
                 {
                     searchPanes: {
                         options:  getSearchPaneOptionsFromArray(
@@ -397,11 +465,18 @@ sitePagesFn = {
                         show: true,
                         collapse: true,
                         viewCount: false,
-                        initCollapsed: false,                    
+                        initCollapsed: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        },
                     },
                     targets: [2],
                     
                 },
+
+                // related pages
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
@@ -415,11 +490,18 @@ sitePagesFn = {
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        }
                         
                     },
                     targets: [3],
                     
                 },
+
+                // similar pages
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
@@ -433,9 +515,16 @@ sitePagesFn = {
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        }
                     },
                     targets: [4],       
                 },
+
+                // tags
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
@@ -449,9 +538,16 @@ sitePagesFn = {
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        }
                     },
                     targets: [7],                  
                 },
+
+                // cats
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
@@ -462,21 +558,28 @@ sitePagesFn = {
                             }, 
                             (selectedRow, selectedSearchPaneValue)=>{}
                         ),
+                
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        dtOpts: {
+                            select: {
+                                style: 'multi'
+                            }
+                        }
                     },
                     targets: [8],           
                 },
+
+                // cancel all other searchPanes
                 {
-                    // cancel all other searchPanes
                     searchPanes: {
                         show: false
                     },
                     targets: '_all'    
                 },
                 
-            ]
+            ],
         };
 
         const additionalTableSettings = commonAdditionalTableSettings;
@@ -488,10 +591,24 @@ sitePagesFn = {
             (table) => {sitePagesFn.postProcessPagesTable(table)}, // will execute after the table is created
             (rowData) => {}, // will execute when click on row
             additionalTableSettings, // additional datatable settings for this table instance
+            
+            // searchPanes general settings
+            // specific column searchPane settings are in columnDefs object, inside commonAdditionalTableSettings object 
             {
                 enable: true,
-                cascade: false // page load may become very slow. better to use viewCount=false when cascade=false
-            } // has SearchPanes and these are or not cascaded
+                // page load may become very slow. better to use viewCount=false when cascade=false because viewCount doesn't update dynamicaly
+                cascade: false,
+                searchPanesOpenCallback: () => {
+                    // the following line is applicable only to search panes having viewCount = true
+                    $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning').addClass('text-dark');
+                },
+                searchPanesCloseCallback: (tableSearchPanesSelection) => {
+                    sitePagesFn.pageTableSearchPanesSelection = tableSearchPanesSelection;
+                    sitePagesFn.setLastFilterInfo('Active filter');
+                },
+                searchPanesSelectionChangeCallback: null,
+                searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection
+            }
             
         );
     },
@@ -504,20 +621,6 @@ sitePagesFn = {
 
     addAdditionalPagesTableButtons: (table) => {
         // post processing table: adding 2 buttons in the bottom2 zone
-
-        clearFiltersBtn = {
-            attr: {
-                siteFunction: 'tableClearFiltersSP',
-                title: 'Clear All Filters'
-            },
-            className: 'btn-dark btn-sm text-light mb-2',
-            text: 'Clear all',
-            action: () => {
-                table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable()
-                table.searchPanes.clearSelections();
-                getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
-            }
-        }
 
         gotToTagBtn = {
            attr: {
@@ -543,7 +646,6 @@ sitePagesFn = {
            }
        }
        const btnArray = [];
-       btnArray.push(clearFiltersBtn);
        btnArray.push(gotToTagBtn);
        btnArray.push(gotToCatsBtn);
        addAdditionalButtonsToTable(table, 'table[siteFunction="sitePagesDetailsPageTable"]', 'bottom2', btnArray);
@@ -558,9 +660,17 @@ sitePagesFn = {
          })};
 
         hide__ASYNC()
-            .then((table) => table.draw())
+            .then((table) => table.columns.adjust().draw())
             .then(() => $(`table[siteFunction="sitePagesDetailsPageTable"]`).show());
         
+    },
+
+    forceRedrawPagesTable: () => {
+        setTimeout(()=>{
+            const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+            table.order([0, 'asc']);
+            table.columns.adjust().draw(); 
+        },100);
     },
 
     setPagesTags: () => {
@@ -634,7 +744,7 @@ sitePagesFn = {
                         catType="${isSiteCat ? 'siteCat' : 'customCat'}"
                         id="${cat}" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${catBtnColor} position-relative"
+                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${catBtnColor} position-relative border-0 shadow-none"
                         title = "Details for category ${cat}"
                         href="cat-info?cat=${cat}"
                         data-raw="${JSON.stringify(allCats).replace(/"/g, '&quot;')}">
@@ -679,64 +789,20 @@ sitePagesFn = {
         });
     },
 
-    postProcessSearchPanes: () => {
-        removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
-        setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
-            // ... here to add search panes post-processing (after searchPanes container is created)
-            setTimeout(() => {
-                $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning').addClass('text-dark');
-                $('span[siteFunction="searchPanesLoader"]').addClass('d-none');
-                $('.dropdown-menu').draggable({
-                    containment: "window" // Restrict dragging to within the viewport
-                });
-            }, 0);
-        });
-
-    },
-
     rebuildPagesTableSearchPanes: () => { 
         let table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+
+        // SELECTION MUST BE CLEARED, OTHERWISE THE TABL WILL BEHAVE WEIRD
+        // RETURNING FROM OFFCANVAS ON A FILTERED TABLE WILL LOSE ALL RECORDS EXCEPT THE FILTERED ONES
+        // AND THESE CANNOT BE SHOWN EVEN IF CLEARING THE FILTER, ONLY RELOADING PAGE WILL RESTORE ALL RECORDS 
         table.searchPanes.clearSelections();
-        
+
         // clean local storage, previous saved searchPanes datatables to not overload local storage
         getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
 
-        // re-build all 
+        // re-build all to capture all page modifications in table and in searchPanes as well
         table.destroy();
-        sitePagesFn.setPagesDataTable(); 
-    },
-
-    pagesTableSearchPanesSelection: {},
-
-    getSearchPanesSelection: () => {
-        const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-        console.log(`div.${(table.searchPanes.container().children().last()).attr('class').split(/\s+/).join('.')}`);
-        const $panes = table.searchPanes.container().children().last().find('.dtsp-searchPane').not('.dtsp-hidden');
-        let selections = {};
-
-        console.log($('.dtsp-searchPanes > .dtsp-searchPane.dtsp-columns-1:nth-child(9) table'))
-        const panesContainerSelector = `.${(table.searchPanes.container().children().last()).attr('class').split(/\s+/).join('.')}`;
-        let paneIndex = [];
-        $panes.each( function() {
-            
-            console.log(`${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${$(this).index()+1})`);
-            const childSelector = `${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${$(this).index()+1})`;
-            console.log($(childSelector).children().last().attr('id'))
-           //const paneTableId = $(`${panesContainerSelector} > .${($(this).attr('class').split(/\s+/)).join('.')}:nth-child(${$(this).index()+1}) table`).attr('id');
-           //console.log(paneTableId)
-
-
-
-            //const paneIndex = $(this).attr('id').replace('searchPanes_', '');
-            //const pane = table.searchPanes.pane(parseInt(paneIndex, 10));
-            //const selectedItems = pane.selectedRows().data().toArray();
-
-            //if (selectedItems.length > 0) {
-            //    selections[pane.index()] = selectedItems;
-            //}
-        });
-
-        console.log(selections);
+        sitePagesFn.setPagesDataTable();
     },
 
     // saved items section
@@ -744,6 +810,14 @@ sitePagesFn = {
         $('#openSitePagesSavedItems').off('click').click( function() {
             $('#site_pages_saved_items').removeClass('d-none');
             $('div[sitefunction="sitePagesSavedItems"]').fadeIn();
-        });            
+            $('html, body').animate({
+                scrollTop: $("#site_pages_saved_items").offset().top
+            }, 100);
+        });
+        
+        
+        $('#saveStorageToFile').off('click').click( function() {
+            saveLocalStorageKeyAsJsonFile('savedItems', 'si.json')
+        });    
     },
 }

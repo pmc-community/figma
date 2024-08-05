@@ -15,6 +15,24 @@
 
         <div class="card-body">
 
+            <div siteFunction="saveStorageToFile" class="mb-2">
+                <button 
+                    siteFunction="saveStorageToFile" 
+                    id="saveStorageToFile" 
+                    type="button" 
+                    class="btn btn-success"
+                    title= "Save to file"
+                    style="width:8rem; height:100%">
+                    Save to file
+                </button>
+            </div>
+
+            <div siteFunction="loadToStorageFromFile">
+                <div class="input-group">
+                    <input type="file" class="form-control" id="selectedLocalFile" aria-label="Select">
+                    <button class="btn btn-primary" type="button" id="uploadSelectedLocalFile">Load</button>
+                </div>
+            </div>
                             
         </div>
 
