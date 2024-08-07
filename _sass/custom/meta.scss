@@ -58,6 +58,7 @@
         border-radius:$tocContainerBorderRadius;
         height: $tocContainerMaxHeight;
         overflow-y: $tocContainerOverflowY;
+        width: $tocContainerWidth;
     }
 
     #{$tocBase}_container_heading {
@@ -77,14 +78,14 @@
     }
 
     nav[data-toggle=#{$tocBase}] .nav>li>a {
-   
+        font-weight:$tocFontWeight !important;
         padding-bottom:$tocItemLinkPaddingBottom !important;
         padding-top:$tocItemLinkPaddingTop !important;
+        font-size: $tocItemLinkFontSize !important;
     }
 
     nav[data-toggle=#{$tocBase}] .nav-link.active, nav[data-toggle=#{$tocBase}] .nav-link.active:focus, nav[data-toggle=#{$tocBase}] .nav-link.active:hover {
-        font-weight:$tocFontWeight;
-        
+        font-weight:$tocFontWeight !important;  
     }
     
     nav[data-toggle=#{$tocBase}] .nav>li>a {

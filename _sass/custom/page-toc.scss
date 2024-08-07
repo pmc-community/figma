@@ -1,7 +1,7 @@
 @import 'custom-vars.scss';
 // PAGE TOC SETTINGS
 // general
-$tocFontWeight: $f-medium !default;
+$tocFontWeight: $f-thin !default;
 $tocFontColor: $c-black !default;
 
 // container
@@ -16,8 +16,9 @@ $tocContainerBorderRight: $b-none !default;
 $tocContainerBorderRadius: $brad-10px;
 $tocContainerMaxHeight: $sz-80p;
 $tocContainerOverflowY: $ov-auto;
-$tocContainerHeadingTextAlignment: $tal-h-center;
+$tocContainerHeadingTextAlignment: $tal-h-left;
 $tocContainerHeight: $sz-content;
+$tocContainerWidth: $sz-18p;
 
 // toc
 $tocPadding: $tocContainerPadding !default;
@@ -33,6 +34,7 @@ $allTocItemsVisibility: $d-block; // all toc items visible, set to $d-hidden to 
 $tocItemLinkPaddingTop: $p-0px !default;
 $tocItemLinkPaddingBottom: $p-0px !default;
 $tocItemLinkBorderLeftOnActive: $b-Sol2pxBlack !default;
+$tocItemLinkFontSize: $fs-small;
 
 $tocItemLinkBorderLeftOnActiveLight: $b-Sol2pxBlack !default;
 $tocItemLinkBorderLeftOnActiveDark: $b-Sol2pxWhite !default;

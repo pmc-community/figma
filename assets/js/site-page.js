@@ -7,11 +7,12 @@ const page__getAutoSummary = () => {
         
         return (
             `   
-                <div id="pageAutoSummary" class="p-2 bg-light-subtle border border-light-subtle rounded">
+                <div id="pageAutoSummary" class="pb-2">
                     <span class="fw-medium text-secondary">
                         ${autoSummary}
                     </span>
                 </div>
+                <hr siteFunction="pageInfoToContentSeparator">
             `
         );
     }
@@ -71,9 +72,7 @@ const page__getRelatedPages = () => {
                     <span class="fs-6 fw-medium">
                         Related:
                     </span>
-                    <div 
-                        siteFunction="pageRelatedPagesContainer"
-                        class="container-fluid">
+                    <div siteFunction="pageRelatedPagesContainer">
                         <div
                             siteFunction="pageRelatedPagesRow"
                             class="row d-flex ${relatedPageItemsAlign}">
@@ -104,7 +103,7 @@ const page__getPageNotes = () => {
     const customNoteItem = (note) => {
         return (
             `
-                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-body rounded bg-light-subtle border-0 shadow-sm">
+                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-transparent border border-secondary border-opacity-25">
                     <div class="h-100 align-top mb-2">
                         <span class="fw-bold text-primary">${note.date}</span>
                     </div>
@@ -125,7 +124,7 @@ const page__getPageNotes = () => {
 
         return (
             `   
-                <div id="pageNotes" class="px-5">
+                <div id="pageNotes" class="px-5 mb-4">
                     <hr siteFunction="pageNotesSeparator">
                     <span class="fs-6 fw-medium">
                         Notes:
@@ -322,7 +321,7 @@ const page__getPageInfo = () => {
                 `
                     <div 
                         sitefunction="pageFullInfoPageGeneralSimilarPages" 
-                        class="my-2 d-flex">
+                        class="mt-2 mb-4 d-flex">
                         <span 
                             class="fw-medium align-self-center" 
                             title="Similar pages based on content"> 
@@ -355,8 +354,8 @@ const page__getPageInfo = () => {
             `
                 <div id="pageLastUpdateAndPageInfo" class="container px-5 mb-4">
                     ${catsHtml}
-                    <div class="fw-medium fs-2 mb-2">${page.siteInfo.title}</div>
-                    <div class="mb-2">${page.siteInfo.excerpt}</div>
+                    <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
+                    <div class="mb-4">${page.siteInfo.excerpt}</div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="d-flex align-items-center">
@@ -381,9 +380,7 @@ const page__getPageInfo = () => {
                         </div>
                     </div>
 
-                    ${pageSimilarPages.length === 0 ? '' : pageSimilarByContent(page)}
-                    
-                    <hr siteFunction="pageLastUpdateSeparator">
+                    ${pageSimilarPages.length === 0 ? '' : pageSimilarByContent(page)}                    
                 </div>
             `
         );
@@ -519,10 +516,10 @@ const setPageButtonsFunctions = () => {
         .off('mouseenter', 'span[siteFunction="pageHasAutoSummaryBadge"]')
         .off('mouseleave', 'span[siteFunction="pageHasAutoSummaryBadge"]')
         .on('mouseenter', 'span[siteFunction="pageHasAutoSummaryBadge"]', function() {
-            $('#pageAutoSummary').removeClass('border-light-subtle').addClass('border-secondary-subtle')
+            $('#pageAutoSummary').addClass('border-warning border-bottom border-opacity-25')
         })
         .on('mouseleave', 'span[siteFunction="pageHasAutoSummaryBadge"]', function() {
-            $('#pageAutoSummary').removeClass('border-secondary-subtle').addClass('border-light-subtle')
+            $('#pageAutoSummary').removeClass('border-warning border-bottom border-opacity-25');
         });
 
 }

@@ -161,11 +161,12 @@ $hiddenElements: (
 
 $visibleElements: (
     'hr[siteFunction="pageTagsSeparator"]',
-    'hr[siteFunction="pageNotesSeparator"]',
-    'hr[siteFunction="pageRelatedPagesSeparator"]',
-    'hr[siteFunction="pageLastUpdateSeparator"]',
+    'hr[siteFunction="pageInfoToContentSeparator"]',
+    //'hr[siteFunction="pageNotesSeparator"]',
+    //'hr[siteFunction="pageRelatedPagesSeparator"]',
+    //'hr[siteFunction="pageLastUpdateSeparator"]',
     '.dropdown-divider', 
-    'hr[siteFunction="pageTocHeaderSeparator"]',
+    //'hr[siteFunction="pageTocHeaderSeparator"]',
     'hr[siteFunction="contextMenuSeparator"]',
     'hr[siteFunction="offcanvasPageFullInfoPageGeneralSeparator"]',
     'hr[siteFunction="pageAutoSummarySeparator"]',

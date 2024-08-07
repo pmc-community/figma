@@ -702,7 +702,7 @@ const createSimpleTable = (tag, tableData) => {
     const tagDetailsCardHeader = (tag) => {
         return (
             `
-                <div class="card-header d-flex justify-content-between">
+                <div class="card-header d-flex justify-content-between border-bottom border-secondary border-opacity-25">
                     <span class="fs-6 fw-medium">Tag:
                         <button 
                             siteFunction="tagForActiveTagDetailsDatatable" id="${tag}" 
@@ -752,7 +752,7 @@ const createSimpleTable = (tag, tableData) => {
     }
 
     $(`div[siteFunction="tagDetails"][tagReference="${tag}"]`).remove();
-    const $tagDetailsContainer = $(`<div tagReference="${tag}" siteFunction="tagDetails" class="d-none card shadow bg-transparent">`);
+    const $tagDetailsContainer = $(`<div tagReference="${tag}" siteFunction="tagDetails" class="d-none card shadow bg-transparent border border-secondary border-opacity-25">`);
     $tagDetailsContainer.append($(tagDetailsCardHeader(tag)));
     $tagDetailsContainer.append($(cardDetailsCardBody(tag)));
     $('div[id="tag_details"]').append($tagDetailsContainer);

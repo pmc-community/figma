@@ -638,7 +638,6 @@ const saveLocalStorageKeyAsJsonFile = (key, filename) => {
     try {
         jsonData = JSON.parse(data);
     } catch (error) {
-        alert('Error parsing JSON data from local storage');
         showToast(`Can\'t save local storage! Error parsing key ${key}`, 'bg-danger', 'text-light');
         return;
     }

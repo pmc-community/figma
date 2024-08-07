@@ -401,7 +401,7 @@ const createSimpleCatTable = (cat, tableData) => {
     const catDetailsCardHeader = (cat) => {
         return (
             `
-                <div class="card-header d-flex justify-content-between">
+                <div class="card-header d-flex justify-content-between border-bottom border-secondary border-opacity-25">
                     <span class="fs-6 fw-medium">Category:
                         <button 
                             siteFunction="catForActiveCatDetailsDatatable" id="${cat}" 
@@ -451,7 +451,7 @@ const createSimpleCatTable = (cat, tableData) => {
     }
 
     $(`div[siteFunction="catDetails"][catReference="${cat}"]`).remove();
-    const $catDetailsContainer = $(`<div catReference="${cat}" siteFunction="catDetails" class="d-none card shadow bg-transparent">`);
+    const $catDetailsContainer = $(`<div catReference="${cat}" siteFunction="catDetails" class="d-none card shadow bg-transparent border border-secondary border-opacity-25">`);
     $catDetailsContainer.append($(catDetailsCardHeader(cat)));
     $catDetailsContainer.append($(cardDetailsCardBody(cat)));
     $('div[id="cat_details"]').append($catDetailsContainer);

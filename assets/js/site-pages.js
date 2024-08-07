@@ -840,21 +840,21 @@ sitePagesFn = {
                         const json = JSON.parse(e.target.result);
                         const key = 'myLocalStorageKey'; // Replace with your desired key
                         localStorage.setItem(key, JSON.stringify(json));
-                        alert('JSON data has been loaded into local storage');
+                        showToast(`JSON data from file ${file.name} has been loaded`, 'bg-success', 'text-light');
+
                     } catch (error) {
-                        alert('Error parsing JSON file');
-                        console.error('Error parsing JSON file:', error);
+                        showToast(`The file ${file.name} is not a valid JSON file and cannot be parsed`, 'bg-danger', 'text-light');
                     }
                 };
     
                 reader.onerror = function() {
-                    alert('Error reading file');
                     console.error('Error reading file:', reader.error);
+                    showToast(`Error reading file ${file.name}`, 'bg-danger', 'text-light');
                 };
     
                 reader.readAsText(file);
             } else {
-                alert('No file selected');
+                showToast('No file selected', 'bg-warning', 'text-dark');
             }
         });
     },
