@@ -60,3 +60,6 @@ gem 'matrix'
 # for page keywords generator
 gem 'text_rank'
 gem 'engtagger'
+
+gem 'hubspot-api-client'
+

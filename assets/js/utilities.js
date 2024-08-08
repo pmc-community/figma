@@ -162,6 +162,13 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
                     $(settings.goToTopBtn.topOfPageId).remove();
                     addTopOfPage();
                 }
+
+                // move the top content separator where it should be
+                if (position === 'before') {
+                    $('hr[siteFunction="pageContentTopSeparator"]').remove();
+                    $(settings.externalContent.containerToIncludeExternalContent).prepend('<hr siteFunction="pageContentTopSeparator" class="my-4">');
+                   
+                }
             },
             error: async (xhr, status, error) => {
                 toast = new bootstrap.Toast($('.toast'));
@@ -719,6 +726,11 @@ const applyColorSchemaCorrections = (theme=null) => {
         $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark)
         $('.btn-close').addClass('btn-close-white');
     }
+
+    // apply css corrections on HS forms if necessary
+    hsForms.forEach($form => {
+        hsIntegrate.applyCSSCorrection($form);
+    })
 }
 
 const sanitizeURL = (url) => {
@@ -861,7 +873,6 @@ const setElementChangeClassObserver = (elementSelector, cls, getClass, callback 
     observer.observe(document.body, config);
     return observer;
 };
-
 
 // observes when an element with class=element Class is created and executes callback function
 const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => {
@@ -1427,4 +1438,32 @@ const allPagesTitles = (data, key) => {
         .sortBy()
         .value();
 }
-  
+
+// HS integration
+const addBootstrapToIFrames = () => {
+    const addBootstrapScripts = (iframe, bootstrapCSS, bootstrapJS) => {
+        const iframeDoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
+        try {
+            $(iframeDoc.head).append(bootstrapCSS);
+            $(iframeDoc.body).append(bootstrapJS);
+        } catch (e) {
+            console.error('Unable to access iframe content:', e);
+        }
+
+    } 
+    const bootstrapCSS = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">';
+    const bootstrapJS = '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>';
+    
+    $('iframe').each(function() { 
+        addBootstrapScripts($(this), bootstrapCSS, bootstrapJS);
+    });
+}
+
+const pushHSFormToHSFormsList = ($form) => {
+    const formExists = _.some(hsForms, (form) => {
+        return form.attr('id') === $form.attr('id');
+    });
+
+    if ( !formExists ) hsForms.push($form);
+}
+

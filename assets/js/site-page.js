@@ -1,4 +1,6 @@
+
 // FUNCTIONS FOR EACH PAGE
+
 // called from _includes/siteIncludes/partials/page-common/page-auto-summary.html
 const page__getAutoSummary = () => {
 
@@ -7,12 +9,11 @@ const page__getAutoSummary = () => {
         
         return (
             `   
-                <div id="pageAutoSummary" class="pb-2">
+                <div id="pageAutoSummary" class="mt-4">
                     <span class="fw-medium text-secondary">
                         ${autoSummary}
                     </span>
                 </div>
-                <hr siteFunction="pageInfoToContentSeparator">
             `
         );
     }
@@ -22,6 +23,7 @@ const page__getAutoSummary = () => {
         $('#pageAutoSummary').remove();
         if (autoSummary === '') return;
         $('#pageLastUpdateAndPageInfo').append(createAutoSummaryPageContainer(pageInfo)); 
+
     });
 
 }
@@ -68,7 +70,6 @@ const page__getRelatedPages = () => {
         return (
             `   
                 <div id="pageRelatedPages" class="px-5">
-                    <hr siteFunction="pageRelatedPagesSeparator">
                     <span class="fs-6 fw-medium">
                         Related:
                     </span>
@@ -91,7 +92,7 @@ const page__getRelatedPages = () => {
             return;
         }
         $('#pageRelatedPages').remove();
-        $('footer[class!="site-footer"]').append(createRelatedPageContainer(pageInfo)); 
+        $('footer[class!="site-footer"]').append(createRelatedPageContainer(pageInfo));
 
     });
 
@@ -105,7 +106,7 @@ const page__getPageNotes = () => {
             `
                 <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-transparent border border-secondary border-opacity-25">
                     <div class="h-100 align-top mb-2">
-                        <span class="fw-bold text-primary">${note.date}</span>
+                        <span class="text-primary">${note.date}</span>
                     </div>
                     <div class="h-100 align-top">
                         <p class="text-secondary">${note.note}</p>
@@ -125,7 +126,6 @@ const page__getPageNotes = () => {
         return (
             `   
                 <div id="pageNotes" class="px-5 mb-4">
-                    <hr siteFunction="pageNotesSeparator">
                     <span class="fs-6 fw-medium">
                         Notes:
                     </span>
@@ -151,7 +151,33 @@ const page__getPageNotes = () => {
         }
         $('#pageNotes').remove();
         $('footer[class!="site-footer"]').append(createNotesContainer(pageInfo)); 
+    });
+}
 
+// called from _includes/siteIncludes/partials/page-common/page-fedback-form.html
+const page__getPageFeedbackForm = () => {
+    removeObservers('body (selector=iframe)');
+    setElementCreateBySelectorObserver('iframe', () => {
+        addBootstrapToIFrames();
+    });
+    
+    $(document).ready(function() {
+        const permalink = $('main').attr('pagePermalinkRef');
+        const title = $('main').attr('pageTitleRef');
+        if (!findObjectInArray({permalink:permalink, title:title}, pageList)) return;
+
+        fedbackFormContainer__ASYNC('pageFeedbackForm')
+            .then( (formContainerSelector) => {
+                createHSFeedbackForm(
+                    `#${formContainerSelector}`, 
+                    ($form) => {
+                        console.log($form);
+            
+                    })
+                    .then( (formContainerSelector) => {
+                        $(`${formContainerSelector}`).removeClass('d-none');
+                    });
+                })
     });
 }
 
@@ -396,6 +422,7 @@ const page__getPageInfo = () => {
             });
         setPageButtonsFunctions();
         refreshPageAfterOffCanvasClose();
+        setContentSeparators();        
     })
 }
 
@@ -406,7 +433,6 @@ const page__showPageCustomTags = () => {
         return (
             `
                 <div id="pageTags" class="container px-5">
-                    <hr siteFunction="pageTagsSeparator">
                     <span 
                         siteFunction="pageTagsContainer" 
                         class="mr-5 fs-6 fw-medium">
@@ -530,5 +556,39 @@ const refreshPageAfterOffCanvasClose = () => {
         $('div[siteFunction="pageCustomTagButton"]').remove();
         $('div[id="pageLastUpdateAndPageInfo"]').remove();
         refreshPageDynamicInfo();
+    });
+}
+
+const setContentSeparators = () => {
+    setTimeout( () => {
+        if ($('hr[siteFunction="pageContentTopSeparator"]').length === 0)
+            $('main').prepend('<hr siteFunction="pageContentTopSeparator" class="my-4">');
+        
+        if ($('hr[siteFunction="pageContentBottomSeparator"]').length === 0)
+            $('main').append('<hr siteFunction="pageContentBottomSeparator" class="my-4">');
+    }, 100);
+}
+
+const createHSFeedbackForm = (formContainerSelector, onFormReady) => {
+    return new Promise((resolve) => {
+        hsIntegrate.hsForm(formContainerSelector, 'e166804c-61ea-4b51-801d-f4299cb5c06c', onFormReady);
+        resolve(formContainerSelector);
+    });
+}
+
+const fedbackFormContainer__ASYNC = (formContainerSelector) => {
+    return new Promise((resolve) => {
+        const formContainer = () => {
+            return (
+                `
+                    <div 
+                        id="${formContainerSelector}" 
+                        class="d-none mt-4 px-5">
+                    </div>
+                `
+            );
+        }
+        $('footer[class!="site-footer"]').append(formContainer('pageFeedbackForm'));
+        resolve(formContainerSelector);
     });
 }
