@@ -156,29 +156,58 @@ const page__getPageNotes = () => {
 
 // called from _includes/siteIncludes/partials/page-common/page-fedback-form.html
 const page__getPageFeedbackForm = () => {
-    removeObservers('body (selector=iframe)');
-    setElementCreateBySelectorObserver('iframe', () => {
-        addBootstrapToIFrames();
-    });
+    if (settings.hsIntegration.enable) {
+        removeObservers('body (selector=iframe)');
+        setElementCreateBySelectorObserver('iframe', () => {
+            addBootstrapToIFrames();
+        });
+    }
     
     $(document).ready(function() {
-        const permalink = $('main').attr('pagePermalinkRef');
-        const title = $('main').attr('pageTitleRef');
-        if (!findObjectInArray({permalink:permalink, title:title}, pageList)) return;
+        if (settings.hsIntegration.enable) {
+            const permalink = $('main').attr('pagePermalinkRef');
+            const title = $('main').attr('pageTitleRef');
+            if (!findObjectInArray({permalink:permalink, title:title}, pageList)) return;
 
-        fedbackFormContainer__ASYNC('pageFeedbackForm')
-            .then( (formContainerSelector) => {
-                createHSFeedbackForm(
-                    `#${formContainerSelector}`, 
-                    ($form) => {
-                        console.log($form);
-            
-                    })
-                    .then( (formContainerSelector) => {
-                        $(`${formContainerSelector}`).removeClass('d-none');
+            fedbackFormContainer__ASYNC('pageFeedbackForm')
+                .then( (formContainerSelector) => {
+                    createHSFeedbackForm(
+                        `#${formContainerSelector}`,
+
+                        {
+                            permalink: permalink, 
+                            title: title
+                        },
+                        {
+                            submitText: 'Let us know!',
+                            submitButtonClass: 'btn btn-small btn-primary',
+                        },
+                        ($form) => {
+                            feedbackFormCSSCorrection($form);
+                        },
+                        
+                        ($form, data) => {
+                            console.log($form);
+                            console.log(data)
+                        })
+                        .then( (formContainerSelector) => {
+                            $(`${formContainerSelector}`).removeClass('d-none');
+                        });
                     });
-                })
+        }
     });
+}
+
+const feedbackFormCSSCorrection = ($form) => {
+    $form.find('input[type="submit"]')
+        .css('font-size', '14px')
+        .addClass('fw-light');
+    
+    const $fields = $form.children().first();
+    $fields.addClass('d-flex justify-content-between ');
+    $fields.children().first().addClass('w-auto');
+    //$fields.children().last().addClass('px-4');
+    $fields.children().last().css('width', '65%');
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-info.html
@@ -569,9 +598,20 @@ const setContentSeparators = () => {
     }, 100);
 }
 
-const createHSFeedbackForm = (formContainerSelector, onFormReady) => {
+const createHSFeedbackForm = (formContainerSelector, page, formSettings, onFormReady, onBeforeFormSubmit) => {
     return new Promise((resolve) => {
-        hsIntegrate.hsForm(formContainerSelector, 'e166804c-61ea-4b51-801d-f4299cb5c06c', onFormReady);
+        hsIntegrate.hsForm(
+            formContainerSelector, 
+            page,
+            formSettings,
+            {
+                region: hsSettings.region,
+                portalID: hsSettings.portalID, 
+                formID: hsSettings.feedbackFormID, 
+            },
+            onFormReady, 
+            onBeforeFormSubmit
+        );
         resolve(formContainerSelector);
     });
 }
@@ -583,7 +623,7 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
                 `
                     <div 
                         id="${formContainerSelector}" 
-                        class="d-none mt-4 px-5">
+                        class="d-none mt-4 px-5 col-5">
                     </div>
                 `
             );

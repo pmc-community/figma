@@ -1,4 +1,27 @@
 /* SOME UTILITIES ADDED TO JQUERY*/
+
+/* Network requests intrceptor - NOT USED
+(function() {
+    const originalFetch = window.fetch;
+    
+    window.fetch = function(url, options) {
+        // Modify this condition to target specific requests
+        if (url.includes('//app.hubspot.com/api/login-verify/')) {
+            console.log('Intercepted request to:', url);
+            
+            // Return a custom response
+            return Promise.resolve(new Response(
+                JSON.stringify({ message: 'Custom response' }),
+                { status: 200, headers: { 'Content-Type': 'application/json' } }
+            ));
+        }
+
+        // For other requests, use the original fetch
+        return originalFetch.apply(this, arguments);
+    };
+})();
+*/
+
 // check if an element is on screen
 $.fn.is_on_screen = function () {
     var win = $(window);
@@ -729,7 +752,7 @@ const applyColorSchemaCorrections = (theme=null) => {
 
     // apply css corrections on HS forms if necessary
     hsForms.forEach($form => {
-        hsIntegrate.applyCSSCorrection($form);
+        hsIntegrate.applyCSSCorrection($form, null);
     })
 }
 

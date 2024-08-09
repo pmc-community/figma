@@ -63,6 +63,9 @@ jobs:
           JEKYLL_ACCESS_TOKEN: ${{ secrets.JEKYLL_ACCESS_TOKEN }}
           JEKYLL_GIT_USER: ${{ secrets.JEKYLL_GIT_USER }}
           CONSOLE_BLANK_SPINNER_CHARS: ${{ secrets.CONSOLE_BLANK_SPINNER_CHARS }}
+          HS_PORTAL_ID: ${{ secrets.HS_PORTAL_ID }}
+          HS_FEDBACK_FORM_ID: ${{ secrets.HS_FEDBACK_FORM_ID }}
+          HS_REGION: ${{ secrets.HS_REGION }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

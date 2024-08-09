@@ -9,8 +9,6 @@ algoliaSearch:
   container: '#docsearch'
   debug: false
   maxResultsPerGroup: 20
-feedbackForm:
-  container: '#docFeedbackForm'
 pageToc:
   tocContainer: '#toc_container'
   toc: '#toc'
@@ -93,3 +91,5 @@ siteVars:
   siteTestBadge: "xxx"
 similarByContent:
   maxPages: 4
+hsIntegration:
+  enable: true
