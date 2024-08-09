@@ -1526,6 +1526,14 @@ const allPagesTitles = (data, key) => {
 }
 
 // iFrames and HS integration
+const pushHSFormToHSFormsList = ($form) => {
+    const formExists = _.some(hsForms, (form) => {
+        return form.attr('id') === $form.attr('id');
+    });
+
+    if ( !formExists ) hsForms.push($form);
+}
+
 const addBootstrapToIFrames = () => {
     const addBootstrapScripts = (iframe, bootstrapCSS, bootstrapJS) => {
         const iframeDoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
@@ -1545,12 +1553,15 @@ const addBootstrapToIFrames = () => {
     });
 }
 
-const pushHSFormToHSFormsList = ($form) => {
-    const formExists = _.some(hsForms, (form) => {
-        return form.attr('id') === $form.attr('id');
-    });
-
-    if ( !formExists ) hsForms.push($form);
+const iframe__addBootstrapToIFrames = ($elementInsideIFrame) => {
+    const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
+    const $iframeHead = $($iframeDocument).find('head');
+    const $iframeBody = $($iframeDocument).find('body');
+    const bootstrapCSS = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">';
+    const bootstrapJS = '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>';
+    $($iframeHead).append(bootstrapCSS);
+    $($iframeBody).append(bootstrapJS);
+    
 }
 
 const addCustomScriptsToIFrames = (cssScripts = [], jsScripts = []) => {
@@ -1573,4 +1584,17 @@ const addCustomScriptsToIFrames = (cssScripts = [], jsScripts = []) => {
         addCustomScripts($(this), cssScripts, jsScripts);
     });
 }
+
+const iframe__addCustomScriptsToIFrames = ($elementInsideIFrame, cssScripts = [], jsScripts = []) => {    
+    const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
+    const $iframeHead = $($iframeDocument).find('head');
+    const $iframeBody = $($iframeDocument).find('body');
+    cssScripts.forEach( script => {
+        $($iframeHead).append(`<link rel="stylesheet" href="/assets/css/${script}">`);
+    })
+    jsScripts.forEach( script => {
+        $($iframeBody).append(`<script src="/assets/js/${script}"></script>`);
+    })
+}
+
 

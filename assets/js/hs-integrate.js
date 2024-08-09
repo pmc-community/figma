@@ -22,6 +22,8 @@ hsIntegrate = {
                 onFormReady: function($form) {
                     try {
                         pushHSFormToHSFormsList($form);
+
+                        hsIntegrate.loadScriptsAndStyles($form, formSettings.css, formSettings.js);
                         hsIntegrate.applyCSSCorrection($form, page);
 
                         // set some observers inside the form iFrame
@@ -54,13 +56,17 @@ hsIntegrate = {
                     }
                 },
                 onBeforeFormInit: (ctx) => {
-                    // do something
                     callbackOnBeforeFormInit(ctx);
                 }
             });
         } catch (e) {
             console.error(`An error occurred while creating the form ${formID}:`, e);
         }
+    },
+
+    loadScriptsAndStyles: ($form, cssScripts, jsScripts) => {
+        iframe__addBootstrapToIFrames($form);
+        iframe__addCustomScriptsToIFrames($form, cssScripts, jsScripts);
     },
 
     applyCSSCorrection: ($form, page = null) => {

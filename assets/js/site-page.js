@@ -155,16 +155,7 @@ const page__getPageNotes = () => {
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-fedback-form.html
-const page__getPageFeedbackForm = () => {
-    if (settings.hsIntegration.enable) {
-        removeObservers('body (selector=iframe)');
-        setElementCreateBySelectorObserver('iframe', () => {
-            addBootstrapToIFrames();
-            addCustomScriptsToIFrames(['hs/hs.css'], []);
-        });
-        
-    }
-    
+const page__getPageFeedbackForm = () => {    
     $(document).ready(function() {
         if (settings.hsIntegration.enable) {            
             const permalink = $('main').attr('pagePermalinkRef');
@@ -182,10 +173,13 @@ const page__getPageFeedbackForm = () => {
                             title: title
                         },
 
-                        // text and class for submit button
+                        // text and class for submit button, and other settings
                         {
                             submitText: 'Let us know!',
                             submitButtonClass: 'btn btn-sm btn-outline-secondary border border-secondary border-opacity-25',
+                            css: ['hs/hs.css'],
+                            js: [] 
+            
                         },
 
                         // onFormReady callback
@@ -553,6 +547,7 @@ const refreshPageDynamicInfo = () => {
     page__getPageNotes();
     page__getRelatedPages();
     page__getAutoSummary();
+    page__getPageFeedbackForm();
     
 }
 
@@ -641,7 +636,7 @@ const createHSFeedbackForm = (
             {
                 region: hsSettings.region,
                 portalID: hsSettings.portalID, 
-                formID: hsSettings.feedbackFormID, 
+                formID: hsSettings.feedbackFormID
             },
             onFormReady, 
             onBeforeFormSubmit,
@@ -657,7 +652,7 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
         const formContainer = () => {
             return (
                 `
-                    <div class="mt-4 px-5 col-5">
+                    <div id = "pageFeedbackFormColumn" class="mt-4 px-5 col-5">
                         <div 
                             id="${formContainerSelector}" 
                             class="d-none">
@@ -671,6 +666,8 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
                 `
             );
         }
+
+        $(`#pageFeedbackFormColumn`).remove();
         $('footer[class!="site-footer"]').append(formContainer('pageFeedbackForm'));
         resolve(formContainerSelector);
     });
