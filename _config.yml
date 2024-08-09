@@ -48,6 +48,7 @@ exclude:
   - _data/
   - _plugins/
   - _sass/custom/*.css
+  - assets/*.scss
 
 aux_links:
   "GitHub":

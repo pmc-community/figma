@@ -160,11 +160,13 @@ const page__getPageFeedbackForm = () => {
         removeObservers('body (selector=iframe)');
         setElementCreateBySelectorObserver('iframe', () => {
             addBootstrapToIFrames();
+            addCustomScriptsToIFrames(['hs/hs.css'], []);
         });
+        
     }
     
     $(document).ready(function() {
-        if (settings.hsIntegration.enable) {
+        if (settings.hsIntegration.enable) {            
             const permalink = $('main').attr('pagePermalinkRef');
             const title = $('main').attr('pageTitleRef');
             if (!findObjectInArray({permalink:permalink, title:title}, pageList)) return;
@@ -174,40 +176,64 @@ const page__getPageFeedbackForm = () => {
                     createHSFeedbackForm(
                         `#${formContainerSelector}`,
 
+                        // send page info to form iFrame
                         {
                             permalink: permalink, 
                             title: title
                         },
+
+                        // text and class for submit button
                         {
                             submitText: 'Let us know!',
-                            submitButtonClass: 'btn btn-small btn-primary',
+                            submitButtonClass: 'btn btn-sm btn-outline-secondary border border-secondary border-opacity-25',
                         },
+
+                        // onFormReady callback
+                        // set the specific form appearance; the general appearance is set in hs-integrate
                         ($form) => {
                             feedbackFormCSSCorrection($form);
                         },
                         
+                        // onBeforeFormSubmit callback
+                        // can do specific data manipulation or field processing before submit
+                        // general processing (as filling in email field with a default value) are made in hs-integrate
                         ($form, data) => {
-                            console.log($form);
-                            console.log(data)
-                        })
+                            const message = $form.find('textarea').text();
+                            $form.find('textarea').text(DOMPurify.sanitize(message));
+                        },
+
+                        // onFormSubmitted callback
+                        // can do some processing after the form is submitted with success
+                        ($form, data) => {
+                            console.log('pfff, was hard!!!')
+                        },
+
+                        // onBeforeFormInit callback
+                        // can do some processing before the form is built, based on the full form settings (ctx) retrieved from HubSpot
+                        (ctx) => {
+                            console.log(ctx)
+                        }
+                        
+                        )
                         .then( (formContainerSelector) => {
                             $(`${formContainerSelector}`).removeClass('d-none');
                         });
-                    });
+                });
         }
     });
 }
 
 const feedbackFormCSSCorrection = ($form) => {
-    $form.find('input[type="submit"]')
-        .css('font-size', '14px')
-        .addClass('fw-light');
+    $form.find('input[type="submit"]').addClass('inputField');
     
     const $fields = $form.children().first();
     $fields.addClass('d-flex justify-content-between ');
     $fields.children().first().addClass('w-auto');
-    //$fields.children().last().addClass('px-4');
-    $fields.children().last().css('width', '65%');
+    $fields.children().last().css('width', '70%');
+
+    $form.find('textarea').addClass('h-100');
+    $form.find('.hs-form-required').addClass('d-none');
+
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-info.html
@@ -598,7 +624,15 @@ const setContentSeparators = () => {
     }, 100);
 }
 
-const createHSFeedbackForm = (formContainerSelector, page, formSettings, onFormReady, onBeforeFormSubmit) => {
+const createHSFeedbackForm = (
+    formContainerSelector, 
+    page, 
+    formSettings, 
+    onFormReady, 
+    onBeforeFormSubmit,
+    onFormSubmitted,
+    onBeforeFormInit
+) => {
     return new Promise((resolve) => {
         hsIntegrate.hsForm(
             formContainerSelector, 
@@ -610,7 +644,9 @@ const createHSFeedbackForm = (formContainerSelector, page, formSettings, onFormR
                 formID: hsSettings.feedbackFormID, 
             },
             onFormReady, 
-            onBeforeFormSubmit
+            onBeforeFormSubmit,
+            onFormSubmitted,
+            onBeforeFormInit
         );
         resolve(formContainerSelector);
     });
@@ -621,9 +657,16 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
         const formContainer = () => {
             return (
                 `
-                    <div 
-                        id="${formContainerSelector}" 
-                        class="d-none mt-4 px-5 col-5">
+                    <div class="mt-4 px-5 col-5">
+                        <div 
+                            id="${formContainerSelector}" 
+                            class="d-none">
+                        </div>
+                        <div class="hsFormLink mt-2 text-primary">
+                            <a href="${settings.hsIntegration.privacyLink}" target=_blank>
+                                Privacy Policy
+                            </a>
+                        </div>
                     </div>
                 `
             );

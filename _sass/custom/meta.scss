@@ -562,3 +562,10 @@
     }
 
 }
+
+// hs integration (for what is outide iframes)
+@mixin hsForms($hsFormsElements) {
+    #{map-get($hsFormsElements, formLink)} {
+        font-size: $hsFormLinkFontSize;
+    }
+}

@@ -928,6 +928,38 @@ const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => 
     return observer;
 }
 
+// same as before but inside any iframe from the page
+// one jQuery element inside the iframe must be known 
+const iframe__setElementCreatedByClassObserver = ($elementInsideIFrame, elementClass, callback = () => {}) => {
+    const mutationCallback = function(mutationsList) {
+        for(const mutation of mutationsList) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach(node => {
+                    if (
+                        node instanceof Element && node.classList.contains(elementClass) || 
+                        node instanceof Element &&  _.includes(node.classList.value, elementClass)
+                        ) {
+                        callback();
+                    }
+                });
+            }
+        }
+    };
+    
+    const observerOptions = {
+        childList: true,  
+        subtree: true  
+    };
+    
+    $('iframe').each(function($iframe) {
+        const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
+        
+        const observer = new MutationObserver(mutationCallback); 
+        //console.log($iframeDocument)
+        observer.observe($iframeDocument.body, observerOptions);
+    });
+}
+
 // observes when the element with selector=selector is created and executes callback function
 const setElementCreateBySelectorObserver = (selector, callback = () => {}) => {
     function handleNewElements(mutationsList) {
@@ -951,6 +983,37 @@ const setElementCreateBySelectorObserver = (selector, callback = () => {}) => {
     });
     siteObservers.set(observer, `body (selector=${selector})`); 
     observer.observe(targetNode, config);
+
+}
+
+// same as before but inside any iframe from the page
+// one jQuery element inside the iframe must be known 
+const iframe__setElementCreateBySelectorObserver = ($elementInsideIFrame, selector, callback = () => {}) => {
+    function handleNewElements(mutationsList) {
+        mutationsList.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                //console.log(mutation.addedNodes)
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.matches(selector)) {
+                        callback();
+                    }
+                });
+            }
+        });
+    }
+
+    const observerOptions = {
+        childList: true,  
+        subtree: true  
+    };
+    
+    $('iframe').each(function($iframe) {
+        const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
+        const observer = new MutationObserver(function(mutationsList, observer) {
+            handleNewElements(mutationsList, observer);   
+        });
+        observer.observe($iframeDocument.body, observerOptions);
+    });
 
 }
 
@@ -1462,7 +1525,7 @@ const allPagesTitles = (data, key) => {
         .value();
 }
 
-// HS integration
+// iFrames and HS integration
 const addBootstrapToIFrames = () => {
     const addBootstrapScripts = (iframe, bootstrapCSS, bootstrapJS) => {
         const iframeDoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
@@ -1488,5 +1551,26 @@ const pushHSFormToHSFormsList = ($form) => {
     });
 
     if ( !formExists ) hsForms.push($form);
+}
+
+const addCustomScriptsToIFrames = (cssScripts = [], jsScripts = []) => {
+    const addCustomScripts = (iframe, cssScripts, jsScripts) => {
+        const iframeDoc = iframe[0].contentDocument || iframe[0].contentWindow.document;
+        try {
+            cssScripts.forEach( script => {
+                $(iframeDoc.head).append(`<link rel="stylesheet" href="/assets/css/${script}">`);
+            })
+            jsScripts.forEach( script => {
+                $(iframeDoc.head).append(`<script src="/assets/js/${script}"></script>`);
+            })
+        } catch (e) {
+            console.error('Unable to access iframe content:', e);
+        }
+
+    } 
+    
+    $('iframe').each(function() { 
+        addCustomScripts($(this), cssScripts, jsScripts);
+    });
 }
 

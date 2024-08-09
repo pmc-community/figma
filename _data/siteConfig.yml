@@ -93,3 +93,4 @@ similarByContent:
   maxPages: 4
 hsIntegration:
   enable: true
+  privacyLink: "https://innohub.space/eng/privacy"
