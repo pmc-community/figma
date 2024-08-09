@@ -34,7 +34,6 @@ module Jekyll
         hsSettings = {}
         site.data['hs_integration'] = hsSettings.to_json
       end
-
     end
 
   end
