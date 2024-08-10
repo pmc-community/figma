@@ -37,7 +37,23 @@ module Jekyll
     end
 
   end
-  
-  
+
+  class HSPortalID < Generator
+    safe true
+    priority :highest
+
+    def generate(site)
+      if (site.data["siteConfig"]["hsIntegration"]["enabled"])
+        portalID = ENV["HS_PORTAL_ID"]
+        site.data['hs_portal_id'] = portalID
+      else
+        portalID = ""
+        site.data['hs_portal_id'] = portalID
+      end
+      puts site.data['hs_portal_id']
+    end
+
+  end
+
 end
   

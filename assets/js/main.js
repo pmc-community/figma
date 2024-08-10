@@ -56,6 +56,7 @@ const customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     handleTocActiveElementsOnScroll();
+    
     $(document).ready(() => {
         
         if ($(`#${settings.marker404}`).length > 0) $(settings.pageToc.tocContainer).remove();
@@ -100,6 +101,7 @@ const customiseTheme = (pageObj = null) => {
 
         // just to align breadcrumbs to the content
         $('.breadcrumb-nav').addClass('px-5');
+
     });
 }
 
