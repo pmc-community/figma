@@ -28,7 +28,7 @@ pageToc:
     - cat-info
     - site-pages
 colSchemaCorrections:
-  elementsWithBackgroundAffected: 'body, #category-menu-more-list, table, tbody, thead, tr, td, th, td[class=\"child\"], .dt-processing, .offcanvas, .ck-editor__main, .side-bar'
+  elementsWithBackgroundAffected: 'body, #category-menu-more-list, table, tbody, thead, tr, td, th, td[class=\"child\"], .dt-processing, .offcanvas, .ck-editor__main, .side-bar, #hs-eu-cookie-confirmation'
   backgroundColorOnElementsAffected:
     light: '#fff'
     dark: '#0d1117'
