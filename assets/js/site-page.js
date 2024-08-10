@@ -155,9 +155,15 @@ const page__getPageNotes = () => {
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-fedback-form.html
-const page__getPageFeedbackForm = () => {    
+const page__getPageFeedbackForm = () => {  
+    // setup hs tracking code to avoid form embed code to raise CORS errors
+    // CORS errors may still be raised on localhost
+    // see https://knowledge.hubspot.com/reports/set-up-sources-tracking
+    if (settings.hsIntegration.enabled) 
+        $('head').append(`<script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/${hsSettings.portalID}.js"></script>`);
+    
     $(document).ready(function() {
-        if (settings.hsIntegration.enable) {            
+        if (settings.hsIntegration.enabled) {            
             const permalink = $('main').attr('pagePermalinkRef');
             const title = $('main').attr('pageTitleRef');
             if (!findObjectInArray({permalink:permalink, title:title}, pageList)) return;

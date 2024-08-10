@@ -1557,8 +1557,8 @@ const iframe__addBootstrapToIFrames = ($elementInsideIFrame) => {
     const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
     const $iframeHead = $($iframeDocument).find('head');
     const $iframeBody = $($iframeDocument).find('body');
-    const bootstrapCSS = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">';
-    const bootstrapJS = '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>';
+    const bootstrapCSS = `<link rel="stylesheet" href="${settings.hsIntegration.bootstrapCSS}">`;
+    const bootstrapJS = `<script src="${settings.hsIntegration.bootstrapJS}"></script>`;
     $($iframeHead).append(bootstrapCSS);
     $($iframeBody).append(bootstrapJS);
     

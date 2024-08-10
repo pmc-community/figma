@@ -31,5 +31,7 @@
 {% include siteIncludes/partials/page-common/page-auto-summary.html %} 
 
 <!-- feedback form-->
-{% include siteIncludes/partials/page-common/page-feedback-form.html %} 
+{% if site.data.siteConfig.hsIntegration.enabled %}
+    {% include siteIncludes/partials/page-common/page-feedback-form.html %}
+{% endif %}
 

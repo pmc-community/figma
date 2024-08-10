@@ -19,7 +19,7 @@ module Jekyll
     # content.index(site.data["siteConfig"]["marker404"])
 
     def generate(site)
-      if (site.data["siteConfig"]["hsIntegration"]["enable"])
+      if (site.data["siteConfig"]["hsIntegration"]["enabled"])
         Globals.putsColText(Globals::PURPLE,"Generating HubSpot client settings ...")
         hsSettings = {
           "region" => ENV["HS_REGION"],

@@ -36,7 +36,10 @@
 <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
 
 <!-- hs -->
-<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+{% if site.data.siteConfig.hsIntegration.enabled %}
+    <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
+{% endif %}
+
 
 <!-- site js assets -->
 <script src="/assets/js/utilities.js"></script>
@@ -48,7 +51,9 @@
 <script src="/assets/js/ckeditor.js"></script>
 <script src="/assets/js/site-page.js"></script>
 <script src="/assets/js/site-pages.js"></script>
-<script src="/assets/js/hs-integrate.js"></script>
+{% if site.data.siteConfig.hsIntegration.enabled %}
+    <script src="/assets/js/hs-integrate.js"></script>
+{% endif %}
 
 
 {% include siteIncludes/partials/page-init.html %} 
