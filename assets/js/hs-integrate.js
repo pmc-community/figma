@@ -39,7 +39,10 @@ hsIntegrate = {
                 onBeforeFormSubmit: function($form, data) {
                     try {
                         const emailObject = _.find(data, { name: "email" });
-                        if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');
+                        if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');    
+                        
+                        hsIntegrate.sanitizeAll($form);
+
                         if(callbackOnBeforeFormSubmit) callbackOnBeforeFormSubmit($form, data);
                     }
                     catch (e) {
@@ -62,6 +65,18 @@ hsIntegrate = {
         } catch (e) {
             console.error(`An error occurred while creating the form ${formID}:`, e);
         }
+    },
+
+    sanitizeAll: ($form) => {
+        $form.find('textarea').each( () => {
+            const fieldContent = $(this).text();
+            $(this).text(DOMPurify.sanitize(fieldContent));
+        });
+
+        $form.find('input[type="text"]').each( () => {
+            const fieldContent = $(this).text();
+            $(this).text(DOMPurify.sanitize(fieldContent));
+        })
     },
 
     loadScriptsAndStyles: ($form, cssScripts, jsScripts) => {
@@ -119,7 +134,7 @@ hsIntegrate = {
 
     setFormObservers: ($form) => {
         // field validation error messages
-        iframe__setElementCreateBySelectorObserver($form,'.hs-error-msgs', ()=>{
+        iframe__setElementCreateBySelectorObserver($form,settings.hsIntegration.forms.elements.fieldValidationErrorMessagesGroup, ()=>{
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
             $iframeBody.find('.hs-error-msg')
@@ -129,7 +144,7 @@ hsIntegrate = {
         });
 
         // form error message
-        iframe__setElementCreateBySelectorObserver($form,'.hs_error_rollup', ()=>{
+        iframe__setElementCreateBySelectorObserver($form,settings.hsIntegration.forms.elements.formErrorMesage, ()=>{
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
             $iframeBody.find('.hs_error_rollup').addClass('d-none');
@@ -137,7 +152,7 @@ hsIntegrate = {
         });
 
         // text after form is submitted
-        iframe__setElementCreateBySelectorObserver($form,'.submitted-message', ()=>{
+        iframe__setElementCreateBySelectorObserver($form,settings.hsIntegration.forms.elements.submittedMessage, ()=>{
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
             $iframeBody.find('.submitted-message')

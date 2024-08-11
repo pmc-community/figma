@@ -563,9 +563,24 @@
 
 }
 
-// hs integration (for what is outide iframes)
+// hs integration (for what is outside iframes)
 @mixin hsForms($hsFormsElements) {
     #{map-get($hsFormsElements, formLink)} {
         font-size: $hsFormLinkFontSize;
+    }
+}
+
+// github
+@mixin gitHub($ghFormsElements) {
+    #{map-get($ghFormsElements, ghBtnLink)} {
+        font-size: $ghBtnLinkFontSize;
+    }
+}
+
+// single page
+@mixin singlePage($singlePageElements) {
+    
+    #{map-get($singlePageElements, pageInfoButtons)} {
+        width: $pageInfoButtonsWidth;
     }
 }

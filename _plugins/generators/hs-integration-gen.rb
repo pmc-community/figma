@@ -50,7 +50,6 @@ module Jekyll
         portalID = ""
         site.data['hs_portal_id'] = portalID
       end
-      puts site.data['hs_portal_id']
     end
 
   end

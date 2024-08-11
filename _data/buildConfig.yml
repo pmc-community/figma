@@ -45,4 +45,9 @@ pySimilarPagesByContent:
   model_url: "https://tfhub.dev/google/universal-sentence-encoder/4"
 pageKeywords:
   enable: true
-
+github:
+  enabled: true
+  user: "pmc-community"
+  repo: "figma"
+  discussionOrg: "pmc-community"
+  discussionsRepo: "discussions"

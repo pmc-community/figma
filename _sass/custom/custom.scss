@@ -14,6 +14,7 @@
 @import 'page-toc.scss';
 @import 'content-area.scss';
 @import 'pages.scss';
+@import 'page.scss';
 @import 'tags.scss';
 @import 'cats.scss';
 @import 'tables.scss';
@@ -21,6 +22,7 @@
 @import 'context-menu.scss';
 @import 'page-full-info.scss';
 @import 'hs.scss';
+@import 'gh.scss';
 
 // this should be last import because component's settings are set in the imports above
 @import 'meta.scss';
@@ -163,6 +165,8 @@ $hiddenElements: (
 $visibleElements: (
     'hr[siteFunction="pageContentTopSeparator"]',
     'hr[siteFunction="pageContentBottomSeparator"]',
+    'hr[siteFunction="pageFeedbackAndSupportSeparator"]',
+    'hr[siteFunction="pageFeedbackAndSupportCol1Separator"]',
     '.dropdown-divider', 
     //'hr[siteFunction="pageTocHeaderSeparator"]',
     'hr[siteFunction="contextMenuSeparator"]',

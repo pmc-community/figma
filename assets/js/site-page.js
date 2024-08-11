@@ -1,6 +1,4 @@
-
 // FUNCTIONS FOR EACH PAGE
-
 // called from _includes/siteIncludes/partials/page-common/page-auto-summary.html
 const page__getAutoSummary = () => {
 
@@ -154,6 +152,18 @@ const page__getPageNotes = () => {
     });
 }
 
+// called from _includes/siteIncludes/partials/page-common/page-fedback-and-support.html
+const page__getPageFeedbackAndSupport = () => {
+    $(document).ready(function() {
+        const permalink = $('main').attr('pagePermalinkRef') || '';
+        const title = $('main').attr('pageTitleRef') || '';
+        const page = getObjectFromArray( {permalink: permalink, title: title}, pageList);
+        if (page === 'none') return;
+        $('div[siteFunction="pageFeedbackAndSupport"]').appendTo('footer[class!="site-footer"]');
+        $('div[siteFunction="pageFeedbackAndSupport"]').removeClass('d-none');
+    });
+};
+
 // called from _includes/siteIncludes/partials/page-common/page-fedback-form.html
 const page__getPageFeedbackForm = () => {      
     $(document).ready(function() {
@@ -178,8 +188,7 @@ const page__getPageFeedbackForm = () => {
                             submitText: 'Let us know!',
                             submitButtonClass: 'btn btn-sm btn-outline-secondary border border-secondary border-opacity-25',
                             css: ['hs/hs.css'],
-                            js: [] 
-            
+                            js: []        
                         },
 
                         // onFormReady callback
@@ -192,8 +201,6 @@ const page__getPageFeedbackForm = () => {
                         // can do specific data manipulation or field processing before submit
                         // general processing (as filling in email field with a default value) are made in hs-integrate
                         ($form, data) => {
-                            const message = $form.find('textarea').text();
-                            $form.find('textarea').text(DOMPurify.sanitize(message));
                         },
 
                         // onFormSubmitted callback
@@ -448,9 +455,16 @@ const page__getPageInfo = () => {
                             <button 
                                 sitefunction="pageShowPageFullInfo" 
                                 type="button" 
-                                class="btn btn-sm btn-primary position-relative" 
+                                class="btn btn-sm btn-primary position-relative m-1" 
                                 title="Details for page ${page.siteInfo.title}">
-                                Info
+                                Page info
+                            </button>
+                            <button 
+                                sitefunction="pageNavigateToFeedbackAndSupport" 
+                                type="button" 
+                                class="btn btn-sm btn-success position-relative m-1" 
+                                title="Go to feedback and support section for page ${page.siteInfo.title}">
+                                Support
                             </button>
                         </div>
                     </div>
@@ -547,7 +561,8 @@ const refreshPageDynamicInfo = () => {
     page__getPageNotes();
     page__getRelatedPages();
     page__getAutoSummary();
-    page__getPageFeedbackForm();
+    page__getPageFeedbackAndSupport();
+    //page__getPageFeedbackForm();
     
 }
 
@@ -596,6 +611,15 @@ const setPageButtonsFunctions = () => {
         })
         .on('mouseleave', 'span[siteFunction="pageHasAutoSummaryBadge"]', function() {
             $('#pageAutoSummary').removeClass('border-warning border-bottom border-opacity-25');
+        });
+
+    // click "Support" button
+    $(document)
+        .off('click', 'button[siteFunction="pageNavigateToFeedbackAndSupport"]')
+        .on('click', 'button[siteFunction="pageNavigateToFeedbackAndSupport"]', function() {
+            $('html, body').animate({
+                scrollTop: $('#pageFeedbackAndSupport').offset().top
+            }, 100);
         });
 
 }
@@ -652,13 +676,13 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
         const formContainer = () => {
             return (
                 `
-                    <div id = "pageFeedbackFormColumn" class="mt-4 px-5 col-5">
+                    <div id = "pageFeedbackFormColumn" class="mt-4">
                         <div 
                             id="${formContainerSelector}" 
                             class="d-none">
                         </div>
                         <div class="hsFormLink mt-2 text-primary">
-                            <a href="${settings.hsIntegration.privacyLink}" target=_blank>
+                            <a href="${settings.links.privacyLink}" target=_blank>
                                 Privacy Policy
                             </a>
                         </div>
@@ -668,7 +692,7 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
         }
 
         $(`#pageFeedbackFormColumn`).remove();
-        $('footer[class!="site-footer"]').append(formContainer('pageFeedbackForm'));
+        $('div[siteFunction="pageFeedbackAndSupport_Feedback"]').append(formContainer('pageFeedbackForm'));
         resolve(formContainerSelector);
     });
 }
