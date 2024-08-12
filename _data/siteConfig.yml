@@ -100,7 +100,10 @@ hsIntegration:
       fieldValidationErrorMessagesGroup: ".hs-error-msgs"
       formErrorMesage: ".hs_error_rollup"
       submittedMessage: ".submitted-message"
+    submisionSource: 
+      propName: "source"
+      propValue: "figmares_doc_site"
 links:
- privacyLink: "https://innohub.space/eng/privacy"
- supportLink: "https://innohub.space/eng/mypmc/technical-support/"
+  privacyLink: "https://innohub.space/eng/privacy"
+  supportLink: "https://innohub.space/eng/mypmc/technical-support/"
 

@@ -69,7 +69,8 @@ hsIntegrate = {
                         onBeforeFormSubmit: function($form, data) {
                             try {
                                 const emailObject = _.find(data, { name: "email" });
-                                if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');    
+                                if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');
+                                $form.find(`input[name="${settings.hsIntegration.forms.submisionSource.propName}"]`).val(settings.hsIntegration.forms.submisionSource.propValue);
                                 hsIntegrate.sanitizeAll($form);
         
                                 if(callbackOnBeforeFormSubmit) callbackOnBeforeFormSubmit($form, data);
