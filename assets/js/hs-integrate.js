@@ -33,7 +33,7 @@ hsIntegrate = {
 
                         if(callbackOnFormReady) callbackOnFormReady($form);
                     } catch (e) {
-                        console.error(`An error occurred in onFormReady for ${formID}:`, e);
+                        console.error(`An error occurred in onFormReady for ${formIdentification.formID}:`, e);
                     }
                 },
                 onBeforeFormSubmit: function($form, data) {
@@ -46,7 +46,7 @@ hsIntegrate = {
                         if(callbackOnBeforeFormSubmit) callbackOnBeforeFormSubmit($form, data);
                     }
                     catch (e) {
-                        console.error(`An error occurred in onBeforeFormSubmit for ${formID}:`, e);
+                        console.error(`An error occurred in onBeforeFormSubmit for ${formIdentification.formID}:`, e);
                     }
                 },
                 onFormSubmitted: function($form, data) {
@@ -55,7 +55,7 @@ hsIntegrate = {
                         if(callbackOnFormSubmitted) callbackOnFormSubmitted($form, data);
                     }
                     catch (e) {
-                        console.error(`An error occurred in onFormSubmitted for ${formID}:`, e);
+                        console.error(`An error occurred in onFormSubmitted for ${formIdentification.formID}:`, e);
                     }
                 },
                 onBeforeFormInit: (ctx) => {
@@ -63,7 +63,7 @@ hsIntegrate = {
                 }
             });
         } catch (e) {
-            console.error(`An error occurred while creating the form ${formID}:`, e);
+            console.error(`An error occurred while creating the form ${formIdentification.formID}:`, e);
         }
     },
 

@@ -8,4 +8,5 @@ assets/.DS_Store
 .env
 assets/.DS_Store
 sitemap.xml
-tools_py/modules/__pycache__/globals.cpython-39.pyc
+tools_py/modules/__pycache__/*
+*.pyc
