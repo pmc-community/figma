@@ -63,20 +63,19 @@ hsIntegrate = {
         
                                 if(callbackOnFormReady) callbackOnFormReady($form);
                             } catch (e) {
-                                //console.error(`An error occurred in onFormReady for ${formIdentification.formID}:`, e);
+                                console.error(`An error occurred in onFormReady for ${formIdentification.formID}:`, e);
                             }
                         },
                         onBeforeFormSubmit: function($form, data) {
                             try {
                                 const emailObject = _.find(data, { name: "email" });
                                 if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');    
-                                
                                 hsIntegrate.sanitizeAll($form);
         
                                 if(callbackOnBeforeFormSubmit) callbackOnBeforeFormSubmit($form, data);
                             }
                             catch (e) {
-                                //console.error(`An error occurred in onBeforeFormSubmit for ${formIdentification.formID}:`, e);
+                                console.error(`An error occurred in onBeforeFormSubmit for ${formIdentification.formID}:`, e);
                             }
                         },
                         onFormSubmitted: function($form, data) {
@@ -85,7 +84,7 @@ hsIntegrate = {
                                 if(callbackOnFormSubmitted) callbackOnFormSubmitted($form, data);
                             }
                             catch (e) {
-                                //console.error(`An error occurred in onFormSubmitted for ${formIdentification.formID}:`, e);
+                                console.error(`An error occurred in onFormSubmitted for ${formIdentification.formID}:`, e);
                             }
                         },
                         onBeforeFormInit: (ctx) => {
@@ -93,7 +92,7 @@ hsIntegrate = {
                         }
                     });
                 } catch (e) {
-                    //console.error(`An error occurred while creating the form ${formIdentification.formID}:`, e);
+                    console.error(`An error occurred while creating the form ${formIdentification.formID}:`, e);
                 }
                 resolve();
             });
@@ -117,14 +116,15 @@ hsIntegrate = {
     },
 
     sanitizeAll: ($form) => {
-        $form.find('textarea').each( () => {
-            const fieldContent = $(this).text();
-            $(this).text(DOMPurify.sanitize(fieldContent));
+        $form.find('textarea').each( function() {
+            const fieldContent = $(this).val();
+            //console.log(fieldContent)
+            $(this).val(DOMPurify.sanitize(fieldContent));
         });
 
-        $form.find('input[type="text"]').each( () => {
-            const fieldContent = $(this).text();
-            $(this).text(DOMPurify.sanitize(fieldContent));
+        $form.find('input[type="text"]').each( function() {
+            const fieldContent = $(this).val();
+            $(this).val(DOMPurify.sanitize(fieldContent));
         })
     },
 
