@@ -1,6 +1,5 @@
 // HubSpot integration
 hsIntegrate = {
-
     hsForm: (
         formContainerSelector, 
         page, 
@@ -11,109 +10,61 @@ hsIntegrate = {
         callbackOnFormSubmitted = null,
         callbackOnBeforeFormInit = null
     ) => {
+        try {
+            hbspt.forms.create({
+                region: `${formIdentification.region}`,
+                portalId: `${formIdentification.portalID}`,
+                formId: `${formIdentification.formID}`,
+                formInstanceId: uuid(),
+                target: `${formContainerSelector}`,
+                submitText: `${formSettings.submitText}`,
+                submitButtonClass: `${formSettings.submitButtonClass}`,
+                onFormReady: function($form) {
+                    try {
+                        pushHSFormToHSFormsList($form);
 
-        const loading = 
-            `
-                <div id="hsFormLoading" class="d-flex justify-content-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            `;
+                        hsIntegrate.loadScriptsAndStyles($form, formSettings.css, formSettings.js);
+                        hsIntegrate.applyCSSCorrection($form, page);
 
-        // hide the form to avoid white flicker on dark theme and load a spinner
-        $(formContainerSelector).parent().prepend(loading);
-        $(formContainerSelector).hide();
+                        // set some observers inside the form iFrame
+                        // used to style elements that are dynamically shown (i.e error messages)
+                        // but can be used for other purposes too
+                        hsIntegrate.setFormObservers($form);
 
-        const createForm_ASYNC = (
-            formContainerSelector, 
-            page, 
-            formSettings, 
-            formIdentification, 
-            callbackOnFormReady = null, 
-            callbackOnBeforeFormSubmit = null,
-            callbackOnFormSubmitted = null,
-            callbackOnBeforeFormInit = null
-        ) => {
-            return new Promise ( (resolve, reject) => {
-                try {
-                    hbspt.forms.create({
-                        region: `${formIdentification.region}`,
-                        portalId: `${formIdentification.portalID}`,
-                        formId: `${formIdentification.formID}`,
-                        formInstanceId: uuid(),
-                        target: `${formContainerSelector}`,
-                        submitText: `${formSettings.submitText}`,
-                        submitButtonClass: `${formSettings.submitButtonClass}`,
-                        onFormReady: function($form) {
-                            try {
-    
-                                pushHSFormToHSFormsList($form);
-        
-                                hsIntegrate.loadScriptsAndStyles($form, formSettings.css, formSettings.js);
-                                hsIntegrate.applyCSSCorrection($form, page);
-        
-                                // set some observers inside the form iFrame
-                                // used to style elements that are dynamically shown (i.e error messages)
-                                // but can be used for other purposes too
-                                hsIntegrate.setFormObservers($form);
+                        if(callbackOnFormReady) callbackOnFormReady($form);
+                    } catch (e) {
+                        console.error(`An error occurred in onFormReady for ${formID}:`, e);
+                    }
+                },
+                onBeforeFormSubmit: function($form, data) {
+                    try {
+                        const emailObject = _.find(data, { name: "email" });
+                        if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');    
+                        
+                        hsIntegrate.sanitizeAll($form);
 
-                                // show the form with after a small delay to avoid white flicker on dark theme
-                                setTimeout(()=>$(formContainerSelector).show(), 100);
-        
-                                if(callbackOnFormReady) callbackOnFormReady($form);
-                            } catch (e) {
-                                console.error(`An error occurred in onFormReady for ${formID}:`, e);
-                            }
-                        },
-                        onBeforeFormSubmit: function($form, data) {
-                            try {
-                                const emailObject = _.find(data, { name: "email" });
-                                if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');    
-                                
-                                hsIntegrate.sanitizeAll($form);
-        
-                                if(callbackOnBeforeFormSubmit) callbackOnBeforeFormSubmit($form, data);
-                            }
-                            catch (e) {
-                                console.error(`An error occurred in onBeforeFormSubmit for ${formID}:`, e);
-                            }
-                        },
-                        onFormSubmitted: function($form, data) {
-                            try {
-                                // ... do something ...
-                                if(callbackOnFormSubmitted) callbackOnFormSubmitted($form, data);
-                            }
-                            catch (e) {
-                                console.error(`An error occurred in onFormSubmitted for ${formID}:`, e);
-                            }
-                        },
-                        onBeforeFormInit: (ctx) => {
-                            callbackOnBeforeFormInit(ctx);
-                        }
-                    });
-                } catch (e) {
-                    console.error(`An error occurred while creating the form ${formID}:`, e);
+                        if(callbackOnBeforeFormSubmit) callbackOnBeforeFormSubmit($form, data);
+                    }
+                    catch (e) {
+                        console.error(`An error occurred in onBeforeFormSubmit for ${formID}:`, e);
+                    }
+                },
+                onFormSubmitted: function($form, data) {
+                    try {
+                        // ... do something ...
+                        if(callbackOnFormSubmitted) callbackOnFormSubmitted($form, data);
+                    }
+                    catch (e) {
+                        console.error(`An error occurred in onFormSubmitted for ${formID}:`, e);
+                    }
+                },
+                onBeforeFormInit: (ctx) => {
+                    callbackOnBeforeFormInit(ctx);
                 }
-                resolve();
             });
+        } catch (e) {
+            console.error(`An error occurred while creating the form ${formID}:`, e);
         }
-
-        createForm_ASYNC(
-            formContainerSelector, 
-            page, 
-            formSettings, 
-            formIdentification, 
-            callbackOnFormReady, 
-            callbackOnBeforeFormSubmit, 
-            callbackOnFormSubmitted, 
-            callbackOnBeforeFormInit
-        )
-        .then(() => {
-            // remove the spinner
-            setTimeout(()=>$('#hsFormLoading').remove(),100); 
-        });
-        
     },
 
     sanitizeAll: ($form) => {
