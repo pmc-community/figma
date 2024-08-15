@@ -741,12 +741,14 @@ const applyColorSchemaCorrections = (theme=null) => {
         $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.light);
+        $(settings.colSchemaCorrections.elementsWithBorderLeftAffected).css('border-left', settings.colSchemaCorrections.borderLeftOnElementsAffected.light);
         $('.btn-close').removeClass('btn-close-white');
     }
     else {
         $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.dark);
         $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.dark);
-        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark)
+        $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark);
+        $(settings.colSchemaCorrections.elementsWithBorderLeftAffected).css('border-left', settings.colSchemaCorrections.borderLeftOnElementsAffected.dark);
         $('.btn-close').addClass('btn-close-white');
     }
 
@@ -816,7 +818,7 @@ const applyColorSchemaCorrectionsOnTD = () => {
         const observer = new MutationObserver(callback);
         observer.observe(targetNode, config);
     } else {
-        console.error('Target node not found when trying to set datatables cell background');
+        //console.error('Target node not found when trying to set datatables cell background');
     }
 }
 

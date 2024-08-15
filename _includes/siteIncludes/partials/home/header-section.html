@@ -1,0 +1,18 @@
+<div class="row" siteFunction="homePageHeaderSection_row">
+    <div siteFunction="homePageHeaderSection_row_col_left" class="col-6 d-flex align-items-center">
+        <div>
+        <p class="fs-2 fw-medium mb-4">{{site.data.pageBuildConfig["/"].sections.header_section.title}}</p>
+        <p class="fs-5 text-secondary">{{site.data.pageBuildConfig["/"].sections.header_section.text}}</p>
+        <a 
+            class="btn btn-success" 
+            href="{{site.data.pageBuildConfig["/"].startPermalink}}">
+            {{site.data.pageBuildConfig["/"].sections.header_section.startBtnText}}
+        </a>
+        </div>
+    </div>
+    <div siteFunction="homePageHeaderSection_row_col_right" class="col-6 d-flex justify-content-end">
+        <div siteFunction="homePageHeaderSection_featured_media">
+            {{site.data.pageBuildConfig["/"].sections.header_section.featuredMedia}}
+        </div>
+    </div>
+</div>

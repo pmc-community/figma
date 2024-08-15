@@ -1,0 +1,54 @@
+{% assign collections= site.data.filtered_collections %}
+{% assign collectionsNo = collections | size %}
+
+{% if  collectionsNo > 0 %}
+    <div siteFunction="homeCollectionsContainer">
+        <div class="row gx-5">
+            {% for collection in collections %}
+                {% assign itemsToShow = site.data.pageBuildConfig["/"].sections.collections_sections.itemsToShow %}
+                {% assign collectionDocs = collection.docs | slice: 0, itemsToShow %}
+                {% assign collectionDocsNo = collection.docs | size %}
+                {% if collectionDocsNo > 0 %}
+
+                    <!-- {{collection.name}} -->
+                    <div 
+                        siteFunction="homeCollection_{{collection.name}}"
+                        class="col-4 my-4">
+                            <div
+                                siteFunction="homeCollection_name"
+                                class="fs-6 fw-medium">
+                                {{collection.custom_name}}
+                            </div>
+                            <div siteFunction="homeCollection_docs_container">
+                                <ul 
+                                    siteFunction="homeCollection_docs" 
+                                    class="pl-0">
+                                    {% for doc in collectionDocs %}
+                                        <a href="{{doc.permalink}}">
+                                            <li 
+                                                siteFunction="homeCollection_doc" 
+                                                class="py-2 bg-transparent border-top border-secondary border-opacity-25">
+                                                <div class="px-3">
+                                                    <div class="text-primary">
+                                                        {{doc.title}}
+                                                    </div>
+                                                    <div class="text-secondary">
+                                                        {{doc.excerpt}}
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </a>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                    </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<script>
+    home__collectionsSection();
+</script>

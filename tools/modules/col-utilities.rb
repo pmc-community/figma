@@ -30,7 +30,7 @@ module ColUtilities
     end
 
     def self.getOnStorageCollections(rootDir)
-        doc_contents_folder = rootDir +"/doc-contents"
+        doc_contents_folder = rootDir + "/doc-contents"
         collections = getCollections(doc_contents_folder)
         realCollections = []
         collections.each do |item|

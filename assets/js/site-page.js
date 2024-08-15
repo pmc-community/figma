@@ -158,7 +158,16 @@ const page__getPageFeedbackAndSupport = () => {
         const permalink = $('main').attr('pagePermalinkRef') || '';
         const title = $('main').attr('pageTitleRef') || '';
         const page = getObjectFromArray( {permalink: permalink, title: title}, pageList);
-        if (page === 'none') return;
+        if (page === 'none' && window.location.pathname !== '/' ) return;
+        // modify some styles on home page
+        if (window.location.pathname === '/') {
+            $('footer[class!="site-footer"]').addClass(pageSettings.additionalContentPadding);
+            //$('div[siteFunction="pageFeedbackAndSupport"]').removeClass('px-5');
+            $('div[siteFunction="pageFeedbackAndSupport_Support"]').removeClass('col-3').addClass('col-4');
+            $('div[siteFunction="pageFeedbackAndSupport_Involve"]').removeClass('col-3').addClass('col-4');
+            $('div[siteFunction="pageFeedbackAndSupport_Feedback"]').removeClass('col-6').addClass('col-4');
+        }
+        // append the section to the footer under the content
         $('div[siteFunction="pageFeedbackAndSupport"]').appendTo('footer[class!="site-footer"]');
         $('div[siteFunction="pageFeedbackAndSupport"]').removeClass('d-none');
     });
@@ -170,7 +179,7 @@ const page__getPageFeedbackForm = () => {
         if (settings.hsIntegration.enabled) {            
             const permalink = $('main').attr('pagePermalinkRef');
             const title = $('main').attr('pageTitleRef');
-            if (!findObjectInArray({permalink:permalink, title:title}, pageList)) return;
+            if (!findObjectInArray({permalink:permalink, title:title}, pageList) && window.location.pathname !== '/') return;
 
             fedbackFormContainer__ASYNC('pageFeedbackForm')
                 .then( (formContainerSelector) => {

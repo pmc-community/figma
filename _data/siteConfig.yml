@@ -40,6 +40,10 @@ colSchemaCorrections:
   borderTopOnElementsAffected:
     light: '1px solid #eeebee'
     dark: '1px solid #44434d'
+  elementsWithBorderLeftAffected: '.main-header'
+  borderLeftOnElementsAffected:
+    light: '1px solid #44434d'
+    dark: '1px solid #44434d'
   hideBodyUntilLoadTimeout: 200
 goToTopBtn:
   btnContainer: '.main'

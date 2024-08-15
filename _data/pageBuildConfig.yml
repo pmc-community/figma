@@ -1,0 +1,13 @@
+"/":
+  enabled: true
+  startPermalink: "/intro/"
+  sections:
+    header_section:
+      title: "Figma Resources Documentation"
+      text: "Learn how to use the resources built for Figma. These resources includes templates for Figma plugins and much more. FEATURED: React based template for multi-page figma plugin."
+      startBtnText: "Quickstart"
+      featuredMedia: "<img width=\"600\" decoding=\"async\" src=\"assets/img/home.png\" alt=\"Figmares by PMC\" loading=\"lazy\">"
+    collections_sections:
+      enabledInHome: true
+      except: ["posts"] # collection name must be the one from _config.yml[collections]
+      itemsToShow: 5

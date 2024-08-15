@@ -176,5 +176,10 @@ module Globals
             end
         end
     end
+
+    def self.find_object_key_value(objects, criteria, return_key)
+        found_object = find_object_by_multiple_key_value(objects, criteria)        
+        found_object ? found_object[return_key] : nil
+      end
       
 end

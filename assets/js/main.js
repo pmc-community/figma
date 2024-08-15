@@ -102,6 +102,16 @@ const customiseTheme = (pageObj = null) => {
         // just to align breadcrumbs to the content
         $('.breadcrumb-nav').addClass('px-5');
 
+        // just to be sure that "More" link from main menu works all the time on all pages
+        $('#category-menu-more').off('click').on('click', function() {
+            const permalink = $('main').attr('pagePermalinkRef') || '';
+            const title = $('main').attr('pageTitleRef') || '';
+        
+            if (getObjectFromArray({permalink: permalink, title: title}, pageList) === 'none' && window.location.pathname !== '/') return;
+            if ($(this).children().last().hasClass('show')) $(this).children().last().removeClass('show')
+            else $(this).children().last().addClass('show')
+        })
+
     });
 }
 
