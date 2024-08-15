@@ -7,9 +7,9 @@ module Jekyll
     priority :normal
 
     def generate(site)
-      if (site.data["pageBuildConfig"]["/"]["sections"]["collections_sections"]["enabledInHome"])
+      if (site.data["pageBuildConfig"]["/"]["sections"]["collections_section"]["enabledInHome"])
         Globals.putsColText(Globals::PURPLE,"Generating collections info ... ")
-        excluded_collections = site.data["pageBuildConfig"]["/"]["sections"]["collections_sections"]["except"]
+        excluded_collections = site.data["pageBuildConfig"]["/"]["sections"]["collections_section"]["except"]
         custom_names = site.config.dig('just_the_docs', 'collections') || {}
         filtered_collections = []
 
@@ -17,12 +17,18 @@ module Jekyll
           next unless collection.metadata['output'] && !excluded_collections.include?(name)
           custom_name = custom_names.dig(name, 'name') || name
 
+          collection_start_doc = {}
+
           docs = collection.docs.map do |doc|
             file_path = doc.path
 
-            #file_stat = File.stat(file_path)
             create_date = File.birthtime(file_path)
             last_update_date = File.mtime(file_path)
+
+            if (doc.data["start"])
+              collection_start_doc["permalink"] = doc.data['permalink'] || doc.url
+              collection_start_doc["title"] = doc.data['title']
+            end
 
             {
               "permalink" => doc.data['permalink'] || doc.url,
@@ -38,10 +44,13 @@ module Jekyll
                 "excerpt"
               ) || doc.data['excerpt']
             }
+
+            
+
           end
 
-          sorted_docs = docs.sort_by { |doc| -doc["last_update"].to_i }
-          filtered_collections << { "name" => name, "custom_name" => custom_name, "docs" => sorted_docs }
+          sorted_docs = docs.sort_by { |doc| -doc["last_update"].to_i } 
+          filtered_collections << { "name" => name, "custom_name" => custom_name, "docs" => sorted_docs, "start" => collection_start_doc }
         end 
         
         #puts JSON.pretty_generate(filtered_collections)

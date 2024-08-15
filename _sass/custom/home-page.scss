@@ -1,0 +1,10 @@
+@import 'custom-vars.scss';
+
+$pageExcerptInListItemsFontSize: $fs-0-75;
+
+$homePageElements: (
+    pageExcerptInListItems: '.pageExcerptInListItems',
+);
+
+@import 'meta.scss';
+@include homePage($homePageElements);

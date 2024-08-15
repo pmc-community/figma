@@ -11,11 +11,16 @@ layout: default
    
 
     <!-- collections section -->
-    {% if site.data.pageBuildConfig["/"].sections.collections_sections.enabledInHome %}
+    {% if site.data.pageBuildConfig["/"].sections.collections_section.enabledInHome %}
         <div siteFunction="homePageCollctionsSection" class="mt-4 py-5">
             {% include siteIncludes/partials/home/collections-section.html %}
         </div>
     {% endif %}
+
+    <!-- recent and popular section -->
+    <div siteFunction="homePageRecentAndPopularSection" class="py-5">
+        {% include siteIncludes/partials/home/recent-and-popular-section.html %}
+    </div>
 
     <!-- other content from the parent page (index.md) -->
     {{content}}

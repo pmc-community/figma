@@ -3,6 +3,7 @@ require_relative "../../tools/modules/file-utilities"
 require 'nokogiri'
 require 'tf-idf-similarity'
 require 'matrix'
+require 'date'
 
 module Jekyll
 
@@ -49,7 +50,9 @@ module Jekyll
           'tags' => tags || [],
           'excerpt' => excerpt || "",
           'lastUpdate' => lastUpdate || "",
+          'lastUpdateUTC' => lastUpdate.to_time.to_i || 0,
           'createTime' => createTime || "",
+          'createTimeUTC' => createTime.to_time.to_i || 0,
           'relatedPages' => [],
           'autoSummary' => "",
           'similarByContent': []

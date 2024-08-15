@@ -584,3 +584,10 @@
         width: $pageInfoButtonsWidth;
     }
 }
+
+// home page
+@mixin homePage($homePageElements) {
+    #{map-get($homePageElements, pageExcerptInListItems)} {
+        font-size: $pageExcerptInListItemsFontSize;
+    }
+}

@@ -651,3 +651,27 @@ const saveLocalStorageKeyAsJsonFile = (key, filename) => {
     link.click();
     document.body.removeChild(link);
 }
+
+const getTopCustomCats = () => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const customCats = _(savedItems)
+        .flatMap('customCategories') // Get all customCats from each object
+        .filter(Boolean) // Remove any undefined or null values
+        .countBy() // Count the occurrences of each customCat
+        .map((numPages, name) => ({ name, numPages })) // Convert to array of objects
+        .value();
+
+    return customCats;
+}
+
+const getTopCustomTags = () => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    const customTags = _(savedItems)
+        .flatMap('customTags') // Get all customCats from each object
+        .filter(Boolean) // Remove any undefined or null values
+        .countBy() // Count the occurrences of each customCat
+        .map((numPages, name) => ({ name, numPages })) // Convert to array of objects
+        .value();
+
+    return customTags;
+}

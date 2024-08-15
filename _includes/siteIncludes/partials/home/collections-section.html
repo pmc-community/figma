@@ -5,7 +5,7 @@
     <div siteFunction="homeCollectionsContainer">
         <div class="row gx-5">
             {% for collection in collections %}
-                {% assign itemsToShow = site.data.pageBuildConfig["/"].sections.collections_sections.itemsToShow %}
+                {% assign itemsToShow = site.data.pageBuildConfig["/"].sections.collections_section.itemsToShow %}
                 {% assign collectionDocs = collection.docs | slice: 0, itemsToShow %}
                 {% assign collectionDocsNo = collection.docs | size %}
                 {% if collectionDocsNo > 0 %}
@@ -14,12 +14,18 @@
                     <div 
                         siteFunction="homeCollection_{{collection.name}}"
                         class="col-4 my-4">
+
+                            <!-- collection name -->
                             <div
                                 siteFunction="homeCollection_name"
                                 class="fs-6 fw-medium">
                                 {{collection.custom_name}}
                             </div>
+                            
+                            <!-- collection docs: {{collection.name}} -->
                             <div siteFunction="homeCollection_docs_container">
+
+                                <!-- doc list: {{collection.name}} -->
                                 <ul 
                                     siteFunction="homeCollection_docs" 
                                     class="pl-0">
@@ -27,12 +33,12 @@
                                         <a href="{{doc.permalink}}">
                                             <li 
                                                 siteFunction="homeCollection_doc" 
-                                                class="py-2 bg-transparent border-top border-secondary border-opacity-25">
-                                                <div class="px-3">
+                                                class="py-2 my-0 bg-transparent border-top border-secondary border-opacity-25">
+                                                <div class="px-2">
                                                     <div class="text-primary">
                                                         {{doc.title}}
                                                     </div>
-                                                    <div class="text-secondary">
+                                                    <div class="text-secondary pageExcerptInListItems">
                                                         {{doc.excerpt}}
                                                     </div>
                                                 </div>
@@ -40,6 +46,16 @@
                                         </a>
                                     {% endfor %}
                                 </ul>
+
+                                <!-- collection entry point (if any): {{collection.name}} -->
+                                {% assign startDoc = collection.start %}
+                                {% if startDoc != empty %}
+                                    <a 
+                                        href="{{startDoc.permalink}}"
+                                        class="btn btn-sm text-dark btn-warning">
+                                        {{site.data.pageBuildConfig["/"].sections.collections_section.collectionStartBtnText}}
+                                    </a>
+                                {% endif %}
                             </div>
                     </div>
 
