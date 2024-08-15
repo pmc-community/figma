@@ -1,4 +1,8 @@
-
+const home__headerSection = () => {
+    $(document).ready(function() {{
+        homePage.setHeaderButtonsFunctions();
+    }});
+}
 
 const home__collectionsSection = () => {
     $(document).ready(function() {{
@@ -10,11 +14,45 @@ const home__recentAndPopularSection = () => {
     $(document).ready(function() {{
         homePage.hoverListItems('li[siteFunction="homeCollection_page"]');
         homePage.getPopularCategories();
-        homePage.getPopularTags()
+        homePage.getPopularTags();
+        homePage.hoverListItems_DELEGATE('li[siteFunction="homeRecentAndPopular_popular_categories_cat"]');
+        homePage.hoverListItems_DELEGATE('li[siteFunction="homeRecentAndPopular_popular_tags_tag"]');
+    }});
+}
+
+const home__statsSection = () => {
+    $(document).ready(function() {{
+        console.log('here')
     }});
 }
 
 homePage = {
+
+    setHeaderButtonsFunctions: () => {
+        $('button[siteFunction="homePageHeaderNavBtns_collections"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="homeCollectionsContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+
+        $('button[siteFunction="homePageHeaderNavBtns_recentAndPopular"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="homeRecentAndPopularContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+
+        $('button[siteFunction="homePageHeaderNavBtns_stats"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="homeStatsContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+
+        $('button[siteFunction="homePageHeaderNavBtns_support"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="pageFeedbackAndSupport"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+    },
 
     hoverListItems: (itemSelector) => {
         $(itemSelector).each(function() {
@@ -79,7 +117,6 @@ homePage = {
         }
         catHtml = `<ul siteFunction="homeRecentAndPopular_popular_categories_list" class="pl-0">${catHtml}</ul>`
         $('div[siteFunction="homeRecentAndPopular_popular_categories_container"]').prepend($(catHtml));
-        homePage.hoverListItems_DELEGATE('li[siteFunction="homeRecentAndPopular_popular_categories_cat"]');
     },
 
     getPopularTags: () => {
@@ -113,7 +150,6 @@ homePage = {
         }
         tagHtml = `<ul siteFunction="homeRecentAndPopular_popular_tags_list" class="pl-0">${tagHtml}</ul>`
         $('div[siteFunction="homeRecentAndPopular_popular_tags_container"]').prepend($(tagHtml));
-        homePage.hoverListItems_DELEGATE('li[siteFunction="homeRecentAndPopular_popular_tags_tag"]');
     },
 
     createTopCatsList: () => {

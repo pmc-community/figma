@@ -5,7 +5,7 @@
     header_section:
       title: "Figma Resources Documentation"
       text: "Learn how to use the resources built for Figma. These resources includes templates for Figma plugins and much more. FEATURED: React based template for multi-page figma plugin."
-      startBtnText: "Quickstart"
+      startBtnText: "Overview"
       featuredMedia: "<img width=\"600\" decoding=\"async\" src=\"assets/img/home.png\" alt=\"Figmares by PMC\" loading=\"lazy\">"
     collections_section:
       enabledInHome: true
@@ -13,7 +13,7 @@
       itemsToShow: 5
       collectionStartBtnText: "Start here"
     mostRecentAndPopular_section:
-      recentFilesToShow: 4
+      recentFilesToShow: 3
       allDocsBtnText: "All docs"
       allCatsBtnText: "All categories"
       allTagsBtnText: "All tags"
