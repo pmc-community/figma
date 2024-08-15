@@ -20,9 +20,9 @@ module Jekyll
           docs = collection.docs.map do |doc|
             file_path = doc.path
 
-            file_stat = File.stat(file_path)
-            create_date = file_stat.birthtime
-            last_update_date = file_stat.mtime
+            #file_stat = File.stat(file_path)
+            create_date = File.birthtime(file_path)
+            last_update_date = File.mtime(file_path)
 
             {
               "permalink" => doc.data['permalink'] || doc.url,
