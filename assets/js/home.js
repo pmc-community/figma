@@ -22,37 +22,12 @@ const home__recentAndPopularSection = () => {
 
 const home__statsSection = () => {
     $(document).ready(function() {{
-        console.log('here')
+        homePage.showDocumentsSavedDocsListItem();
+        homePage.hoverListItems_DELEGATE('li[siteFunction="homeStats_pages_list_item"]');
     }});
 }
 
 homePage = {
-
-    setHeaderButtonsFunctions: () => {
-        $('button[siteFunction="homePageHeaderNavBtns_collections"]').on('click', function() {
-            $('html, body').animate({
-                scrollTop: $('div[siteFunction="homeCollectionsContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
-            }, 100);
-        });
-
-        $('button[siteFunction="homePageHeaderNavBtns_recentAndPopular"]').on('click', function() {
-            $('html, body').animate({
-                scrollTop: $('div[siteFunction="homeRecentAndPopularContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
-            }, 100);
-        });
-
-        $('button[siteFunction="homePageHeaderNavBtns_stats"]').on('click', function() {
-            $('html, body').animate({
-                scrollTop: $('div[siteFunction="homeStatsContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
-            }, 100);
-        });
-
-        $('button[siteFunction="homePageHeaderNavBtns_support"]').on('click', function() {
-            $('html, body').animate({
-                scrollTop: $('div[siteFunction="pageFeedbackAndSupport"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
-            }, 100);
-        });
-    },
 
     hoverListItems: (itemSelector) => {
         $(itemSelector).each(function() {
@@ -86,6 +61,34 @@ homePage = {
             });
     },
 
+    // header section
+    setHeaderButtonsFunctions: () => {
+        $('button[siteFunction="homePageHeaderNavBtns_collections"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="homeCollectionsContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+
+        $('button[siteFunction="homePageHeaderNavBtns_recentAndPopular"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="homeRecentAndPopularContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+
+        $('button[siteFunction="homePageHeaderNavBtns_stats"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="homeStatsContainer"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+
+        $('button[siteFunction="homePageHeaderNavBtns_support"]').on('click', function() {
+            $('html, body').animate({
+                scrollTop: $('div[siteFunction="pageFeedbackAndSupport"]').offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+            }, 100);
+        });
+    },
+    
+    // recent and popular section
     getPopularCategories: () => {
         const catItem = (cat) => {
             catItemClass = cat.type === 'siteCat' ? 'text-danger' : 'text-success';
@@ -204,6 +207,14 @@ homePage = {
         allTags = _.unionWith(topSiteTags, topCustomTags, _.isEqual);
         sortedTopTags = _.orderBy(allTags, ['numPages'], ['desc']);
         return _.take(sortedTopTags, pageSettings.sections.mostRecentAndPopular_section.popularTagsToShow);
-    }
+    },
 
+    // stats section
+    showDocumentsSavedDocsListItem: () => {
+        savedPagesNo = getSavedItemsSize();
+        if (savedPagesNo === 0 ) return;
+        $('a[siteFunction="homeStats_pages_savedPages_BtnLink"]').attr('href', '/site-pages?showSaved=1');
+        $('span[siteFunction="homeStats_pages_savedPages_no"]').text(savedPagesNo);
+        $('div[siteFunction="homeStats_pages_savedPages"]').removeClass('d-none');
+    }
 }

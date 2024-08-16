@@ -17,3 +17,6 @@
       allDocsBtnText: "All docs"
       allCatsBtnText: "All categories"
       allTagsBtnText: "All tags"
+    stats_section:
+      allDocsBtnText: "All docs"
+      savedDocsBtnText: "Saved docs"

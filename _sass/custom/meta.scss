@@ -374,6 +374,16 @@
         width: $sideBarFixedWidth;
         z-index: $tableSearchPanesActiveFilterWarningZIndex;
         position: $tableSearchPanesActiveFilterWarningPosition;
+        font-size: $tableSearchPanesActiveFilterWarningFontSize;
+
+    }
+
+    #{map-get($tableElements, searchPanesPaneList)} {
+        background: $tableSearchPanesPaneBackground !important;
+    }
+
+    #{map-get($tableElements, searchPanesPaneListItem)} {
+        color: $tableSearchPanesPaneFontColor !important;
     }
 }
 
@@ -589,5 +599,9 @@
 @mixin homePage($homePageElements) {
     #{map-get($homePageElements, pageExcerptInListItems)} {
         font-size: $pageExcerptInListItemsFontSize;
+    }
+
+    #{map-get($homePageElements, pageStatsSectionDocumentsListItemBtn)} {
+        width: $pageStatsSectionDocumentsListItemBtnSize;
     }
 }

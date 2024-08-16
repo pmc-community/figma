@@ -25,7 +25,9 @@ $tableSearchPanesGlobalBtnBorderRadius: $b-rad-0-2;
 $tableSearchPanesActiveFilterWarningPosition: $pos-fixed;
 $tableSearchPanesActiveFilterWarningZIndex: $z-999;
 $tableSearchPanesActiveFilterWarningWidth: $sz-300px;
-
+$tableSearchPanesActiveFilterWarningFontSize: $fs-btn-sm;
+$tableSearchPanesPaneBackground: $c-white;
+$tableSearchPanesPaneFontColor: $c-black;
 
 $tableElements: (
     tableWrapper: '.table-wrapper',
@@ -44,7 +46,9 @@ $tableElements: (
     searchPanesMainContainer: '.dropdown-menu .dt-button-collection .dtb-collection-closeable',
     searchPanesForcedBackground: '.sp-forced-background',
     searchPanesFilterFakeBtn: '.sitePagesDetailsLastFilterFakeBtn',
-    searchPanesActiveFilterWarning: 'div[sitefunction="sitePagesDetailsLastFilter"]'
+    searchPanesActiveFilterWarning: 'div[sitefunction="sitePagesDetailsLastFilter"]',
+    searchPanesPaneList: '.dtsp-nameColumn',
+    searchPanesPaneListItem: '.dtsp-nameCont span'
 );
 
 @import 'meta.scss';

@@ -675,3 +675,24 @@ const getTopCustomTags = () => {
 
     return customTags;
 }
+
+const getSavedItemsSize = () => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    return savedItems.length;
+}
+
+const cleanSavedItems = () => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    let savedItemIndex = 0;
+    let toRemove = [];
+    savedItems.forEach(page => {
+        if (page.customNotes.length + page.customTags.length + page.customCategories.length === 0)
+            toRemove.push(savedItemIndex); 
+        savedItemIndex += 1;
+    });
+
+    toRemove.forEach(index => {
+        _.pullAt(savedItems, index);
+    });
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+}

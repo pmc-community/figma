@@ -4,12 +4,48 @@
 const sitePages__pageSearch = () => {
     $(document).ready(function() {
         sitePagesFn.setPageSearchList();
+
+        showPages = readQueryString('showPages');
+        if (showPages) $('#site_pages_details').removeClass('d-none');
+
+        showSaved = readQueryString('showSaved');
+        if (showSaved)  {
+            sitePagesFn.pageTableSearchPanesSelection = [
+                {
+                    column:2,
+                    rows:['Is Saved']
+                },
+                {
+                    column:3,
+                    rows:[]
+                },
+                {
+                    column:4,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                }
+            ];
+            setTimeout(()=>sitePagesFn.setLastFilterInfo('Active filter'), 100);
+            $('#site_pages_details').removeClass('d-none');
+            sitePagesFn.handleDropdownClassOverlap();
+        }
+
+        history.replaceState({}, document.title, window.location.pathname);
+
     });
 
     // small delay to be sure that offcanvas is ready in the DOM, otherwise the observer will fail to set
     setTimeout(()=>{sitePagesFn.handleOffCanvasClose()}, 200); 
 
     sitePagesFn.setPageSearchButtonsFunctions();
+
 }
 
 // called from siteIncludes/partials/site-pages/pages.html
@@ -32,6 +68,15 @@ const sitePages__savedItems = () => {
 
 // using a 'namespace' to avoid fn name duplicates
 sitePagesFn = {
+
+    // general
+    handleDropdownClassOverlap: () => {
+        // bootstrap class dropdown-menu overlaps with the search panes class which is also dropdown-menu 
+        // when auto applying selections (see utilities/setDataTable()/createTable_ASYNC()) we need to hide
+        // the search panes in order to auto apply selections.
+        // this will make the More button from the main menu to not show its dropdown-menu anymore
+        setTimeout(()=>$(`#${settings.catMenuMoreBtn}`).children().last().css('display', ''), 100);
+    },
 
     // search page section
     setPageSearchList: () => {
@@ -83,6 +128,7 @@ sitePagesFn = {
             $(`table[siteFunction="sitePagesDetailsPageTable"] td`).removeClass('table-active'); // remove any previous selection
             sitePagesFn.rebuildPagesTableSearchPanes();
             sitePagesFn.setLastFilterInfo('Last filter');
+            sitePagesFn.handleDropdownClassOverlap();
         });
     },
 
@@ -99,7 +145,7 @@ sitePagesFn = {
 
         const checkFilterItems = () => {
             if ( sitePagesFn.pageTableSearchPanesSelection.length === 0 ||  _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0) return;
-
+    
             filterTagsObj = getObjectFromArray({column:7}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ? 
                 {} : 
                 getObjectFromArray({column:7}, sitePagesFn.pageTableSearchPanesSelection);
@@ -107,20 +153,21 @@ sitePagesFn = {
             filterCatsObj = getObjectFromArray({column:8}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ? 
                 {} : 
                 getObjectFromArray({column:8}, sitePagesFn.pageTableSearchPanesSelection);
-
+    
             if ( _.isEmpty(filterTagsObj) && _.isEmpty(filterCatsObj)) return;
             
             filterTags = filterTagsObj.rows || [];
             filterCats = filterCatsObj.rows || [];
-
+    
             if ( filterTags.length === 0  && filterCats.lenght === 0) return;
-
+    
             if( filterTags.length > 0 ) _.find(sitePagesFn.pageTableSearchPanesSelection, { column: 7 }).rows = _.intersection(filterTags, globAllTags);
             if( filterCats.length > 0 ) _.find(sitePagesFn.pageTableSearchPanesSelection, { column: 8 }).rows = _.intersection(filterCats, globAllCats);
-
+    
         }
-
+        
         checkFilterItems();
+
         if ( sitePagesFn.pageTableSearchPanesSelection.length > 0 && _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) > 0) {
             $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageDetails"]').text(getFilterValue(2));
             $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages"]').text(getFilterValue(3));
@@ -153,6 +200,7 @@ sitePagesFn = {
                     .css('left', `${defaultLeft}px`);
             }
             $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
+            $('div[sitefunction="sitePagesDetailsLastFilter"]').blur();
         }
         else
             $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
@@ -173,6 +221,13 @@ sitePagesFn = {
         // open page info offcanvas when click on a similar page of a page row from pages table
         $('span[siteFunction="pageSimilarPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
+        });
+
+        // apply filter from active filter warning box
+        $(document)
+            .off('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]')
+            .on('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]', function() {
+                $('button[sitefunction="tableSearchPanes"]').click();
         });
         
     },
@@ -613,7 +668,7 @@ sitePagesFn = {
                     sitePagesFn.setLastFilterInfo('Active filter');
                 },
                 searchPanesSelectionChangeCallback: null,
-                searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection
+                searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection || []
             }
             
         );
@@ -802,7 +857,6 @@ sitePagesFn = {
         // RETURNING FROM OFFCANVAS ON A FILTERED TABLE WILL LOSE ALL RECORDS EXCEPT THE FILTERED ONES
         // AND THESE CANNOT BE SHOWN EVEN IF CLEARING THE FILTER, ONLY RELOADING PAGE WILL RESTORE ALL RECORDS 
         table.searchPanes.clearSelections();
-
         // clean local storage, previous saved searchPanes datatables to not overload local storage
         getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
 

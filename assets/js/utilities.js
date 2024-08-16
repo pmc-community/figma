@@ -1,27 +1,5 @@
 /* SOME UTILITIES ADDED TO JQUERY*/
 
-/* Network requests intrceptor - NOT USED
-(function() {
-    const originalFetch = window.fetch;
-    
-    window.fetch = function(url, options) {
-        // Modify this condition to target specific requests
-        if (url.includes('//app.hubspot.com/api/login-verify/')) {
-            console.log('Intercepted request to:', url);
-            
-            // Return a custom response
-            return Promise.resolve(new Response(
-                JSON.stringify({ message: 'Custom response' }),
-                { status: 200, headers: { 'Content-Type': 'application/json' } }
-            ));
-        }
-
-        // For other requests, use the original fetch
-        return originalFetch.apply(this, arguments);
-    };
-})();
-*/
-
 // check if an element is on screen
 $.fn.is_on_screen = function () {
     var win = $(window);
@@ -55,7 +33,7 @@ $.fn.sizeChanged = function (handleFunction) {
             lastWidth = element.width();
             lastHeight = element.height();
         }
-    }, 100);
+    }, 200);
     return element;
 };
 
@@ -236,6 +214,21 @@ const readQueryString = (queryParameter) => {
     const urlParams = new URLSearchParams(window.location.search);
     const value = urlParams.get(queryParameter);
     return value;
+}
+
+const readQueryString_ASYNC = (queryParameter) => {
+
+    return new Promise ( (resolve, reject) => {
+        const replaceSpecialCharacters = (inputString) => {
+            const encodedString = encodeURIComponent(inputString);
+            const replacedString = decodeURIComponent(encodedString);
+            return replacedString;        
+        }
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const value = urlParams.get(queryParameter);
+        resolve(value);
+    })
 }
 
 const filterArrayStartingWith = (arr, prefix, caseSensitive) => {
@@ -421,7 +414,15 @@ const setSearchList = (
 
 // columnsConfig is set in the caller, to be fit to the specific table
 // callback and callbackClickRow are set in the caller to do specific processing after the table is initialized
-const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, callbackClickRow, additionalSettings = {}, searchPanes = null) => {
+const setDataTable = (
+    tableSelector, 
+    tableUniqueID, 
+    columnsConfig, 
+    callback, 
+    callbackClickRow, 
+    additionalSettings = {}, 
+    searchPanes = null
+) => {
     // ONLY searcPanes TRIGGERED BY BUTTON IS AVALILABLE
     // OTHERWISE THE searchPanes LOGIC WILL FAIL AND WILL RAISE ERRORS
     const bottom2Buttons = searchPanes ?
@@ -514,7 +515,14 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
     $(tableSelector).parent().prepend($loading);
     $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
 
-    const createTable_ASYNC = (tableSelector, columnsConfig, callback, callbackClickRow, allSettings) => {
+    const createTable_ASYNC = (
+        tableSelector, 
+        columnsConfig, 
+        callback, 
+        callbackClickRow, 
+        allSettings, 
+        searchPanes
+    ) => {
         return new Promise ( (resolve, reject) => {
 
             $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
@@ -583,9 +591,14 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
             // WE CAN USE HARD CODED CLASS NAMES BECAUSE 
             // THERE WILL BE ONLY ONE searchPanes CONTAINER ACTIVE AT ONE MOMENT
             // AND THE CLASSES ARE ALWAYS THE SAME
-            if (searchPanes && searchPanes.enable) {
-                let tableSearchPanesSelection = [];
+            let tableSearchPanesSelection = !searchPanes ?
+                [] :
+                !searchPanes.searchPanesCurrentSelection ?
+                [] :
+                searchPanes.searchPanesCurrentSelection;
 
+            if (searchPanes && searchPanes.enable) {
+        
                 const getSearchPanesSelection = () => {
                     const table = $(tableSelector).DataTable();
                     const $panes = table.searchPanes.container().children().last().find('.dtsp-searchPane').not('.dtsp-hidden');
@@ -660,7 +673,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
                         
                         if (searchPanes.searchPanesOpenCallback) searchPanes.searchPanesOpenCallback();
             
-                    }, 0);
+                    }, 100);
                 });
 
                 // PROCESSING WHEN CLOSE SEARCH PANES CONTAINER
@@ -668,7 +681,7 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
                 setElementRemovalByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
                     setTimeout(() => {
                         if (searchPanes.searchPanesCloseCallback) searchPanes.searchPanesCloseCallback(tableSearchPanesSelection);
-                    }, 0);
+                    }, 100);
                     
                 });
 
@@ -688,17 +701,47 @@ const setDataTable = (tableSelector, tableUniqueID, columnsConfig, callback, cal
                 });
             }
 
-            // everything set, now we need to resolve the promise and pass the table to the next steps
-            resolve(table);
+            // everything set, now we need to resolve the promise 
+            // we pass the table and its current search panes selection to the next steps
+            resolve(
+                {
+                    table: table,
+                    selection: tableSearchPanesSelection
+                }
+            );
             
         });
     }
 
     $(document).ready(function() {   
-        createTable_ASYNC(tableSelector, columnsConfig, callback, callbackClickRow, allSettings).then(() => {
-            $('#dataTableLoading').remove(); 
-            $(tableSelector).show();
-        });
+        createTable_ASYNC(
+            tableSelector, 
+            columnsConfig, 
+            callback, 
+            callbackClickRow, 
+            allSettings, 
+            searchPanes
+        )
+            .then((result) => {
+
+                const autoApplyActiveFilter = (table) => {
+                    $('button[siteFunction="tableSearchPanes"]').click();
+                    $('.dropdown-menu').hide();
+                    $('.dtb-popover-close').click();
+                    $('#dataTableLoading').remove();
+                    $(tableSelector).show();
+                   
+                }
+
+                if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
+                    $('#dataTableLoading').remove(); 
+                    $(tableSelector).show();
+                }
+                else {
+                    autoApplyActiveFilter(result.table);
+                }
+                
+            });
     });
 }
 
@@ -1558,11 +1601,16 @@ const addBootstrapToIFrames = () => {
 const iframe__addBootstrapToIFrames = ($elementInsideIFrame) => {
     const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
     const $iframeHead = $($iframeDocument).find('head');
-    const $iframeBody = $($iframeDocument).find('body');
     const bootstrapCSS = `<link rel="stylesheet" href="${settings.hsIntegration.bootstrapCSS}">`;
-    const bootstrapJS = `<script src="${settings.hsIntegration.bootstrapJS}"></script>`;
     $($iframeHead).append(bootstrapCSS);
-    $($iframeBody).append(bootstrapJS);
+
+    // HEADS UP!
+    // WE DON'T LOAD bootstrapJS TO IFRAMES 
+    //BECAUSE WILL BREAK SOME FUNCTIONALITIES OF BOOTSTRAP IN MAIN DOCUMENT
+    
+    //const $iframeBody = $($iframeDocument).find('body');
+    //const bootstrapJS = `<script src="${settings.hsIntegration.bootstrapJS}"></script>`;
+    //$($iframeBody).append(bootstrapJS);
     
 }
 
