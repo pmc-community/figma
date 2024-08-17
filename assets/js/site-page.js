@@ -445,7 +445,12 @@ const page__getPageInfo = () => {
             `
                 <div id="pageLastUpdateAndPageInfo" class="container px-5 mb-4">
                     ${catsHtml}
-                    <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
+                        <div class="badge fs-6 fw-light text-secondary border border-secondary border-opacity-25 shadow-none">
+                            ${page.siteInfo.readingTime} min. read
+                        </div>
+                    </div>
                     <div class="mb-4">${page.siteInfo.excerpt}</div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div>

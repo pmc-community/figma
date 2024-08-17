@@ -38,9 +38,69 @@ const sitePages__pageSearch = () => {
             ];
             sitePagesFn.setLastFilterInfo('Active filter');
             sitePagesFn.handleDropdownClassOverlap();
+            history.replaceState({}, document.title, window.location.pathname);
+            return;
         }
 
-        history.replaceState({}, document.title, window.location.pathname);
+        showCustomCats = readQueryString('showCustomCats');
+        if (showCustomCats === '1')  {
+            sitePagesFn.pageTableSearchPanesSelection = [
+                {
+                    column:2,
+                    rows:['Has Custom Categories']
+                },
+                {
+                    column:3,
+                    rows:[]
+                },
+                {
+                    column:4,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                }
+            ];
+            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.handleDropdownClassOverlap();
+            history.replaceState({}, document.title, window.location.pathname);
+            return;
+        }
+
+        showCustomTags = readQueryString('showCustomTags');
+        if (showCustomTags === '1')  {
+            sitePagesFn.pageTableSearchPanesSelection = [
+                {
+                    column:2,
+                    rows:['Has Custom Tags']
+                },
+                {
+                    column:3,
+                    rows:[]
+                },
+                {
+                    column:4,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                }
+            ];
+            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.handleDropdownClassOverlap();
+            history.replaceState({}, document.title, window.location.pathname);
+            return;
+        }
 
     });
 }

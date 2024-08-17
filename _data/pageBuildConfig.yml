@@ -12,13 +12,21 @@
       except: ["posts"] # collection name must be the one from _config.yml[collections]
       itemsToShow: 5
       collectionStartBtnText: "Start here"
+      buttonsClass: "btn-primary"
+      buttonsTextClass: "text-light"
     mostRecentAndPopular_section:
       recentFilesToShow: 3
       allDocsBtnText: "Documents"
       allCatsBtnText: "Categories"
       allTagsBtnText: "Tags"
+      buttonsClass: "btn-warning"
+      buttonsTextClass: "text-dark"
     stats_section:
       allDocsBtnText: "All docs"
       savedDocsBtnText: "Saved docs"
       catsBtnText: "Categories"
+      pagesWithCustomsCatsBtnText: "Documents"
       tagsBtnText: "Tags"
+      buttonsClass: "btn-primary"
+      buttonsTextClass: "text-light"
+      buttonsIcon: "bi-arrow-right"

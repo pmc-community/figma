@@ -225,10 +225,12 @@ homePage = {
     showCatsStats: () => {
         $('span[siteFunction="homeStats_cats_total_cats"]').text(globAllCats.length);
         $('span[siteFunction="homeStats_cats_custom_cats"]').text(globCustomCats.length);
+        $('span[siteFunction="homeStats_cats_pages_with_customCats"]').text(getItemsNoHavingCustomProp('cats'));
     },
 
     showTagsStats: () => {
         $('span[siteFunction="homeStats_tags_total_tags"]').text(globAllTags.length);
         $('span[siteFunction="homeStats_tags_custom_tags"]').text(globCustomTags.length);
+        $('span[siteFunction="homeStats_tags_pages_with_customTags"]').text(getItemsNoHavingCustomProp('tags'));
     }
 }

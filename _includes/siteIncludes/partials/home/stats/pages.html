@@ -25,8 +25,8 @@
                         </div>
                     <a 
                         href="/site-pages?showPages=1"
-                        class="btn btn-sm text-dark btn-warning pageStatsSectionDocumentsListItemBtn">
-                        {{site.data.pageBuildConfig["/"].sections.stats_section.allDocsBtnText}}
+                        class="btn btn-sm {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsTextClass}} {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsClass}}">
+                        <i class="bi {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsIcon}}"></i>
                     </a>  
                 </li>
             </div>
@@ -47,8 +47,8 @@
                     <a 
                         siteFunction="homeStats_pages_savedPages_BtnLink"
                         href="no_set"
-                        class="btn btn-sm text-dark btn-warning pageStatsSectionDocumentsListItemBtn">
-                        {{site.data.pageBuildConfig["/"].sections.stats_section.savedDocsBtnText}}
+                        class="btn btn-sm {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsTextClass}} {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsClass}}">
+                        <i class="bi {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsIcon}}"></i>
                     </a>  
                 </li>
             </div>
@@ -88,8 +88,8 @@
                     <a 
                         siteFunction="homeStats_pages_reading_time_BtnLink"
                         href="{{maxRTpage.permalink}}"
-                        class="btn btn-sm text-dark btn-warning pageStatsSectionDocumentsListItemBtn">
-                        Read
+                        class="btn btn-sm {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsTextClass}} {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsClass}}">
+                        <i class="bi {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsIcon}}"></i>
                     </a>  
                 </li>
             </div>
@@ -111,8 +111,8 @@
                     <a 
                         siteFunction="homeStats_pages_reading_time_BtnLink"
                         href="{{minRTpage.permalink}}"
-                        class="btn btn-sm text-dark btn-warning pageStatsSectionDocumentsListItemBtn">
-                        Read
+                        class="btn btn-sm {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsTextClass}} {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsClass}}">
+                        <i class="bi {{site.data.pageBuildConfig["/"].sections.stats_section.buttonsIcon}}"></i>
                     </a>  
                 </li>
             </div>

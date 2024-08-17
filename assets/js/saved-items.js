@@ -696,3 +696,11 @@ const cleanSavedItems = () => {
     });
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
 }
+
+const getItemsNoHavingCustomProp = (what) => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    let count;
+    if (what === 'tags') count = _.filter(savedItems, obj => _.size(obj.customTags) > 0).length;
+    if (what === 'cats') count = _.filter(savedItems, obj => _.size(obj.customCategories) > 0).length;
+    return count;
+}

@@ -52,7 +52,7 @@
                                 {% if startDoc != empty %}
                                     <a 
                                         href="{{startDoc.permalink}}"
-                                        class="btn btn-sm text-dark btn-warning">
+                                        class="btn btn-sm {{site.data.pageBuildConfig["/"].sections.collections_section.buttonsTextClass}} {{site.data.pageBuildConfig["/"].sections.collections_section.buttonsClass}}">
                                         {{site.data.pageBuildConfig["/"].sections.collections_section.collectionStartBtnText}}
                                     </a>
                                 {% endif %}
