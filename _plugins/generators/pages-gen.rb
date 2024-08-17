@@ -55,7 +55,8 @@ module Jekyll
           'createTimeUTC' => createTime.to_time.to_i || 0,
           'relatedPages' => [],
           'autoSummary' => "",
-          'similarByContent': []
+          'similarByContent': [],
+          'readingTime': 0
         } 
         documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
         numPages += 1 if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"

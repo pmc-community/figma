@@ -103,7 +103,7 @@ const customiseTheme = (pageObj = null) => {
 
         // just to align breadcrumbs to the content
         $('.breadcrumb-nav').addClass('px-5');
-        
+
     });
 }
 

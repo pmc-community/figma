@@ -198,7 +198,7 @@ module FileUtilities
             Globals.moveUpOneLine
             Globals.clearLine
             if (numPages > 0 )
-                Globals.putsColText(Globals::PURPLE,"Generating raw content ... done (#{numPages} pages)")
+                Globals.putsColText(Globals::PURPLE,"Generating raw content ... done (#{numPages} page(s) changed)")
             else
                 Globals.putsColText(Globals::PURPLE,"Generating raw content ... nothing to do! (no content chages)")
             end
@@ -311,6 +311,12 @@ module FileUtilities
           transformed_name = file_name.gsub('_', '/')
           getFileFromPermalink(Globals::DOCS_DIR, transformed_name)
         end
+    end
+
+    def self.get_real_file_from_raw_content_file(file_path)
+        file_name = File.basename(file_path, ".*") 
+        transformed_name = file_name.gsub('_', '/')
+        getFileFromPermalink(Globals::DOCS_DIR, transformed_name)
     end
 
 end

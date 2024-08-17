@@ -23,7 +23,11 @@ const home__recentAndPopularSection = () => {
 const home__statsSection = () => {
     $(document).ready(function() {{
         homePage.showDocumentsSavedDocsListItem();
+        homePage.showCatsStats();
+        homePage.showTagsStats();
         homePage.hoverListItems_DELEGATE('li[siteFunction="homeStats_pages_list_item"]');
+        homePage.hoverListItems_DELEGATE('li[siteFunction="homeStats_cats_list_item"]');
+        homePage.hoverListItems_DELEGATE('li[siteFunction="homeStats_tags_list_item"]');
     }});
 }
 
@@ -97,7 +101,7 @@ homePage = {
                     <a href="/cat-info?cat=${cat.name}">
                         <li 
                             siteFunction="homeRecentAndPopular_popular_categories_cat"
-                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 my-0 bg-transparent border-top border-secondary border-opacity-25">
+                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 pr-2 my-0 bg-transparent border-top border-secondary border-opacity-25">
                             <div class="ms-2 me-auto">
                                 <div class="${catItemClass}">${cat.name}</div>
                             </div>
@@ -130,7 +134,7 @@ homePage = {
                     <a href="/tag-info?tag=${tag.name}">
                         <li 
                             siteFunction="homeRecentAndPopular_popular_tags_tag"
-                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 my-0 bg-transparent border-top border-secondary border-opacity-25">
+                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 pr-2 my-0 bg-transparent border-top border-secondary border-opacity-25">
                             <div class="ms-2 me-auto">
                                 <div class="${tagItemClass}">${tag.name}</div>
                             </div>
@@ -213,8 +217,18 @@ homePage = {
     showDocumentsSavedDocsListItem: () => {
         savedPagesNo = getSavedItemsSize();
         if (savedPagesNo === 0 ) return;
-        $('a[siteFunction="homeStats_pages_savedPages_BtnLink"]').attr('href', '/site-pages?showSaved=1');
+        $('a[siteFunction="homeStats_pages_savedPages_BtnLink"]').attr('href', '/site-pages?showPages=1&showSaved=1');
         $('span[siteFunction="homeStats_pages_savedPages_no"]').text(savedPagesNo);
         $('div[siteFunction="homeStats_pages_savedPages"]').removeClass('d-none');
+    },
+
+    showCatsStats: () => {
+        $('span[siteFunction="homeStats_cats_total_cats"]').text(globAllCats.length);
+        $('span[siteFunction="homeStats_cats_custom_cats"]').text(globCustomCats.length);
+    },
+
+    showTagsStats: () => {
+        $('span[siteFunction="homeStats_tags_total_tags"]').text(globAllTags.length);
+        $('span[siteFunction="homeStats_tags_custom_tags"]').text(globCustomTags.length);
     }
 }

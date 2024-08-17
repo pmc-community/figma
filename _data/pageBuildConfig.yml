@@ -14,9 +14,11 @@
       collectionStartBtnText: "Start here"
     mostRecentAndPopular_section:
       recentFilesToShow: 3
-      allDocsBtnText: "All docs"
-      allCatsBtnText: "All categories"
-      allTagsBtnText: "All tags"
+      allDocsBtnText: "Documents"
+      allCatsBtnText: "Categories"
+      allTagsBtnText: "Tags"
     stats_section:
       allDocsBtnText: "All docs"
       savedDocsBtnText: "Saved docs"
+      catsBtnText: "Categories"
+      tagsBtnText: "Tags"

@@ -1,99 +1,25 @@
-{% assign pages= site.data.page_list | json_string_to_object %}
-{% assign cats= site.data.categories_details %}
-{% assign tags= site.data.tags_details %}
 
 <div siteFunction="homeStatsContainer">
     <div class="row gx-5">
         
-        <!-- pages stats -->
         <div 
             siteFunction="homeStats_pages"
             class="col-4 my-4">
-            <div
-                siteFunction="homeStats_pages_title"
-                class="fs-6 fw-medium">
-                Documents
-            </div>
-            <div siteFunction="homeStats_pages_container">
-                <ul 
-                    siteFunction="homeStats_pages_items_list"
-                    class="pl-0">
-                        {% assign pagesNo = pages | size %}
-                        
-                        <!-- all pages -->
-                        <div siteFunction="homeStats_pages_allPages">
-                            <li 
-                                siteFunction="homeStats_pages_list_item""
-                                class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 my-0 bg-transparent border-top border-secondary border-opacity-25 text-secondary">
-                                    <div class="d-flex align-items-center">
-                                        Total documents:
-                                        <span class="ml-1 fw-medium text-primary">
-                                            {{pagesNo}}
-                                        </span>
-                                    </div>
-                                <a 
-                                    href="/site-pages?showPages=1"
-                                    class="btn btn-sm text-dark btn-warning pageStatsSectionDocumentsListItemBtn">
-                                    {{site.data.pageBuildConfig["/"].sections.stats_section.allDocsBtnText}}
-                                </a>  
-                            </li>
-                        </div>
-                        
-                        <!-- saved pages -->
-                        <div siteFunction="homeStats_pages_savedPages" class="d-none">
-                        <li 
-                            siteFunction="homeStats_pages_list_item"
-                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 my-0 bg-transparent border-top border-secondary border-opacity-25 text-secondary">
-                                <div class="d-flex align-items-center">
-                                    Saved documents:
-                                    <span 
-                                        class="ml-1 fw-medium text-primary"
-                                        siteFunction="homeStats_pages_savedPages_no">
-                                        0
-                                    </span>
-                                </div>
-                            <a 
-                                siteFunction="homeStats_pages_savedPages_BtnLink"
-                                href="no_set"
-                                class="btn btn-sm text-dark btn-warning pageStatsSectionDocumentsListItemBtn">
-                                {{site.data.pageBuildConfig["/"].sections.stats_section.savedDocsBtnText}}
-                            </a>  
-                        </li>
-                    </div>
-                    
-
-                </ul>
-            </div>
+            {% include siteIncludes/partials/home/stats/pages.html %}
         </div>
 
-        <!-- cats stats -->
         <div 
             siteFunction="homeStats_cats"
-            class="col-4 my-4">
-            <div
-                siteFunction="homeStats_cats_title"
-                class="fs-6 fw-medium">
-                Categories
-            </div>
-            <div siteFunction="homeStats_cats_container">
-                cats
-            </div>
+             class="col-4 my-4">
+            {% include siteIncludes/partials/home/stats/cats.html %}
         </div>
 
          <!-- tags stats -->
          <div 
-         siteFunction="homeStats_tags"
-         class="col-4 my-4">
-         <div
-             siteFunction="homeStats_tags_title"
-             class="fs-6 fw-medium">
-             Tags
-         </div>
-         <div siteFunction="homeStats_tags_container">
-             tags
-         </div>
-     </div>
-
+            siteFunction="homeStats_tags"
+            class="col-4 my-4">
+            {% include siteIncludes/partials/home/stats/tags.html %}
+        </div>
 
     </div>
 </div>

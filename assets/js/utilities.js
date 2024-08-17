@@ -729,8 +729,7 @@ const setDataTable = (
                     $('.dropdown-menu').hide();
                     $('.dtb-popover-close').click();
                     $('#dataTableLoading').remove();
-                    $(tableSelector).show();
-                   
+                    $(tableSelector).show();                   
                 }
 
                 if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {

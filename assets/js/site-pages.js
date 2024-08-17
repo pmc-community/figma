@@ -3,13 +3,17 @@
 // called from siteIncludes/partials/site-pages/pageSearch.html
 const sitePages__pageSearch = () => {
     $(document).ready(function() {
+
+        sitePagesFn.handleOffCanvasClose();
+        sitePagesFn.setPageSearchButtonsFunctions();
+
         sitePagesFn.setPageSearchList();
 
         showPages = readQueryString('showPages');
-        if (showPages) $('#site_pages_details').removeClass('d-none');
+        if (showPages === '1') $('#site_pages_details').removeClass('d-none');
 
         showSaved = readQueryString('showSaved');
-        if (showSaved)  {
+        if (showSaved === '1')  {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
@@ -32,20 +36,13 @@ const sitePages__pageSearch = () => {
                     rows:[]
                 }
             ];
-            setTimeout(()=>sitePagesFn.setLastFilterInfo('Active filter'), 100);
-            $('#site_pages_details').removeClass('d-none');
+            sitePagesFn.setLastFilterInfo('Active filter');
             sitePagesFn.handleDropdownClassOverlap();
         }
 
         history.replaceState({}, document.title, window.location.pathname);
 
     });
-
-    // small delay to be sure that offcanvas is ready in the DOM, otherwise the observer will fail to set
-    setTimeout(()=>{sitePagesFn.handleOffCanvasClose()}, 200); 
-
-    sitePagesFn.setPageSearchButtonsFunctions();
-
 }
 
 // called from siteIncludes/partials/site-pages/pages.html
