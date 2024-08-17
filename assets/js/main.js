@@ -24,6 +24,7 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = (pageObj = null) => {
+    $('body').css('visibility','hidden'); // to avoid the fast display of unstyled page before styles are loaded and applied
 
     if (isMobileOrTablet()) {
         console.log("Mobile or Tablet detected");
@@ -38,7 +39,6 @@ const customiseTheme = (pageObj = null) => {
     // clean local storage, remove orphan datatables such as site-pages searchPanes tables
     getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
 
-    $('body').css('visibility','hidden'); // to avoid the fast display of unstyled page before styles are loaded and applied
     setTheTheme();
     addExtraPaddingToContentArea();
     addTopOfPage ();
@@ -78,10 +78,6 @@ const customiseTheme = (pageObj = null) => {
         // necessary on mobile for datatables cells, when responsive mode is true for tables
         applyColorSchemaCorrectionsOnTD();
 
-        // just to mask the flicker a little, but a preloader should be here
-        setTimeout( () => {
-            $('body').css('visibility','visible');
-        }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
         // set the reference to the page main info
         $(settings.layouts.contentArea.contentContainer)
@@ -103,6 +99,11 @@ const customiseTheme = (pageObj = null) => {
 
         // just to align breadcrumbs to the content
         $('.breadcrumb-nav').addClass('px-5');
+
+        // just to mask the flicker a little, but a preloader should be here
+        setTimeout( () => {
+            $('body').css('visibility','visible');
+        }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
     });
 }

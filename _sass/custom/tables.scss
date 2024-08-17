@@ -28,6 +28,8 @@ $tableSearchPanesActiveFilterWarningWidth: $sz-300px;
 $tableSearchPanesActiveFilterWarningFontSize: $fs-btn-sm;
 $tableSearchPanesPaneBackground: $c-white;
 $tableSearchPanesPaneFontColor: $c-black;
+$tableSearchPanesPaneSearchInputBackground: $c-white;
+$tableFilterProcessingLoaderBackground: $c-transparent;
 
 $tableElements: (
     tableWrapper: '.table-wrapper',
@@ -48,7 +50,8 @@ $tableElements: (
     searchPanesFilterFakeBtn: '.sitePagesDetailsLastFilterFakeBtn',
     searchPanesActiveFilterWarning: 'div[sitefunction="sitePagesDetailsLastFilter"]',
     searchPanesPaneList: '.dtsp-nameColumn',
-    searchPanesPaneListItem: '.dtsp-nameCont span'
+    searchPanesPaneListItem: '.dtsp-nameCont span',
+    tableFilterProcessingLoader: '.dt-processing,'
 );
 
 @import 'meta.scss';

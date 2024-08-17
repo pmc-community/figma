@@ -540,13 +540,13 @@ sitePagesFn = {
         ];
 
         const commonAdditionalTableSettings = {
-            scrollX:true,
+            scrollX: true,
             fixedColumns: {
                 "left": 1
             },
-            autoWidth: true,
-            deferRender: true, // Defer rendering for speed up
-            processing: true,
+
+            scrollCollapse: true,
+            scrollY: '30vh',    
 
             initComplete: function(settings, json) {
                 sitePagesFn.forceRedrawPagesTable();
@@ -934,6 +934,36 @@ sitePagesFn = {
             }, 100);
         });
         
+        $('#showSavedItems').off('click').click( function() {
+            $('#site_pages_details').removeClass('d-none');
+            $('div[sitefunction="sitePagesDetails"]').fadeIn();
+            sitePagesFn.pageTableSearchPanesSelection = [
+                {
+                    column:2,
+                    rows:['Is Saved']
+                },
+                {
+                    column:3,
+                    rows:[]
+                },
+                {
+                    column:4,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                },
+                {
+                    column:7,
+                    rows:[]
+                }
+            ];
+            sitePagesFn.rebuildPagesTableSearchPanes();
+            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.handleDropdownClassOverlap();
+        });
+
         // save the saved items to a local file
         $('#saveStorageToFile').off('click').click( function() {
             saveLocalStorageKeyAsJsonFile('savedItems', 'si.json')

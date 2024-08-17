@@ -344,7 +344,7 @@
 
     #{map-get($tableElements, searchPanesPaneSearchInput)} {
         height:$tableSearchPaneSearchInputHeight !important;
-        background-color: $c-transparent !important;
+        background-color: $tableSearchPanesPaneSearchInputBackground !important;
     }
 
     #{map-get($tableElements, seachPanesButtons)} {
@@ -385,6 +385,11 @@
     #{map-get($tableElements, searchPanesPaneListItem)} {
         color: $tableSearchPanesPaneFontColor !important;
     }
+
+    #{map-get($tableElements, tableFilterProcessingLoader)} {
+        background: $tableFilterProcessingLoaderBackground !important;
+    }
+
 }
 
 // cat search

@@ -415,15 +415,26 @@ const setSearchList = (
 // columnsConfig is set in the caller, to be fit to the specific table
 // callback and callbackClickRow are set in the caller to do specific processing after the table is initialized
 const setDataTable = (
-    tableSelector, 
-    tableUniqueID, 
-    columnsConfig, 
-    callback, 
-    callbackClickRow, 
-    additionalSettings = {}, 
-    searchPanes = null
+    tableSelector, // css selector of the raw table to be converted to datatable
+    tableUniqueID, // will be added to <page permalink>_DataTables_tableUniqueID when saving status in local storage
+    columnsConfig, // columns object
+    callback,  // will be executed after table is created, post processing the table
+    callbackClickRow, // will be executed when click on row
+    additionalSettings = {}, // any other settings besides the default ones (i.e. columnDefs to define individual search panes)
+    searchPanes = null // search panes configuration and callbacks
+        /*
+        {
+            enable: true,
+            // page load may become very slow. better to use viewCount=false when cascade=false because viewCount doesn't update dynamicaly
+            cascade: false,
+            searchPanesOpenCallback: () => {} || null,
+            searchPanesCloseCallback: (tableSearchPanesSelection) => {} || null,
+            searchPanesSelectionChangeCallback: (tableSearchPanesSelection) => {} || null,
+            searchPanesCurrentSelection: <current selection in the form of [{column:..., rows:[...]}]> || []
+        } || null
+        */
 ) => {
-    // ONLY searcPanes TRIGGERED BY BUTTON IS AVALILABLE
+    // ONLY searchPanes TRIGGERED BY BUTTON IS AVALILABLE
     // OTHERWISE THE searchPanes LOGIC WILL FAIL AND WILL RAISE ERRORS
     const bottom2Buttons = searchPanes ?
         [
@@ -469,10 +480,11 @@ const setDataTable = (
         pageLength: 5,
         ordering: true,
         searching: true,
-        colReorder: true,
         processing: true,
         fixedHeader: true,
         colReorder: false,
+        autoWidth: true,
+        deferRender: true, // Defer rendering for speed up
         layout: {
             topStart: {
                 pageLength: {
@@ -583,13 +595,14 @@ const setDataTable = (
             // because the theme is already applied, so we need to do the corrections again
             // also needed when switching theme
             // if switch theme and increase no of rows/page, new rows will have the previous scheme background
-            applyColorSchemaCorrections();
+            //applyColorSchemaCorrections();
             // also on draw event to cover all potential cases
             table.on('draw', function () { applyColorSchemaCorrections(); });
 
             // searchPanes logic
             // WE CAN USE HARD CODED CLASS NAMES BECAUSE 
             // THERE WILL BE ONLY ONE searchPanes CONTAINER ACTIVE AT ONE MOMENT
+            // SINCE WE ONLY USE BUTTON ACTIVATED searchPanes
             // AND THE CLASSES ARE ALWAYS THE SAME
             let tableSearchPanesSelection = !searchPanes ?
                 [] :
@@ -713,6 +726,7 @@ const setDataTable = (
         });
     }
 
+    // first: create the table, second: apply active searchPanes selection if available
     $(document).ready(function() {   
         createTable_ASYNC(
             tableSelector, 
@@ -721,26 +735,23 @@ const setDataTable = (
             callbackClickRow, 
             allSettings, 
             searchPanes
-        )
-            .then((result) => {
+        ).then((result) => {
+            const autoApplyActiveFilter = (table) => {
+                $('button[siteFunction="tableSearchPanes"]').click();
+                $('.dropdown-menu').hide();
+                $('.dtb-popover-close').click();
+                $('#dataTableLoading').remove();
+                $(tableSelector).show();                   
+            }
 
-                const autoApplyActiveFilter = (table) => {
-                    $('button[siteFunction="tableSearchPanes"]').click();
-                    $('.dropdown-menu').hide();
-                    $('.dtb-popover-close').click();
-                    $('#dataTableLoading').remove();
-                    $(tableSelector).show();                   
-                }
-
-                if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
-                    $('#dataTableLoading').remove(); 
-                    $(tableSelector).show();
-                }
-                else {
-                    autoApplyActiveFilter(result.table);
-                }
-                
-            });
+            if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
+                $('#dataTableLoading').remove(); 
+                $(tableSelector).show();
+            }
+            else {
+                autoApplyActiveFilter(result.table);
+            }         
+        });
     });
 }
 
