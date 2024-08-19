@@ -1,6 +1,8 @@
 <div 
     sitefunction="sitePagesDetailsLastFilter" 
     class="d-none alert alert-warning mt-2" role="alert">
+
+    <!-- filter warning header (title and buttons) -->
     <div 
         sitefunction="sitePagesDetailsLastFilterHeader" 
         class="d-flex align-items-center justify-content-between pb-2 border-bottom border-secondary border-opacity-25">
@@ -15,20 +17,41 @@
                 Last filter
             </span>
         </div>
-        <button 
-            siteFunction="sitePagesDetailsShowSearchPanes" 
-            class="btn btn-sm btn-danger text-light d-flex align-items-center"
-            title="Re-activate/Modify/Clear filter">
-            <span
-                siteFunction="sitePagesDetailsShowSearchPanes_loader" 
-                class="spinner-border spinner-border-sm mr-1 d-none"
-                aria-hidden="true">
-            </span>
-            <span role="status">
-                Open filter
-            </span>
-        </button>
+        <div>
+            <button 
+                siteFunction="sitePagesDetailsShowSearchPanes" 
+                class="btn btn-sm btn-danger text-light"
+                title="Re-activate/Modify/Clear filter">
+                <div class="d-flex align-items-center">
+                    <span
+                        siteFunction="sitePagesDetailsShowSearchPanes_loader" 
+                        class="spinner-border spinner-border-sm mr-1 d-none"
+                        aria-hidden="true">
+                    </span>
+                    <span role="status">
+                        Open filter
+                    </span>
+                </div>
+            </button>
+            <button 
+                siteFunction="sitePagesDetailsClearFilter" 
+                class="btn btn-sm btn-primary text-light"
+                title="Re-activate/Modify/Clear filter">
+                <div class="d-flex align-items-center">
+                    <span
+                        siteFunction="sitePagesDetailsClearFilter_loader" 
+                        class="spinner-border spinner-border-sm mr-1 d-none"
+                        aria-hidden="true">
+                    </span>
+                    <span role="status">
+                        Clear filter
+                    </span>
+                </div>
+            </button>
+        </div>
     </div>
+
+     <!-- filter warning details -->
     <div 
         sitefunction="sitePagesDetailsLastFilterDetails" 
         class="pt-2">
@@ -75,13 +98,14 @@
 
         <div 
             class="text-black"
-            sitefunction="sitePagesDetailsLastFilterDetailsPageCats_container">
+            sitefunction="sitePagesDetailsLastFilterDetailsPageCategories_container">
             <span class="fw-medium text-black">Categories:</span>
             <span 
                 class="text-primary" 
-                sitefunction="sitePagesDetailsLastFilterDetailsPageCats">
+                sitefunction="sitePagesDetailsLastFilterDetailsPageCategories">
             </span>
         </div>
 
-    </div>                
+    </div>
+
 </div>

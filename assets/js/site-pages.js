@@ -9,6 +9,7 @@ const sitePages__pageSearch = () => {
 
         sitePagesFn.setPageSearchList();
 
+        table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
         showPages = readQueryString('showPages');
         if (showPages === '1') $('#site_pages_details').removeClass('d-none');
 
@@ -17,23 +18,28 @@ const sitePages__pageSearch = () => {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Is Saved']
+                    rows:['Is Saved'],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:3,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:4,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:7,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
-                    column:7,
-                    rows:[]
+                    column:8,
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 }
             ];
             sitePagesFn.setLastFilterInfo('Active filter');
@@ -47,23 +53,28 @@ const sitePages__pageSearch = () => {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Has Custom Categories']
+                    rows:['Has Custom Categories'],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:3,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:4,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:7,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
-                    column:7,
-                    rows:[]
+                    column:8,
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 }
             ];
             sitePagesFn.setLastFilterInfo('Active filter');
@@ -77,23 +88,28 @@ const sitePages__pageSearch = () => {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Has Custom Tags']
+                    rows:['Has Custom Tags'],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:3,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:4,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:7,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
-                    column:7,
-                    rows:[]
+                    column:8,
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 }
             ];
             sitePagesFn.setLastFilterInfo('Active filter');
@@ -107,12 +123,13 @@ const sitePages__pageSearch = () => {
 
 // called from siteIncludes/partials/site-pages/pages.html
 const sitePages__pages = () => {
-    $(document).ready( function() { 
+    $(document).ready(function() {
+        sitePagesFn.setPagesDataTable(); // always datatable init to be first to ensure rendering of all rows
         sitePagesFn.setPagesTableButtonsFunctions();
-        sitePagesFn.setPagesTablePageBadges();
         sitePagesFn.setPagesTags();
         sitePagesFn.setPagesCats();
-        sitePagesFn.setPagesDataTable();   
+        sitePagesFn.setPagesTablePageBadges();
+       
     });
 }
 
@@ -194,10 +211,10 @@ sitePagesFn = {
         const getFilterValue = (colIndex) => {
 
             return sitePagesFn.pageTableSearchPanesSelection.length === 0 ?
-            null : 
-            getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ?
-                null:
-                getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection).rows.join('; ')
+                null : 
+                getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ?
+                    null:
+                    getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection).rows.join('; ')
         }
 
         const checkFilterItems = () => {
@@ -237,36 +254,21 @@ sitePagesFn = {
         
         checkFilterItems();
 
-        if ( sitePagesFn.pageTableSearchPanesSelection.length > 0 && _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) > 0) {
-            setFilterDisplayValue (
-                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageDetails"]',
-                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageDetails_container"]',
-                getFilterValue(2)
-            );
+        if ( 
+            sitePagesFn.pageTableSearchPanesSelection.length > 0 && 
+            _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) > 0
+            ) 
+        {
 
-            setFilterDisplayValue (
-                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages"]',
-                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages_container"]',
-                getFilterValue(3)
-            );
-
-            setFilterDisplayValue (
-                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageSimilarPages"]',
-                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageSimilarPages_container"]',
-                getFilterValue(4)
-            );
-
-            setFilterDisplayValue (
-                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageTags"]',
-                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageTags_container"]',
-                getFilterValue(7)
-            );
-            
-            setFilterDisplayValue (
-                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageCats"]',
-                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageCats_container"]',
-                getFilterValue(8)
-            );
+            sitePagesFn.pageTableSearchPanesSelection.forEach(selectionPane => {
+                if (selectionPane.name) {
+                    setFilterDisplayValue (
+                        `span[sitefunction="sitePagesDetailsLastFilterDetailsPage${selectionPane.name.replace(/\s+/g, '')}"]`,
+                        `div[sitefunction="sitePagesDetailsLastFilterDetailsPage${selectionPane.name.replace(/\s+/g, '')}_container"]`,
+                        getFilterValue(selectionPane.column)
+                    );
+                }
+            });
 
             $('span[sitefunction="sitePagesDetailsLastFilterLabel"]').text(lastFilterLabel);
 
@@ -274,7 +276,6 @@ sitePagesFn = {
                 containment: "window"
             });
 
-            
             const topPos = $('div[sitefunction="sitePagesDetailsLastFilter"]').css('top');
             const leftPos =  $('div[sitefunction="sitePagesDetailsLastFilter"]').css('left');
             
@@ -289,7 +290,7 @@ sitePagesFn = {
                 const defaultTop = 
                     $(window).height() - 
                     $('div[sitefunction="sitePagesDetailsLastFilter"]').height() - 
-                    sitePagesFn.pageTableSearchPanesSelection.length*4*30; // 30px for each possible row of each filter possible selection
+                    sitePagesFn.pageTableSearchPanesSelection.length*3*30; // 30px for each possible row of each filter possible selection
 
                 // display on the corect position
                 $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
@@ -319,7 +320,6 @@ sitePagesFn = {
         $('span[siteFunction="pageSimilarPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
         });
-        
     },
 
     setPagesTablePageBadges: () => {
@@ -452,7 +452,7 @@ sitePagesFn = {
             return [savedInfoBadges, flags];
     
         }
-    
+        
         $('td[colFunction="pageInfoBadges"]').each( function() {
             const pageSiteInfo = getObjectFromArray(
                 {
@@ -466,15 +466,17 @@ sitePagesFn = {
             savedInfo = pageSavedInfoBadges({ siteInfo: pageSiteInfo, savedInfo: pageSavedInfo });
             const badgesHtml = 
                 `<span>` +
-                siteInfo[0] +
-                savedInfo[0] +
+                    siteInfo[0] +
+                    savedInfo[0] +
                 '</span>';
-            $(this).html(badgesHtml);  
+            $(this).html(badgesHtml);
+            
             $(this).attr('data-raw',JSON.stringify(_.union(siteInfo[1], savedInfo[1])));
             $(`span[cellFunction="siteBadge"][pageTitleReference="${pageSiteInfo.title}"][pagePermaLinkReference="${pageSiteInfo.permalink}"]`).each(function() {
-                $(this).attr('data-raw',JSON.stringify(_.union(siteInfo[1], savedInfo[1])));
+                $(this).attr('data-raw', JSON.stringify(_.union(siteInfo[1], savedInfo[1])));
             })
-        })
+        });
+
     },
 
     pageTableSearchPanesSelection: [], // object to keep the current pagesTable searchPanes current filter
@@ -492,6 +494,7 @@ sitePagesFn = {
                 title:'Title',
                 type: 'html-string',
                 searchable: true,
+                width:'200px'
             }, 
     
             // last update
@@ -501,6 +504,7 @@ sitePagesFn = {
                 className: 'dt-left', 
                 exceptWhenRowSelect: true,
                 searchable: true,
+                width:'100px'
             }, 
     
             // details
@@ -510,7 +514,8 @@ sitePagesFn = {
                 searchable: true, 
                 orderable: false, 
                 exceptWhenRowSelect: true,
-                visible: false,
+                visible: true,
+                width:'400px'
             }, 
 
             // related
@@ -519,7 +524,9 @@ sitePagesFn = {
                 type: 'string',
                 searchable: true, 
                 orderable: false, 
-                exceptWhenRowSelect: true
+                exceptWhenRowSelect: true,
+                visible: false,
+                width:'300px'
             },
 
             // similar
@@ -528,7 +535,9 @@ sitePagesFn = {
                 type: 'string',
                 searchable: true, 
                 orderable: false, 
-                exceptWhenRowSelect: true
+                exceptWhenRowSelect: true,
+                visible: false,
+                width:'300px'
             },
             
             // excerpt
@@ -538,7 +547,8 @@ sitePagesFn = {
                 exceptWhenRowSelect: true,
                 orderable: false,
                 searchable: true,
-                visible: false
+                visible: false,
+                width:'400px'
             },
 
             // auto summary
@@ -548,7 +558,8 @@ sitePagesFn = {
                 exceptWhenRowSelect: true,
                 searchable: true,
                 orderable: false,
-                visible: false
+                visible: false,
+                width:'400px'
             },
 
             // tags
@@ -558,7 +569,8 @@ sitePagesFn = {
                 exceptWhenRowSelect: true,
                 searchable: true,
                 orderable: false,
-                visible: false
+                visible: true,
+                width:'300px'
             },
 
              // cats
@@ -568,17 +580,19 @@ sitePagesFn = {
                 exceptWhenRowSelect: true,
                 searchable: true,
                 orderable: false,
-                visible: false
+                visible: true,
+                width:'300px'
             }
         ];
 
         const commonAdditionalTableSettings = {
             scrollX: true,
+
             fixedColumns: {
-                "left": 1
+                leftColumns: 1
             },
 
-            autoWidth: true,
+            //autoWidth: false,
 
             scrollCollapse: false, // stay at fixed scrollY height and avoid the bottom of table to bounce up and down
             scrollY: '30vh', 
@@ -773,6 +787,7 @@ sitePagesFn = {
     },
 
     onSearchPanesSelectionChange: (tableSearchPanesSelection) => {
+        //console.log(tableSearchPanesSelection)
         sitePagesFn.refreshLastFilterInfo(tableSearchPanesSelection);
     },
 
@@ -783,13 +798,31 @@ sitePagesFn = {
 
     postProcessPagesTable: (table, tableUniqueID) => {
         if(table) {
-        // open filter btn from active filter warning box
-        $(document)
-        .off('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]')
-        .on('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]', function() {
-            $('span[siteFunction="sitePagesDetailsShowSearchPanes_loader"]').removeClass('d-none');
-            setTimeout(()=>$(`button[id="tableSearchPanes_${tableUniqueID}"]`).click(), 100);
-    });
+            // open filter btn from active filter warning box
+            $(document)
+                .off('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]')
+                .on('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]', function() {
+                    $('span[siteFunction="sitePagesDetailsShowSearchPanes_loader"]').removeClass('d-none');
+                    setTimeout(()=>{
+                        table.helpers.triggerApplyActiveFilter(tableUniqueID);
+                    }, 100);
+                });
+            
+            // clear filter btn from active filter warning box
+            $(document)
+                .off('click', 'button[siteFunction="sitePagesDetailsClearFilter"]')
+                .on('click', 'button[siteFunction="sitePagesDetailsClearFilter"]', function() {
+                    $('span[siteFunction="sitePagesDetailsClearFilter_loader"]').removeClass('d-none');
+                    
+                    setTimeout(()=>{
+                        table.helpers.clearActiveFilter(tableUniqueID)
+                        sitePagesFn.handleDropdownClassOverlap();
+                        $('span[siteFunction="sitePagesDetailsClearFilter_loader"]').addClass('d-none');
+                    }, 100);
+
+                    sitePagesFn.pageTableSearchPanesSelection = [];
+                    
+                });
 
             sitePagesFn.addAdditionalPagesTableButtons(table);
         }   
@@ -995,26 +1028,33 @@ sitePagesFn = {
         $('#showSavedItems').off('click').click( function() {
             $('#site_pages_details').removeClass('d-none');
             $('div[sitefunction="sitePagesDetails"]').fadeIn();
+            table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Is Saved']
+                    rows:['Is Saved'],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    
                 },
                 {
                     column:3,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:4,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
                     column:7,
-                    rows:[]
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 },
                 {
-                    column:7,
-                    rows:[]
+                    column:8,
+                    rows:[],
+                    get name() {return $(table.column(this.column).header()).text().trim()}
                 }
             ];
             sitePagesFn.rebuildPagesTableSearchPanes();
@@ -1058,10 +1098,3 @@ sitePagesFn = {
         });
     },
 }
-$('table[siteFunction="sitePagesDetailsPageTable"]').on('preXhr.dt', function() {
-    tconsole.log('1');
-});
-
-$('table[siteFunction="sitePagesDetailsPageTable"]').on('xhr.dt', function() {
-    tconsole.log('2');
-});

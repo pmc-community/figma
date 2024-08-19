@@ -371,7 +371,7 @@
     }
 
     #{map-get($tableElements, searchPanesActiveFilterWarning)} {
-        width: $sideBarFixedWidth;
+        width: $tableSearchPanesActiveFilterWarningWidth;
         z-index: $tableSearchPanesActiveFilterWarningZIndex;
         position: $tableSearchPanesActiveFilterWarningPosition;
         font-size: $tableSearchPanesActiveFilterWarningFontSize;

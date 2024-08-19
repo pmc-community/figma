@@ -434,6 +434,19 @@ const setDataTable = (
         } || null
         */
 ) => {
+
+    const $loading = $(
+        `
+            <div id="dataTableLoading" class="d-flex justify-content-center align-items-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `
+    );
+    $(tableSelector).parent().prepend($loading);
+    $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
+
     // ONLY searchPanes TRIGGERED BY BUTTON IS AVALILABLE
     // OTHERWISE THE searchPanes LOGIC WILL FAIL AND WILL RAISE ERRORS
     const bottom2Buttons = searchPanes ?
@@ -479,17 +492,20 @@ const setDataTable = (
     const searchPanesBtnText = () => {
         return (
             `
-                <span
-                    siteFunction="tableSearchPanes_loader" 
-                    class="spinner-border spinner-border-sm mr-1 d-none"
-                    aria-hidden="true">
-                </span>
-                <span role="status">
-                    Filter
-                </span>
+                <div>
+                    <span
+                        siteFunction="tableSearchPanes_loader" 
+                        class="spinner-border spinner-border-sm mr-1 d-none"
+                        aria-hidden="true">
+                    </span>
+                    <span role="status">
+                        Filter
+                    </span>
+                </div>
             `
         );
-    }
+    }; // should be defined here because is used in defaultSettings object (defaultSettings.language.searchPanes)
+
     const defaultSettings = {
         paging: true,
         pageLength: 5,
@@ -520,29 +536,13 @@ const setDataTable = (
         language: {
             searchPanes: {
                 clearMessage: 'Clear All',
-                collapse: 
-                { 0: searchPanesBtnText(), _: searchPanesBtnText()},
-                //collapse: { 0: 'Filter', _: 'Filters (%d)' },
-                //count: '{total} found',
-                //countFiltered: '{shown} / {total}'
+                collapse: { 0: searchPanesBtnText(), _: searchPanesBtnText()},
             }
         },
         
     };
     const allSettings = {...defaultSettings, ...additionalSettings};
     
-    const $loading = $(
-        `
-            <div id="dataTableLoading" class="d-flex justify-content-center align-items-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        `
-    );
-    $(tableSelector).parent().prepend($loading);
-    $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
-
     const createTable_ASYNC = (
         tableSelector,
         tableUniqueID,
@@ -556,6 +556,31 @@ const setDataTable = (
 
             $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
             table = $(tableSelector).DataTable(allSettings);
+
+            // define some helpers
+            const helpers = {
+                autoApplyActiveFilter: async (ç) => {
+                    await $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
+                    await $('.dropdown-menu').hide(); // hide search panes
+                    await $('.dtb-popover-close').click(); // force search panes to close
+                    setTimeout(()=>$('body').click(), 500); // force sitePagesDetailsLastFilter to lose focus
+                },
+
+                clearActiveFilter: (tableUniqueID) => {
+                    $(`#tableSearchPanes_${tableUniqueID}`).click();
+                    $('.dropdown-menu').hide();
+                    $('.dtsp-clearAll').click();
+                    $('.dtb-popover-close').click();
+                    
+                    setTimeout(()=>$('body').click(), 500);   
+                },
+
+                triggerApplyActiveFilter: (tableUniqueID) => {
+                    $(`button[id="tableSearchPanes_${tableUniqueID}"]`).click();
+                }
+            }
+
+            table.helpers = helpers;
 
             // callback to be personalised for each table
             // for post processing the table (i.e. adding buttons based on context)
@@ -643,7 +668,10 @@ const setDataTable = (
                         const selectedRows = searchPaneDataTable.rows({ selected: true });
                         const selectedData = selectedRows.data().toArray();
                         tableSearchPanesSelection.forEach(col => {
-                            if (col.column === mainTableColIndex) col.rows =  selectedData ? selectedData.map(item => item.display) : []
+                            if (col.column === mainTableColIndex) {
+                                col.rows =  selectedData ? selectedData.map(item => item.display) : [];
+                                col.name = $(table.column(mainTableColIndex).header()).text().trim();
+                            }
                         });
             
                     });
@@ -758,20 +786,13 @@ const setDataTable = (
             searchPanes
         ).then((result) => {
 
-            const autoApplyActiveFilter = async (tableUniqueID) => {
-                await $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
-                await $('.dropdown-menu').hide(); // hide search panes
-                await $('.dtb-popover-close').click(); // force search panes to close
-                setTimeout(()=>$('body').click(), 500); // force sitePagesDetailsLastFilter to lose focus
-            }
-
             $('#dataTableLoading').remove(); // remove the table loader placeholder
 
             if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
                 $(tableSelector).show();
             }
             else {
-                autoApplyActiveFilter(result.tableUniqueID);
+                result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
                 $(tableSelector).show(); 
             }
                      
