@@ -390,6 +390,10 @@
         background: $tableFilterProcessingLoaderBackground !important;
     }
 
+    #{map-get($tableElements, tableBody)} {
+        border-bottom-color: $tableOuterBorderBottomColor !important;
+    }
+
 }
 
 // cat search

@@ -189,14 +189,14 @@ sitePagesFn = {
         });
     },
 
-    // pages details table
+    // pages details section
     setLastFilterInfo: (lastFilterLabel) => {
         const getFilterValue = (colIndex) => {
 
             return sitePagesFn.pageTableSearchPanesSelection.length === 0 ?
-            '-' : 
+            null : 
             getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ?
-                '-':
+                null:
                 getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection).rows.join('; ')
         }
 
@@ -222,20 +222,58 @@ sitePagesFn = {
             if( filterCats.length > 0 ) _.find(sitePagesFn.pageTableSearchPanesSelection, { column: 8 }).rows = _.intersection(filterCats, globAllCats);
     
         }
+
+        const setFilterDisplayValue = (selector, selector_container, value) => {
+            if (value) {
+                $(selector).text(value);
+                $(selector_container).show();
+            }
+            else 
+                {
+                    $(selector).text('');
+                    $(selector_container).hide();
+                }
+        }
         
         checkFilterItems();
 
         if ( sitePagesFn.pageTableSearchPanesSelection.length > 0 && _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) > 0) {
-            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageDetails"]').text(getFilterValue(2));
-            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages"]').text(getFilterValue(3));
-            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageSimilarPages"]').text(getFilterValue(4));
-            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageTags"]').text(getFilterValue(7));
-            $('span[sitefunction="sitePagesDetailsLastFilterDetailsPageCats"]').text(getFilterValue(8));
+            setFilterDisplayValue (
+                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageDetails"]',
+                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageDetails_container"]',
+                getFilterValue(2)
+            );
+
+            setFilterDisplayValue (
+                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages"]',
+                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages_container"]',
+                getFilterValue(3)
+            );
+
+            setFilterDisplayValue (
+                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageSimilarPages"]',
+                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageSimilarPages_container"]',
+                getFilterValue(4)
+            );
+
+            setFilterDisplayValue (
+                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageTags"]',
+                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageTags_container"]',
+                getFilterValue(7)
+            );
+            
+            setFilterDisplayValue (
+                'span[sitefunction="sitePagesDetailsLastFilterDetailsPageCats"]',
+                'div[sitefunction="sitePagesDetailsLastFilterDetailsPageCats_container"]',
+                getFilterValue(8)
+            );
+
             $('span[sitefunction="sitePagesDetailsLastFilterLabel"]').text(lastFilterLabel);
 
             $('div[sitefunction="sitePagesDetailsLastFilter"]').draggable({
                 containment: "window"
             });
+
             
             const topPos = $('div[sitefunction="sitePagesDetailsLastFilter"]').css('top');
             const leftPos =  $('div[sitefunction="sitePagesDetailsLastFilter"]').css('left');
@@ -248,16 +286,18 @@ sitePagesFn = {
                     .css('top',`${$(window).height() + 200}px`)
                     .css('left', `${defaultLeft}px`);
                 $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
-                const defaultTop = $(window).height() - $('div[sitefunction="sitePagesDetailsLastFilter"]').height() - 60;
+                const defaultTop = 
+                    $(window).height() - 
+                    $('div[sitefunction="sitePagesDetailsLastFilter"]').height() - 
+                    sitePagesFn.pageTableSearchPanesSelection.length*4*30; // 30px for each possible row of each filter possible selection
 
-                // display on the right position
+                // display on the corect position
                 $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
                 $('div[sitefunction="sitePagesDetailsLastFilter"]')
                     .css('top',`${defaultTop}px`)
                     .css('left', `${defaultLeft}px`);
             }
             $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
-            $('div[sitefunction="sitePagesDetailsLastFilter"]').blur();
         }
         else
             $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
@@ -278,13 +318,6 @@ sitePagesFn = {
         // open page info offcanvas when click on a similar page of a page row from pages table
         $('span[siteFunction="pageSimilarPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
-        });
-
-        // apply filter from active filter warning box
-        $(document)
-            .off('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]')
-            .on('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]', function() {
-                $('button[sitefunction="tableSearchPanes"]').click();
         });
         
     },
@@ -545,12 +578,14 @@ sitePagesFn = {
                 "left": 1
             },
 
-            scrollCollapse: true,
-            scrollY: '30vh',    
+            autoWidth: true,
+
+            scrollCollapse: false, // stay at fixed scrollY height and avoid the bottom of table to bounce up and down
+            scrollY: '30vh', 
 
             initComplete: function(settings, json) {
-                sitePagesFn.forceRedrawPagesTable();
-            },
+                sitePagesFn.forceRedrawPagesTable();    
+            },    
 
             // columnDefs object IS USED ONLY FOR SEARCH PANES
             // WITH THE PURPOSE OF A CLEANER CODE
@@ -574,20 +609,17 @@ sitePagesFn = {
                                     'Has Site Tags',
                                     'Is Saved'
                                 ]);
-                            }, 
-                            (selectedRow, selectedSearchPaneValue)=>{
-                                //console.log(selectedRow);
-                                //console.log(selectedSearchPaneValue);
                             }
                         ),
                         show: true,
                         collapse: true,
                         viewCount: false,
                         initCollapsed: false,
+                        preSelect: true,
                         dtOpts: {
                             select: {
                                 style: 'multi'
-                            }
+                            },
                         },
                     },
                     targets: [2],
@@ -608,6 +640,7 @@ sitePagesFn = {
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        preSelect: true,
                         dtOpts: {
                             select: {
                                 style: 'multi'
@@ -633,6 +666,7 @@ sitePagesFn = {
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        preSelect: true,
                         dtOpts: {
                             select: {
                                 style: 'multi'
@@ -650,12 +684,12 @@ sitePagesFn = {
                             7, 
                             () => {
                                 return new Set(globAllTags);
-                            }, 
-                            (selectedRow, selectedSearchPaneValue)=>{}
+                            }
                         ),
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        preSelect: true,
                         dtOpts: {
                             select: {
                                 style: 'multi'
@@ -680,6 +714,7 @@ sitePagesFn = {
                         show: true,
                         initCollapsed: false,
                         viewCount: false,
+                        preSelect: true,
                         dtOpts: {
                             select: {
                                 style: 'multi'
@@ -706,9 +741,9 @@ sitePagesFn = {
             `table[siteFunction="sitePagesDetailsPageTable"]`,
             `SitePages`,     
             colDefinition,
-            (table) => {sitePagesFn.postProcessPagesTable(table)}, // will execute after the table is created
-            (rowData) => {}, // will execute when click on row
-            additionalTableSettings, // additional datatable settings for this table instance
+            (table) => {sitePagesFn.postProcessPagesTable(table, `SitePages`)},
+            (rowData) => {}, 
+            additionalTableSettings,
             
             // searchPanes general settings
             // specific column searchPane settings are in columnDefs object, inside commonAdditionalTableSettings object 
@@ -719,20 +754,43 @@ sitePagesFn = {
                 searchPanesOpenCallback: () => {
                     // the following line is applicable only to search panes having viewCount = true
                     $('.dtsp-nameCont > :nth-child(2)').removeClass('bg-secondary').addClass('bg-warning').addClass('text-dark');
+                    $('span[siteFunction="sitePagesDetailsShowSearchPanes_loader"]').addClass('d-none');
                 },
                 searchPanesCloseCallback: (tableSearchPanesSelection) => {
-                    sitePagesFn.pageTableSearchPanesSelection = tableSearchPanesSelection;
-                    sitePagesFn.setLastFilterInfo('Active filter');
+                    sitePagesFn.onSearchPanesClose(tableSearchPanesSelection);
                 },
-                searchPanesSelectionChangeCallback: null,
+                searchPanesSelectionChangeCallback: (tableSearchPanesSelection) => {
+                    sitePagesFn.onSearchPanesSelectionChange(tableSearchPanesSelection);
+                },
                 searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection || []
             }
             
         );
     },
 
-    postProcessPagesTable: (table) => {
+    onSearchPanesClose: (tableSearchPanesSelection) => {
+        sitePagesFn.refreshLastFilterInfo(tableSearchPanesSelection);
+    },
+
+    onSearchPanesSelectionChange: (tableSearchPanesSelection) => {
+        sitePagesFn.refreshLastFilterInfo(tableSearchPanesSelection);
+    },
+
+    refreshLastFilterInfo: (tableSearchPanesSelection) => {
+        sitePagesFn.pageTableSearchPanesSelection = tableSearchPanesSelection;
+        sitePagesFn.setLastFilterInfo('Active filter');
+    },
+
+    postProcessPagesTable: (table, tableUniqueID) => {
         if(table) {
+        // open filter btn from active filter warning box
+        $(document)
+        .off('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]')
+        .on('click', 'button[siteFunction="sitePagesDetailsShowSearchPanes"]', function() {
+            $('span[siteFunction="sitePagesDetailsShowSearchPanes_loader"]').removeClass('d-none');
+            setTimeout(()=>$(`button[id="tableSearchPanes_${tableUniqueID}"]`).click(), 100);
+    });
+
             sitePagesFn.addAdditionalPagesTableButtons(table);
         }   
     },
@@ -740,7 +798,7 @@ sitePagesFn = {
     addAdditionalPagesTableButtons: (table) => {
         // post processing table: adding 2 buttons in the bottom2 zone
 
-        gotToTagBtn = {
+        goToTagBtn = {
            attr: {
                siteFunction: 'tableNavigateToTagsSP',
                title: 'Go to tags'
@@ -752,7 +810,7 @@ sitePagesFn = {
            }
        }
     
-       gotToCatsBtn = {
+       goToCatsBtn = {
            attr: {
                siteFunction: 'tableNavigateToCategoriesSP',
                title: 'Go to categories'
@@ -764,8 +822,8 @@ sitePagesFn = {
            }
        }
        const btnArray = [];
-       btnArray.push(gotToTagBtn);
-       btnArray.push(gotToCatsBtn);
+       btnArray.push(goToTagBtn);
+       btnArray.push(goToCatsBtn);
        addAdditionalButtonsToTable(table, 'table[siteFunction="sitePagesDetailsPageTable"]', 'bottom2', btnArray);
     },
 
@@ -907,19 +965,19 @@ sitePagesFn = {
         });
     },
 
-    rebuildPagesTableSearchPanes: () => { 
+    rebuildPagesTableSearchPanes: () => {
+        getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
         let table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
 
-        // SELECTION MUST BE CLEARED, OTHERWISE THE TABL WILL BEHAVE WEIRD
+        // SELECTION MUST BE CLEARED, OTHERWISE THE TABLE WILL BEHAVE WEIRD
         // RETURNING FROM OFFCANVAS ON A FILTERED TABLE WILL LOSE ALL RECORDS EXCEPT THE FILTERED ONES
         // AND THESE CANNOT BE SHOWN EVEN IF CLEARING THE FILTER, ONLY RELOADING PAGE WILL RESTORE ALL RECORDS 
         table.searchPanes.clearSelections();
-        // clean local storage, previous saved searchPanes datatables to not overload local storage
-        getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
 
         // re-build all to capture all page modifications in table and in searchPanes as well
         table.destroy();
         sitePagesFn.setPagesDataTable();
+
     },
 
     // saved items section
@@ -1000,3 +1058,10 @@ sitePagesFn = {
         });
     },
 }
+$('table[siteFunction="sitePagesDetailsPageTable"]').on('preXhr.dt', function() {
+    tconsole.log('1');
+});
+
+$('table[siteFunction="sitePagesDetailsPageTable"]').on('xhr.dt', function() {
+    tconsole.log('2');
+});

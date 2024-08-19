@@ -30,6 +30,7 @@ $tableSearchPanesPaneBackground: $c-white;
 $tableSearchPanesPaneFontColor: $c-black;
 $tableSearchPanesPaneSearchInputBackground: $c-white;
 $tableFilterProcessingLoaderBackground: $c-transparent;
+$tableOuterBorderBottomColor: $tableInnerBorderColor;
 
 $tableElements: (
     tableWrapper: '.table-wrapper',
@@ -51,7 +52,9 @@ $tableElements: (
     searchPanesActiveFilterWarning: 'div[sitefunction="sitePagesDetailsLastFilter"]',
     searchPanesPaneList: '.dtsp-nameColumn',
     searchPanesPaneListItem: '.dtsp-nameCont span',
-    tableFilterProcessingLoader: '.dt-processing,'
+    tableFilterProcessingLoader: '.dt-processing,',
+    //used with cascade:true to avoid black background of "No data in the table" situation on dark theme
+    tableBody: 'div.dt-scroll-body' 
 );
 
 @import 'meta.scss';

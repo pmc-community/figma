@@ -453,7 +453,8 @@ const setDataTable = (
                 text: 'Filter', // this is actually set in defaultSettings object .language.searchPanes
                 attr: {
                     title: 'Advanced filter',
-                    siteFunction: 'tableSearchPanes'
+                    siteFunction: `tableSearchPanes`,
+                    id: `tableSearchPanes_${tableUniqueID}`
                 },
                 className: 'btn-danger btn-sm text-light mb-2',
                 config: {
@@ -474,7 +475,21 @@ const setDataTable = (
                 className: 'btn-primary btn-sm text-light mb-2'
             }
         ];
-
+    
+    const searchPanesBtnText = () => {
+        return (
+            `
+                <span
+                    siteFunction="tableSearchPanes_loader" 
+                    class="spinner-border spinner-border-sm mr-1 d-none"
+                    aria-hidden="true">
+                </span>
+                <span role="status">
+                    Filter
+                </span>
+            `
+        );
+    }
     const defaultSettings = {
         paging: true,
         pageLength: 5,
@@ -483,7 +498,6 @@ const setDataTable = (
         processing: true,
         fixedHeader: true,
         colReorder: false,
-        autoWidth: true,
         deferRender: true, // Defer rendering for speed up
         layout: {
             topStart: {
@@ -506,18 +520,20 @@ const setDataTable = (
         language: {
             searchPanes: {
                 clearMessage: 'Clear All',
-                collapse: { 0: `Filter`, _: 'Filter' },
+                collapse: 
+                { 0: searchPanesBtnText(), _: searchPanesBtnText()},
                 //collapse: { 0: 'Filter', _: 'Filters (%d)' },
                 //count: '{total} found',
                 //countFiltered: '{shown} / {total}'
             }
-        }
+        },
+        
     };
     const allSettings = {...defaultSettings, ...additionalSettings};
     
     const $loading = $(
         `
-            <div id="dataTableLoading" class="d-flex justify-content-center">
+            <div id="dataTableLoading" class="d-flex justify-content-center align-items-center">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
@@ -528,7 +544,8 @@ const setDataTable = (
     $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
 
     const createTable_ASYNC = (
-        tableSelector, 
+        tableSelector,
+        tableUniqueID,
         columnsConfig, 
         callback, 
         callbackClickRow, 
@@ -604,6 +621,7 @@ const setDataTable = (
             // THERE WILL BE ONLY ONE searchPanes CONTAINER ACTIVE AT ONE MOMENT
             // SINCE WE ONLY USE BUTTON ACTIVATED searchPanes
             // AND THE CLASSES ARE ALWAYS THE SAME
+
             let tableSearchPanesSelection = !searchPanes ?
                 [] :
                 !searchPanes.searchPanesCurrentSelection ?
@@ -657,7 +675,7 @@ const setDataTable = (
                     });
                 }
 
-                // PROCESSING WHEN OPEN SEARCH PANES CONTAINER
+                // PROCESSING WHEN SEARCH PANES CONTAINER IS OPEN
                 removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
                 setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
                     // ... here to add search panes post-processing (after searchPanes container is created)
@@ -683,13 +701,13 @@ const setDataTable = (
                         else {
                             setSearchPanesSelection(tableSearchPanesSelection);
                         }
-                        
+                    
                         if (searchPanes.searchPanesOpenCallback) searchPanes.searchPanesOpenCallback();
             
                     }, 100);
                 });
 
-                // PROCESSING WHEN CLOSE SEARCH PANES CONTAINER
+                // PROCESSING WHEN SEARCH PANES CONTAINER IS CLOSED
                 removeObservers('body removal (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
                 setElementRemovalByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
                     setTimeout(() => {
@@ -712,6 +730,7 @@ const setDataTable = (
                     getSearchPanesSelection();
                     if (searchPanes.searchPanesSelectionChangeCallback) searchPanes.searchPanesSelectionChangeCallback(tableSearchPanesSelection);
                 });
+    
             }
 
             // everything set, now we need to resolve the promise 
@@ -719,7 +738,8 @@ const setDataTable = (
             resolve(
                 {
                     table: table,
-                    selection: tableSearchPanesSelection
+                    selection: tableSearchPanesSelection,
+                    tableUniqueID: tableUniqueID
                 }
             );
             
@@ -729,28 +749,32 @@ const setDataTable = (
     // first: create the table, second: apply active searchPanes selection if available
     $(document).ready(function() {   
         createTable_ASYNC(
-            tableSelector, 
+            tableSelector,
+            tableUniqueID, 
             columnsConfig, 
             callback, 
             callbackClickRow, 
             allSettings, 
             searchPanes
         ).then((result) => {
-            const autoApplyActiveFilter = (table) => {
-                $('button[siteFunction="tableSearchPanes"]').click();
-                $('.dropdown-menu').hide();
-                $('.dtb-popover-close').click();
-                $('#dataTableLoading').remove();
-                $(tableSelector).show();                   
+
+            const autoApplyActiveFilter = async (tableUniqueID) => {
+                await $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
+                await $('.dropdown-menu').hide(); // hide search panes
+                await $('.dtb-popover-close').click(); // force search panes to close
+                setTimeout(()=>$('body').click(), 500); // force sitePagesDetailsLastFilter to lose focus
             }
 
+            $('#dataTableLoading').remove(); // remove the table loader placeholder
+
             if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
-                $('#dataTableLoading').remove(); 
                 $(tableSelector).show();
             }
             else {
-                autoApplyActiveFilter(result.table);
-            }         
+                autoApplyActiveFilter(result.tableUniqueID);
+                $(tableSelector).show(); 
+            }
+                     
         });
     });
 }

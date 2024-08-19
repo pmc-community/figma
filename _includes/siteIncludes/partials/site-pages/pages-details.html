@@ -245,76 +245,7 @@
             </table>
             
             <!-- last/active table filter -->
-            <div 
-                sitefunction="sitePagesDetailsLastFilter" 
-                class="d-none alert alert-warning mt-2" role="alert">
-                <div 
-                    sitefunction="sitePagesDetailsLastFilterHeader" 
-                    class="d-flex align-items-center justify-content-between pb-2 border-bottom border-secondary border-opacity-25">
-                    <div>
-                        <span 
-                            class="spinner-grow spinner-grow-sm mr-2 text-danger" 
-                            aria-hidden="true">
-                        </span>
-                        <span 
-                            sitefunction="sitePagesDetailsLastFilterLabel" 
-                            class="fs-6 fw-medium text-black">
-                            Last filter
-                        </span>
-                    </div>
-                    <button 
-                        siteFunction="sitePagesDetailsShowSearchPanes" 
-                        class="btn btn-sm btn-danger text-light"
-                        title="Re-activate/Modify/Clear filter">
-                        Open filter
-                    </button>
-                </div>
-                <div 
-                    sitefunction="sitePagesDetailsLastFilterDetails" 
-                    class="pt-2">
-
-                    <span class="d-block text-black">
-                        <span class="fw-medium text-black">Details:</span>
-                        <span 
-                            class="text-primary" 
-                            sitefunction="sitePagesDetailsLastFilterDetailsPageDetails">
-                        </span>
-                    </span>
-
-                    <span class="d-block text-black">
-                        <span class="fw-medium text-black">Related pages:</span>
-                        <span 
-                            class="text-primary" 
-                            sitefunction="sitePagesDetailsLastFilterDetailsPageRelatedPages">
-                        </span>
-                    </span>
-
-                    <span class="d-block text-black">
-                        <span class="fw-medium text-black">Similar pages:</span>
-                        <span 
-                            class="text-primary" 
-                            sitefunction="sitePagesDetailsLastFilterDetailsPageSimilarPages">
-                        </span>
-                    </span>
-
-                    <span class="d-block text-black">
-                        <span class="fw-medium text-black">Tags:</span>
-                        <span 
-                            class="text-primary" 
-                            sitefunction="sitePagesDetailsLastFilterDetailsPageTags">
-                        </span>
-                    </span>
-
-                    <span class="d-block text-black">
-                        <span class="fw-medium text-black">Categories:</span>
-                        <span 
-                            class="text-primary" 
-                            sitefunction="sitePagesDetailsLastFilterDetailsPageCats">
-                        </span>
-                    </span>
-
-                </div>                
-            </div>
+            {% include siteIncludes/partials/site-pages/last-filter.html %}
                
         </div>
 

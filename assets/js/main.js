@@ -24,7 +24,19 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = (pageObj = null) => {
-    $('body').css('visibility','hidden'); // to avoid the fast display of unstyled page before styles are loaded and applied
+    const $loading = $(
+        `
+            <div id="contentLoading" class="d-flex justify-content-center align-items-center d-none" style="position: fixed; top:0; left:0; width:100vw; height: 100vh">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `
+    );
+    // HEADS UP!!!! BODY VISIBILITY IS HIDDEN HERE (from head)
+    $('html').append($loading);
+    $('#contentLoading').removeClass('d-none');
+    $('body').attr('data-instant-intensity', 'viewport').attr('data-instant-vary-accept');
 
     if (isMobileOrTablet()) {
         console.log("Mobile or Tablet detected");
@@ -78,7 +90,6 @@ const customiseTheme = (pageObj = null) => {
         // necessary on mobile for datatables cells, when responsive mode is true for tables
         applyColorSchemaCorrectionsOnTD();
 
-
         // set the reference to the page main info
         $(settings.layouts.contentArea.contentContainer)
             .attr('pagePermalinkRef', pageObj.permalink)
@@ -100,9 +111,10 @@ const customiseTheme = (pageObj = null) => {
         // just to align breadcrumbs to the content
         $('.breadcrumb-nav').addClass('px-5');
 
-        // just to mask the flicker a little, but a preloader should be here
         setTimeout( () => {
             $('body').css('visibility','visible');
+            $('#contentLoading').addClass('d-none');
+        
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
     });
