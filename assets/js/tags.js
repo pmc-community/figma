@@ -979,7 +979,7 @@ const addAdditionalButtons = (table, tag) => {
         className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
         text: 'Site Pages',
         action: () => {
-            window.location.href = '/site-pages'
+            window.location.href = '/site-pages?showPages=1'
         }
     }
     const btnArray = [];

@@ -469,7 +469,7 @@ const setDataTable = (
                     siteFunction: `tableSearchPanes`,
                     id: `tableSearchPanes_${tableUniqueID}`
                 },
-                className: 'btn-danger btn-sm text-light mb-2',
+                className: 'btn-danger btn-sm text-light mb-2 btnSearchPanesFilter',
                 config: {
                     cascadePanes: searchPanes.cascade
                 },
@@ -492,7 +492,7 @@ const setDataTable = (
     const searchPanesBtnText = () => {
         return (
             `
-                <div>
+                <div class="tableSearchPanes_loader">
                     <span
                         siteFunction="tableSearchPanes_loader" 
                         class="spinner-border spinner-border-sm mr-1 d-none"
@@ -513,7 +513,6 @@ const setDataTable = (
         searching: true,
         processing: true,
         fixedHeader: true,
-        colReorder: false,
         deferRender: true, // Defer rendering for speed up
         layout: {
             topStart: {
@@ -557,20 +556,33 @@ const setDataTable = (
             $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
             table = $(tableSelector).DataTable(allSettings);
 
+            // SETTING SOME TABLE OBSERVERS
+            if (searchPanes && searchPanes.enable) {
+                // PROCESSING WHEN FILTER BUTTON IS CREATED
+                removeObservers('body (selector=#tableSearchPanes_SitePages)');
+                setElementCreateBySelectorObserver(`#tableSearchPanes_${tableUniqueID}`, async (node)=> {
+                    // .. here to add some post processing after search panes button (Filter) is created
+                    // HEADS UP!!!
+                    // MODIFICATIONS OF THE DEFAULT HANDLER ARE POSSIBLE BUT MAY GENERATE UNEXPECTED BEHAVIOR
+                    // DUE TO MULTIPLE ASYNC THINGS THAT HAPPENS
+                    //console.log(node)
+                });
+            }
+
             // define some helpers
             const helpers = {
-                autoApplyActiveFilter: async (ç) => {
+                autoApplyActiveFilter: async () => {
                     await $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
                     await $('.dropdown-menu').hide(); // hide search panes
                     await $('.dtb-popover-close').click(); // force search panes to close
                     setTimeout(()=>$('body').click(), 500); // force sitePagesDetailsLastFilter to lose focus
                 },
 
-                clearActiveFilter: (tableUniqueID) => {
-                    $(`#tableSearchPanes_${tableUniqueID}`).click();
-                    $('.dropdown-menu').hide();
-                    $('.dtsp-clearAll').click();
-                    $('.dtb-popover-close').click();
+                clearActiveFilter: async (tableUniqueID) => {
+                    await $(`#tableSearchPanes_${tableUniqueID}`).click();
+                    await $('.dropdown-menu[id!="category-menu-more-list"]').hide();
+                    await $('.dtsp-clearAll').click();
+                    await $('.dtb-popover-close').click();
                     
                     setTimeout(()=>$('body').click(), 500);   
                 },
@@ -589,7 +601,7 @@ const setDataTable = (
             const composeRowClickColumnsSelector = (colDef) => {
                 let notActiveWhenClick = [];
                 colDef.forEach( column => {
-                    if (column && table.column(colDef.indexOf(column)).visible() && table.colReorder.order().indexOf(colDef.indexOf(column)) !== -1) {
+                    if (column  ) {
                         if (column.exceptWhenRowSelect) {
                             notActiveWhenClick.push(colDef.indexOf(column));
                         }
@@ -703,11 +715,11 @@ const setDataTable = (
                     });
                 }
 
+                // SETTING SEARCH PANES OBSERVERS
                 // PROCESSING WHEN SEARCH PANES CONTAINER IS OPEN
                 removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
                 setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
                     // ... here to add search panes post-processing (after searchPanes container is created)
-
                     // using css visibility instead of .hide() because is faster and prevents display of the search panes
                     // when clicking clear filter btn on the active filter warning box
                     $('.dropdown-menu[id!="category-menu-more-list"]').css('visibility','hidden');
@@ -736,7 +748,7 @@ const setDataTable = (
                         else {
                             setSearchPanesSelection(tableSearchPanesSelection);
                         }
-                    
+                        
                         if (searchPanes.searchPanesOpenCallback) searchPanes.searchPanesOpenCallback();
             
                     }, 100);
@@ -807,15 +819,10 @@ const setDataTable = (
     });
 }
 
-const addAdditionalButtonsToTable = (table, tableSelector, zone, btnArray) => {
-    tableConfiguration = table.settings().init();
-    tableConfigurationLayout = tableConfiguration.layout || {};
-    tableConfigurationLayoutZone = tableConfigurationLayout[zone] || {};
-    tableButtonsInZone = tableConfigurationLayoutZone.buttons || [];
-    tableButtonsInZone = [...tableButtonsInZone, ...btnArray];
-    tableConfiguration.layout[zone].buttons = tableButtonsInZone;
-    table.destroy();
-    $(tableSelector).DataTable(tableConfiguration);
+const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnArray) => {
+    btnArray.forEach(btnConfig => {
+        table.button().add(null, btnConfig);
+    });
     applyColorSchemaCorrections();
 }
 
@@ -1010,6 +1017,7 @@ const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => 
         for(const mutation of mutationsList) {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                 mutation.addedNodes.forEach(node => {
+                    //console.log(node)
                     if (
                         node instanceof Element && node.classList.contains(elementClass) || 
                         node instanceof Element &&  _.includes(node.classList.value, elementClass)
@@ -1068,14 +1076,14 @@ const iframe__setElementCreatedByClassObserver = ($elementInsideIFrame, elementC
 }
 
 // observes when the element with selector=selector is created and executes callback function
-const setElementCreateBySelectorObserver = (selector, callback = () => {}) => {
+const setElementCreateBySelectorObserver = (selector, callback = (node=null) => {}) => {
     function handleNewElements(mutationsList) {
         mutationsList.forEach(function(mutation) {
             if (mutation.type === 'childList') {
                 //console.log(mutation.addedNodes)
                 mutation.addedNodes.forEach(function(node) {
                     if (node.nodeType === 1 && node.matches(selector)) {
-                        callback();
+                        callback(node);
                     }
                 });
             }
@@ -1091,6 +1099,8 @@ const setElementCreateBySelectorObserver = (selector, callback = () => {}) => {
     siteObservers.set(observer, `body (selector=${selector})`); 
     observer.observe(targetNode, config);
 
+    // Return the observer so it can be disconnected if needed
+    return observer;
 }
 
 // same as before but inside any iframe from the page
@@ -1563,6 +1573,8 @@ const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=
             const cells = $(this).find('td').get(); // `.get()` to return an array of DOM elements
             if (cells.length > columnIndex) {
                 const cell = $(cells[columnIndex]);
+                // data-raw should be set always on the first child of the content of the cell
+                // see details below
                 const rawData = cell.children().first().attr('data-raw');
 
                 let cellData;
@@ -1597,8 +1609,9 @@ const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=
             // data-raw should be set always on the first child of the content of the cell 
             // (see _includes/siteIncludes/partials/site-pages/pages-details.html as example)
             // the reason is to optimise filtering when changing selections in search panes
-            // because cell = $(row[columnIndex]) abov returns only the content of the cell (as html)
-            // and putting data-raw as td level means extra iteration in table for gettinf the full td element and extracting data-raw
+            // because cell = $(row[columnIndex]) above returns only the content of the cell (as html)
+            // and putting data-raw as td level means extra iterations in table (many iterations)
+            // for getting the full td element and extracting data-raw
             const rawData = cell.children().first().attr('data-raw');
             let cellData;
             // trying to parse the data we will use for checking the value, should be a valid json array

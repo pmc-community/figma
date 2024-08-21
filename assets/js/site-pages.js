@@ -7,18 +7,31 @@ const sitePages__pageSearch = () => {
 
         sitePagesFn.handleOffCanvasClose();
         sitePagesFn.setPageSearchButtonsFunctions();
-
         sitePagesFn.setPageSearchList();
-
         table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-        const getColName = (tbl,index) => {
-            return $(tbl.column(index).header()).text().trim() 
+
+        const isOnlyShowPages = () => {
+            let queryString = window.location.search;
+            if (queryString.startsWith('?')) {
+                queryString = queryString.slice(1);
+            }       
+            const params = new URLSearchParams(queryString);  
+            return params.has('showPages') && params.get('showPages') === '1' && params.toString() === 'showPages=1';
         }
 
         showPages = readQueryString('showPages');
-        if (showPages === '1') $('#site_pages_details').removeClass('d-none');
-
         showSaved = readQueryString('showSaved');
+        showCustomCats = readQueryString('showCustomCats');
+        showCustomTags = readQueryString('showCustomTags');
+
+        if (showPages === '1') {
+            $('#site_pages_details').removeClass('d-none');
+            if (isOnlyShowPages()) {
+                history.replaceState({}, document.title, window.location.pathname);
+                return;
+            }       
+        }
+        
         if (showSaved === '1')  {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
@@ -53,7 +66,6 @@ const sitePages__pageSearch = () => {
             return;
         }
 
-        showCustomCats = readQueryString('showCustomCats');
         if (showCustomCats === '1')  {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
@@ -88,7 +100,6 @@ const sitePages__pageSearch = () => {
             return;
         }
 
-        showCustomTags = readQueryString('showCustomTags');
         if (showCustomTags === '1')  {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
@@ -329,6 +340,10 @@ sitePagesFn = {
         $('span[siteFunction="pageSimilarPageLinkToOffCanvas"]').off('click').click( function() {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
         });
+
+        // HEADS UP!!!
+        // HANDLERS FOR OPEN AND CLOSE ACTIVE FILTER ARE DEFINED IN postProcessPagesTable
+        // BEAUSE WE NEED tableUniqueID AS PARAMETER
     },
 
     setPagesTablePageBadges: () => {
@@ -496,6 +511,7 @@ sitePagesFn = {
             $(tableSelector).DataTable().destroy();
             $(tableSelector).removeAttr('id').removeAttr('aria-describedby');
         }
+
         const colDefinition = [
             // page name
             {
@@ -601,18 +617,17 @@ sitePagesFn = {
                 leftColumns: 1
             },
 
-            //autoWidth: false,
-
             scrollCollapse: false, // stay at fixed scrollY height and avoid the bottom of table to bounce up and down
             scrollY: '30vh', 
 
             initComplete: function(settings, json) {
-                sitePagesFn.forceRedrawPagesTable();    
+                //sitePagesFn.forceRedrawPagesTable();    
             },    
 
             // columnDefs object IS USED ONLY FOR SEARCH PANES
-            // WITH THE PURPOSE OF A CLEANER CODE
-            // SEARCH PANES CAN BE DEFINED IN THE SAME WAY IN colDefinition OBJECT
+            // WITH THE PURPOSE OF HAVING A CLEANER CODE
+            // SEARCH PANES CAN BE DEFINED IN THE SAME WAY IN colDefinition OBJECT 
+            // BUT WE LIKE TO HAVE THEM HERE
             // columns are defined in colDefinition object
             columnDefs: [
                 // page details
@@ -827,18 +842,15 @@ sitePagesFn = {
             $(document)
                 .off('click', 'button[siteFunction="sitePagesDetailsClearFilter"]')
                 .on('click', 'button[siteFunction="sitePagesDetailsClearFilter"]', function() {
-                    $('span[siteFunction="sitePagesDetailsClearFilter_loader"]').removeClass('d-none');
-                    
+                    $('span[siteFunction="sitePagesDetailsClearFilter_loader"]').removeClass('d-none');  
                     setTimeout(()=>{
                         table.helpers.clearActiveFilter(tableUniqueID);
                         sitePagesFn.handleDropdownClassOverlap();
                         $('span[siteFunction="sitePagesDetailsClearFilter_loader"]').addClass('d-none');
                     }, 100);
-
-                    sitePagesFn.pageTableSearchPanesSelection = [];
-                    
+                    sitePagesFn.pageTableSearchPanesSelection = [];     
                 });
-
+            
             sitePagesFn.addAdditionalPagesTableButtons(table);
         }   
     },

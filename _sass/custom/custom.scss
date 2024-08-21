@@ -78,7 +78,9 @@ $alwaysWhiteTextElements: (
     'button[siteFunction="tableNavigateToSavedItems"] span', 
     'button[siteFunction="tablePageCustomNotesRemoveAllNotes"] span',
     'button[siteFunction="tableNavigateToCategoriesSP"] span',
-    'button[siteFunction="tableClearFiltersSP"] span'
+    'button[siteFunction="tableClearFiltersSP"] span',
+    'button[siteFunction="sitePagesDetailsShowSearchPanes"] span',
+    'button[siteFunction="sitePagesDetailsClearFilter"] span'
 );
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {
