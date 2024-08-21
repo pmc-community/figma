@@ -2,6 +2,7 @@
 
 // called from siteIncludes/partials/site-pages/pageSearch.html
 const sitePages__pageSearch = () => {
+    let table; // define table here, otherwise the getters blow will bot have access to it and will raise errors
     $(document).ready(function() {
 
         sitePagesFn.handleOffCanvasClose();
@@ -10,6 +11,10 @@ const sitePages__pageSearch = () => {
         sitePagesFn.setPageSearchList();
 
         table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+        const getColName = (tbl,index) => {
+            return $(tbl.column(index).header()).text().trim() 
+        }
+
         showPages = readQueryString('showPages');
         if (showPages === '1') $('#site_pages_details').removeClass('d-none');
 
@@ -19,27 +24,27 @@ const sitePages__pageSearch = () => {
                 {
                     column:2,
                     rows:['Is Saved'],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:3,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:4,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:7,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:8,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                   get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
             sitePagesFn.setLastFilterInfo('Active filter');
@@ -54,27 +59,27 @@ const sitePages__pageSearch = () => {
                 {
                     column:2,
                     rows:['Has Custom Categories'],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:3,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:4,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:7,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:8,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
             sitePagesFn.setLastFilterInfo('Active filter');
@@ -89,27 +94,27 @@ const sitePages__pageSearch = () => {
                 {
                     column:2,
                     rows:['Has Custom Tags'],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:3,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:4,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:7,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:8,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
             sitePagesFn.setLastFilterInfo('Active filter');
@@ -150,6 +155,10 @@ sitePagesFn = {
         // the search panes in order to auto apply selections.
         // this will make the More button from the main menu to not show its dropdown-menu anymore
         setTimeout(()=>$(`#${settings.catMenuMoreBtn}`).children().last().css('display', ''), 100);
+    },
+
+    getColName: (tbl,index) => {
+        return $(tbl.column(index).header()).text().trim() 
     },
 
     // search page section
@@ -471,7 +480,6 @@ sitePagesFn = {
                 '</span>';
             $(this).html(badgesHtml);
             
-            $(this).attr('data-raw',JSON.stringify(_.union(siteInfo[1], savedInfo[1])));
             $(`span[cellFunction="siteBadge"][pageTitleReference="${pageSiteInfo.title}"][pagePermaLinkReference="${pageSiteInfo.permalink}"]`).each(function() {
                 $(this).attr('data-raw', JSON.stringify(_.union(siteInfo[1], savedInfo[1])));
             })
@@ -482,10 +490,11 @@ sitePagesFn = {
     pageTableSearchPanesSelection: [], // object to keep the current pagesTable searchPanes current filter
 
     setPagesDataTable: () => {
+        const tableSelector = 'table[siteFunction="sitePagesDetailsPageTable"]';
 
-        if( $.fn.DataTable.isDataTable(`table[siteFunction="sitePagesDetailsPageTable"]`) ) {
-            $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable().destroy();
-            $(`table[siteFunction="sitePagesDetailsPageTable"]`).removeAttr('id').removeAttr('aria-describedby');
+        if( $.fn.DataTable.isDataTable(tableSelector) ) {
+            $(tableSelector).DataTable().destroy();
+            $(tableSelector).removeAttr('id').removeAttr('aria-describedby');
         }
         const colDefinition = [
             // page name
@@ -610,7 +619,7 @@ sitePagesFn = {
                 {
                     searchPanes: {
                         options:  getSearchPaneOptionsFromArray(
-                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            tableSelector, 
                             2, 
                             ()=>{
                                 return new Set([
@@ -623,6 +632,13 @@ sitePagesFn = {
                                     'Has Site Tags',
                                     'Is Saved'
                                 ]);
+                            },
+                            (row, value) => {
+                                // for filtering based on search panes selection, the code is iterating each table row for each selection
+                                // (see utilities.getSearchPaneOptionsFromArray)
+                                // this is the current iteration
+                                // can be useful to overwrite the behaviour of iteration based on some conditions
+                                // row=current row; value=current selection in the search pane in which this callback is executed
                             }
                         ),
                         show: true,
@@ -644,7 +660,7 @@ sitePagesFn = {
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
-                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            tableSelector, 
                             3, 
                             () => {
                                 return new Set (allPagesTitles(pageList, 'relatedPages'))
@@ -670,12 +686,12 @@ sitePagesFn = {
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
-                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            tableSelector, 
                             4, 
                             () => {
                                 return new Set (allPagesTitles(pageList, 'similarByContent'))
                             },
-                            (selectedRow, selectedSearchPaneValue)=>{}
+                            (row, value)=>{}
                         ),
                         show: true,
                         initCollapsed: false,
@@ -694,7 +710,7 @@ sitePagesFn = {
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
-                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            tableSelector, 
                             7, 
                             () => {
                                 return new Set(globAllTags);
@@ -717,12 +733,12 @@ sitePagesFn = {
                 {
                     searchPanes: {
                         options: getSearchPaneOptionsFromArray(
-                            'table[siteFunction="sitePagesDetailsPageTable"]', 
+                            tableSelector, 
                             8, 
                             () => {
                                 return new Set(globAllCats);
                             }, 
-                            (selectedRow, selectedSearchPaneValue)=>{}
+                            (row, value)=>{}
                         ),
                 
                         show: true,
@@ -752,7 +768,7 @@ sitePagesFn = {
         const additionalTableSettings = commonAdditionalTableSettings;
 
         setDataTable(
-            `table[siteFunction="sitePagesDetailsPageTable"]`,
+            tableSelector,
             `SitePages`,     
             colDefinition,
             (table) => {sitePagesFn.postProcessPagesTable(table, `SitePages`)},
@@ -787,7 +803,6 @@ sitePagesFn = {
     },
 
     onSearchPanesSelectionChange: (tableSearchPanesSelection) => {
-        //console.log(tableSearchPanesSelection)
         sitePagesFn.refreshLastFilterInfo(tableSearchPanesSelection);
     },
 
@@ -815,7 +830,7 @@ sitePagesFn = {
                     $('span[siteFunction="sitePagesDetailsClearFilter_loader"]').removeClass('d-none');
                     
                     setTimeout(()=>{
-                        table.helpers.clearActiveFilter(tableUniqueID)
+                        table.helpers.clearActiveFilter(tableUniqueID);
                         sitePagesFn.handleDropdownClassOverlap();
                         $('span[siteFunction="sitePagesDetailsClearFilter_loader"]').addClass('d-none');
                     }, 100);
@@ -913,7 +928,6 @@ sitePagesFn = {
             const siteTags = pageSiteInfo === 'none' ? [] : pageSiteInfo['tags'] || [];
             const customTags = getPageTags({siteInfo:{permalink: permalink, title: title}}) || [];
             const allTags = _.union(siteTags, customTags);
-            $(this).attr('data-raw', JSON.stringify(allTags));
 
             let tagsHtml = '';
             siteTags.forEach( tag => {
@@ -971,7 +985,6 @@ sitePagesFn = {
             const siteCats = pageSiteInfo === 'none' ? [] : pageSiteInfo['categories'] || [];
             const customCats = getPageCats({siteInfo:{permalink: permalink, title: title}}) || [];
             const allCats = _.union(siteCats, customCats);
-            $(this).attr('data-raw', JSON.stringify(allCats));
 
             let catsHtml = '';
             siteCats.forEach( cat => {
@@ -1025,6 +1038,7 @@ sitePagesFn = {
             }, 100);
         });
         
+        let table; // define table here, otherwise getters below will not have access to it and will raise errors
         $('#showSavedItems').off('click').click( function() {
             $('#site_pages_details').removeClass('d-none');
             $('div[sitefunction="sitePagesDetails"]').fadeIn();
@@ -1033,28 +1047,28 @@ sitePagesFn = {
                 {
                     column:2,
                     rows:['Is Saved'],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                     
                 },
                 {
                     column:3,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:4,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:7,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
                     column:8,
                     rows:[],
-                    get name() {return $(table.column(this.column).header()).text().trim()}
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
             sitePagesFn.rebuildPagesTableSearchPanes();

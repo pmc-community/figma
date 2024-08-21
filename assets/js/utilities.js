@@ -707,12 +707,19 @@ const setDataTable = (
                 removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
                 setElementCreatedByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
                     // ... here to add search panes post-processing (after searchPanes container is created)
+
+                    // using css visibility instead of .hide() because is faster and prevents display of the search panes
+                    // when clicking clear filter btn on the active filter warning box
+                    $('.dropdown-menu[id!="category-menu-more-list"]').css('visibility','hidden');
+                    $('.dropdown-menu[id!="category-menu-more-list"]').css('position','fixed');
+                    $('.dropdown-menu[id!="category-menu-more-list"]').css('top',`${$(settings.headerAboveContent.headerID).height() + settings.headerAboveContent.offsetWhenScroll}px`);
+                    $('.dropdown-menu[id!="category-menu-more-list"]').css('left','20px');
+                    $('.dropdown-menu[id!="category-menu-more-list"]').draggable({
+                        containment: "window"
+                    });
+                    $('.dropdown-menu[id!="category-menu-more-list"]').css('visibility','visible');
+
                     setTimeout(() => {
-
-                        $('.dropdown-menu').draggable({
-                            containment: "window"
-                        });
-
                         tableSearchPanesSelection = searchPanes.searchPanesCurrentSelection || [];
                         
                         if (tableSearchPanesSelection.length === 0) {
@@ -1556,10 +1563,7 @@ const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=
             const cells = $(this).find('td').get(); // `.get()` to return an array of DOM elements
             if (cells.length > columnIndex) {
                 const cell = $(cells[columnIndex]);
-                const rawData = cell.attr('data-raw');
-                
-                // Debugging: Log cell data and rawData
-                //console.log('Raw Data:', rawData);
+                const rawData = cell.children().first().attr('data-raw');
 
                 let cellData;
                 try {
@@ -1585,31 +1589,28 @@ const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=
     // THIS IS AFTER DATATABLE INIT, 
     // WE CANNOT ACCESS THE CELLS USING JQERY SINCE SOME COLUMNS MAY BE NOT VISIBLE = NOT IN THE DOM
     // WE CAN ACCESS CELLS USING datatable OBJECT IF WE NEED TO DO SO
+
     return Array.from(values).map(value => ({
         label: `${value}`,
         value: function(row) {
             const cell = $(row[columnIndex]);
+            // data-raw should be set always on the first child of the content of the cell 
+            // (see _includes/siteIncludes/partials/site-pages/pages-details.html as example)
+            // the reason is to optimise filtering when changing selections in search panes
+            // because cell = $(row[columnIndex]) abov returns only the content of the cell (as html)
+            // and putting data-raw as td level means extra iteration in table for gettinf the full td element and extracting data-raw
             const rawData = cell.children().first().attr('data-raw');
-
             let cellData;
             // trying to parse the data we will use for checking the value, should be a valid json array
             try { cellData = JSON.parse(rawData); } 
             catch (e) { cellData = rawData; }
 
             // if callback is provided, we send back some info, maybe is needed for extra custom processing
-            // row reference is given by page object; the current searcPane selection is given by value
-            if (callback) {
-                const permalink = cell.attr('pagePermalinkReference');
-                const title = cell.attr('pageTitleReference');
-                callback({ permalink: permalink, title: title }, value);
-            }
+            if (callback) callback(row, value);
             
             // Check if cellData is an array or a single value
-            if (Array.isArray(cellData)) {
-                return cellData.includes(value);
-            } else {
-                return cellData === value;
-            }
+            if (Array.isArray(cellData)) return cellData.includes(value);
+            else return cellData === value;
         },
         viewCount: 0
     }));
@@ -1701,5 +1702,4 @@ const iframe__addCustomScriptsToIFrames = ($elementInsideIFrame, cssScripts = []
         $($iframeBody).append(`<script src="/assets/js/${script}"></script>`);
     })
 }
-
 
