@@ -67,6 +67,10 @@ jobs:
           HS_FEDBACK_FORM_ID: ${{ secrets.HS_FEDBACK_FORM_ID }}
           HS_REGION: ${{ secrets.HS_REGION }}
 
+      - name: Save file timestamps
+        run: |
+          find . -type f -exec stat --format='%Y %n' {} \; > file_timestamps.txt
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
@@ -80,3 +84,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      
+      - name: Restore file timestamps
+        run: |
+          while read -r timestamp filename; do
+            touch -d @"$timestamp" "$filename"
+          done < file_timestamps.txt
