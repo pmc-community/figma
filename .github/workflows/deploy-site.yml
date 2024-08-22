@@ -99,5 +99,9 @@ jobs:
       - name: Restore file timestamps
         run: |
           while read -r timestamp filename; do
+          if [ -f "$filename" ]; then
             touch -d @"$timestamp" "$filename"
+          else
+            echo "File not found: $filename, skipping."
+          fi
           done < file_timestamps.txt
