@@ -21,6 +21,8 @@ $themeSwitcherBorder:$b-SolThinNeutral;
 $themeStwitcherPadding: $p-5px;
 $themeSwitcherBorderRadius: $brad-50p;
 
+$menuMoreDividerColor: $c-grey-alt-1;
+
 @import 'meta.scss';
 
 // STYLE HEADER ABOVE THE CONTENT
@@ -32,7 +34,8 @@ $siteHeaderElements: (
     algoliaSearchBtn: '#docsearch',
     algoliaSearchBox: '.DocSearch-Container',
     defaultSearch: '.search', //may be not active if site search is with algolia. (de)activation in _config.yml
-    themeSwitcher: '#themeSwitcher'
+    themeSwitcher: '#themeSwitcher',
+    menuMoreDivider: 'hr[class="dropdown-divider"]'
     
 );
 

@@ -226,6 +226,10 @@
     #{map-get($siteHeaderElements, themeSwitcher)}:hover{
         transform: scale(1.1);
     }
+
+    #{map-get($siteHeaderElements, menuMoreDivider)} {
+        border-color: $menuMoreDividerColor !important;
+    }
 }
 
 // tag search

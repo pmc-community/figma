@@ -80,7 +80,8 @@ $alwaysWhiteTextElements: (
     'button[siteFunction="tableNavigateToCategoriesSP"] span',
     'button[siteFunction="tableClearFiltersSP"] span',
     'button[siteFunction="sitePagesDetailsShowSearchPanes"] span',
-    'button[siteFunction="sitePagesDetailsClearFilter"] span'
+    'button[siteFunction="sitePagesDetailsClearFilter"] span',
+    'button[siteFunction="btnMenuMoreToggle"] span'
 );
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {

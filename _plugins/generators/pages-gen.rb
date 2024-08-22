@@ -17,27 +17,38 @@ module Jekyll
     # content.index(site.data["siteConfig"]["marker404"])
 
     def generate(site)
+
+      # we generate the list of pages  in a separate file because we need to preserve the documents timestamps
+      # if we do not do so, timestamps will be replaced when deploying to github or netlily or similar
+      # we generate the list of pages only if there are changes in the content from doc-contents
+      
       page_list_path = "#{site.data["buildConfig"]["rawContentFolder"]}/page_list.json"
-      page_list = File.exist?(page_list_path)? FileUtilities.read_json_file(page_list_path) : []
-      if (page_list.length == 0 )
+      doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
+      doc_list = []
+      documents = []
+      Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
+          front_matter, _ = FileUtilities.parse_front_matter(File.read(file_path))
+          doc_list << file_path if front_matter && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
+          documents << front_matter if front_matter && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
+      end
+
+      # we create a temp  site.data['page_list'] to be able to generate the raw content
+      # and to see if there are modifications of the content files
+      site.data['page_list'] = documents.to_json
+      # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
+      FileUtilities.generate_raw_content(site)
+
+      modified_files_path = "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json"
+      modified_files = File.exist?(modified_files_path)? FileUtilities.read_json_file(modified_files_path) : {"files" => []}
+
+      if (modified_files["files"].length > 0 )
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ...")
-        doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
-        documents = []
+      
         numPages = 0
         site.data['page_list'] = [].to_json
 
-          # LSIT OF PAGES
-        Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
-            
-          # HEADS UP!!!
-          # CONTENT MAY CONTAIN LIQUID TAGS WHICH ARE NOT YET REPLACED WITH VALUES 
-          # AT THE TIME WHEN THIS PLUGIN RUNS, SO IS NOT ADVISABLE TO BE USED IN THE PLUGIN LOGIC 
-          content = File.read(file_path)
-          front_matter = {}
-          if content =~ /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
-            front_matter = YAML.load(Regexp.last_match[1])
-          end
-
+        doc_list.each do |file_path|
+          front_matter, _ = FileUtilities.parse_front_matter(File.read(file_path))
           title = front_matter['title']
           permalink = front_matter['permalink']
           categories = front_matter['categories']
@@ -60,12 +71,12 @@ module Jekyll
             'autoSummary' => "",
             'similarByContent': [],
             'readingTime': 0
-          } 
+          }
+
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
           numPages += 1 if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
         end
         FileUtilities.overwrite_file(page_list_path, JSON.pretty_generate(documents))  
-        #site.data['page_list'] = documents.to_json
         Globals.moveUpOneLine
         Globals.clearLine
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (#{numPages} pages)")
@@ -75,9 +86,6 @@ module Jekyll
 
       site.data['page_list'] = FileUtilities.read_json_file(page_list_path).to_json
       
-      # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
-      FileUtilities.generate_raw_content(site)
-
       # PAGE DEPENDENCIES
       FileUtilities.generate_doc_dependencies(site)
     end

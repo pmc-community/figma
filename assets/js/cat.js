@@ -526,7 +526,7 @@ const addAdditionalCatButtons = (table, cat) => {
            title: 'Go to saved items'
        },
        className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
-       text: 'Site Pages',
+       text: 'Documents',
        action: () => {
            window.location.href = '/site-pages?showPages=1'
        }
