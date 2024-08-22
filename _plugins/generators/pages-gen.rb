@@ -17,61 +17,67 @@ module Jekyll
     # content.index(site.data["siteConfig"]["marker404"])
 
     def generate(site)
-      Globals.putsColText(Globals::PURPLE,"Generating list of pages ...")
-      doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
-      documents = []
-      numPages = 0
-      site.data['page_list'] = [].to_json
+      page_list_path = "#{site.data["buildConfig"]["rawContentFolder"]}/page_list.json"
+      page_list = File.exist?(page_list_path)? FileUtilities.read_json_file(page_list_path) : {"files" => []}
+      if (page_list.length > 0 )
+        Globals.putsColText(Globals::PURPLE,"Generating list of pages ...")
+        doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
+        documents = []
+        numPages = 0
+        site.data['page_list'] = [].to_json
 
-        # LSIT OF PAGES
-      Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
-          
-        # HEADS UP!!!
-        # CONTENT MAY CONTAIN LIQUID TAGS WHICH ARE NOT YET REPLACED WITH VALUES 
-        # AT THE TIME WHEN THIS PLUGIN RUNS, SO IS NOT ADVISABLE TO BE USED IN THE PLUGIN LOGIC 
-        content = File.read(file_path)
-        front_matter = {}
-        if content =~ /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
-          front_matter = YAML.load(Regexp.last_match[1])
+          # LSIT OF PAGES
+        Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
+            
+          # HEADS UP!!!
+          # CONTENT MAY CONTAIN LIQUID TAGS WHICH ARE NOT YET REPLACED WITH VALUES 
+          # AT THE TIME WHEN THIS PLUGIN RUNS, SO IS NOT ADVISABLE TO BE USED IN THE PLUGIN LOGIC 
+          content = File.read(file_path)
+          front_matter = {}
+          if content =~ /^(---\s*\n.*?\n?)^(---\s*$\n?)/m
+            front_matter = YAML.load(Regexp.last_match[1])
+          end
+
+          title = front_matter['title']
+          permalink = front_matter['permalink']
+          categories = front_matter['categories']
+          tags = front_matter['tags']
+          excerpt = front_matter['excerpt']
+          lastUpdate = File.mtime(file_path)
+          createTime = File.birthtime(file_path)
+
+          document_data = {
+            'title' => title,
+            'permalink' => permalink,
+            'categories' => categories || [],
+            'tags' => tags || [],
+            'excerpt' => excerpt || "",
+            'lastUpdate' => lastUpdate || "",
+            'lastUpdateUTC' => lastUpdate.to_time.to_i || 0,
+            'createTime' => createTime || "",
+            'createTimeUTC' => createTime.to_time.to_i || 0,
+            'relatedPages' => [],
+            'autoSummary' => "",
+            'similarByContent': [],
+            'readingTime': 0
+          } 
+          documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
+          numPages += 1 if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
         end
+        FileUtilities.overwrite_file(page_list_path, JSON.pretty_generate(documents.to_json))  
+        #site.data['page_list'] = documents.to_json
+        Globals.moveUpOneLine
+        Globals.clearLine
+        Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (#{numPages} pages)")
+      end
 
-        title = front_matter['title']
-        permalink = front_matter['permalink']
-        categories = front_matter['categories']
-        tags = front_matter['tags']
-        excerpt = front_matter['excerpt']
-        lastUpdate = File.mtime(file_path)
-        createTime = File.birthtime(file_path)
-
-        document_data = {
-          'title' => title,
-          'permalink' => permalink,
-          'categories' => categories || [],
-          'tags' => tags || [],
-          'excerpt' => excerpt || "",
-          'lastUpdate' => lastUpdate || "",
-          'lastUpdateUTC' => lastUpdate.to_time.to_i || 0,
-          'createTime' => createTime || "",
-          'createTimeUTC' => createTime.to_time.to_i || 0,
-          'relatedPages' => [],
-          'autoSummary' => "",
-          'similarByContent': [],
-          'readingTime': 0
-        } 
-        documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
-        numPages += 1 if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
-      end  
-      site.data['page_list'] = documents.to_json
-      Globals.moveUpOneLine
-      Globals.clearLine
-      Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (#{numPages} pages)")
-
+      site.data['page_list'] = FileUtilities.read_json_file(page_list_path)
+      
       # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
       FileUtilities.generate_raw_content(site)
 
       # PAGE DEPENDENCIES
       FileUtilities.generate_doc_dependencies(site)
-
     end
 
   end
