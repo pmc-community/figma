@@ -67,16 +67,6 @@ jobs:
           HS_FEDBACK_FORM_ID: ${{ secrets.HS_FEDBACK_FORM_ID }}
           HS_REGION: ${{ secrets.HS_REGION }}
 
-      - name: Save file timestamps
-        run: |
-          find . -type f -exec stat --format='%Y %n' {} \; > file_timestamps.txt
-  
-      - name: Upload file_timestamps artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: file-timestamps
-          path: file_timestamps.txt
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
@@ -87,21 +77,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Download file_timestamps artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: file-timestamps
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      
-      - name: Restore file timestamps
-        run: |
-          while read -r timestamp filename; do
-          if [ -f "$filename" ]; then
-            touch -d @"$timestamp" "$filename"
-          else
-            echo "File not found: $filename, skipping."
-          fi
-          done < file_timestamps.txt
