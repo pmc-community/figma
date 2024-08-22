@@ -555,7 +555,7 @@ const setDataTable = (
 
             $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
             table = $(tableSelector).DataTable(allSettings);
-
+            
             // SETTING SOME TABLE OBSERVERS
             if (searchPanes && searchPanes.enable) {
                 // PROCESSING WHEN FILTER BUTTON IS CREATED
@@ -598,24 +598,35 @@ const setDataTable = (
             // for post processing the table (i.e. adding buttons based on context)
             callback(table);
 
-            const composeRowClickColumnsSelector = (colDef) => {
-                let notActiveWhenClick = [];
-                colDef.forEach( column => {
-                    if (column  ) {
+            // set the columns which are active when click on row
+            // HEADS UP!!! THIS WORKS ONLY WHEN THE callbackClickRow IS USED
+            const composeRowClickColumnsSelector = () => {
+                // safer to read the columns defs from the table settings
+                // because it may not be always diectly available in all contexts
+                // i.e. when returning from page info offcanvas, columnsConfig is not available anymore for direct access
+                colDef = tableConfiguration = table.settings().init().columns;
+                colDefIndex = 0;
+                colVisIndex = 0;
+                disabledForClick = [];
+                colDef.forEach((column) => {
+                    if (table.column(colDefIndex).visible() === true) {
                         if (column.exceptWhenRowSelect) {
-                            notActiveWhenClick.push(colDef.indexOf(column));
+                            colVisIndex += 1;
+                            disabledForClick.push(colVisIndex+1);
                         }
                     }
+                    colDefIndex += 1;
                 });
+
                 let rowClickSelector = 'tbody tr'
 
-                if (notActiveWhenClick.length > 0) {
+                if (disabledForClick.length > 0) {
                     rowClickSelector = 'tbody td'
-                    notActiveWhenClick.forEach( columnIndex => {
-                        rowClickSelector += `:not(:nth-child(${columnIndex+1}))`
+                    disabledForClick.forEach( columnIndex => {
+                        rowClickSelector += `:not(:nth-child(${columnIndex}))`
                     });
                 }
-                return rowClickSelector
+                return rowClickSelector;
             }
             
             // HEADS UP!!!
@@ -643,7 +654,13 @@ const setDataTable = (
                 }
             }
 
-            table.off('click').on('click', composeRowClickColumnsSelector(columnsConfig), handleRowClick);
+            // set clickabl columns as per the col definition in columnsConfig object (which is the columns option of DataTable) 
+            table.off('click').on('click', composeRowClickColumnsSelector(), handleRowClick);
+
+            // also when col visibility changes through colvis button
+            table.on('column-visibility.dt', function(e, settings, column, state) {
+                table.off('click').on('click', composeRowClickColumnsSelector(), handleRowClick);
+            });
 
             // since tables are created dynamically, some color corrections may be lost 
             // because the theme is already applied, so we need to do the corrections again
@@ -803,19 +820,26 @@ const setDataTable = (
             callbackClickRow, 
             allSettings, 
             searchPanes
-        ).then((result) => {
+        )
+            .then((result) => {
+                
+                if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
+                    return result.table;
+                }
+                else {
+                    result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                    return result.table;
+                }       
+            })
+            .then((table) => {
+                setTimeout(()=>table.fixedHeader.adjust(),100);
 
-            $('#dataTableLoading').remove(); // remove the table loader placeholder
-
-            if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
-                $(tableSelector).show();
-            }
-            else {
-                result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
-                $(tableSelector).show(); 
-            }
-                     
-        });
+            })
+            .then(() => {
+                $('#dataTableLoading').remove(); // remove the table loader placeholder)
+                setTimeout(()=>$(tableSelector).show(), 100);
+            }); 
+        ;
     });
 }
 

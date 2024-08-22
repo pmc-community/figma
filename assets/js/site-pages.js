@@ -191,8 +191,6 @@ sitePagesFn = {
         // open page details section (pages table)
         $('#openSitePagesDetails').off('click').click( function() {
             $('#site_pages_details').removeClass('d-none');
-            
-            // redraw the pages table to avoid wrong table head sizing
             sitePagesFn.forceRedrawPagesTable();
             $('div[sitefunction="sitePagesDetails"]').fadeIn();
         });            
@@ -223,6 +221,7 @@ sitePagesFn = {
             sitePagesFn.rebuildPagesTableSearchPanes();
             sitePagesFn.setLastFilterInfo('Last filter');
             sitePagesFn.handleDropdownClassOverlap();
+            setTimeout(()=>sitePagesFn.forceRedrawPagesTable(), 100);
         });
     },
 
@@ -611,6 +610,7 @@ sitePagesFn = {
         ];
 
         const commonAdditionalTableSettings = {
+
             scrollX: true,
 
             fixedColumns: {
@@ -621,7 +621,7 @@ sitePagesFn = {
             scrollY: '30vh', 
 
             initComplete: function(settings, json) {
-                //sitePagesFn.forceRedrawPagesTable();    
+                sitePagesFn.forceRedrawPagesTable();    
             },    
 
             // columnDefs object IS USED ONLY FOR SEARCH PANES
@@ -901,10 +901,12 @@ sitePagesFn = {
         
     },
 
+    // HEADS UP!!! THIS FUNCTION MUST STAY IN ALL PALCES WHERE IS INVOKED
+    // OTHERWISE IT MAY BE POSSIBLE TO NOT HAVE THE TABL DRAWN AS EXPECTED
+    // e.g. HEADER NOT ALIGND WITH CONTENT OR scrollX TO NOT BE SET CORRECTLY WHEN WE NEED overflowX TO BE ACTIVE
     forceRedrawPagesTable: () => {
         setTimeout(()=>{
             const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-            table.order([0, 'asc']);
             table.columns.adjust().draw(); 
         },100);
     },
