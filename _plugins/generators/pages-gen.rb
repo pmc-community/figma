@@ -18,8 +18,8 @@ module Jekyll
 
     def generate(site)
       page_list_path = "#{site.data["buildConfig"]["rawContentFolder"]}/page_list.json"
-      page_list = File.exist?(page_list_path)? FileUtilities.read_json_file(page_list_path) : {"files" => []}
-      if (page_list.length > 0 )
+      page_list = File.exist?(page_list_path)? FileUtilities.read_json_file(page_list_path) : []
+      if (page_list.length == 0 )
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ...")
         doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
         documents = []
@@ -64,14 +64,16 @@ module Jekyll
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
           numPages += 1 if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
         end
-        FileUtilities.overwrite_file(page_list_path, JSON.pretty_generate(documents.to_json))  
+        FileUtilities.overwrite_file(page_list_path, JSON.pretty_generate(documents))  
         #site.data['page_list'] = documents.to_json
         Globals.moveUpOneLine
         Globals.clearLine
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (#{numPages} pages)")
+      else
+        Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (no content changes)")
       end
 
-      site.data['page_list'] = FileUtilities.read_json_file(page_list_path)
+      site.data['page_list'] = FileUtilities.read_json_file(page_list_path).to_json
       
       # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
       FileUtilities.generate_raw_content(site)
