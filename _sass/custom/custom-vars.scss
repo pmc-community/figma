@@ -6,6 +6,8 @@ $c-bright-black: #0d1117;
 $c-heavy-dark: #010409;
 $c-transparent: #00000000;
 $c-purple:#4e26af;
+$c-primary-theme-light: #6043D0;
+$c-primary-theme-dark: #2951BB;
 $c-grey:#44434d;
 $c-grey-alt: #cccccc49;
 $c-grey-alt-1: #c0c0c0;
@@ -43,6 +45,7 @@ $s-2px:2px;
 $s-5px:5px;
 $s-1rem:1rem;
 $s-1-5rem:1.5rem;
+$s-2rem:2rem;
 $s-2-5rem:2.5rem;
 $s-neg-1px:-1px;
 $s-neg-5px:-5px;
@@ -94,6 +97,7 @@ $m-top0px: $s-0px;
 $m-corr-1px: $s-neg-1px;
 $m-50px: $s-50px;
 $m-1-5rem: $s-1-5rem;
+$m-2rem: $s-2rem;
 $m-2-5rem: $s-2-5rem;
 
 // borders

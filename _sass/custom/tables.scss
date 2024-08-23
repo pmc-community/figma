@@ -31,6 +31,11 @@ $tableSearchPanesPaneFontColor: $c-black;
 $tableSearchPanesPaneSearchInputBackground: $c-white;
 $tableFilterProcessingLoaderBackground: $c-transparent;
 $tableOuterBorderBottomColor: $tableInnerBorderColor;
+$paginationButtonThemeLightBackground: $c-primary-theme-light;
+$paginationButtonThemeLightBorderColor: $paginationButtonThemeLightBackground;
+$paginationButtonThemeDarkBackground: $c-primary-theme-dark;
+$paginationButtonThemeDarkBorderColor:$paginationButtonThemeDarkBackground;
+$paginationActivePageTextColor: $c-white;
 
 $tableElements: (
     tableWrapper: '.table-wrapper',
@@ -54,9 +59,13 @@ $tableElements: (
     searchPanesPaneListItem: '.dtsp-nameCont span',
     tableFilterProcessingLoader: '.dt-processing,',
     //used with cascade:true to avoid black background of "No data in the table" situation on dark theme
-    tableBody: 'div.dt-scroll-body' 
+    tableBody: 'div.dt-scroll-body',
+    paginationActivePageThemeDark: 'a.page-link.paginationButtonThemeDark[aria-current="page"]',
+    paginationActivePageThemeLight: 'a.page-link.paginationButtonThemeLight[aria-current="page"]'
 );
 
 @import 'meta.scss';
 @include dataTable($tableElements);
+
+
 

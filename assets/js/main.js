@@ -143,7 +143,7 @@ const addSwitchThemeIcon = () => {
         if (settings.themeSwitch.append) $(settings.themeSwitch.btnContainer).append(settings.themeSwitch.btnContent);
         else $(settings.themeSwitch.btnContainer).prepend(settings.themeSwitch.btnContent);
 
-        $(settings.themeSwitch.btnId).on('click', () => {
+        $(settings.themeSwitch.btnId).off('click').on('click', () => {
             $('body').css('visibility','hidden');
             let themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
@@ -153,7 +153,7 @@ const addSwitchThemeIcon = () => {
             setTheTheme();
             themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (themeCookie === '0' ) applyColorSchemaCorrections('light');
-            else applyColorSchemaCorrections('dark');;
+            else applyColorSchemaCorrections('dark');
             setTimeout( () => {$('body').css('visibility','visible');}, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
         });
 
@@ -433,4 +433,3 @@ const handleTocActiveElementsOnScroll = () => {
         
     );
 }
-

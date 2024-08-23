@@ -21,10 +21,8 @@
 @mixin goToTopBtn($btnID) {
     #{$btnID} {
         position: $pos-fixed;
-        bottom: $m-2-5rem;
-        right: $m-2-5rem;
-        width: $s-30px;
-        cursor: $cr-pointer;
+        bottom: $m-2rem;
+        right: $m-2rem;
     }
 }
 
@@ -107,19 +105,8 @@
 }
 
 // sidebar
-@mixin sidebar(
-    $sidebarContainer, 
-    $sidebarDocListContainer, 
-    $sidebarElements, 
-    $sidebarContentList, 
-    $sidebarCustomFooter, 
-    $sidebarTitle, 
-    $sidebarLogo, 
-    $sideBarFooter,
-    $sideBarHeader,
-    $sideBarDocLink,
-    $sideBarCategoryBtn
-) {
+@mixin sidebar($sidebarContainer, $sidebarDocListContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, 
+$sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBtn) {
     
     #{$sidebarContainer} {
         width: $sidebarWidth;
@@ -396,6 +383,18 @@
 
     #{map-get($tableElements, tableBody)} {
         border-bottom-color: $tableOuterBorderBottomColor !important;
+    }
+
+    #{map-get($tableElements, paginationActivePageThemeLight)} {
+        background: $paginationButtonThemeLightBackground !important;
+        color: $paginationActivePageTextColor !important;
+        border-color: $paginationButtonThemeLightBorderColor !important;
+    }
+
+    #{map-get($tableElements, paginationActivePageThemeDark)} {
+        background: $paginationButtonThemeDarkBackground !important;
+        color: $paginationActivePageTextColor !important;
+        border-color: $paginationButtonThemeDarkBorderColor !important;
     }
 
 }

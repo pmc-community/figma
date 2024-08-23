@@ -259,7 +259,7 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasSiteTagsBadge"
                         title = "Page ${page.siteInfo.title} has site tags" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer">
+                        class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer">
                         Tags
                     </span>
                 `;
@@ -697,7 +697,7 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
                         </div>
                         <div class="hsFormLink mt-2 text-primary">
                             <a href="${settings.links.privacyLink}" target=_blank>
-                                Privacy Policy
+                                <i class="bi bi-shield-lock"></i> Privacy Policy
                             </a>
                         </div>
                     </div>

@@ -358,7 +358,7 @@ sitePagesFn = {
                             cellFunction="siteBadge"
                             siteFunction="pageHasSiteTagsBadge"
                             title = "Page ${page.siteInfo.title} has site tags" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary"
+                            class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}">
                             Tags

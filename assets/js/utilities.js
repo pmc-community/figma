@@ -657,10 +657,6 @@ const setDataTable = (
             // set clickabl columns as per the col definition in columnsConfig object (which is the columns option of DataTable) 
             table.off('click').on('click', composeRowClickColumnsSelector(), handleRowClick);
 
-            // also when col visibility changes through colvis button
-            table.on('column-visibility.dt', function(e, settings, column, state) {
-                table.off('click').on('click', composeRowClickColumnsSelector(), handleRowClick);
-            });
 
             // since tables are created dynamically, some color corrections may be lost 
             // because the theme is already applied, so we need to do the corrections again
@@ -669,6 +665,12 @@ const setDataTable = (
             //applyColorSchemaCorrections();
             // also on draw event to cover all potential cases
             table.on('draw', function () { applyColorSchemaCorrections(); });
+
+            // when display hidden table columns in dark mode, the column backgroud may be light, so corrections should be applied
+            $(document).off('click','.buttons-columnVisibility').on('click', '.buttons-columnVisibility', function() {
+                applyColorSchemaCorrections();            
+            });
+
 
             // searchPanes logic
             // WE CAN USE HARD CODED CLASS NAMES BECAUSE 
@@ -796,7 +798,7 @@ const setDataTable = (
                 });
     
             }
-
+            
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
             resolve(
@@ -874,6 +876,7 @@ const applyColorSchemaCorrections = (theme=null) => {
     }
 
     if (theme === 'light' ) {
+        $('a[class="page-link"]').addClass('paginationButtonThemeLight'); // set table active page pagination button colors (if table on page)
         $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.light);
@@ -881,6 +884,7 @@ const applyColorSchemaCorrections = (theme=null) => {
         $('.btn-close').removeClass('btn-close-white');
     }
     else {
+        $('a[class="page-link"]').addClass('paginationButtonThemeDark'); // set table active page pagination button colors (if table on page)
         $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.dark);
         $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.dark);
         $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark);

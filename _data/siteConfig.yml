@@ -31,11 +31,11 @@ colSchemaCorrections:
   elementsWithBackgroundAffected: 'body, #category-menu-more-list, table, tbody, thead, tr, td, th, td[class=\"child\"], .offcanvas, .ck-editor__main, .side-bar, #hs-eu-cookie-confirmation'
   backgroundColorOnElementsAffected:
     light: '#fff'
-    dark: '#0d1117'
+    dark: '#0d1117' # here to change dark theme background
   elementsWithTextAffected: 'body, p, ul li, ol li, li a, h1, h2, span, .dt-info, label[for^=\"dt-length-\"], label[for^=\"dt-search-\"], #category-menu-more-list li a, .offcanvas-title, td, div[siteFunction=\"labelForPageSearchList\"], label[for=\"offcanvasPageFullInfoPageGeneralCustomNotesEdit\"]'
   textColorOnElementsAffected:
     light: '#000'
-    dark: '#dee2e6'
+    dark: '#dee2e6'  # here to change dark theme text color
   elementsWithBorderTopAffected: '.site-footer'
   borderTopOnElementsAffected:
     light: '1px solid #eeebee'
@@ -48,7 +48,7 @@ colSchemaCorrections:
 goToTopBtn:
   btnContainer: '.main'
   # don't forget to escape double quotes
-  content: '<div id=\"ihs_go_to_top_btn\"><img src=\"/assets/img/goToTop.png\" loading=\"lazy\" alt=\"tick-circle\"></div>'
+  content: '<div id=\"ihs_go_to_top_btn\" class=\"btn btn-sm btn-primary rounded-circle\"><i class=\"bi bi-arrow-up\"></i></div>'
   topOfPageMarker: '<div id =\"ihs_top_of_page\"></div>'
   topOfPageId: '#ihs_top_of_page'
   btnId: '#ihs_go_to_top_btn'
@@ -57,7 +57,7 @@ externalContent:
   containerToIncludeExternalContent: '.main-content main'
 themeSwitch:
   cookie: 'JTDThemeCookie'
-  btnContent: '<img id=\"themeSwitcher\" class=\"themeSwitcher mx-2\" src=\"/assets/img/icon-dark-mode-100.png\" />'
+  btnContent: '<div id=\"themeSwitcher\" title=\"Switch theme\" class=\"m-2 btn btn-secondary border border-secondary border-opacity-25 shadow-none text-light\"><i class=\"bi bi-mask\"></i></div>'
   btnContainer: '.aux-nav-list'
   append: false
   btnId: '#themeSwitcher'
@@ -65,7 +65,7 @@ siteFooter:
   container: '.site-footer'
   rows:
     - content: '<div class=\"footer_first_row\"><a href=\"https://innohub.space/eng/terms-of-service/\" target=_blank>Terms</a> | <a href=\"https://innohub.space/eng/privacy/\" target=_blank>Privacy</a> | <a href=\"https://innohub.space/eng/cookie-policy/\" target=_blank>Cookies</a></div>'
-    - content: '<div class=\"footer_first_row\">Copyright <a href=\"https://pmc-expert.com\" target=_blank>PMC</a></div>'
+    - content: '<div class=\"footer_first_row\">Copyright <i class=\"bi bi-c-circle\"></i> <a href=\"https://pmc-expert.com\" target=_blank>PMC</a></div>'
 headerAboveContent:
   headerID: '#main-header'
   offsetWhenScroll: 20
