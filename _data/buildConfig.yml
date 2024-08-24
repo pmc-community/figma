@@ -62,3 +62,5 @@ algoliaSearch:
   debug: false
   maxResultsPerGroup: 20
   prodUrl: "https://figmares.innohub.space"
+JTDSearch:
+  searchBoxWidth: "20%"

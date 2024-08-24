@@ -60,7 +60,7 @@ aux_links:
 aux_links_new_tab: true
 
 # we go with algolia, otherwise set to true or remove it (true is default)
-search_enabled: false
+search_enabled: true
 
 ga_tracking: G-T86D5YQ5WF # ihs
 ga_tracking_anonymize_ip: true

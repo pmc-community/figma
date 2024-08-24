@@ -35,7 +35,7 @@ $siteHeaderElements: (
     algoliaSearchBox: '.DocSearch-Container',
     defaultSearch: '.search', //may be not active if site search is with algolia. (de)activation in _config.yml
     themeSwitcher: '#themeSwitcher',
-    menuMoreDivider: 'hr[class="dropdown-divider"]'
+    menuMoreDivider: 'hr[class="dropdown-divider"]',
     
 );
 
