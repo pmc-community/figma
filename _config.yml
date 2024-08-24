@@ -5,7 +5,7 @@ email: florin@innohub.space
 description: >- # this means to ignore newlines until next yml key
   Plugin Templates | Plugins | Design Systems
 baseurl: "/"
-url: "https://figmares.innohub.space" # the base hostname & protocol for the site
+url: "https://figmares.innohub.space"
 
 # Build settings
 # THEME CAN BE THE LAST AS BELOW IF DEPLOY TO GHP FROM ACTION

@@ -61,5 +61,11 @@ gem 'matrix'
 gem 'text_rank'
 gem 'engtagger'
 
+# for hubspot integration
 gem 'hubspot-api-client'
 
+# some utilities
+gem 'securerandom'
+
+# for Algolia
+gem 'algolia', '~> 2.3.4'

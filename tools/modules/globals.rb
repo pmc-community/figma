@@ -1,6 +1,7 @@
 require 'thread'
 require 'yaml'
 require 'dotenv'
+require 'securerandom'
 Dotenv.load
 
 module Globals
@@ -180,6 +181,10 @@ module Globals
     def self.find_object_key_value(objects, criteria, return_key)
         found_object = find_object_by_multiple_key_value(objects, criteria)        
         found_object ? found_object[return_key] : nil
-      end
+    end
+
+    def self.uuid_gen()
+        SecureRandom.uuid.gsub('-', '')[0, 10]    
+    end
       
 end

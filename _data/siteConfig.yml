@@ -5,10 +5,10 @@ extContentMarkers:
 algoliaSearch:
   appId: 'LU8ABE5OK9'
   apiKey: '14d176209af92e3c8ccb64e9b5da3832'
-  indexName: 'figmares-innohub'
   container: '#docsearch'
   debug: false
   maxResultsPerGroup: 20
+  prodUrl: "https://figmares.innohub.space" 
 pageToc:
   tocContainer: '#toc_container'
   toc: '#toc'
