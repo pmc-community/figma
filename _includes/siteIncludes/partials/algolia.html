@@ -3,7 +3,7 @@
   {% assign algolia = site.data.algolia_integration  | json_string_to_object %}
   <div id="docsearch" class="pr-3"></div>
   <script id="algoliaSearch" type="text/javascript">
-    $('.search').remove();
+    setTimeout(()=>$('.search').remove(),1000);
     docsearch({
       appId: '{{ algolia.algoliaAppID }}',
       apiKey: '{{ algolia.algoliaPublicApiKey }}',

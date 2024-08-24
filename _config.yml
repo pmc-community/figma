@@ -11,7 +11,7 @@ url: "https://figmares.innohub.space"
 # THEME CAN BE THE LAST AS BELOW IF DEPLOY TO GHP FROM ACTION
 theme: just-the-docs
 
-# THEME SOULD BE AS BELOW IF DEPLOY TO GHR FROM BRANCH
+# THEME SOULD BE AS BELOW IF DEPLOY TO GHP FROM BRANCH
 #remote_theme: just-the-docs/just-the-docs@v0.8.0 # it works only with remote_theme. as of April 2024, v0.8.0 is the latest that works
 
 #plugins:
@@ -59,7 +59,7 @@ aux_links:
 # Makes Aux links open in a new tab. Default is false
 aux_links_new_tab: true
 
-# we go with algolia, otherwise set to true or remove it (true is default)
+# algolia search has priority even if search_enabled=true. see buildConfig.algoliaSearch
 search_enabled: true
 
 ga_tracking: G-T86D5YQ5WF # ihs
