@@ -87,9 +87,6 @@ const customiseTheme = (pageObj = null) => {
             removeUselessElements();
         }
         
-        // necessary on mobile for datatables cells, when responsive mode is true for tables
-        applyColorSchemaCorrectionsOnTD();
-
         // set the reference to the page main info
         $(settings.layouts.contentArea.contentContainer)
             .attr('pagePermalinkRef', pageObj.permalink)

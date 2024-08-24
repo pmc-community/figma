@@ -4,7 +4,7 @@ extContentMarkers:
   endExposedSection: '<!-- END_EXPOSED_SECTION -->'
 algoliaSearch:
   appId: 'LU8ABE5OK9'
-  apiKey: '93c6d0120f05c7d6a1fe3136c0122626'
+  apiKey: '14d176209af92e3c8ccb64e9b5da3832'
   indexName: 'figmares-innohub'
   container: '#docsearch'
   debug: false

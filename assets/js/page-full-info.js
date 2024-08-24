@@ -553,7 +553,7 @@ const setCanvasSectionsOpeners = () => {
 }
 
 const fillPageTitle = (pageInfo) => {
-    $('#offcanvasPageFullInformationTitle').text(`Page information (${pageInfo.siteInfo.title})`);
+    $('#offcanvasPageFullInformationTitle').text(`Doc information (${pageInfo.siteInfo.title})`);
     $('a[siteFunction="offcanvasPageFullInfoPageGeneralDocLink"]').text(pageInfo.siteInfo.title);
     $('a[siteFunction="offcanvasPageFullInfoPageGeneralDocLink"]').attr('href',pageInfo.siteInfo.permalink);
 }

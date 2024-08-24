@@ -471,7 +471,7 @@ const page__getPageInfo = () => {
                                 type="button" 
                                 class="btn btn-sm btn-primary position-relative m-1" 
                                 title="Details for page ${page.siteInfo.title}">
-                                Page info
+                                Doc info
                             </button>
                             <button 
                                 sitefunction="pageNavigateToFeedbackAndSupport" 

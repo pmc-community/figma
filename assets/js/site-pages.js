@@ -2,7 +2,7 @@
 
 // called from siteIncludes/partials/site-pages/pageSearch.html
 const sitePages__pageSearch = () => {
-    let table; // define table here, otherwise the getters blow will bot have access to it and will raise errors
+    let table; // define table here, otherwise the getters below will not have access to it and will raise errors
     $(document).ready(function() {
 
         sitePagesFn.handleOffCanvasClose();

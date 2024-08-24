@@ -876,20 +876,28 @@ const applyColorSchemaCorrections = (theme=null) => {
     }
 
     if (theme === 'light' ) {
-        $('a[class="page-link"]').addClass('paginationButtonThemeLight'); // set table active page pagination button colors (if table on page)
         $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.light);
         $(settings.colSchemaCorrections.elementsWithBorderLeftAffected).css('border-left', settings.colSchemaCorrections.borderLeftOnElementsAffected.light);
         $('.btn-close').removeClass('btn-close-white');
+        
+        // style the active page pagination button if table(s) on page
+        $('li.dt-paging-button.page-item.active a')
+            .addClass('paginationActivePageThemeLight')
+            .removeClass('paginationActivePageThemeDark');
     }
     else {
-        $('a[class="page-link"]').addClass('paginationButtonThemeDark'); // set table active page pagination button colors (if table on page)
         $(settings.colSchemaCorrections.elementsWithBackgroundAffected).css('background',settings.colSchemaCorrections.backgroundColorOnElementsAffected.dark);
         $(settings.colSchemaCorrections.elementsWithTextAffected).css('color', settings.colSchemaCorrections.textColorOnElementsAffected.dark);
         $(settings.colSchemaCorrections.elementsWithBorderTopAffected).css('border-top', settings.colSchemaCorrections.borderTopOnElementsAffected.dark);
         $(settings.colSchemaCorrections.elementsWithBorderLeftAffected).css('border-left', settings.colSchemaCorrections.borderLeftOnElementsAffected.dark);
         $('.btn-close').addClass('btn-close-white');
+        
+        // style the active page pagination button if table(s) on page
+        $('li.dt-paging-button.page-item.active a')
+            .removeClass('paginationActivePageThemeLight')
+            .addClass('paginationActivePageThemeDark');
     }
 
     // apply css corrections on HS forms if necessary
@@ -942,6 +950,8 @@ const getElementInHotZone = (elements, zone, callback) => {
     });
 }
 
+// necessary on mobile for datatables cells, when responsive mode is true for tables
+// not used since we do not use responsive mode for tables, we use srollX with overflowX
 const applyColorSchemaCorrectionsOnTD = () => {
     const targetNode = document.querySelector(settings.layouts.contentArea.contentContainer);
     if (targetNode) {
@@ -957,8 +967,6 @@ const applyColorSchemaCorrectionsOnTD = () => {
         };
         const observer = new MutationObserver(callback);
         observer.observe(targetNode, config);
-    } else {
-        //console.error('Target node not found when trying to set datatables cell background');
     }
 }
 

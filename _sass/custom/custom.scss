@@ -81,7 +81,8 @@ $alwaysWhiteTextElements: (
     'button[siteFunction="tableClearFiltersSP"] span',
     'button[siteFunction="sitePagesDetailsShowSearchPanes"] span',
     'button[siteFunction="sitePagesDetailsClearFilter"] span',
-    'button[siteFunction="btnMenuMoreToggle"] span'
+    'button[siteFunction="btnMenuMoreToggle"] span',
+    'li.dt-paging-button.page-item.active a'
 );
 @each $element in $alwaysWhiteTextElements {
     #{$element}, #{$element}:hover {

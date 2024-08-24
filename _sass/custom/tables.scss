@@ -60,8 +60,8 @@ $tableElements: (
     tableFilterProcessingLoader: '.dt-processing,',
     //used with cascade:true to avoid black background of "No data in the table" situation on dark theme
     tableBody: 'div.dt-scroll-body',
-    paginationActivePageThemeDark: 'a.page-link.paginationButtonThemeDark[aria-current="page"]',
-    paginationActivePageThemeLight: 'a.page-link.paginationButtonThemeLight[aria-current="page"]'
+    paginationActivePageThemeDark: '.paginationActivePageThemeDark',
+    paginationActivePageThemeLight: '.paginationActivePageThemeLight'
 );
 
 @import 'meta.scss';
