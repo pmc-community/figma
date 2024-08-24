@@ -56,3 +56,9 @@ readingTime:
   average_adult: 240        # Average adult reading speed
   comprehension_study: 200  # Study with focus on comprehension
   skimming_study: 300       # Speed reading or skimming
+algoliaSearch:
+  enabled: true
+  container: '#docsearch'
+  debug: false
+  maxResultsPerGroup: 20
+  prodUrl: "https://figmares.innohub.space"
