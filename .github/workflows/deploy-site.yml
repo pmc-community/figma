@@ -70,6 +70,7 @@ jobs:
           ALGOLIA_INDEX: ${{ secrets.ALGOLIA_INDEX }}
           ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
           ALGOLIA_PUBLIC_API_KEY: ${{ secrets.ALGOLIA_PUBLIC_API_KEY }}
+          ALGOLIA_SEARCH_ENABLED: ${{ secrets.ALGOLIA_SEARCH_ENABLED }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

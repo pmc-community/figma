@@ -14,9 +14,11 @@ module Jekyll
     priority :high
 
     def generate(site)
-      if (site.data["buildConfig"]["algoliaSearch"]["enabled"])
+      algoliaEnabled = ENV["ALGOLIA_SEARCH_ENABLED"] # better heve it in env, to be able to set it fast in any deployment env
+      if (algoliaEnabled == 'true')
         Globals.putsColText(Globals::PURPLE,"Generating Algolia settings ...")
         algoliaSettings = {
+          "algoliaEnabled" => algoliaEnabled,
           "algoliaAppID" => ENV["ALGOLIA_APP_ID"],
           "algoliaIndex" => ENV["ALGOLIA_INDEX"],
           "algoliaWriteApiKey" => ENV["ALGOLIA_WRITE_API_KEY"],

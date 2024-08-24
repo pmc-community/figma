@@ -1,9 +1,8 @@
-
-{% if site.data.buildConfig.algoliaSearch.enabled %}
-  {% assign algolia = site.data.algolia_integration  | json_string_to_object %}
+{% assign algolia = site.data.algolia_integration  | json_string_to_object %}
+{% if algolia.algoliaEnabled == 'true' %}
   <div id="docsearch" class="pr-3"></div>
   <script id="algoliaSearch" type="text/javascript">
-    setTimeout(()=>$('.search').remove(),1000);
+    $('.search').addClass('d-none');
     docsearch({
       appId: '{{ algolia.algoliaAppID }}',
       apiKey: '{{ algolia.algoliaPublicApiKey }}',
@@ -12,6 +11,8 @@
       debug: {{ site.data.buildConfig.algoliaSearch.debug }},
       maxResultsPerGroup: {{ site.data.buildConfig.algoliaSearch.maxResultsPerGroup }}
     });
+    setTimeout(()=>$('.search').remove(), 1000);
+    
   </script>
 {% elsif site.search_enabled %}
   <script>
