@@ -197,7 +197,7 @@ const page__getPageFeedbackForm = () => {
                             submitText: 'Let us know!',
                             submitButtonClass: 'btn btn-sm btn-outline-secondary border border-secondary border-opacity-25',
                             css: ['hs/hs.css'],
-                            js: []        
+                            js: ['hs/hs-feedback-form.js']        
                         },
 
                         // onFormReady callback

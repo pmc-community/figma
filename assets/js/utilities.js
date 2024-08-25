@@ -1047,6 +1047,42 @@ const setElementChangeClassObserver = (elementSelector, cls, getClass, callback 
     return observer;
 };
 
+// same as before but inside any iframe from the page
+// one jQuery element inside the iframe must be known 
+const iframe__setElementChangeClassObserver = ($elementInsideIFrame, elementSelector, cls, getClass, callback = () => {}) => {
+    // Start observing the body for mutations
+
+    const mutationCallback = function(mutationsList) {
+        for(const mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const targetElement = mutation.target;
+                if (targetElement.matches(elementSelector)) {
+                    const classList = Array.from(targetElement.classList);
+                    if (!getClass) {
+                        if (!classList.includes(cls)) {
+                            callback();
+                        }
+                    } else {
+                        if (classList.includes(cls)) {
+                            callback();
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const observerOptions = { attributes: true, attributeFilter: ['class'], subtree: true };
+    
+    $('iframe').each(function($iframe) {
+        const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
+        
+        const observer = new MutationObserver(mutationCallback); 
+        //console.log($iframeDocument)
+        observer.observe($iframeDocument.body, observerOptions);
+    });
+};
+
 // observes when an element with class=element Class is created and executes callback function
 const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => {
     const mutationCallback = function(mutationsList) {
@@ -1718,6 +1754,7 @@ const iframe__addBootstrapToIFrames = ($elementInsideIFrame) => {
     //$($iframeBody).append(bootstrapJS);
     
 }
+
 
 const addCustomScriptsToIFrames = (cssScripts = [], jsScripts = []) => {
     const addCustomScripts = (iframe, cssScripts, jsScripts) => {

@@ -4,6 +4,7 @@ let globAllCats, globAllTags;
 let siteObservers = new Map();
 let pageInfo = {}; // used for full page info canvas
 let hsForms = [];
+window.mainJQuery = jQuery; // expoing jQuery to be able to use it in iFrames
 
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case
@@ -382,7 +383,7 @@ const customiseFooter = () => {
 
 const addLogo = () => {
     $(settings.headerAboveSideBar.container).prepend(settings.headerAboveSideBar.logo);
-    $(settings.headerAboveSideBar.siteTitle).addClass('fs-5');
+    $(settings.headerAboveSideBar.siteTitle).addClass('fs-6 fw-medium');
 }
 
 const clearTheUrl = () => {

@@ -187,10 +187,10 @@ hsIntegrate = {
         iframe__setElementCreateBySelectorObserver($form,settings.hsIntegration.forms.elements.fieldValidationErrorMessagesGroup, ()=>{
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
-            $iframeBody.find('.hs-error-msg')
-                .css('font-family', $('body').css('font-family'))
-                .addClass('fieldValidationErrorMessage')
-                .text('REQUIRED');
+            $iframeBody.find('.hs-error-msg').remove();
+                //.css('font-family', $('body').css('font-family'))
+                //.addClass('fieldValidationErrorMessage')
+                //.text('REQUIRED OR WRONG FORMAT');
         });
 
         // form error message
@@ -198,7 +198,7 @@ hsIntegrate = {
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
             $iframeBody.find('.hs_error_rollup').addClass('d-none');
-            showToast(`Please fill in the required information`, 'bg-danger', 'text-light');
+            showToast(`Please fill in the required information in the right format`, 'bg-danger', 'text-light');
         });
 
         // text after form is submitted
@@ -208,7 +208,20 @@ hsIntegrate = {
             $iframeBody.find('.submitted-message')
                 .css('font-family', $('body').css('font-family'))
                 .css('color', $('body').css('color'));
-        })
+        });
+
+        // when entering emails in wrong format, the field is losing styling, so we need to put it back
+        iframe__setElementChangeClassObserver($form,'input[type="email"]', 'invalid', true, () => {
+            const $iframeDocument = $form[0].ownerDocument;
+            const $iframeBody = $($iframeDocument).find('body');
+            $iframeBody.find('input[type="email"]').addClass('border border-secondary border-opacity-25 inputField');
+        });
+
+        iframe__setElementChangeClassObserver($form,'input[type="email"]', 'invalid', false, () => {
+            const $iframeDocument = $form[0].ownerDocument;
+            const $iframeBody = $($iframeDocument).find('body');
+            $iframeBody.find('input[type="email"]').addClass('border border-secondary border-opacity-25 inputField');
+        });
     }
 
 }

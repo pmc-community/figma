@@ -49,6 +49,7 @@ exclude:
   - _plugins/
   - _sass/custom/*.css
   - assets/*.scss
+  - .env
 
 aux_links:
   "GitHub":
