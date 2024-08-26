@@ -194,7 +194,7 @@ const page__getPageFeedbackForm = () => {
 
                         // text and class for submit button, and other settings
                         {
-                            submitText: 'Let us know!',
+                            submitText: 'Send your rating!',
                             submitButtonClass: 'btn btn-sm btn-outline-secondary border border-secondary border-opacity-25',
                             css: ['hs/hs.css'],
                             js: ['hs/hs-feedback-form.js']        
@@ -210,6 +210,8 @@ const page__getPageFeedbackForm = () => {
                         // can do specific data manipulation or field processing before submit
                         // general processing (as filling in email field with a default value) are made in hs-integrate
                         ($form, data) => {
+                            const iframeDocument = $form[0].ownerDocument;
+                            $(iframeDocument).find('button[siteFunction="hsFormChangeRating"]').hide();
                         },
 
                         // onFormSubmitted callback

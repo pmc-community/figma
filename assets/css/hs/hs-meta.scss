@@ -16,4 +16,8 @@
     #{map-get($hsFormsElements, fieldValidationErrorMessage)} {
         font-size: $hsfieldValidationErrorMessageFontSize !important;
     }
+
+    #{map-get($hsFormsElements, regularText)} {
+        font-size: $hsFormFieldLabelFontSize !important;
+    }
 }

@@ -72,7 +72,21 @@ hsIntegrate = {
                                 if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');
                                 $form.find(`input[name="${settings.hsIntegration.forms.submisionSource.propName}"]`).val(settings.hsIntegration.forms.submisionSource.propValue);
                                 hsIntegrate.sanitizeAll($form);
-        
+
+                                const $loading = $(
+                                    `
+                                        <div id="hsFormLoading" class="d-flex justify-content-start align-items-center">
+                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    `
+                                );
+    
+                                const iframeDocument = $form[0].ownerDocument;
+                                $(iframeDocument).find('body').hide();
+                                $(iframeDocument).find('html').append($loading)
+
                                 if(callbackOnBeforeFormSubmit) callbackOnBeforeFormSubmit($form, data);
                             }
                             catch (e) {
@@ -81,7 +95,10 @@ hsIntegrate = {
                         },
                         onFormSubmitted: function($form, data) {
                             try {
-                                // ... do something ...
+                                const iframeDocument = $form[0].ownerDocument;
+                                $(iframeDocument).find('#hsFormLoading').remove();
+                                $(iframeDocument).find('body').show();
+                                
                                 if(callbackOnFormSubmitted) callbackOnFormSubmitted($form, data);
                             }
                             catch (e) {
@@ -188,9 +205,12 @@ hsIntegrate = {
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
             $iframeBody.find('.hs-error-msg').remove();
-                //.css('font-family', $('body').css('font-family'))
-                //.addClass('fieldValidationErrorMessage')
-                //.text('REQUIRED OR WRONG FORMAT');
+
+            // we handle errors since default handling is altering the form iFrame hight and push the submit btn under bottom edge
+            //.css('font-family', $('body').css('font-family'))
+            //.addClass('fieldValidationErrorMessage')
+            //.text('REQUIRED OR WRONG FORMAT');
+                
         });
 
         // form error message
@@ -208,6 +228,9 @@ hsIntegrate = {
             $iframeBody.find('.submitted-message')
                 .css('font-family', $('body').css('font-family'))
                 .css('color', $('body').css('color'));
+
+            setTimeout(()=>$iframeBody.find('.submitted-message p').addClass('hsFormRegularText text-secondary'), 200);
+                
         });
 
         // when entering emails in wrong format, the field is losing styling, so we need to put it back
@@ -215,6 +238,7 @@ hsIntegrate = {
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
             $iframeBody.find('input[type="email"]').addClass('border border-secondary border-opacity-25 inputField');
+            showToast(`Please fill in the email in the right format`, 'bg-danger', 'text-light');
         });
 
         iframe__setElementChangeClassObserver($form,'input[type="email"]', 'invalid', false, () => {

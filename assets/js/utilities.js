@@ -1743,7 +1743,8 @@ const iframe__addBootstrapToIFrames = ($elementInsideIFrame) => {
     const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
     const $iframeHead = $($iframeDocument).find('head');
     const bootstrapCSS = `<link rel="stylesheet" href="${settings.hsIntegration.bootstrapCSS}">`;
-    $($iframeHead).append(bootstrapCSS);
+    const bootstrapIconCSS = `<link rel="stylesheet" href="${settings.hsIntegration.bootstrapIconsCSS}">`;
+    $($iframeHead).append(bootstrapCSS).append(bootstrapIconCSS);
 
     // HEADS UP!
     // WE DON'T LOAD bootstrapJS TO IFRAMES 
@@ -1754,7 +1755,6 @@ const iframe__addBootstrapToIFrames = ($elementInsideIFrame) => {
     //$($iframeBody).append(bootstrapJS);
     
 }
-
 
 const addCustomScriptsToIFrames = (cssScripts = [], jsScripts = []) => {
     const addCustomScripts = (iframe, cssScripts, jsScripts) => {
@@ -1787,5 +1787,16 @@ const iframe__addCustomScriptsToIFrames = ($elementInsideIFrame, cssScripts = []
     jsScripts.forEach( script => {
         $($iframeBody).append(`<script src="/assets/js/${script}"></script>`);
     })
+}
+
+const iframe__utilities = () => {
+    return {
+        settings: settings,
+        pageSettings: pageSettings,
+        hsSettings: hsSettings,
+        func: {
+            showToast: showToast
+        }
+    }
 }
 

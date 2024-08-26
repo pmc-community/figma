@@ -4,13 +4,15 @@ $hsFormFieldLabelFontSize: $fs-0-75;
 $hsTextAreaFieldFontSize: $hsFormFieldLabelFontSize;
 $hsInputFieldFontSize: $hsFormFieldLabelFontSize;
 $hsfieldValidationErrorMessageFontSize: $fs-0-60;
+$formRegularTextFontSize: $hsFormFieldLabelFontSize;
 
 
 $hsFormsElements: (
     fieldLabel: '.hsFieldLabel',
     textAreaField: '.textAreaText',
     inputField: '.inputField',
-    fieldValidationErrorMessage: '.fieldValidationErrorMessage'
+    fieldValidationErrorMessage: '.fieldValidationErrorMessage',
+    regularText: '.hsFormRegularText',
 );
 
 @import 'hs-meta.scss';

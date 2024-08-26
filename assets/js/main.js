@@ -4,7 +4,7 @@ let globAllCats, globAllTags;
 let siteObservers = new Map();
 let pageInfo = {}; // used for full page info canvas
 let hsForms = [];
-window.mainJQuery = jQuery; // expoing jQuery to be able to use it in iFrames
+window.mainJQuery = jQuery; // exposing jQuery to be able to use it in iFrames
 
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case
@@ -115,6 +115,8 @@ const customiseTheme = (pageObj = null) => {
         
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
+        // set some utilities for iframes
+        window.utilities = iframe__utilities();
     });
 }
 
