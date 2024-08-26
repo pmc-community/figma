@@ -38,10 +38,10 @@ const page__getRelatedPages = () => {
                 <a siteFunction="pageRelatedPageLink" href="${relatedPage.permalink.indexOf('/') === 0 ? relatedPage.permalink : '/'+relatedPage.permalink}" class="${relatedPageLinkWidth} p-2">
                     <div siteFunction="pageRelatedPage" class="border border-secondary border-opacity-25 my-2 card h-100 py-3 px-3 bg-body rounded bg-transparent shadow-sm">
                         <div class="h-100 align-top mb-2">
-                            <span siteFunction="pageRelatedPageLinkPageTitle" class="fw-bold text-primary fs-6">${relatedPage.title}</span>
+                            <span siteFunction="pageRelatedPageLinkPageTitle" class="fw-medium text-primary">${relatedPage.title}</span>
                         </div>
                         <div class="h-100 align-top mb-2">
-                            <span siteFunction="pageRelatedPageLinkPageExcerpt" class="fw-medium text-secondary">${getObjectFromArray({permalink:relatedPage.permalink, title: relatedPage.title}, pageList).excerpt}</span>
+                            <span siteFunction="pageRelatedPageLinkPageExcerpt" class="text-secondary">${getObjectFromArray({permalink:relatedPage.permalink, title: relatedPage.title}, pageList).excerpt}</span>
                         </div>
                     </div>
                 </a>
@@ -197,7 +197,8 @@ const page__getPageFeedbackForm = () => {
                             submitText: 'Send your rating!',
                             submitButtonClass: 'btn btn-sm btn-outline-secondary border border-secondary border-opacity-25',
                             css: ['hs/hs.css'],
-                            js: ['hs/hs-feedback-form.js']        
+                            // iframe-global.js makes jQuery, lodash and a bunch of globals and functions available inside iFrame
+                            js: ['iframe-global.js','hs/hs-feedback-form.js']        
                         },
 
                         // onFormReady callback

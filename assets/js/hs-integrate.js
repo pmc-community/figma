@@ -70,7 +70,8 @@ hsIntegrate = {
                         onBeforeFormSubmit: function($form, data) {
                             try {
                                 const emailObject = _.find(data, { name: "email" });
-                                if (emailObject && _.isEmpty(emailObject.value)) $form.find('input[name=email]').val('visitor@noreply.com');
+                                if (emailObject && (_.isEmpty(emailObject.value) || !isValidEmail(emailObject.value)) ) 
+                                    $form.find('input[name=email]').val('visitor@noreply.com');
                                 $form.find(`input[name="${settings.hsIntegration.forms.submisionSource.propName}"]`).val(settings.hsIntegration.forms.submisionSource.propValue);
                                 hsIntegrate.sanitizeAll($form);
 
@@ -195,7 +196,7 @@ hsIntegrate = {
         iframe__setElementCreateBySelectorObserver($form,settings.hsIntegration.forms.elements.fieldValidationErrorMessagesGroup, ()=>{
             const $iframeDocument = $form[0].ownerDocument;
             const $iframeBody = $($iframeDocument).find('body');
-            $iframeBody.find('.hs-error-msg').remove();
+            $iframeBody.find('.hs-error-msg').hide();
 
             // we handle errors since default handling is altering the form iFrame hight and push the submit btn under bottom edge
             //.css('font-family', $('body').css('font-family'))

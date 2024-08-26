@@ -1800,3 +1800,8 @@ const iframe__utilities = () => {
     }
 }
 
+const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return _.isString(email) && emailRegex.test(email);
+}
+

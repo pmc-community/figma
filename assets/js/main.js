@@ -25,6 +25,14 @@ $(window).on('scroll', () => {
 
 /* LET'S DO SOME WORK */
 const customiseTheme = (pageObj = null) => {
+
+    if (!goodToGo) {        
+        return; 
+    }
+
+    const browser = getBrowserInfo();
+    console.log(`${browser.browserName} ${browser.fullVersion} `);
+
     const $loading = $(
         `
             <div id="contentLoading" class="d-flex justify-content-center align-items-center d-none" style="position: fixed; top:0; left:0; width:100vw; height: 100vh">
@@ -44,6 +52,8 @@ const customiseTheme = (pageObj = null) => {
     } else {
         console.log("Desktop detected");
     }
+
+    
 
     // first things, first
     cleanSavedItems();
