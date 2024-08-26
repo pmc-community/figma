@@ -11,7 +11,7 @@
       debug: {{ site.data.buildConfig.algoliaSearch.debug }},
       maxResultsPerGroup: {{ site.data.buildConfig.algoliaSearch.maxResultsPerGroup }}
     });
-    setTimeout(()=>$('.search').remove(), 2000);
+    setTimeout(()=>$('.search').remove(), 5000);
     
   </script>
 {% elsif site.search_enabled %}

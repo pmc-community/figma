@@ -11,6 +11,7 @@ hsFeedbackForm = {
     doTheWork: () => {
         if (mainJQuery) {
             $(hsFeedbackForm.iframeDocument).ready(function() {
+                hsFeedbackForm.prettyRadioButtons();
                 hsFeedbackForm.fixMessageTextareaHeight(); // should be fixed to a certain height, otherwise has the tendency to grow
                 hsFeedbackForm.setWasThisUsefullFunction();
                 hsFeedbackForm.setChangeRatingFunction();
@@ -46,8 +47,19 @@ hsFeedbackForm = {
             );
         }
         $(iframeDocument).find('.hs-form-radio').click(function() {
+
+            btnValue = $(this).find('label > span').first().text();
+            if (btnValue === 'Yes') {
+                $(this).prop('checked', true);
+            }
+            else {
+                $(this).prop('checked', false);
+            }
+
             if ($(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').length === 0)
-                $(iframeDocument).find('.hbspt-form').prepend(yourRating($(this).find('label > span').first().text()));
+                $(iframeDocument).find('.hbspt-form').prepend(yourRating(btnValue));
+
+            
             $(iframeDocument).find('.hs_was_this_useful_').addClass('d-none');
             $(iframeDocument).find('.hs-message').removeClass('d-none');
             $(iframeDocument).find('.hs-email').parent().removeClass('d-none');
@@ -66,6 +78,49 @@ hsFeedbackForm = {
 
     fixMessageTextareaHeight: () => {
         $(iframeDocument).find('.hs-message').css('height', '100px');
+    },
+
+    prettyRadioButtons: () => {
+        const $newYesBtnLabel = $(
+            `
+                <span 
+                    class="d-flex align-items-center hsFieldLabel px-3 me-2 btn btn-sm btn-secondary border border-secondary border-opacity-25 shadow-none text-light">
+                    <i 
+                        class="fs-5 bi bi-hand-thumbs-up me-2" 
+                        style="width: 20px; cursor: pointer;">
+                    </i>
+                    Yes
+                </span>
+            `
+        );
+
+        const $newNoBtnLabel = $(
+            `
+                <span 
+                    class="d-flex align-items-center hsFieldLabel px-3 me-2 btn btn-sm btn-secondary border border-secondary border-opacity-25 shadow-none text-light">
+                    <i 
+                        class="fs-5 bi bi-hand-thumbs-down me-2" 
+                        style="width: 20px; cursor: pointer;">
+                    </i>
+                    No
+                </span>
+            `
+        );
+
+        let $yesBtn = $(iframeDocument).find('ul[role="checkbox"]').children().first();
+        $yesBtn.find('input').addClass('d-none');
+        $yesBtn.find('.hsFieldLabel').addClass('d-none').remove();
+        $yesBtn.addClass('p-0')
+        $yesBtn.find('label').append($newYesBtnLabel);
+
+        let $noBtn = $(iframeDocument).find('ul[role="checkbox"]').children().last();
+        $noBtn.find('input').addClass('d-none');
+        $noBtn.find('.hsFieldLabel').addClass('d-none').remove();
+        $noBtn.addClass('p-0')
+        $noBtn.find('label').append($newNoBtnLabel);
+
+        $(iframeDocument).find('ul[role="checkbox"]').addClass('d-flex align-items-center');
+
     }
     
 };

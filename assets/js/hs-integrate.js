@@ -12,17 +12,18 @@ hsIntegrate = {
         callbackOnBeforeFormInit = null
     ) => {
 
-        const loading = 
+        const $loading = $(
             `
-                <div id="hsFormLoading" class="d-flex justify-content-center">
-                    <div class="spinner-border text-primary" role="status">
+                <div id="hsFormLoading" class="d-flex justify-content-start align-items-center">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-            `;
+            `
+        );
 
         // hide the form to avoid white flicker on dark theme and load a spinner
-        $(formContainerSelector).parent().prepend(loading);
+        $(formContainerSelector).parent().prepend($loading);
         $(formContainerSelector).hide();
 
         const createForm_ASYNC = (
@@ -73,16 +74,6 @@ hsIntegrate = {
                                 $form.find(`input[name="${settings.hsIntegration.forms.submisionSource.propName}"]`).val(settings.hsIntegration.forms.submisionSource.propValue);
                                 hsIntegrate.sanitizeAll($form);
 
-                                const $loading = $(
-                                    `
-                                        <div id="hsFormLoading" class="d-flex justify-content-start align-items-center">
-                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                                <span class="visually-hidden">Loading...</span>
-                                            </div>
-                                        </div>
-                                    `
-                                );
-    
                                 const iframeDocument = $form[0].ownerDocument;
                                 $(iframeDocument).find('body').hide();
                                 $(iframeDocument).find('html').append($loading)
@@ -98,7 +89,7 @@ hsIntegrate = {
                                 const iframeDocument = $form[0].ownerDocument;
                                 $(iframeDocument).find('#hsFormLoading').remove();
                                 $(iframeDocument).find('body').show();
-                                
+
                                 if(callbackOnFormSubmitted) callbackOnFormSubmitted($form, data);
                             }
                             catch (e) {
@@ -128,7 +119,7 @@ hsIntegrate = {
         )
         .then(() => {
             // remove the spinner
-            setTimeout(()=>$('#hsFormLoading').remove(),100); 
+            $('#hsFormLoading').remove(); 
         });
         
     },
