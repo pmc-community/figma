@@ -1565,28 +1565,6 @@ const getContextMenuItemHandler = (action, menuContent) => {
     return handler;
 }
 
-const isMobileOrTablet = () => {
-    const userAgent = navigator.userAgent.toLowerCase();
-  
-    const isMobile = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
-    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/i.test(userAgent);
-    
-    // Exclude desktops with touch screens (e.g., some Surface devices)
-    const isDesktopTouchScreen = /windows nt 10.0;.*touch/i.test(userAgent);
-    if (isTablet && isDesktopTouchScreen) {
-      return false; // Exclude desktops with touch masquerading as tablets
-    }
-  
-    const isUserAgentMobileOrTablet = isMobile || isTablet;
-    const isMediaQueryMobileOrTablet = window.matchMedia("(max-width: 768px) and (orientation: portrait), (max-width: 992px) and (orientation: landscape)").matches;
-  
-    // Consider viewport width for more reliable detection in emulation mode
-    const viewportWidth = window.innerWidth;
-    const isViewportMobileOrTablet = viewportWidth <= 992;
-  
-    return isUserAgentMobileOrTablet || isMediaQueryMobileOrTablet || isViewportMobileOrTablet;
-}
-
 const cleanText = (text) => {
     return DOMPurify.sanitize(text.replace(/<[^>]*>/g, '').replace(/(\n|&nbsp;)/g, ''));
 }
@@ -1804,4 +1782,172 @@ const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return _.isString(email) && emailRegex.test(email);
 }
+
+
+const isValidText = (text, minWords, maxWords) => {
+    // Check if the text contains new lines, tabs, or any HTML tags
+    if (/\n|\t|<[^>]+>/.test(text)) {
+        return false;
+    }
+
+    // Split the text by any sequence of whitespace characters to count words
+    const wordCount = text.trim().split(/\s+/).length;
+
+    // Return false if the text contains fewer than 3 words or more than 10 words
+    if (wordCount < minWords || wordCount > maxWords) {
+        return false;
+    }
+
+    // Return true if none of the above conditions are met
+    return true;
+};
+
+// selected text context menu
+const setSelectedTextContextMenu = (
+    hotZoneSelector, // the area inside the context menu is active; cannot be document or window
+    contextMenuContent, // the content object to be rendered inside the context menu
+    selectedTextCallback = null // to be executed with selected text as a parameter
+) => {
+    const checkContextMenuContent = (contextMenuContent) => {
+        return contextMenuContent.menu.length > 0 || (contextMenuContent.ops && contextMenuContent.ops !== '') ? true : false;
+    }
+
+    const contextMenuOptionsHtml = (contextMenuContent) => {
+        const getMenuItemHtml = (itemText) => {
+            return `<li class="selected-text-context-menu-item">${itemText}</li>`;
+        }
+
+        let itemsHtml = '';
+        contextMenuContent.menu.forEach(item => {
+            itemsHtml += getMenuItemHtml(item.label);
+        });
+
+        return itemsHtml === '' ? itemsHtml : `<ul>${itemsHtml}</ul>`;
+    }
+
+    // Clear previous menu content
+    $('#selected-text-context-menu').empty();
+
+    if (!checkContextMenuContent(contextMenuContent)) return;
+
+    let rect =  null;
+
+    if (contextMenuContent.menu.length > 0) $('#selected-text-context-menu').append($(contextMenuOptionsHtml(contextMenuContent)));
+    if (contextMenuContent.ops && contextMenuContent.ops !== '') $('#selected-text-context-menu').append($(contextMenuContent.ops));
+
+    $(hotZoneSelector).on('mouseup', function (e) {
+        const selectedText = window.getSelection();
+
+        if (selectedText.toString().trim().length > 0 && isValidText(selectedText.toString().trim(), 3, 10)) {
+            const range = selectedText.getRangeAt(0);
+            rect = range.getBoundingClientRect();
+
+            $('#selected-text-context-menu').css({
+                top: rect.y + rect.height + 5 + 'px',
+                left: rect.x + 'px',
+                zIndex: 1000
+            });
+
+            setTimeout(() => $('#selected-text-context-menu').show(), 200);
+
+            // Store selected text for use later
+            $('#selected-text-context-menu').data('selectedText', selectedText.toString().trim());
+        } else {
+            $('#selected-text-context-menu').hide();
+        }
+    });
+
+    // Hide context menu when clicking outside it
+    $(document).on('mousedown', function (e) {
+        if (!$(e.target).closest('#selected-text-context-menu, ' + hotZoneSelector).length) {
+            $('#selected-text-context-menu').hide();
+        }
+    });
+
+    // Hide the context menu when scrolling
+    $(window).on('scroll', function() {
+        $('#selected-text-context-menu').hide();
+    });
+
+    // Hide the context menu when the Escape key is pressed
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape') {
+            $('#selected-text-context-menu').hide();
+        }
+    });
+
+    // Prevent the context menu from hiding when clicking inside it
+    $('#selected-text-context-menu').on('mousedown', function (e) {
+        e.stopPropagation(); // Prevent clicks inside the menu from hiding it
+    });
+
+    // Handle the custom option click and preservinf the highlight of selected text until context menu is closed
+    $('#selected-text-context-menu').on('click', '.selected-text-context-menu-item', function (event) {
+        // Capture the selected text from the data attribute
+        const selectedText = $('#selected-text-context-menu').data('selectedText');
+        
+        
+        if (!selectedText) {
+            console.warn('No selected text found.');
+            return;
+        }
+
+        // Helper function to check if the rectangle intersects with the bounding rect
+        const isRectInRectangle = (boundingRect, rect) => {
+            return !(boundingRect.right < rect.left ||
+                    boundingRect.left > rect.right ||
+                    boundingRect.bottom < rect.top ||
+                    boundingRect.top > rect.bottom);
+        }
+
+        // Function to find and select the exact occurrence of the text within the rectangle
+        const reapplySelection = (text) => {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            let node;
+            while ((node = walker.nextNode())) {
+                const nodeText = node.nodeValue;
+                let index = nodeText.indexOf(text);
+
+                if (index !== -1) {
+                    // Found the text; create a range and check its bounding rectangle
+                    range.setStart(node, index);
+                    range.setEnd(node, index + text.length);
+
+                    const boundingRect = range.getBoundingClientRect();
+                    if (isRectInRectangle(boundingRect, rect)) {
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        return; // Exit after selecting the correct occurrence
+                    }
+                }
+            }
+
+            console.warn('Selected text could not be re-applied within the rectangle.');
+        }
+
+        // Reapply the exact text selection for the specified occurrence
+        reapplySelection(selectedText);
+
+        // Execute the callback function if it exists
+        if (typeof selectedTextCallback === 'function') {
+            selectedTextCallback(event, selectedText, rect);
+        }
+    });
+}
+
+
+
+
+
+
+
 

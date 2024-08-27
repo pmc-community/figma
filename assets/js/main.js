@@ -21,17 +21,21 @@ $(window).on('scroll', () => {
             scrollTop: $(hash).offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
         }, 0);
     }
-})
+});
+
+// prevents document to scroll and jump up and down when receiving this message
+// is good when dealing with iFrames which dynamically change their heights and make the doc to jump around
+$(window).on('message', function(event) {
+    const data = event.originalEvent.data;
+    if (data.type === 'contentChanged') {
+        const scrollPos = $(window).scrollTop();
+        $(window).scrollTop(scrollPos);
+    }
+});
 
 /* LET'S DO SOME WORK */
 const customiseTheme = (pageObj = null) => {
-
-    if (!goodToGo) {        
-        return; 
-    }
-
-    const browser = getBrowserInfo();
-    console.log(`${browser.browserName} ${browser.fullVersion} `);
+    if (!preFlight.skyClear) return; // comes from preflight-check.js
 
     const $loading = $(
         `
@@ -46,14 +50,6 @@ const customiseTheme = (pageObj = null) => {
     $('html').append($loading);
     $('#contentLoading').removeClass('d-none');
     $('body').attr('data-instant-intensity', 'viewport').attr('data-instant-vary-accept');
-
-    if (isMobileOrTablet()) {
-        console.log("Mobile or Tablet detected");
-    } else {
-        console.log("Desktop detected");
-    }
-
-    
 
     // first things, first
     cleanSavedItems();

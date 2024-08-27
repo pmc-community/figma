@@ -31,6 +31,7 @@ hsFeedbackForm = {
         $(iframeDocument).find('.hs_submit').addClass('d-none');
         $(iframeDocument).find('.hs-message').addClass('d-none')
         $(iframeDocument).find('.hs-email').parent().addClass('d-none');
+        hsFeedbackForm.notifyParentOfContentChange();
     },
 
     setWasThisUsefullFunction: () => {
@@ -64,11 +65,12 @@ hsFeedbackForm = {
             if ($(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').length === 0)
                 $(iframeDocument).find('.hbspt-form').prepend(yourRating(btnValue));
 
-            
             $(iframeDocument).find('.hs_was_this_useful_').addClass('d-none');
             $(iframeDocument).find('.hs-message').removeClass('d-none');
             $(iframeDocument).find('.hs-email').parent().removeClass('d-none');
             $(iframeDocument).find('.hs_submit').removeClass('d-none');
+
+            hsFeedbackForm.notifyParentOfContentChange();
         })
     },
 
@@ -77,7 +79,7 @@ hsFeedbackForm = {
             hsFeedbackForm.hideFormExtraControls();
             $(iframeDocument).find('.hs_was_this_useful_').removeClass('d-none');
             $(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').remove();
-
+            
         });
     },
 
@@ -127,6 +129,10 @@ hsFeedbackForm = {
 
         $(iframeDocument).find('ul[role="checkbox"]').addClass('d-flex align-items-center');
 
+    },
+
+    notifyParentOfContentChange: () => {
+        parent.postMessage({ type: 'contentChanged' }, '*');
     }
     
 };

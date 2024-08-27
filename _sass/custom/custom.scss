@@ -111,7 +111,8 @@ $alwaysBlackTextElements: (
     'button[siteFunction="tableNavigateToTagsSP"] span',
     'button[siteFunction="tableNavigateToCategories"] span',
     'a[sitefunction="menuItemLevel2"]',
-    '.dtsp-caret'
+    '.dtsp-caret',
+    '.selected-text-context-menu-item'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {
@@ -235,3 +236,37 @@ $alwaysTextAlignmentLeft: ('.alwaysTextToLeft');
         text-align: $tal-h-left !important;
     }
 }
+
+#selected-text-context-menu {
+    display: none;
+    position: fixed;
+    background-color: #f9f9f9;
+    border: 1px solid #dcdcdc;
+    padding: 4px 0;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    //font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    min-width: 160px; /* Slightly wider for more space */
+    border-radius: 4px; /* Optional: Rounded corners */
+}
+
+#selected-text-context-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.selected-text-context-menu-item {
+    padding: 8px 12px;
+    color: #333; /* Dark text color */
+    white-space: nowrap;
+}
+
+.selected-text-context-menu-item:hover {
+    background-color: #f0f0f0; /* Light gray background on hover */
+    color: #000; /* Black text color on hover */
+}
+

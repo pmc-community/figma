@@ -31,7 +31,7 @@ const page__getRelatedPages = () => {
 
     const relatedPageItem = (relatedPage) => {
 
-        const relatedPageLinkWidth = isMobileOrTablet() ? 'col-12' : 'col-4';
+        const relatedPageLinkWidth = preFlight.deviceInfo.deviceType !=='desktop' ? 'col-12' : 'col-4';
 
         return (
             `
@@ -505,6 +505,74 @@ const page__getPageInfo = () => {
         setContentSeparators();        
     })
 }
+
+const page__setSelectedTextContextMenu = () =>{
+
+    $(document).ready(function() {
+        if (pageInfo.siteInfo === 'none') return;
+        const permalink = $('main').attr('pagePermalinkRef') || '';
+        const title = $('main').attr('pageTitleRef') || '';
+        const page = getObjectFromArray( {permalink: permalink, title: title}, pageList);
+        console.log(page);
+        if (page === 'none') return;
+
+        // define context menu items handlers
+        // HANDLERS MUST RECEIVE AT LEAST THE SELECTED TEXT AS PARAMETER BUT MUST HAVE ALL 4 PARAMETERS DEFINED
+        // OTHERWISE handler.bind(null, ... ) WILL NOT BE SET PROPERLY
+        /* 
+            parameters:
+            1. current page
+            2. menu item clicked
+            3. selected text
+            4. the rectangle on the screen where the selcted text is located
+        */
+        const annotateSelectedText = (page = null, itemText = null, selectedText, rectangle=null) => {
+            console.log(page);
+            console.log('click ' + itemText + ' annotate ' + selectedText);
+            console.log(rectangle);
+        }
+
+        // return the context menu item handler
+        const getItemHandler = (item) => {
+            let handler = null;
+            contextMenuContent.menu.forEach(itemObj => {
+                if (itemObj.label === item) handler = itemObj.handler;
+            });
+            return handler;
+        }
+
+        // define context menu content
+        const contextMenuContent = 
+        {
+            menu:[
+                {
+                    label: 'Annotate',
+                    handler: annotateSelectedText
+                },
+                {
+                    label: 'Search in site',
+                    handler: ''
+                }
+            ],
+            ops: 
+                `
+                    <div class="px-2 text-dark">opss</div>
+                `
+        };
+
+        // set the menu
+        setSelectedTextContextMenu(
+            'main',
+            contextMenuContent,
+            (event, selectedText, rectangle) => {
+                const handler = getItemHandler($(event.target).closest('.selected-text-context-menu-item').text());
+                if (handler) handler.bind(null, pageInfo, $(event.target).closest('.selected-text-context-menu-item').text(), selectedText, rectangle)();
+            }
+        );
+
+    });
+
+};
 
 // called from _includes/siteIncludes/partials/page-common/page-tags.html
 const page__showPageCustomTags = () => {
