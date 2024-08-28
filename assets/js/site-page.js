@@ -509,6 +509,7 @@ const page__getPageInfo = () => {
 const page__setSelectedTextContextMenu = () =>{
 
     $(document).ready(function() {
+        if (!settings.selectedTextContextMenu.enabled) return;
         if (pageInfo.siteInfo === 'none') return;
         const permalink = $('main').attr('pagePermalinkRef') || '';
         const title = $('main').attr('pageTitleRef') || '';
@@ -516,6 +517,7 @@ const page__setSelectedTextContextMenu = () =>{
         console.log(page);
         if (page === 'none') return;
 
+        
         // define context menu items handlers
         // HANDLERS MUST RECEIVE AT LEAST THE SELECTED TEXT AS PARAMETER BUT MUST HAVE ALL 4 PARAMETERS DEFINED
         // OTHERWISE handler.bind(null, ... ) WILL NOT BE SET PROPERLY
@@ -526,10 +528,17 @@ const page__setSelectedTextContextMenu = () =>{
             3. selected text
             4. the rectangle on the screen where the selcted text is located
         */
-        const annotateSelectedText = (page = null, itemText = null, selectedText, rectangle=null) => {
+        const addCommentToSelectedText = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
             console.log(page);
+            console.log(selectedTextHtml);
             console.log('click ' + itemText + ' annotate ' + selectedText);
             console.log(rectangle);
+
+            $('div[sitefunction="pageAddCommentToSelectedText_text"]').text(selectedText);
+            $('div[siteFunction="pageAddCommentToSelectedText_container"]').removeClass('d-none');
+            $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]')[0].setSelectionRange(0, 0);
+            $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').focus();
+
         }
 
         // return the context menu item handler
@@ -546,8 +555,13 @@ const page__setSelectedTextContextMenu = () =>{
         {
             menu:[
                 {
-                    label: 'Annotate',
-                    handler: annotateSelectedText
+                    label: '<div class="text-danger pb-2 border-bottom border-secondary border-opacity-25">See selected</div>',
+                    // no handler here, is just for moving the focus to selected text because it may be lost when activating the textarea
+                    handler: '' 
+                },
+                {
+                    label: 'Add comment',
+                    handler: addCommentToSelectedText
                 },
                 {
                     label: 'Search in site',
@@ -556,18 +570,67 @@ const page__setSelectedTextContextMenu = () =>{
             ],
             ops: 
                 `
-                    <div class="px-2 text-dark">opss</div>
+                    <div 
+                        class="px-2 text-dark d-none" 
+                        siteFunction="pageAddCommentToSelectedText_container">
+
+                        <div 
+                            sitefunction="pageAddCommentToSelectedText_text"
+                            class="pageExcerptInListItems text-primary mb-2 pt-2 border-top border-secondary border-opacity-25">
+                            selected text
+                        </div>
+
+                        <textarea 
+                            class="form-control" 
+                            sitefunction="pageAddCommentToSelectedText_comment" 
+                            id="pageAddCommentToSelectedText_comment" 
+                            rows="2">
+                        </textarea>
+            
+                        <div class="mb-2">
+                            <button 
+                                sitefunction="pageAddCommentToSelectedText_btn" 
+                                id="pageAddCommentToSelectedText_btn" 
+                                type="button" 
+                                class="focus-ring focus-ring-warning btn btn-sm btn-success mt-2 position-relative pageExcerptInListItems">
+                                Add comment     
+                            </button>
+                        </div>
+                    </div>
                 `
         };
+
+        // context menu callbacks
+        const initAddCommentContainer = () => {
+            $('div[siteFunction="pageAddCommentToSelectedText_container"]').addClass('d-none');
+            $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').val('');
+            $('div[sitefunction="pageAddCommentToSelectedText_text"]').text('');
+        }
+
+        const onOpenCallback = initAddCommentContainer;
+        const onCloseCallback = initAddCommentContainer;
+
+        const onBeforeInitCallback = () => {
+            $(document)
+                .off('click', 'button[sitefunction="pageAddCommentToSelectedText_btn"]')
+                .on('click', 'button[sitefunction="pageAddCommentToSelectedText_btn"]', function() {
+                    initAddCommentContainer();
+                    $('#selected-text-context-menu').hide();
+                    $('body').css('overflow', '');
+                });
+        }
 
         // set the menu
         setSelectedTextContextMenu(
             'main',
             contextMenuContent,
-            (event, selectedText, rectangle) => {
+            (event, selectedText, selectedTextHtml, rectangle) => {
                 const handler = getItemHandler($(event.target).closest('.selected-text-context-menu-item').text());
-                if (handler) handler.bind(null, pageInfo, $(event.target).closest('.selected-text-context-menu-item').text(), selectedText, rectangle)();
-            }
+                if (handler) handler.bind(null, pageInfo, $(event.target).closest('.selected-text-context-menu-item').text(), selectedText, selectedTextHtml, rectangle)();
+            },
+            () => onCloseCallback(),
+            () => onOpenCallback(),
+            () => onBeforeInitCallback()
         );
 
     });

@@ -1783,7 +1783,6 @@ const isValidEmail = (email) => {
     return _.isString(email) && emailRegex.test(email);
 }
 
-
 const isValidText = (text, minWords, maxWords) => {
     // Check if the text contains new lines, tabs, or any HTML tags
     if (/\n|\t|<[^>]+>/.test(text)) {
@@ -1802,11 +1801,22 @@ const isValidText = (text, minWords, maxWords) => {
     return true;
 };
 
+const textContainsHtmlTags = (text) => {
+    // Regular expression to detect HTML tags
+    const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
+
+    // Test if the text matches the pattern
+    return htmlTagPattern.test(text);
+};
+
 // selected text context menu
 const setSelectedTextContextMenu = (
     hotZoneSelector, // the area inside the context menu is active; cannot be document or window
     contextMenuContent, // the content object to be rendered inside the context menu
-    selectedTextCallback = null // to be executed with selected text as a parameter
+    selectedTextCallback = null, // to be executed with selected text as a parameter
+    contextMenuCloseCallback = null, // to be executed when the context menu box hides
+    contextMenuOpenCallback = null, // to be executed when the context menu box shows
+    contextMenuCallbackBeforeInit = null // to be executed before context menu init, is good to set some handlers if there are btns on the menu
 ) => {
     const checkContextMenuContent = (contextMenuContent) => {
         return contextMenuContent.menu.length > 0 || (contextMenuContent.ops && contextMenuContent.ops !== '') ? true : false;
@@ -1830,15 +1840,28 @@ const setSelectedTextContextMenu = (
 
     if (!checkContextMenuContent(contextMenuContent)) return;
 
+    if (contextMenuCallbackBeforeInit) contextMenuCallbackBeforeInit();
+
     let rect =  null;
+    let selectedText = ''
+    let selectedTextHtml = ''
 
     if (contextMenuContent.menu.length > 0) $('#selected-text-context-menu').append($(contextMenuOptionsHtml(contextMenuContent)));
     if (contextMenuContent.ops && contextMenuContent.ops !== '') $('#selected-text-context-menu').append($(contextMenuContent.ops));
 
     $(hotZoneSelector).on('mouseup', function (e) {
-        const selectedText = window.getSelection();
+        extendSelectionToWholeWords(); // we want kind of relvant selection, not word chunks
+        selectedText = window.getSelection();
 
-        if (selectedText.toString().trim().length > 0 && isValidText(selectedText.toString().trim(), 3, 10)) {
+        if (selectedText.rangeCount > 0) {
+            let range = selectedText.getRangeAt(0);
+            let selectedHtml = range.cloneContents();
+            let $div = $('<div></div>');
+            $div.append(selectedHtml);
+            selectedTextHtml = $div.html();
+        }
+
+        if (selectedText.toString().trim().length > 0 && isValidText(selectedText.toString().trim(), settings.selectedTextContextMenu.minWords, settings.selectedTextContextMenu.maxWords)) {
             const range = selectedText.getRangeAt(0);
             rect = range.getBoundingClientRect();
 
@@ -1848,31 +1871,43 @@ const setSelectedTextContextMenu = (
                 zIndex: 1000
             });
 
-            setTimeout(() => $('#selected-text-context-menu').show(), 200);
+            if (contextMenuOpenCallback) contextMenuOpenCallback();
+            $('#selected-text-context-menu').show();
+            $('body').css('overflow', 'hidden'); // freeze scrolling
 
             // Store selected text for use later
             $('#selected-text-context-menu').data('selectedText', selectedText.toString().trim());
+            $('#selected-text-context-menu').data('selectedTextHtml', selectedTextHtml);
         } else {
             $('#selected-text-context-menu').hide();
+            $('body').css('overflow', '');
         }
     });
 
     // Hide context menu when clicking outside it
     $(document).on('mousedown', function (e) {
         if (!$(e.target).closest('#selected-text-context-menu, ' + hotZoneSelector).length) {
+            if (contextMenuCloseCallback) contextMenuCloseCallback();
             $('#selected-text-context-menu').hide();
+            $('body').css('overflow', '');
         }
     });
 
     // Hide the context menu when scrolling
+    // NOT USED, WE FREEZE SCROLLING WHILE CONTEXT MNU IS OPEN
+    /*
     $(window).on('scroll', function() {
+        if (contextMenuCloseCallback) contextMenuCloseCallback();
         $('#selected-text-context-menu').hide();
     });
+    */
 
     // Hide the context menu when the Escape key is pressed
     $(document).on('keydown', function (e) {
         if (e.key === 'Escape') {
+            if (contextMenuCloseCallback) contextMenuCloseCallback();
             $('#selected-text-context-menu').hide();
+            $('body').css('overflow', '');
         }
     });
 
@@ -1881,11 +1916,11 @@ const setSelectedTextContextMenu = (
         e.stopPropagation(); // Prevent clicks inside the menu from hiding it
     });
 
-    // Handle the custom option click and preservinf the highlight of selected text until context menu is closed
+    // Handle the custom option click and preserving the highlight of selected text until context menu is closed
     $('#selected-text-context-menu').on('click', '.selected-text-context-menu-item', function (event) {
         // Capture the selected text from the data attribute
         const selectedText = $('#selected-text-context-menu').data('selectedText');
-        
+        const selectedTextHtml = $('#selected-text-context-menu').data('selectedTextHtml');
         
         if (!selectedText) {
             console.warn('No selected text found.');
@@ -1901,7 +1936,7 @@ const setSelectedTextContextMenu = (
         }
 
         // Function to find and select the exact occurrence of the text within the rectangle
-        const reapplySelection = (text) => {
+        const reapplySelection = (text, rect) => {
             const selection = window.getSelection();
             const range = document.createRange();
             
@@ -1935,13 +1970,67 @@ const setSelectedTextContextMenu = (
         }
 
         // Reapply the exact text selection for the specified occurrence
-        reapplySelection(selectedText);
+        reapplySelection(selectedTextHtml, rect);
 
         // Execute the callback function if it exists
         if (typeof selectedTextCallback === 'function') {
-            selectedTextCallback(event, selectedText, rect);
+            selectedTextCallback(event, selectedText, selectedTextHtml, rect);
         }
     });
+}
+
+const highlightTextInRectangle = (text, rect) => {
+    const element = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    if (element) {
+        const range = document.createRange();
+        const selection = window.getSelection();
+
+        // Assuming text within the rectangle is a portion of the element's textContent
+        // You would typically need to find the exact text, but we'll assume it lies within a single node.
+        const textNode = element.firstChild; // Adjust based on your HTML structure
+        const startIndex = textNode.textContent.indexOf(text); // Adjust to match the exact text in the rectangle
+        const endIndex = startIndex + text.length;
+
+        if (startIndex >= 0 && endIndex >= 0) {
+            range.setStart(textNode, startIndex);
+            range.setEnd(textNode, endIndex);
+            
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    }
+}
+
+const extendSelectionToWholeWords = () => {
+    let selection = window.getSelection();
+    if (!selection.rangeCount) return;
+    if (!isValidText(selection.toString().trim(), settings.selectedTextContextMenu.minWords, settings.selectedTextContextMenu.maxWords)) return;
+
+    let range = selection.getRangeAt(0);
+
+    // Get the text before and after the selection to determine if it's part of a word
+    let startContainer = range.startContainer;
+    let endContainer = range.endContainer;
+    let startOffset = range.startOffset;
+    let endOffset = range.endOffset;
+
+    // Expand start of the selection to the start of the word
+    while (startOffset > 0 && /\w/.test(startContainer.textContent[startOffset - 1])) {
+        startOffset--;
+    }
+
+    // Expand end of the selection to the end of the word
+    while (endOffset < endContainer.textContent.length && /\w/.test(endContainer.textContent[endOffset])) {
+        endOffset++;
+    }
+
+    // Adjust the range with new offsets
+    range.setStart(startContainer, startOffset);
+    range.setEnd(endContainer, endOffset);
+
+    // Clear the selection and reapply with the new range
+    selection.removeAllRanges();
+    selection.addRange(range);
 }
 
 

@@ -618,3 +618,49 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         width: $pageStatsSectionDocumentsListItemBtnSize;
     }
 }
+
+// slected text context menu
+@mixin selectedTextContextMenu($selectedTextContextMenuElements) {
+    #{map-get($selectedTextContextMenuElements, container)} {
+        display: $containerInitialVisibilty;
+        position: $containerPosition;
+        background-color: $containerBackground;
+        border: $containerBorder;
+        padding: $containerPadding;
+        cursor: $containerCursor;
+        z-index: $containerZIndex;
+        box-shadow: $containerBoxShadow;
+        font-size: $containerFontSize;
+        line-height: $containerLineHeight;
+        min-width: $containerMinWidth;
+        max-width: $containerMaxWidth;
+        border-radius: $containerBorderRadius;
+    }
+
+    #{map-get($selectedTextContextMenuElements, itemsContainer)} {
+        list-style: $itemsContainerListStyle;
+        padding: $itemsContainerPadding;
+        margin: $itemsContainerMargin;
+    }
+
+    #{map-get($selectedTextContextMenuElements, item)} {
+        padding: $itemPadding;
+        color: $itemColor;
+        white-space: $itemWhiteSpace;
+    }
+
+    #{map-get($selectedTextContextMenuElements, item)}:hover {
+        background-color: $itemBackgroundHover;
+        color: $itemColorHover;
+    }
+
+    #{map-get($selectedTextContextMenuElements, addCommentBtn)} {
+        font-size: $addCommentBtnFontSize;
+    }
+
+    #{map-get($selectedTextContextMenuElements, addCommentTextarea)} {
+        font-size: $addCommentTextareaFontSize;
+    }
+
+   
+}

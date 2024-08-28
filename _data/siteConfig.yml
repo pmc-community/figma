@@ -107,4 +107,7 @@ scripts:
 links:
   privacyLink: "https://innohub.space/eng/privacy"
   supportLink: "https://innohub.space/eng/mypmc/technical-support/"
-
+selectedTextContextMenu:
+  enabled: true
+  minWords: 3
+  maxWords: 10
