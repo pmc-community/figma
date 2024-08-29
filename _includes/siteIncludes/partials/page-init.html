@@ -7,4 +7,5 @@
   const catList = JSON.parse('{{ site.data.category_list }}'.replaceAll(/=>/g,':'));
   const catDetails = JSON.parse('{{ site.data.categories_details }}'.replaceAll(/=>/g,':'));
   const hsSettings = JSON.parse('{{ site.data.hs_integration }}'.replaceAll(/=>/g,':'));
+  const algoliaSettings = JSON.parse('{{site.data.algolia_client_integration}}'.replaceAll(/=>/g,':'));
 </script>

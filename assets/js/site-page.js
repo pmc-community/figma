@@ -514,9 +514,7 @@ const page__setSelectedTextContextMenu = () =>{
         const permalink = $('main').attr('pagePermalinkRef') || '';
         const title = $('main').attr('pageTitleRef') || '';
         const page = getObjectFromArray( {permalink: permalink, title: title}, pageList);
-        console.log(page);
         if (page === 'none') return;
-
         
         // define context menu items handlers
         // HANDLERS MUST RECEIVE AT LEAST THE SELECTED TEXT AS PARAMETER BUT MUST HAVE ALL 4 PARAMETERS DEFINED
@@ -539,6 +537,15 @@ const page__setSelectedTextContextMenu = () =>{
             $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]')[0].setSelectionRange(0, 0);
             $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').focus();
 
+        }
+
+        const searchInSite = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
+            if (!algoliaSettings.algoliaEnabled) return;
+            algolia.searchInSite(selectedText, (results) => {
+                console.log(results);
+                $('#selected-text-context-menu').hide();
+                $('body').css('overflow', '');
+            });
         }
 
         // return the context menu item handler
@@ -565,7 +572,7 @@ const page__setSelectedTextContextMenu = () =>{
                 },
                 {
                     label: 'Search in site',
-                    handler: ''
+                    handler: searchInSite, // works only with algolia
                 }
             ],
             ops: 

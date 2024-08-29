@@ -1872,11 +1872,7 @@ const setSelectedTextContextMenu = (
             return selectedTextHtml;
         }
 
-        if (selectedText.rangeCount > 0) {
-            selectedTextHtml = extractSelectedTextHtml(selectedText);
-            
-            console.log(selectedTextHtml.toString().trim());
-        }
+        if (selectedText.rangeCount > 0) selectedTextHtml = extractSelectedTextHtml(selectedText);
 
         if (
             selectedText.toString().trim().length > 0 && 
@@ -1991,7 +1987,7 @@ const setSelectedTextContextMenu = (
         }
 
         // Reapply the exact text selection for the specified occurrence
-        reapplySelection(selectedTextHtml, rect);
+        reapplySelection(selectedText, rect);
 
         // Execute the callback function if it exists
         if (typeof selectedTextCallback === 'function') {
