@@ -13,7 +13,28 @@ const savePageToSavedItems = (pageInfo) => {
         savedItems.push(pageToSave);
         localStorage.setItem('savedItems', JSON.stringify(savedItems));
     }
+    else {
+        const savedPage = getObjectFromArray({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, savedItems);
+        const modifiedSavedPage = _.defaults(savedPage, pageToSave);
+        savedItems = replaceObjectInArray(savedItems, modifiedSavedPage, {permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title});
+        localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    }
     createGlobalLists();
+}
+
+const checkSavedItemForValidValues = (obj, keysToExclude) => {
+    return _.reduce(_.keys(obj), (sum, key) => {
+        if (_.includes(keysToExclude, key)) {
+            return sum;
+        }
+
+        const value = obj[key];
+        if (_.isEmpty(value) && value !== 0) {
+            return sum + 0;
+        } else {
+            return sum + 1;
+        }
+    }, 0);
 }
 
 const removePageFromSavedItems = (pageInfo) => {

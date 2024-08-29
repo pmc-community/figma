@@ -207,7 +207,7 @@ sitePagesFn = {
         showPageFullInfoCanvas(pageInfo);
     },
 
-    updateInfoAfterOffCanvasClose: (page) => {
+    updateInfoAfterOffCanvasClose: (page=null) => {
         sitePagesFn.setPagesTablePageBadges();
         sitePagesFn.setPagesSavedStatus();
         sitePagesFn.setPagesTags();
@@ -218,13 +218,17 @@ sitePagesFn = {
         // from utilities.js
         removeObservers('.offcanvas class=hiding getClass=true');
         setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
-            sitePagesFn.updateInfoAfterOffCanvasClose(pageInfo.page);
-            $(`table[siteFunction="sitePagesDetailsPageTable"] td`).removeClass('table-active'); // remove any previous selection
-            sitePagesFn.rebuildPagesTableSearchPanes();
-            sitePagesFn.setLastFilterInfo('Last filter');
-            sitePagesFn.handleDropdownClassOverlap();
-            setTimeout(()=>sitePagesFn.forceRedrawPagesTable(), 100);
+            sitePagesFn.bruteRebuildPagesTable();
         });
+    },
+
+    bruteRebuildPagesTable: () => {
+        sitePagesFn.updateInfoAfterOffCanvasClose(pageInfo.page);
+        $(`table[siteFunction="sitePagesDetailsPageTable"] td`).removeClass('table-active'); // remove any previous selection
+        sitePagesFn.rebuildPagesTableSearchPanes();
+        sitePagesFn.setLastFilterInfo('Last filter');
+        sitePagesFn.handleDropdownClassOverlap();
+        setTimeout(()=>sitePagesFn.forceRedrawPagesTable(), 100);
     },
 
     // pages details section
@@ -356,8 +360,7 @@ sitePagesFn = {
                     }
                 };
                 removePageFromSavedItems(page);
-                sitePagesFn.setPagesSavedStatus();
-            });
+                sitePagesFn.bruteRebuildPagesTable();            });
 
         // save page to saved items when click on the related icon in the page title column of the table
         $(document)
@@ -1071,14 +1074,10 @@ sitePagesFn = {
 
             savedInfoItems = 0;
             if (status) {
-                const savedInfo = getPageSavedInfo (page.permalink, page.title);
-                savedInfoItems = 
-                    savedInfo.customTags.length +
-                    savedInfo.customCategories.length +
-                    savedInfo.customNotes.length +
-                    savedInfo.customComments.length
+                const savedInfo = getPageSavedInfo(page.permalink, page.title);
+                savedInfoItems = checkSavedItemForValidValues(savedInfo, ['permalink', 'title']);     
             }
-
+  
             btnColor = status ? 
                 savedInfoItems === 0 ? 'text-warning' : 'text-primary' :
                 'text-primary';

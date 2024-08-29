@@ -203,6 +203,13 @@ const objectIndexInArray = (searchCriteria, objectArray) => {
       });
 }
 
+const replaceObjectInArray = (arr, newObject, searchCriteria) => {
+    const index = _.findIndex(arr, searchCriteria);
+    if (index !== -1) arr[index] = newObject;
+    return arr;
+}
+
+
 const readQueryString = (queryParameter) => {
 
     const replaceSpecialCharacters = (inputString) => {
