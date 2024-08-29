@@ -1850,18 +1850,32 @@ const setSelectedTextContextMenu = (
     if (contextMenuContent.ops && contextMenuContent.ops !== '') $('#selected-text-context-menu').append($(contextMenuContent.ops));
 
     $(hotZoneSelector).on('mouseup', function (e) {
-        extendSelectionToWholeWords(); // we want kind of relvant selection, not word chunks
         selectedText = window.getSelection();
+        if (_.words(selectedText).length > 1 ) {
+            extendSelectionToWholeWords();
+            selectedText = window.getSelection();
+        }
 
-        if (selectedText.rangeCount > 0) {
+        const extractSelectedTextHtml = (selectedText) => {
             let range = selectedText.getRangeAt(0);
             let selectedHtml = range.cloneContents();
             let $div = $('<div></div>');
             $div.append(selectedHtml);
             selectedTextHtml = $div.html();
+            return selectedTextHtml;
         }
 
-        if (selectedText.toString().trim().length > 0 && isValidText(selectedText.toString().trim(), settings.selectedTextContextMenu.minWords, settings.selectedTextContextMenu.maxWords)) {
+        if (selectedText.rangeCount > 0) {
+            selectedTextHtml = extractSelectedTextHtml(selectedText);
+            
+            console.log(selectedTextHtml.toString().trim());
+        }
+
+        if (
+            selectedText.toString().trim().length > 0 && 
+            isValidText(selectedText.toString().trim(), settings.selectedTextContextMenu.minWords, settings.selectedTextContextMenu.maxWords) &&
+            !textContainsHtmlTags(selectedTextHtml)
+        ) {
             const range = selectedText.getRangeAt(0);
             rect = range.getBoundingClientRect();
 
@@ -2032,6 +2046,8 @@ const extendSelectionToWholeWords = () => {
     selection.removeAllRanges();
     selection.addRange(range);
 }
+
+
 
 
 

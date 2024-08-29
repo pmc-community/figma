@@ -45,8 +45,10 @@
                                     class="fw-normal align-self-center align-middle"
                                     title="Click here for more info about page {{ page.title }}"
                                     colFunction="pageTitle"
-                                    data-raw="{{ page.title }}">
-                                    <span>
+                                    data-raw="{{ page.title }}"
+                                    pageTitleReference="{{ page.title }}"
+                                    pagePermalinkReference="{{ page.permalink }}">
+                                    <span class="pr-4 d-flex justify-content-between">
                                         <span
                                             siteFunction="sitePagesPageLinkToOffCanvas"
                                             pageTitleReference="{{ page.title }}"
@@ -54,12 +56,14 @@
                                             class="alwaysCursorPointer text-nowrap">
                                             {{ page.title }}
                                         </span>
-                                        <a 
-                                            href="{{ page.permalink }}" 
-                                            target=_blank
-                                            class="mx-1">
-                                            <i class="bi bi-box-arrow-up-right" style="font-size:1.1rem"></i>
-                                        </a>
+                                        <span siteFunction="sitePagesPagesTableTitleColButtons">
+                                            <a 
+                                                href="{{ page.permalink }}" 
+                                                target=_blank
+                                                class="mx-1">
+                                                <i class="bi bi-box-arrow-up-right" style="font-size:1.1rem"></i>
+                                            </a>
+                                        </span>
                                     </span>
                                 </td>
     

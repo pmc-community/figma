@@ -142,6 +142,7 @@ const sitePages__pages = () => {
     $(document).ready(function() {
         sitePagesFn.setPagesDataTable(); // always datatable init to be first to ensure rendering of all rows
         sitePagesFn.setPagesTableButtonsFunctions();
+        sitePagesFn.setPagesSavedStatus();
         sitePagesFn.setPagesTags();
         sitePagesFn.setPagesCats();
         sitePagesFn.setPagesTablePageBadges();
@@ -208,6 +209,7 @@ sitePagesFn = {
 
     updateInfoAfterOffCanvasClose: (page) => {
         sitePagesFn.setPagesTablePageBadges();
+        sitePagesFn.setPagesSavedStatus();
         sitePagesFn.setPagesTags();
         sitePagesFn.setPagesCats();
     },
@@ -340,9 +342,46 @@ sitePagesFn = {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
         });
 
+        // remove page from saved items when click on the related icon in the page title column of the table
+        $(document)
+            .off('click', 'button[siteFunction="pagesRemovePageFromSavedItems"]')
+            .on('click', 'button[siteFunction="pagesRemovePageFromSavedItems"]', function(event) {
+                const closestButton = event.target.closest('button');
+                const permalink = $(closestButton).attr('pagePermalinkReference');
+                const title = $(closestButton).attr('pageTitleReference');
+                const page = {
+                    siteInfo: {
+                        permalink: permalink,
+                        title: title
+                    }
+                };
+                removePageFromSavedItems(page);
+                sitePagesFn.setPagesSavedStatus();
+            });
+
+        // save page to saved items when click on the related icon in the page title column of the table
+        $(document)
+            .off('click', 'button[siteFunction="pagesSavePageToSavedItems"]')
+            .on('click', 'button[siteFunction="pagesSavePageToSavedItems"]', function(event) {
+                const closestButton = event.target.closest('button');
+                const permalink = $(closestButton).attr('pagePermalinkReference');
+                const title = $(closestButton).attr('pageTitleReference');
+                const page = {
+                    siteInfo: {
+                        permalink: permalink,
+                        title: title
+                    }
+                };
+                savePageToSavedItems(page);
+                // just to warn that will be removed from saved items if not adding some tags or cats or notes or comments
+                showToast(`Document ${title} is now saved!<br><strong>HEADS UP!!!</strong><br>Document will be removed automatically if you don't add some custom info (tags, categories, notes, comments)`, 'bg-warning', 'text-dark');
+                sitePagesFn.setPagesSavedStatus();
+            });
+
         // HEADS UP!!!
         // HANDLERS FOR OPEN AND CLOSE ACTIVE FILTER ARE DEFINED IN postProcessPagesTable
-        // BEAUSE WE NEED tableUniqueID AS PARAMETER
+        // BECAUSE WE NEED tableUniqueID AS PARAMETER
+
     },
 
     setPagesTablePageBadges: () => {
@@ -419,7 +458,7 @@ sitePagesFn = {
         }
 
         const pageSavedInfoBadges = (page) => {
-            if (page.savedInfo === 'none') return ['',[]];
+            if (page.savedInfo === 'none') return ['',['Is Not Saved']];
             let savedInfoBadges = '';
             let flags = [];
     
@@ -645,7 +684,8 @@ sitePagesFn = {
                                     'Has Excerpt',
                                     'Has Site Categories',
                                     'Has Site Tags',
-                                    'Is Saved'
+                                    'Is Saved',
+                                    'Is Not Saved'
                                 ]);
                             },
                             (row, value) => {
@@ -1025,6 +1065,58 @@ sitePagesFn = {
         });
     },
 
+    setPagesSavedStatus: () => {
+
+        const savedStatusBtn = (status, page) => {
+
+            savedInfoItems = 0;
+            if (status) {
+                const savedInfo = getPageSavedInfo (page.permalink, page.title);
+                savedInfoItems = 
+                    savedInfo.customTags.length +
+                    savedInfo.customCategories.length +
+                    savedInfo.customNotes.length +
+                    savedInfo.customComments.length
+            }
+
+            btnColor = status ? 
+                savedInfoItems === 0 ? 'text-warning' : 'text-primary' :
+                'text-primary';
+
+            btnSiteFunction = status ? 'pagesRemovePageFromSavedItems' : 'pagesSavePageToSavedItems';
+            btnIcon = status ? 'bi-bookmark-x' : 'bi-bookmark-plus';
+            btnTitle = status ? 'Remove document form saved items' : 'Save document to saved items';
+            return (
+                `
+                    <button
+                        siteFunction = "${btnSiteFunction}"
+                        class = "btn btn-sm btn-outline border-0 shadow-none ${btnColor} p-0"
+                        title = "${btnTitle}"
+                        pagePermalinkReference="${page.permalink}"
+                        pageTitleReference="${page.title}">
+                        <i class="bi ${btnIcon}" style="font-size:1.2rem"></i>
+                    </button>
+                `
+            );
+        }
+
+        $('button[siteFunction="pagesRemovePageFromSavedItems"]').remove();
+        $('button[siteFunction="pagesSavePageToSavedItems"]').remove();
+        $('td[colFunction="pageTitle"]').each(function() {
+            const permalink = $(this).attr('pagePermalinkReference');
+            const title = $(this).attr('pageTitleReference');
+            const page = {
+                siteInfo: {
+                    permalink: permalink, 
+                    title: title
+                }
+            };
+            const pageSavedStatus = getPageStatusInSavedItems(page);
+            $(this).find('span[siteFunction="sitePagesPagesTableTitleColButtons"]').append($(savedStatusBtn(pageSavedStatus, page.siteInfo)));
+
+        });
+    },
+
     rebuildPagesTableSearchPanes: () => {
         getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
         let table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
@@ -1052,6 +1144,7 @@ sitePagesFn = {
             }, 100);
         });
         
+        // show saved pages
         let table; // define table here, otherwise getters below will not have access to it and will raise errors
         $('#showSavedItems').off('click').click( function() {
             $('#site_pages_details').removeClass('d-none');
@@ -1061,6 +1154,44 @@ sitePagesFn = {
                 {
                     column:2,
                     rows:['Is Saved'],
+                    get name() { return sitePagesFn.getColName(table,this.column) }
+                    
+                },
+                {
+                    column:3,
+                    rows:[],
+                    get name() { return sitePagesFn.getColName(table,this.column) }
+                },
+                {
+                    column:4,
+                    rows:[],
+                    get name() { return sitePagesFn.getColName(table,this.column) }
+                },
+                {
+                    column:7,
+                    rows:[],
+                    get name() { return sitePagesFn.getColName(table,this.column) }
+                },
+                {
+                    column:8,
+                    rows:[],
+                    get name() { return sitePagesFn.getColName(table,this.column) }
+                }
+            ];
+            sitePagesFn.rebuildPagesTableSearchPanes();
+            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.handleDropdownClassOverlap();
+        });
+
+        // show not saved pages
+        $('#showNotSavedItems').off('click').click( function() {
+            $('#site_pages_details').removeClass('d-none');
+            $('div[sitefunction="sitePagesDetails"]').fadeIn();
+            table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
+            sitePagesFn.pageTableSearchPanesSelection = [
+                {
+                    column:2,
+                    rows:['Is Not Saved'],
                     get name() { return sitePagesFn.getColName(table,this.column) }
                     
                 },

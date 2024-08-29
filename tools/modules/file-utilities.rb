@@ -200,7 +200,7 @@ module FileUtilities
             if (numPages > 0 )
                 Globals.putsColText(Globals::PURPLE,"Generating raw content ... done (#{numPages} page(s) changed)")
             else
-                Globals.putsColText(Globals::PURPLE,"Generating raw content ... nothing to do! (no content chages)")
+                Globals.putsColText(Globals::PURPLE,"Generating raw content ... nothing to do! (no content changes)")
             end
         end
     end

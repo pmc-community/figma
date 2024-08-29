@@ -4,7 +4,8 @@ const savePageToSavedItems = (pageInfo) => {
         title: DOMPurify.sanitize(pageInfo.siteInfo.title),
         customTags: [],
         customCategories: [],
-        customNotes:[]
+        customNotes:[],
+        customComments:[]
     }
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
 

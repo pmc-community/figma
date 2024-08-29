@@ -109,5 +109,5 @@ links:
   supportLink: "https://innohub.space/eng/mypmc/technical-support/"
 selectedTextContextMenu:
   enabled: true
-  minWords: 3
-  maxWords: 10
+  minWords: 1
+  maxWords: 5
