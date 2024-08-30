@@ -20,7 +20,7 @@ module Jekyll
       if (algoliaEnabled == 'true')
         Globals.putsColText(Globals::PURPLE,"Generating Algolia settings ...")
 
-        # algoliaSettings to pe used only on server side, when building, to not expose the write key
+        # algoliaSettings to be used only on server side, when building, to not expose the write key
         algoliaSettings = {
           "algoliaEnabled" => algoliaEnabled,
           "algoliaAppID" => ENV["ALGOLIA_APP_ID"],
@@ -33,7 +33,12 @@ module Jekyll
           "algoliaEnabled" => algoliaEnabled,
           "algoliaAppID" => ENV["ALGOLIA_APP_ID"],
           "algoliaIndex" => ENV["ALGOLIA_INDEX"],
-          "algoliaPublicApiKey" => ENV["ALGOLIA_PUBLIC_API_KEY"]
+          "algoliaPublicApiKey" => ENV["ALGOLIA_PUBLIC_API_KEY"],
+          "algoliaSearchBoxContainer" => site.data["buildConfig"]["algoliaSearch"]["container"],
+          "algoliaDebug" => site.data["buildConfig"]["algoliaSearch"]["debug"],
+          "algoliaMaxResultsPerGroup" => site.data["buildConfig"]["algoliaSearch"]["maxResultsPerGroup"],
+          "algoliaSendInsights" => site.data["buildConfig"]["algoliaSearch"]["insights"],
+          "algoliaRaiseIssueLink" => "https://github.com/#{site.data["buildConfig"]["github"]["user"]}/#{site.data["buildConfig"]["github"]["repo"]}/issues/new?title="
         }
 
         site.data["algolia_integration"] = algoliaSettings.to_json

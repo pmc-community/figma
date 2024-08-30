@@ -1,11 +1,41 @@
-<script>
-  const settings = JSON.parse('{{ site.data.siteConfig }}'.replaceAll(/=>/g,':'));
-  const pageSettings = JSON.parse('{{ site.data.pageConfig }}'.replaceAll(/=>/g,':'))["{{ page.url }}"];
-  const pageList = JSON.parse('{{ site.data.page_list }}'.replaceAll(/=>/g,':'));
-  const tagList = JSON.parse('{{ site.data.tag_list }}'.replaceAll(/=>/g,':'));
-  const tagDetails = JSON.parse('{{ site.data.tags_details }}'.replaceAll(/=>/g,':'));
-  const catList = JSON.parse('{{ site.data.category_list }}'.replaceAll(/=>/g,':'));
-  const catDetails = JSON.parse('{{ site.data.categories_details }}'.replaceAll(/=>/g,':'));
-  const hsSettings = JSON.parse('{{ site.data.hs_integration }}'.replaceAll(/=>/g,':'));
-  const algoliaSettings = JSON.parse('{{site.data.algolia_client_integration}}'.replaceAll(/=>/g,':'));
+
+<script id="init_superglobals_mainSettings">
+  const settings = {{site.data.siteConfig | replace: "=>", ":" | jsonify | json_string_to_object}}
 </script>
+
+<script id="init_superglobals_pageSettings">
+  {% assign allSettings = site.data.pageConfig %}
+  {% assign crtPage = page.url %}
+  {% assign crtPageClientSettings = allSettings[crtPage] | jsonify %}
+  const pageSettings = {{crtPageClientSettings}}
+</script>
+
+<script id="init_superglobals_tagList">
+  const tagList = {{site.data.tag_list | jsonify | json_string_to_object}}
+</script>
+
+<script id="init_superglobals_tagDetails">
+  const tagDetails = {{site.data.tags_details | replace: "=>", ":" | jsonify | json_string_to_object}}
+</script>
+
+<script id="init_superglobals_catList">
+  const catList = {{site.data.category_list | jsonify | json_string_to_object}}
+</script>
+
+<script id="init_superglobals_catDetails">
+  const catDetails = {{site.data.categories_details | replace: "=>", ":" | jsonify | json_string_to_object}}
+</script>
+
+<script id="init_superglobals_pageList">
+  const pageList = {{site.data.page_list | jsonify | json_string_to_object}}
+</script>
+
+<script id="init_superglobals_hs">
+  const hsSettings = {{site.data.hs_integration | replace: "=>", ":" | jsonify | json_string_to_object}}
+</script>
+
+<script id="init_superglobals_algoliaClient">
+  const algoliaSettings = {{site.data.algolia_client_integration | jsonify | json_string_to_object}}
+</script>
+
+

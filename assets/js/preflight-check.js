@@ -162,7 +162,15 @@ preFlight = {
     },
 
     get clearance() { return this.clearForTakeOff(this.browser, this.deviceInfo)},
-    get skyClear() { return this.clearance.goodToGo }
+    get skyClear() { return this.clearance.goodToGo },
+
+    loadSuperGlobals: () => {
+        fetch('assets/config/siteSettings.json')
+            .then(response => response.json())
+            .then(siteSettings => {
+                window.allSettings = siteSettings;            
+    });
+    }
 }
 
 // LET'S START
@@ -170,6 +178,7 @@ console.log(preFlight.deviceInfo);
 console.log(`${preFlight.browser.browserName} ${preFlight.browser.fullVersion} `);
 
 document.addEventListener('DOMContentLoaded', function() {
+
     if (!preFlight.clearance.goodToGo) {
         const errDiv = document.createElement('div');
         const errText = document.createElement('h2');
@@ -188,6 +197,6 @@ document.addEventListener('DOMContentLoaded', function() {
         toRemove.remove();
     
         document.body.style.visibility = 'visible';
-    }
-    
+    } 
 });
+

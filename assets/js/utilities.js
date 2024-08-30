@@ -68,6 +68,7 @@ $.fn.dataTable.ext.type.order['html-string-pre'] = function(s) {
     return stripHtml(s);
 };
 
+// Extend DataTables with custom search function
 $.fn.dataTable.ext.type.search['raw-data'] = function(data) {
     console.log('here')
     try {
@@ -86,7 +87,6 @@ $.fn.dataTable.ext.type.search['raw-data'] = function(data) {
     }
     return data;
 };
-// Extend DataTables with custom search function
 
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);

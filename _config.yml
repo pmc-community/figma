@@ -50,7 +50,7 @@ exclude:
   - _sass/custom/*.css
   - assets/*.scss
   - .env
-
+  - assets/config/
 aux_links:
   "GitHub":
     - "//github.com/pmc-community/figma"

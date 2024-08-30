@@ -543,6 +543,7 @@ const page__setSelectedTextContextMenu = () =>{
             if (!algoliaSettings.algoliaEnabled) return;
             algolia.searchInSite(selectedText, (results) => {
                 console.log(results);
+                $('.DocSearch').click();
                 $('#selected-text-context-menu').hide();
                 $('body').css('overflow', '');
             });

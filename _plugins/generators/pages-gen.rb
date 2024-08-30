@@ -9,7 +9,7 @@ module Jekyll
 
   class PageListGenerator < Generator
     safe true
-    priority :highest
+    priority :high
 
     # HEADS UP!!!
     # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE

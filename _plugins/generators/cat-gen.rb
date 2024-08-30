@@ -4,7 +4,7 @@ require_relative "../../tools/modules/globals"
 module Jekyll
 
   class CategoryListGenerator < Generator
-    priority :high
+    priority :normal
 
     attr_accessor :allCats
 

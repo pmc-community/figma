@@ -1,3 +1,6 @@
+// SUPER GLOBALS
+//let settings//, pageSettings, pageList, tagList, tagDetails, catList, catDetails, hsSettings, algoliaSettings
+
 // GLOBALS
 let globCustomCats, globCustomTags;
 let globAllCats, globAllTags;
@@ -9,6 +12,7 @@ window.mainJQuery = jQuery; // exposing jQuery to be able to use it in iFrames
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case
 // this has to be here, orherwise the hash will be removed before handling the fixed header
+
 $(window).on('scroll', () => {
 
     // handle fixed header scroll
@@ -34,9 +38,10 @@ $(window).on('message', function(event) {
 });
 
 /* LET'S DO SOME WORK */
+
 const customiseTheme = (pageObj = null) => {
     if (!preFlight.skyClear) return; // comes from preflight-check.js
-
+    
     const $loading = $(
         `
             <div id="contentLoading" class="d-flex justify-content-center align-items-center d-none" style="position: fixed; top:0; left:0; width:100vw; height: 100vh">
@@ -50,7 +55,7 @@ const customiseTheme = (pageObj = null) => {
     $('html').append($loading);
     $('#contentLoading').removeClass('d-none');
     $('body').attr('data-instant-intensity', 'viewport').attr('data-instant-vary-accept');
-
+    
     // first things, first
     cleanSavedItems();
     createGlobalLists();
@@ -124,6 +129,7 @@ const customiseTheme = (pageObj = null) => {
         // set some utilities for iframes
         window.utilities = iframe__utilities();
     });
+
 }
 
 /* HERE ARE THE FUNCTIONS */

@@ -40,7 +40,7 @@ module Jekyll
 
   class HSPortalID < Generator
     safe true
-    priority :highest
+    priority :high
 
     def generate(site)
       if (site.data["siteConfig"]["hsIntegration"]["enabled"])
