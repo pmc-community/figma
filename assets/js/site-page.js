@@ -36,7 +36,7 @@ const page__getRelatedPages = () => {
         return (
             `
                 <a siteFunction="pageRelatedPageLink" href="${relatedPage.permalink.indexOf('/') === 0 ? relatedPage.permalink : '/'+relatedPage.permalink}" class="${relatedPageLinkWidth} p-2">
-                    <div siteFunction="pageRelatedPage" class="border border-secondary border-opacity-25 my-2 card h-100 py-3 px-3 bg-body rounded bg-transparent shadow-sm">
+                    <div siteFunction="pageRelatedPage" class="border-0 border-top rounded-0 border-secondary border-opacity-25 my-2 card h-100 py-3 px-0 bg-body rounded bg-transparent shadow-none">
                         <div class="h-100 align-top mb-2">
                             <span siteFunction="pageRelatedPageLinkPageTitle" class="fw-medium text-primary">${relatedPage.title}</span>
                         </div>
@@ -102,11 +102,13 @@ const page__getPageNotes = () => {
     const customNoteItem = (note) => {
         return (
             `
-                <div siteFunction="pageNote" class="my-2 card h-auto col-12 py-2 px-3 bg-transparent border border-secondary border-opacity-25">
-                    <div class="h-100 align-top mb-2">
+                <div siteFunction="pageNote" class="col-4 my-2 card h-auto p-2 bg-transparent border-0 rounded-0 border-secondary border-opacity-25 shadow-none">
+                    <div 
+                        class="align-top mb-2 border-0 border-bottom rounded-0 border-secondary border-opacity-25" 
+                        style="width: fit-content">
                         <span class="text-primary">${note.date}</span>
                     </div>
-                    <div class="h-100 align-top">
+                    <div class="align-top">
                         <p class="text-secondary">${note.note}</p>
                     </div>
                 </div>
@@ -127,12 +129,10 @@ const page__getPageNotes = () => {
                     <span class="fs-6 fw-medium">
                         Notes:
                     </span>
-                    <div 
-                        siteFunction="pageNotesContainer"
-                        class="container-fluid">
+                    <div siteFunction="pageNotesContainer">
                         <div
                             siteFunction="pageNotesRow"
-                            class="row d-flex justify-content-between">
+                            class="d-flex justify-content-start row">
                             ${customNotesHtml}
                         </div>
                     </div>

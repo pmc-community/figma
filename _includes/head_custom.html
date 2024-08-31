@@ -101,7 +101,7 @@
 
 {% if site.data.siteConfig.hsIntegration.enabled %}
     <link href="/assets/js/hs-integrate.js" rel="preload" as="script">
-    <script src="/assets/js/hs-integrate.js" async defer></script>
+    <script src="/assets/js/hs-integrate.js"></script>
 {% endif %}
 
 {% assign algolia = site.data.algolia_client_integration | json_string_to_object %}

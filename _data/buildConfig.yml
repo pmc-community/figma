@@ -64,3 +64,5 @@ algoliaSearch:
 prodUrl: "https://figmares.innohub.space"
 JTDSearch:
   searchBoxWidth: "fit-content"
+changeLog:
+  history: 5

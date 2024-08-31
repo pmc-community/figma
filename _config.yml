@@ -45,12 +45,15 @@ exclude:
   - config.ru
   - .github/
   - doc-raw-contents/
+  - doc-change-log/
   - _data/
   - _plugins/
   - _sass/custom/*.css
   - assets/*.scss
   - .env
-  - assets/config/
+  - assets/config/ # excluding from build because may generate infinite build loop. copied to _site with a site:post_write hook
+  - unused/
+
 aux_links:
   "GitHub":
     - "//github.com/pmc-community/figma"
