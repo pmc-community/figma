@@ -1,6 +1,21 @@
 {
   "keywords": [
     {
+      "permalink": "collection-2/X/x/",
+      "keywords": [
+        "file",
+        "content",
+        "source file",
+        "markdown content",
+        "inline",
+        "link",
+        "collection-2",
+        "folder",
+        "classes head1",
+        "head"
+      ]
+    },
+    {
       "permalink": "/terms/",
       "keywords": [
         "services",
@@ -61,27 +76,6 @@
       ]
     },
     {
-      "permalink": "/intro/introChild/introGrandChild/",
-      "keywords": [
-        "child page"
-      ]
-    },
-    {
-      "permalink": "collection-2/X/x/",
-      "keywords": [
-        "file",
-        "content",
-        "source file",
-        "markdown content",
-        "inline",
-        "link",
-        "collection-2",
-        "folder",
-        "classes head1",
-        "head"
-      ]
-    },
-    {
       "permalink": "/intro/introChild/",
       "keywords": [
         "lorem ipsum",
@@ -97,32 +91,9 @@
       ]
     },
     {
-      "permalink": "/collection-2/Z/z/",
+      "permalink": "/intro/introChild/introGrandChild/",
       "keywords": [
-        "file",
-        "file loads",
-        "inline",
-        "place",
-        "repo",
-        "content",
-        "link",
-        "collection",
-        "folder"
-      ]
-    },
-    {
-      "permalink": "/sf/f1/",
-      "keywords": [
-        "services",
-        "lorem ipsum",
-        "products",
-        "latin",
-        "user",
-        "user content",
-        "content",
-        "sites",
-        "website",
-        "updates"
+        "child page"
       ]
     },
     {
@@ -141,10 +112,32 @@
       ]
     },
     {
-      "permalink": "/404.html",
+      "permalink": "/sf/f1/",
       "keywords": [
-        "page",
-        "child page"
+        "services",
+        "lorem ipsum",
+        "products",
+        "latin",
+        "user",
+        "user content",
+        "content",
+        "sites",
+        "website",
+        "updates"
+      ]
+    },
+    {
+      "permalink": "/collection-2/Z/z/",
+      "keywords": [
+        "file",
+        "file loads",
+        "inline",
+        "place",
+        "repo",
+        "content",
+        "link",
+        "collection",
+        "folder"
       ]
     }
   ]

@@ -70,15 +70,17 @@ module Jekyll
         pList.each do |page|
           pageObj = {}
           pageArr = []
-          if page["tags"].any? { |element| element == tag }
-            tagPagesNum +=1
-            tagPage["numPages"] = tagPagesNum
-            pageObj["title"] = page["title"]
-            pageObj["permalink"] = page["permalink"]
-            pageObj["lastUpdate"] = DateTime.parse(page["lastUpdate"]).strftime("%d-%b-%Y")
-            pageArr = tagPage["pages"]
-            pageArr << pageObj if pageObj
-            tagPage["pages"] = pageArr
+          if (page["tags"])
+            if page["tags"].any? { |element| element == tag }
+              tagPagesNum +=1
+              tagPage["numPages"] = tagPagesNum
+              pageObj["title"] = page["title"]
+              pageObj["permalink"] = page["permalink"]
+              pageObj["lastUpdate"] = DateTime.parse(page["lastUpdate"]).strftime("%d-%b-%Y")
+              pageArr = tagPage["pages"]
+              pageArr << pageObj if pageObj
+              tagPage["pages"] = pageArr
+            end
           end
         end
         tagPages[tag] = tagPage if tagPage != {"pages":[]}

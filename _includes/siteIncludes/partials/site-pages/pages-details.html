@@ -43,7 +43,7 @@
                                 <td 
                                     siteFunction="sitePagesTablePageTitle" 
                                     class="fw-normal align-self-center align-middle"
-                                    title="Click here for more info about page {{ page.title }}"
+                                    title="Click here for more info about document {{ page.title }}"
                                     colFunction="pageTitle"
                                     data-raw="{{ page.title }}"
                                     pageTitleReference="{{ page.title }}"
@@ -60,7 +60,8 @@
                                             <a 
                                                 href="{{ page.permalink }}" 
                                                 target=_blank
-                                                class="mx-1">
+                                                class="mx-1"
+                                                title="Read document {{ page.title }}">
                                                 <i class="bi bi-box-arrow-up-right" style="font-size:1.1rem"></i>
                                             </a>
                                         </span>

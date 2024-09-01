@@ -21,15 +21,27 @@ module Jekyll
 
                     # generating the full list of pages for which similarByContent will be generated
                     # full list of pages = modified_files + pages that had the as similar one of the modified_files
-                    current_similar_pages = FileUtilities.read_json_file("#{site.data['buildConfig']["rawContentFolder"]}/autoSimilar.json") || []
+                    
+                    if File.exist?("#{site.data['buildConfig']["rawContentFolder"]}/autoSimilar.json")
+                        current_similar_pages = FileUtilities.read_json_file("#{site.data['buildConfig']["rawContentFolder"]}/autoSimilar.json") || []
+                    else
+                        current_similar_pages = []
+                    end
+
                     modified_files_permalinks = modified_files.map do |file_path|
                         File.basename(file_path, ".txt").gsub('_', '/')
                     end
 
                     files_to_be_processed = modified_files
+                    #puts modified_files_permalinks
 
                     modified_files_permalinks.each do |permalink|
-                        similar_pages = Globals.find_object_by_multiple_key_value(current_similar_pages, {"permalink" => permalink})["similarFiles"] || []
+                        if (current_similar_pages.length > 0)
+                            similar_pages = Globals.find_object_by_multiple_key_value(current_similar_pages, {"permalink" => permalink})["similarFiles"] || []
+                        else
+                            similar_pages = []
+                        end
+                        
                         processed_similar_pages = similar_pages.map do |path|
                             "doc-raw-contents/#{path.gsub('/', '_')}.txt"
                         end

@@ -1,9 +1,5 @@
 [
     {
-        "permalink": "/devtest/",
-        "similarFiles": []
-    },
-    {
         "permalink": "/intro/",
         "similarFiles": [
             "/collection-2/y/y/",
@@ -50,9 +46,7 @@
     },
     {
         "permalink": "/collection-2/Z/z/",
-        "similarFiles": [
-            "collection-2/X/x/"
-        ]
+        "similarFiles": []
     },
     {
         "permalink": "collection-2/X/x/",

@@ -45,6 +45,7 @@ module Jekyll
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ...")
       
         numPages = 0
+        documents = []
         site.data['page_list'] = [].to_json
 
         doc_list.each do |file_path|
