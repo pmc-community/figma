@@ -1,6 +1,3 @@
-// SUPER GLOBALS
-//let settings//, pageSettings, pageList, tagList, tagDetails, catList, catDetails, hsSettings, algoliaSettings
-
 // GLOBALS
 let globCustomCats, globCustomTags;
 let globAllCats, globAllTags;
@@ -64,37 +61,28 @@ const customiseTheme = (pageObj = null) => {
     getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
 
     setTheTheme();
-    addExtraPaddingToContentArea();
-    addTopOfPage ();
     clearTheUrl();
-    customiseFooter();
-    addLogo();
     setGoToTopBtn();
-    formatAuxLinksBtns();
-    fullContentAreaOnHome();
     setFullPageToc();
     handleTocOnWindowsResize();
     handleTocDuplicates();  
-    addSwitchThemeIcon();
+    setSwitchThemeFunction();
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     handleTocActiveElementsOnScroll();
     
     $(document).ready(() => {
 
-        if ($(`#${settings.marker404}`).length > 0) $(settings.pageToc.tocContainer).remove();
-        else {
-            // last checks on page toc
-            if($(`${settings.pageToc.toc} ul`).children('li').length >0)
-                // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
-                removeChildrenExceptFirst (settings.pageToc.toc); 
-            else 
-                // no need to have page toc on screen if there is nothing to see there
-                $(settings.pageToc.tocContainer).hide();
+        // last checks on page toc
+        if($(`${settings.pageToc.toc} ul`).children('li').length >0)
+            // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
+            removeChildrenExceptFirst (settings.pageToc.toc); 
+        else 
+            // no need to have page toc on screen if there is nothing to see there
+            $(settings.pageToc.tocContainer).hide();
 
-            // remove some elements
-            removeUselessElements();
-        }
+        // remove some elements as set in siteConfig.toBeRemovedAfterLoad
+        removeUselessElements();
         
         // set the reference to the page main info
         $(settings.layouts.contentArea.contentContainer)
@@ -108,14 +96,9 @@ const customiseTheme = (pageObj = null) => {
                 savedInfo: getPageSavedInfo (pageObj.permalink, pageObj.title),
             } : 
             null;
-        
-        // when display hidden table columns in dark mode, the column backgroud may be light, so corrections should be applied
-        $(document).off('click','.buttons-columnVisibility').on('click', '.buttons-columnVisibility', function() {
-            applyColorSchemaCorrections();            
-        });
 
-        // just to align breadcrumbs to the content
-        $('.breadcrumb-nav').addClass('px-5');
+        // set some utilities for iframes
+        window.utilities = iframe__utilities();
 
         setTimeout( () => {
             $('body').css('visibility','visible');
@@ -123,8 +106,6 @@ const customiseTheme = (pageObj = null) => {
         
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
 
-        // set some utilities for iframes
-        window.utilities = iframe__utilities();
     });
 
 }
@@ -143,16 +124,9 @@ const removeUselessElements = () => {
     initPageToc();
 }
 
-const addExtraPaddingToContentArea = () => {
-    $(settings.layouts.contentArea.contentContainer).addClass(settings.layouts.contentArea.desktop.padding);
-}
-
-const addSwitchThemeIcon = () => {
+const setSwitchThemeFunction = () => {
     $(window).on('load', () => {
-        if (settings.themeSwitch.append) $(settings.themeSwitch.btnContainer).append(settings.themeSwitch.btnContent);
-        else $(settings.themeSwitch.btnContainer).prepend(settings.themeSwitch.btnContent);
-
-        $(settings.themeSwitch.btnId).off('click').on('click', () => {
+        $(`#${settings.themeSwitch.btnId}`).off('click').on('click', () => {
             $('body').css('visibility','hidden');
             let themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
@@ -298,71 +272,11 @@ const initPageToc = () => {
             'top', 
             $(settings.headerAboveContent.headerID).height() + settings.pageToc.desktop.offsetFromHeader + 'px'
         );
-        /*
-        .css(
-            'left', 
-            $(settings.pageToc.desktop.referenceContainer).width() + $(settings.pageToc.desktop.leftSideBar).width() + settings.pageToc.desktop.offsetFromReferenceContainer + 'px'
-        );
-        */
     $(`${settings.pageToc.toc} li a`).addClass('fw-normal text-black');
     document.dispatchEvent(new CustomEvent(settings.pageToc.tocLoadedEvent));
 }
 
-const hidePageTOCOnHome = () => {
-    $(window).on('load', () => {
-        const rootUrl = window.location.origin + '/';
-        const crtPage = window.location.href;
-        if (rootUrl === crtPage) $(settings.pageToc.tocContainer).hide();
-    });
-}
-
-const hidePageTOCOn404 = () => {
-    $(window).on('load', () => {
-        $(settings.pageToc.tocContainer).remove();
-        $(settings.layouts.contentArea.mainContainer).css('width','100%')
-    })   
-}
-
-const hidePageTOCOnPage = () => {
-    const urlIncludesItem = (url, items) => {
-        for (let item of items) {
-            if (url.includes(item)) {
-                return true; 
-            }
-        }
-        return false;
-    }
-    const page = window.location.href;
-    if ( urlIncludesItem(page, settings.pageToc.pagesWithoutToc) ) {
-        $(settings.pageToc.tocContainer).remove();
-        $(settings.layouts.contentArea.mainContainer).css('width','100%')
-    }
-}
-
-const hideFeedbackFormOnHome = () => {
-   $(window).on('load', () => {
-        const rootUrl = window.location.origin + '/';
-        const crtPage = window.location.href;
-        if (rootUrl !== crtPage) $('#docFeedbackForm').show();
-    });
-}
-
-const fullContentAreaOnHome = () => {
-    const rootUrl = window.location.origin + '/';
-    const crtPage = window.location.href;
-    if (rootUrl === crtPage) $(settings.layouts.contentArea.mainContainer).css('width', settings.layouts.contentArea.desktop.widthOnHome);
-}
-
-const formatAuxLinksBtns =() => {
-    //  no need to use site vars here since the selectors cannot be changed, being set by JTD theme
-    $('.aux-nav-list-item').removeClass('btn btn-danger btn-warning btn-sm m-2').addClass('align-items-center d-flex');
-    $('.aux-nav-list-item a').removeClass('site-button');
-    $('.aux-nav-list-item:first-child a').addClass('btn btn-danger m-2 text-light');
-    $('.aux-nav-list-item:last-child a').addClass('btn btn-warning m-2 text-dark');
-}
-
 const setGoToTopBtn = () => {
-    $(settings.goToTopBtn.btnContainer).append(settings.goToTopBtn.content);
     hideWhenNotNeeded();
 
     // should be declared as function, arrow function wont work
@@ -378,26 +292,9 @@ const setGoToTopBtn = () => {
         }, 100);
     }
 
-    $(settings.goToTopBtn.btnId).click(() => {goToTarget();});
+    $(document).on('click', settings.goToTopBtn.btnId, function() {goToTarget();});
     $(window).on('scroll', () =>{hideWhenNotNeeded();});
 }        
-
-const addTopOfPage = () => {
-    $(settings.goToTopBtn.topOfPageContainer).prepend(settings.goToTopBtn.topOfPageMarker);
-}
-
-const customiseFooter = () => {
-    $(settings.siteFooter.container).html('');
-
-    settings.siteFooter.rows.forEach(row => {
-        $(settings.siteFooter.container).prepend(row.content); 
-    });
-}
-
-const addLogo = () => {
-    $(settings.headerAboveSideBar.container).prepend(settings.headerAboveSideBar.logo);
-    $(settings.headerAboveSideBar.siteTitle).addClass('fs-6 fw-medium');
-}
 
 const clearTheUrl = () => {
     $(window).on('scroll', function() {

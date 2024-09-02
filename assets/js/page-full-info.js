@@ -643,13 +643,15 @@ const initCustomNotesTable = (pageInfo) => {
             {
                 data: 'date',
                 type: 'date',
-                className: 'dt-left alwaysCursorPointer alwaysTextToLeft'
+                className: 'dt-left alwaysCursorPointer alwaysTextToLeft align-middle',
+                width:'100px'
             }, 
 
             // note
             {
                 data: "note",
-                className: 'alwaysCursorPointer'
+                className: 'alwaysCursorPointer align-middle',
+                width:'350px'
             },
 
             // note id
@@ -657,7 +659,9 @@ const initCustomNotesTable = (pageInfo) => {
                 data: "id",
                 searchable: false, 
                 orderable: false, 
-                visible: false
+                visible: false,
+                width:'100px',
+                className: 'alwaysCursorPointer align-middle',
             }
 
         ],
@@ -668,7 +672,8 @@ const initCustomNotesTable = (pageInfo) => {
             order: [
                 [0, "desc"]
             ],
-            data: getPageNotes(pageInfo)
+            data: getPageNotes(pageInfo),
+            autoWidth: false
         }
     );
 }

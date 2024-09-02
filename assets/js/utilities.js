@@ -208,7 +208,6 @@ const replaceObjectInArray = (arr, newObject, searchCriteria) => {
     return arr;
 }
 
-
 const readQueryString = (queryParameter) => {
 
     const replaceSpecialCharacters = (inputString) => {
@@ -676,7 +675,6 @@ const setDataTable = (
             $(document).off('click','.buttons-columnVisibility').on('click', '.buttons-columnVisibility', function() {
                 applyColorSchemaCorrections();            
             });
-
 
             // searchPanes logic
             // WE CAN USE HARD CODED CLASS NAMES BECAUSE 

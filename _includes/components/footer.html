@@ -1,0 +1,20 @@
+{% capture footer_custom %}
+    {%- include footer_custom.html -%}
+{% endcapture %}
+
+{% if footer_custom != "" %}
+
+    {% assign pageList = site.data['page_list'] | json_string_to_object %}
+    {% assign matching_pages = pageList | where: "permalink", page.url %}
+        
+    {% if matching_pages.size > 0 %}
+        {% assign footerClass = "container-xl p-0" %}
+    {% else %}
+        {% assign footerClass = "" %}
+    {% endif %}
+
+    <footer class="{{footerClass}}">
+        {{ footer_custom }}
+    </footer>
+
+{% endif %}

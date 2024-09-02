@@ -1,7 +1,16 @@
+{% assign pageList = site.data['page_list'] | json_string_to_object %}
+    {% assign matching_pages = pageList | where: "permalink", page.url %}
+        
+    {% if matching_pages.size > 0 %}
+        {% assign additionalFooterPaddingClass = "" %}
+    {% else %}
+        {% assign additionalFooterPaddingClass = "px-5" %}
+    {% endif %}
+
 <div
     id="pageFeedbackAndSupport"
     siteFunction="pageFeedbackAndSupport"
-    class="my-4 d-none">
+    class="my-4 d-none {{additionalFooterPaddingClass}}">
     {% if site.data.siteConfig.hsIntegration.enabled %}
         <span class="fs-5 fw-medium">Feedback and Support</span>
     {% else %}

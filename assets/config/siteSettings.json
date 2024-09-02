@@ -50,52 +50,25 @@
       "hideBodyUntilLoadTimeout": 200
     },
     "goToTopBtn": {
-      "btnContainer": ".main",
-      "content": "<div id=\"ihs_go_to_top_btn\" class=\"btn btn-sm btn-primary rounded-circle\"><i class=\"bi bi-arrow-up\"></i></div>",
-      "topOfPageMarker": "<div id =\"ihs_top_of_page\"></div>",
       "topOfPageId": "#ihs_top_of_page",
-      "btnId": "#ihs_go_to_top_btn",
-      "topOfPageContainer": ".main-content-wrap"
+      "btnId": "#ihs_go_to_top_btn"
     },
     "externalContent": {
       "containerToIncludeExternalContent": ".main-content main"
     },
     "themeSwitch": {
       "cookie": "JTDThemeCookie",
-      "btnContent": "<div id=\"themeSwitcher\" title=\"Switch theme\" class=\"m-2 btn btn-secondary border border-secondary border-opacity-25 shadow-none text-light\"><i class=\"bi bi-mask\"></i></div>",
-      "btnContainer": ".aux-nav-list",
-      "append": false,
-      "btnId": "#themeSwitcher"
-    },
-    "siteFooter": {
-      "container": ".site-footer",
-      "rows": [
-        {
-          "content": "<div class=\"footer_first_row\"><a href=\"https://innohub.space/eng/terms-of-service/\" target=_blank>Terms</a> | <a href=\"https://innohub.space/eng/privacy/\" target=_blank>Privacy</a> | <a href=\"https://innohub.space/eng/cookie-policy/\" target=_blank>Cookies</a></div>"
-        },
-        {
-          "content": "<div class=\"footer_first_row\">Copyright <i class=\"bi bi-c-circle\"></i> <a href=\"https://pmc-expert.com\" target=_blank>PMC</a></div>"
-        }
-      ]
+      "btnId": "themeSwitcher"
     },
     "headerAboveContent": {
       "headerID": "#main-header",
       "offsetWhenScroll": 20
     },
-    "headerAboveSideBar": {
-      "logo": "<a href=\"/\"><img class = \"site_logo\" src=\"/assets/img/logo.png\" /></a>",
-      "container": ".site-header",
-      "siteTitle": ".site-title"
-    },
     "layouts": {
       "contentArea": {
         "mainContainer": ".main-content-wrap",
         "contentContainer": ".main-content main",
-        "contentWrapper": ".main-content",
-        "desktop": {
-          "padding": "px-0",
-          "widthOnHome": "100%"
-        }
+        "contentWrapper": ".main-content"
       },
       "leftSideBar": {
         "container": ".side-bar"
@@ -114,7 +87,6 @@
         ]
       }
     ],
-    "marker404": "site-this-is-404-page",
     "catMenu": true,
     "catMenuMoreBtn": "category-menu-more",
     "siteVars": {

@@ -11,7 +11,8 @@
   
   <div class="side-bar">
     <div class="site-header" role="banner">
-      <a href="{{ '/' | relative_url }}" class="site-title lh-tight">{% include title.html %}</a>
+      <a href="/"><img class = "site_logo" src="/assets/img/logo.png" /></a>
+      <a href="{{ '/' | relative_url }}" class="site-title lh-tight fs-6 fw-medium">{% include title.html %}</a>
       <button id="menu-button" class="site-button btn-reset" aria-label="Toggle menu" aria-pressed="false">
         <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
       </button>
@@ -27,7 +28,10 @@
       {{ nav_footer_custom }}
     {% else %}
       <footer class="site-footer">
-        This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+        {% for footerRow in site.data["buildConfig"]["siteFooter"]["rows"] %}
+          {{footerRow["content"]}}
+        {% endfor %}
       </footer>
     {% endif %}
+
   </div>

@@ -446,7 +446,7 @@ const page__getPageInfo = () => {
         const pageSimilarPages = page.siteInfo.similarByContent.slice(0, settings.similarByContent.maxPages) || []
         return (
             `
-                <div id="pageLastUpdateAndPageInfo" class="mb-4">
+                <div id="pageLastUpdateAndPageInfo" class="my-4 p-0 container-xl">
                     ${catsHtml}
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
@@ -650,7 +650,7 @@ const page__showPageCustomTags = () => {
     const createPageTagsContainer = () => {
         return (
             `
-                <div id="pageTags" class="container px-5">
+                <div id="pageTags" class="mb-4">
                     <span 
                         siteFunction="pageTagsContainer" 
                         class="mr-5 fs-6 fw-medium">
@@ -786,17 +786,6 @@ const refreshPageAfterOffCanvasClose = () => {
         $('div[id="pageLastUpdateAndPageInfo"]').remove();
         refreshPageDynamicInfo();
     });
-}
-
-// not used, separators are et in the default.html template
-const setContentSeparators = () => {
-    setTimeout( () => {
-        if ($('hr[siteFunction="pageContentTopSeparator"]').length === 0)
-            $('main').prepend('<hr siteFunction="pageContentTopSeparator" class="my-4">');
-        
-        if ($('hr[siteFunction="pageContentBottomSeparator"]').length === 0)
-            $('main').append('<hr siteFunction="pageContentBottomSeparator" class="my-4">');
-    }, 100);
 }
 
 const createHSFeedbackForm = (

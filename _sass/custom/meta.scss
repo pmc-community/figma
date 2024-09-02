@@ -12,11 +12,6 @@
         max-width: 100%;
     }
 
-    #{$contentAreaId}-content-wrap {
-        //width:$contentAreaWidth;
-        padding-left: $contentAreaPaddingLeft;
-        padding-right: $contentAreaPaddingRight;
-    }
 }
 
 // go to top button
