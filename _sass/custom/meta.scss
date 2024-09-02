@@ -13,7 +13,9 @@
     }
 
     #{$contentAreaId}-content-wrap {
-        width:$contentAreaWidth;
+        //width:$contentAreaWidth;
+        padding-left: $contentAreaPaddingLeft;
+        padding-right: $contentAreaPaddingRight;
     }
 }
 
@@ -56,7 +58,7 @@
         border-radius:$tocContainerBorderRadius;
         height: $tocContainerMaxHeight;
         overflow-y: $tocContainerOverflowY;
-        width: $tocContainerWidth;
+        //width: $tocContainerWidth;
     }
 
     #{$tocBase}_container_heading {

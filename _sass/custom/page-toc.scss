@@ -5,7 +5,7 @@ $tocFontWeight: $f-thin !default;
 $tocFontColor: $c-black !default;
 
 // container
-$tocContainerPosition: $pos-fixed !default;
+$tocContainerPosition: $pos-sticky !default;
 $tocContainerInitialView: $d-hidden !default;
 $tocContainerPadding:$p-0px !default;
 $tocListPadding:$p-0px !default;
@@ -14,7 +14,7 @@ $tocContainerBorderLeft:$b-none !default;
 $tocContainerBorderBottom: $b-none !default;
 $tocContainerBorderRight: $b-none !default;
 $tocContainerBorderRadius: $brad-10px;
-$tocContainerMaxHeight: $sz-80p;
+$tocContainerMaxHeight: $sz-content;
 $tocContainerOverflowY: $ov-auto;
 $tocContainerHeadingTextAlignment: $tal-h-left;
 $tocContainerHeight: $sz-content;

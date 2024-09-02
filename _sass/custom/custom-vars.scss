@@ -63,6 +63,7 @@ $sz-70p: 70%;
 $sz-80p: 80%;
 $sz-20p: 20%;
 $sz-18p: 18%;
+$sz-10p: 10%;
 $sz-15p: 15%;
 $sz-40p: 40%;
 $sz-50p: 50%;
@@ -78,6 +79,7 @@ $sz-300px: 300px;
 $sz-400px: 400px;
 $sz-6rem: 6rem;
 $sz-8rem: 8rem;
+$sz-12rem: 12rem;
 $sz-content: fit-content;
 $sz-0-25: 0.25rem;
 $sz-0-5: 0.5rem;
@@ -101,6 +103,8 @@ $p-0-25: $sz-0-25;
 $p-0-5: $sz-0-5;
 $p-0: $s-0;
 $p-12px: $sz-12px;
+$p-12rem: $sz-12rem;
+$p-10p: $sz-10p;
 
 // margins
 $m-0px:$s-0px;

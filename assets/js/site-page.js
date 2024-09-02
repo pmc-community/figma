@@ -67,7 +67,7 @@ const page__getRelatedPages = () => {
         
         return (
             `   
-                <div id="pageRelatedPages" class="px-5">
+                <div id="pageRelatedPages">
                     <span class="fs-6 fw-medium">
                         Related:
                     </span>
@@ -125,7 +125,7 @@ const page__getPageNotes = () => {
 
         return (
             `   
-                <div id="pageNotes" class="px-5 mb-4">
+                <div id="pageNotes" class="mb-4">
                     <span class="fs-6 fw-medium">
                         Notes:
                     </span>
@@ -446,7 +446,7 @@ const page__getPageInfo = () => {
         const pageSimilarPages = page.siteInfo.similarByContent.slice(0, settings.similarByContent.maxPages) || []
         return (
             `
-                <div id="pageLastUpdateAndPageInfo" class="container px-5 mb-4">
+                <div id="pageLastUpdateAndPageInfo" class="mb-4">
                     ${catsHtml}
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
@@ -502,7 +502,6 @@ const page__getPageInfo = () => {
             });
         setPageButtonsFunctions();
         refreshPageAfterOffCanvasClose();
-        setContentSeparators();        
     })
 }
 
@@ -789,6 +788,7 @@ const refreshPageAfterOffCanvasClose = () => {
     });
 }
 
+// not used, separators are et in the default.html template
 const setContentSeparators = () => {
     setTimeout( () => {
         if ($('hr[siteFunction="pageContentTopSeparator"]').length === 0)

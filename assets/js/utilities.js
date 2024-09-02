@@ -177,8 +177,7 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
                 $('.toast-body').html('Error loading external content. Details in console ...');
                 toast.show();
                 const placeholder = position === 'before' || position === 'after' ? 'N/A for this position' : whereID;
-                console.error(`Error fetching file: ${file}\nStatus: ${status} / ${xhr.responseText}\nPosition: ${position}\nPlaceholder: ${placeholder}\nOrigin: ${whoCalled}`,error
-                );
+                console.error(`Error fetching file: ${file}\nStatus: ${status} / ${xhr.responseText}\nPosition: ${position}\nPlaceholder: ${placeholder}\nOrigin: ${whoCalled}`,error);
             }
         });
     })   

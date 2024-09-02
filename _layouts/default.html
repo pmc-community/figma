@@ -18,21 +18,43 @@ layout: table_wrappers
   {% endif %}
   <div class="main" id="top">
     {% include components/header.html %}
+
+    {% assign pageList = site.data['page_list'] | json_string_to_object %}
+    {% assign matching_pages = pageList | where: "permalink", page.url %}
+
     <div class="main-content-wrap">
       {% include components/breadcrumbs.html %}
+      
       <div id="main-content" class="main-content">
-        <main>
-          {% if site.heading_anchors != false %}
-            {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
-          {% else %}
-            {{ content }}
-          {% endif %}
-
-          {% if page.has_toc != false %}
-            {% include components/children_nav.html %}
-          {% endif %}
-        </main>
-        {% include components/footer.html %}
+      
+      {% if matching_pages.size > 0 %}
+        <hr sitefunction="pageContentTopSeparator" class="my-4">
+        <div class="d-flex col-12 gx-5">
+          <main class="col-7">
+            {% if site.heading_anchors != false %}
+              {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
+            {% else %}
+              {{ content }}
+            {% endif %}
+          </main>
+          <div class="col-1" siteFunction="contentAreaConten2TocSeparator"></div>
+          <div class="col-4">
+            <!-- Page Toc -->
+            {% include siteIncludes/partials/page-common/page-toc.html %}
+          </div>
+          <hr sitefunction="pageContentBottomSeparator" class="my-4">
+        {% else %}
+          <main>
+            {% if site.heading_anchors != false %}
+              {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
+            {% else %}
+              {{ content }}
+            {% endif %}
+          </main>
+        {% endif %}
+      </div>
+    
+      {% include components/footer.html %}
       </div>
     </div>
     {% if site.search_enabled != false %}

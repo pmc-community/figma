@@ -72,9 +72,6 @@ const customiseTheme = (pageObj = null) => {
     setGoToTopBtn();
     formatAuxLinksBtns();
     fullContentAreaOnHome();
-    hidePageTOCOnHome();
-    hidePageTOCOnPage()
-    hideFeedbackFormOnHome();
     setFullPageToc();
     handleTocOnWindowsResize();
     handleTocDuplicates();  
@@ -300,11 +297,13 @@ const initPageToc = () => {
         .css(
             'top', 
             $(settings.headerAboveContent.headerID).height() + settings.pageToc.desktop.offsetFromHeader + 'px'
-        )
+        );
+        /*
         .css(
             'left', 
             $(settings.pageToc.desktop.referenceContainer).width() + $(settings.pageToc.desktop.leftSideBar).width() + settings.pageToc.desktop.offsetFromReferenceContainer + 'px'
         );
+        */
     $(`${settings.pageToc.toc} li a`).addClass('fw-normal text-black');
     document.dispatchEvent(new CustomEvent(settings.pageToc.tocLoadedEvent));
 }
