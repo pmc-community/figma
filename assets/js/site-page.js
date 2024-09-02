@@ -159,10 +159,11 @@ const page__getPageFeedbackAndSupport = () => {
         const title = $('main').attr('pageTitleRef') || '';
         const page = getObjectFromArray( {permalink: permalink, title: title}, pageList);
         if (page === 'none' && window.location.pathname !== '/' ) return;
+
         // modify some styles on home page
         if (window.location.pathname === '/') {
+            $('.main-content-wrap').addClass(pageSettings.additionalContentPadding);
             $('footer[class!="site-footer"]').addClass(pageSettings.additionalContentPadding);
-            //$('div[siteFunction="pageFeedbackAndSupport"]').removeClass('px-5');
             $('div[siteFunction="pageFeedbackAndSupport_Support"]').removeClass('col-3').addClass('col-4');
             $('div[siteFunction="pageFeedbackAndSupport_Involve"]').removeClass('col-3').addClass('col-4');
             $('div[siteFunction="pageFeedbackAndSupport_Feedback"]').removeClass('col-6').addClass('col-4');

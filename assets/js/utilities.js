@@ -1,3 +1,31 @@
+/* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
+// take care of fixed header when scrolling to target, if the case
+// this has to be here, orherwise the hash will be removed before handling the fixed header
+
+$(window).on('scroll', () => {
+
+    // handle fixed header scroll
+    const hash = window.location.hash;
+    if (hash) {
+        // if the header is not fixed, 
+        // -$(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll 
+        // can be removed
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $(hash).offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+        }, 0);
+    }
+});
+
+// prevents document to scroll and jump up and down when receiving this message
+// is good when dealing with iFrames which dynamically change their heights and make the doc to jump around
+$(window).on('message', function(event) {
+    const data = event.originalEvent.data;
+    if (data.type === 'contentChanged') {
+        const scrollPos = $(window).scrollTop();
+        $(window).scrollTop(scrollPos);
+    }
+});
+
 /* SOME UTILITIES ADDED TO JQUERY*/
 
 // check if an element is on screen
@@ -164,12 +192,6 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
                     addTopOfPage();
                 }
 
-                // move the top content separator where it should be
-                if (position === 'before') {
-                    $('hr[siteFunction="pageContentTopSeparator"]').remove();
-                    $(settings.externalContent.containerToIncludeExternalContent).prepend('<hr siteFunction="pageContentTopSeparator" class="my-4">');
-                   
-                }
             },
             error: async (xhr, status, error) => {
                 toast = new bootstrap.Toast($('.toast'));

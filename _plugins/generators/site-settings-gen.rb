@@ -23,7 +23,8 @@ module Jekyll
         "catList" => JSON.parse(site.data["category_list"]),
         "catDetails" => site.data["categories_details"],
         "hsSettings" => JSON.parse(site.data["hs_integration"]),
-        "algoliaSettings" => JSON.parse(site.data["algolia_client_integration"])
+        "algoliaSettings" => JSON.parse(site.data["algolia_client_integration"]),
+        "pageSettings" => site.data["pageConfig"]
 
       }
 

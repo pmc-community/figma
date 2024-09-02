@@ -1,7 +1,29 @@
 // we should assume that no script is loaded
-// so, no jQuery or something else
+// so, no jQuery or something else until sky is clear
 
 preFlight = {
+
+    formatPath: (path) => {
+        let startsWithSlash = path.startsWith('/') ? path : `/${path}`;
+        let endsWithSlash = startsWithSlash.endsWith('/') ? startsWithSlash : `${startsWithSlash}/`;
+        if (startsWithSlash === endsWithSlash && path.endsWith('/')) {
+            return [startsWithSlash.slice(0, -1), endsWithSlash];
+        }
+        return [startsWithSlash, endsWithSlash];
+    },
+
+    getPageSettings: (permalinkOptions, allPagesSettings) => {
+        function intersectArrays(arr1, arr2) {
+            const set2 = new Set(arr2);           
+            return arr1.filter(item => set2.has(item));
+        }
+
+        const permalinks = Object.keys(allPagesSettings);
+        const pagePermalink = intersectArrays(permalinkOptions, permalinks);
+        if (pagePermalink.length !== 1) return false;
+        else return allPagesSettings[pagePermalink[0]];
+
+    },
 
     getDeviceTypeAndOrientation: () => {
 
@@ -164,25 +186,10 @@ preFlight = {
     get clearance() { return this.clearForTakeOff(this.browser, this.deviceInfo)},
     get skyClear() { return this.clearance.goodToGo },
 
-    loadSuperGlobals: () => {
-        fetch('assets/config/siteSettings.json')
-            .then(response => response.json())
-            .then(siteSettings => {
-                window.allSettings = siteSettings;            
-    });
-    }
-}
-
-// LET'S START
-console.log(preFlight.deviceInfo);
-console.log(`${preFlight.browser.browserName} ${preFlight.browser.fullVersion} `);
-
-document.addEventListener('DOMContentLoaded', function() {
-
-    if (!preFlight.clearance.goodToGo) {
+    prettyError: (errMessage) => {
         const errDiv = document.createElement('div');
         const errText = document.createElement('h2');
-        errText.textContent = preFlight.clearance.errText;
+        errText.textContent = errMessage;
         errText.style.width = '100vw';
         errText.style.height = '100vh';
         errText.style.justifyContent = 'center';
@@ -197,6 +204,62 @@ document.addEventListener('DOMContentLoaded', function() {
         toRemove.remove();
     
         document.body.style.visibility = 'visible';
-    } 
+    }
+
+}
+
+// LET'S START
+console.log(preFlight.deviceInfo);
+console.log(`${preFlight.browser.browserName} ${preFlight.browser.fullVersion} `);
+
+// init superglobals
+const settings = allSettings.settings;
+const algoliaSettings = allSettings.algoliaSettings;
+const hsSettings = allSettings.hsSettings;
+const pageList = allSettings.pageList;
+const catList = allSettings.catList;
+const catDetails = allSettings.catDetails;
+const tagList = allSettings.tagList;
+const tagDetails = allSettings.tagDetails;
+const allPageSettings = allSettings.pageSettings;
+
+const permalinkOptions = preFlight.formatPath(window.location.pathname);
+const pageSettings = preFlight.getPageSettings(permalinkOptions, allPageSettings);
+
+// init globals
+let globCustomCats, globCustomTags;
+let globAllCats, globAllTags;
+let siteObservers = new Map();
+let pageInfo = {}; // used for full page info canvas
+let hsForms = [];
+window.mainJQuery = jQuery; // exposing jQuery to be able to use it in iFrames
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    if (!preFlight.skyClear) {
+        preFlight.prettyError(preFlight.clearance.errText);
+    }
+    else {
+        if (typeof jQuery !== 'undefined' && typeof $ !== 'undefined') {
+            const $loading = $(
+                `
+                    <div id="contentLoading" class="d-flex justify-content-center align-items-center d-none" style="position: fixed; top:0; left:0; width:100vw; height: 100vh">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                `
+            );
+            // HEADS UP!!!! BODY VISIBILITY IS HIDDEN HERE (from head)
+            $('html').append($loading);
+            $('#contentLoading').removeClass('d-none');
+            $('body').attr('data-instant-intensity', 'viewport').attr('data-instant-vary-accept');
+        }
+        else {
+            console.log(jQuery)
+            preFlight.prettyError('Sorry, can\'t move forward, jQuery is not loaded!');
+        }
+    
+    }
 });
 

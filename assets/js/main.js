@@ -1,44 +1,9 @@
-// GLOBALS
-let globCustomCats, globCustomTags;
-let globAllCats, globAllTags;
-let siteObservers = new Map();
-let pageInfo = {}; // used for full page info canvas
-let hsForms = [];
-window.mainJQuery = jQuery; // exposing jQuery to be able to use it in iFrames
-
-/* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
-// take care of fixed header when scrolling to target, if the case
-// this has to be here, orherwise the hash will be removed before handling the fixed header
-
-$(window).on('scroll', () => {
-
-    // handle fixed header scroll
-    const hash = window.location.hash;
-    if (hash) {
-        // if the header is not fixed, 
-        // -$(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll 
-        // can be removed
-        $([document.documentElement, document.body]).animate({
-            scrollTop: $(hash).offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
-        }, 0);
-    }
-});
-
-// prevents document to scroll and jump up and down when receiving this message
-// is good when dealing with iFrames which dynamically change their heights and make the doc to jump around
-$(window).on('message', function(event) {
-    const data = event.originalEvent.data;
-    if (data.type === 'contentChanged') {
-        const scrollPos = $(window).scrollTop();
-        $(window).scrollTop(scrollPos);
-    }
-});
-
 /* LET'S DO SOME WORK */
 
 const customiseTheme = (pageObj = null) => {
     if (!preFlight.skyClear) return; // comes from preflight-check.js
     
+    /*
     const $loading = $(
         `
             <div id="contentLoading" class="d-flex justify-content-center align-items-center d-none" style="position: fixed; top:0; left:0; width:100vw; height: 100vh">
@@ -52,7 +17,8 @@ const customiseTheme = (pageObj = null) => {
     $('html').append($loading);
     $('#contentLoading').removeClass('d-none');
     $('body').attr('data-instant-intensity', 'viewport').attr('data-instant-vary-accept');
-    
+    */
+   
     // first things, first
     cleanSavedItems();
     createGlobalLists();
@@ -340,4 +306,9 @@ const handleTocActiveElementsOnScroll = () => {
         }
         
     );
+}
+
+// legacy, but needed
+const addTopOfPage = () => {
+    $('.main-content-wrap').prepend('<div id ="ihs_top_of_page"></div>');
 }

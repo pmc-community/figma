@@ -77,7 +77,8 @@
     "toBeRemovedAfterLoad": [
       {
         "script": [
-          "externalContent"
+          "externalContent",
+          "page_var_init_script"
         ]
       },
       {
@@ -747,5 +748,16 @@
     "algoliaMaxResultsPerGroup": 20,
     "algoliaSendInsights": true,
     "algoliaRaiseIssueLink": "https://github.com/pmc-community/figma/issues/new?title="
+  },
+  "pageSettings": {
+    "/": {
+      "additionalContentPadding": "p-5",
+      "sections": {
+        "mostRecentAndPopular_section": {
+          "popularCatsToShow": 8,
+          "popularTagsToShow": 8
+        }
+      }
+    }
   }
 }
