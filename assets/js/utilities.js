@@ -2086,6 +2086,35 @@ const getPermalinksFromURLArray = (urlArray) => {
     return permalinks;
 }
 
+// some utilities for pages
+const orderSectionsInContainer = (order, containerSelector) => {
+    // order should be an array containing the desired order
+    // of div elements, specifying only the value of siteFunction attribute
+
+    const $container = $(containerSelector);
+    const orderedDivs = [];
+
+    $.each(order, function(index, func) {
+        const $div = $('div[siteFunction="' + func + '"]');
+        if ($div.length) {
+            orderedDivs.push($div);
+            $div.remove();
+        }
+    });
+
+    $container.append(orderedDivs);
+}
+
+const orderSectionsBeforeElement = (order, lastElementSelector) => {
+    const $lastElement = $(lastElementSelector);
+    $.each(order, function(index, func) {
+        const $div = $(`div[siteFunction="${func}"]`);
+        if ($div.length) {
+            $div.insertBefore($lastElement);
+        }
+    });
+
+}
 
 
 

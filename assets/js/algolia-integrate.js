@@ -11,34 +11,57 @@ algolia = {
     searchInSite: (query, searchResultsCallback) => {
         const client = algoliasearch(algolia.appId, algolia.apiKey);
         const index = client.initIndex(algolia.indexName);
-        let results = [];
-        let resultsPages = 0;
         index.search(query)
-            .then(function(searchResults) {
-                resultsPages = searchResults.nbPages;
-                for (let i = 0; i < resultsPages; i++) {
-                    index.search(query, {page: i})
+            .then(function(initialSearchResults) {
+                const resultsPages = initialSearchResults.nbPages;
+                let results = [];
+
+                const logResults = () => {
+                    //console.log(results);
+                    searchResultsCallback(results);
+                };
+
+                const fetchPage = (i) => {
+                    return index.search(query, { page: i })
                         .then(function(searchResults) {
-                            results =  _.concat(results, searchResults.hits);
-                            if (i === resultsPages-1) searchResultsCallback(results);
+                            // Correctly concatenate results, ensuring no overwriting
+                            results = results.concat(searchResults.hits);
                         })
                         .catch(function(error) {
-                            showToast('Something went wrong with this search!<br><br>You may try again later. If the problem persist, contact support.', 'bg-danger', 'text-light');
+                            showToast('Something went wrong with this search!<br><br>You may try again later. If the problem persists, contact support.', 'bg-danger', 'text-light');
                             console.error('Search error:', error);
                         });
+                };
+
+                // Create an array of promises for each page
+                const fetchPromises = [];
+                for (let i = 0; i < resultsPages; i++) {
+                    fetchPromises.push(fetchPage(i));
                 }
+
+                // Wait for all page fetching promises to complete
+                Promise.all(fetchPromises)
+                    .then(() => {
+                        logResults();  // Ensure logging only after all promises resolve
+                    })
+                    .catch(function(error) {
+                        showToast('Something went wrong with retrieving all search result pages!<br><br>You may try again later. If the problem persists, contact support.', 'bg-danger', 'text-light');
+                        console.error('Error in fetching all pages:', error);
+                    });
             })
             .catch(function(error) {
-                showToast('Something went wrong with this search!<br><br>You may try again later. If the problem persist, contact support.', 'bg-danger', 'text-light');
-                console.error('Search error:', error);
+                showToast('Something went wrong with the initial search (number of pages)!<br><br>You may try again later. If the problem persists, contact support.', 'bg-danger', 'text-light');
+                console.error('Initial search error:', error);
             });
+
+
     },
 
     setDocSearchBox: () => {
         // hide JTD search box for the moment
-
-        // set algolia DocSearch box
         $('.search').addClass('d-none');
+        
+        // set algolia DocSearch box
         docsearch({
             appId: algolia.appId,
             apiKey: algolia.apiKey,
@@ -55,7 +78,7 @@ algolia = {
                 if (state.context.nbHits > maxHits)
                 children = [
                     `${state.context.nbHits} hits found!
-                    Refine your query to get all hits (maximum ${algolia.maxResultsPerGroup}).
+                    Refine your query to get all your query hits (we show maximum ${algolia.maxResultsPerGroup}).
                     `
                     ];
                 else

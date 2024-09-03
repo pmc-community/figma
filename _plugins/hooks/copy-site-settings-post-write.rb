@@ -15,7 +15,7 @@ Jekyll::Hooks.register :site, :post_write do |site|
   Globals.clearLine
   Globals.putsColText(Globals::PURPLE,"Copy site settings to _site ... done")
 
-  Globals.putsColText(Globals::PURPLE,"Generating main supeglobal ...")
+  Globals.putsColText(Globals::PURPLE,"Generating main superglobal ...")
 
   allSettingsFilePath = File.join(site.dest, 'assets/config/siteSettings.json')
   allSettingsJSFilePath = File.join(site.dest, 'assets/config/siteSettings.js')
@@ -24,6 +24,6 @@ Jekyll::Hooks.register :site, :post_write do |site|
 
   Globals.moveUpOneLine
   Globals.clearLine
-  Globals.putsColText(Globals::PURPLE,"Generating main supeglobal ... done")
+  Globals.putsColText(Globals::PURPLE,"Generating main superglobal ... done")
 end
 

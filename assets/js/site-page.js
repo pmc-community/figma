@@ -67,7 +67,9 @@ const page__getRelatedPages = () => {
         
         return (
             `   
-                <div id="pageRelatedPages">
+                <div 
+                    id="pageRelatedPages" 
+                    siteFunction="pageRelatedPages">
                     <span class="fs-6 fw-medium">
                         Related:
                     </span>
@@ -125,7 +127,10 @@ const page__getPageNotes = () => {
 
         return (
             `   
-                <div id="pageNotes" class="mb-4">
+                <div 
+                    id="pageNotes" 
+                    siteFunction="pageNotes" 
+                    class="mb-4">
                     <span class="fs-6 fw-medium">
                         Notes:
                     </span>
@@ -148,7 +153,7 @@ const page__getPageNotes = () => {
             return;
         }
         $('#pageNotes').remove();
-        $('footer[class!="site-footer"]').append(createNotesContainer(pageInfo)); 
+        $('footer[class!="site-footer"]').append(createNotesContainer(pageInfo));
     });
 }
 
@@ -219,13 +224,14 @@ const page__getPageFeedbackForm = () => {
                         // onFormSubmitted callback
                         // can do some processing after the form is submitted with success
                         ($form, data) => {
-                            console.log('pfff, was hard!!!')
+                            // ... do something after the form is submitted. $form element and submitted data are available
                         },
 
                         // onBeforeFormInit callback
                         // can do some processing before the form is built, based on the full form settings (ctx) retrieved from HubSpot
                         (ctx) => {
-                            console.log(ctx)
+                            // ... do something before the form init, like maybe last changes in the form parameters
+                            // all form properties are available in the context object
                         }
                         
                         )
@@ -493,7 +499,8 @@ const page__getPageInfo = () => {
         );
     }
 
-    $(document).ready(function() {        
+    $(document).ready(function() {
+        
         if (pageInfo.siteInfo === 'none') return;
         $(settings.layouts.contentArea.contentWrapper).prepend($(pageInfoContainer(pageInfo)));
         $(document)
@@ -502,6 +509,10 @@ const page__getPageInfo = () => {
                 showPageFullInfoCanvas(pageInfo);
             });
         setPageButtonsFunctions();
+
+        // since this function is the first one executed on page
+        // we take the opportunity to set some observers
+        setTriggerReorderSectionsInFooter();
         refreshPageAfterOffCanvasClose();
     })
 }
@@ -569,7 +580,7 @@ const page__setSelectedTextContextMenu = () =>{
                 }
                 $('div[siteFunction="pageCustomTagButton"]').remove();
                 $('div[id="pageLastUpdateAndPageInfo"]').remove();
-                refreshPageDynamicInfo(true);
+                refreshPageDynamicInfo();
             }
 
             $('#selected-text-context-menu').hide();
@@ -630,11 +641,11 @@ const page__setSelectedTextContextMenu = () =>{
                     }
                     $('div[siteFunction="pageCustomTagButton"]').remove();
                     $('div[id="pageLastUpdateAndPageInfo"]').remove();
-                    refreshPageDynamicInfo(true);
+                    refreshPageDynamicInfo();
                 }
                 else
                     showToast(
-                        `All documents should be tagged with tag <strong class="badge text-bg-success">${tag}</strong> and this doesn't make sense! We skip ... `, 
+                        `All documents should be tagged with tag <strong class="badge text-bg-success">${tag}</strong> and this doesn't make sense! We skip ... You can manually apply the tag on the docs you want.`, 
                         'bg-warning', 
                         'text-dark'
                     );
@@ -786,7 +797,10 @@ const page__showPageCustomTags = () => {
     const createPageTagsContainer = () => {
         return (
             `
-                <div id="pageTags" class="mb-4">
+                <div 
+                    id="pageTags"
+                    siteFunction="pageTags" 
+                    class="mb-4">
                     <span 
                         siteFunction="pageTagsContainer" 
                         class="mr-5 fs-6 fw-medium">
@@ -846,15 +860,22 @@ const page__showPageCustomTags = () => {
 };
 
 // INTERNAL FUNCTIONS, NOT CALLED FROM HTML TEMPLATES
-const refreshPageDynamicInfo = (flag=false) => {
-    // using flag to avoid reload information if not necessary (i.e. when tagging using selected text)
+const refreshPageDynamicInfo = () => {
     page__showPageCustomTags();
     page__getPageInfo();
-    if(!flag) page__getPageNotes();
-    if(!flag) page__getRelatedPages();
-    if(!flag) page__getAutoSummary();
-    if(!flag) page__getPageFeedbackAndSupport();
-    
+    page__getPageNotes();
+    page__getRelatedPages();
+    page__getAutoSummary();
+    setTimeout(()=>$('div[siteFunction="pageFeedbackAndSupport"]').addClass('order'), 0);
+}
+
+const setTriggerReorderSectionsInFooter = () => {
+    removeObservers('div[siteFunction="pageFeedbackAndSupport"] class=order getClass=true');
+    setElementChangeClassObserver('div[siteFunction="pageFeedbackAndSupport"]', 'order', true, () => {
+        const order = ['pageTags', 'pageNotes', 'pageRelatedPages'];
+        orderSectionsBeforeElement(order, 'div[siteFunction="pageFeedbackAndSupport"]');
+        $('div[siteFunction="pageFeedbackAndSupport"]').removeClass('order');
+    });
 }
 
 const setPageButtonsFunctions = () => {
