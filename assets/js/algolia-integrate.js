@@ -73,31 +73,33 @@ algolia = {
             raiseIssueLink: algolia.algoliaRaiseIssueLink,
 
             resultsFooterComponent({ state }) {
-                const maxHits = algolia.maxResultsPerGroup;
+                const maxHitsPerPage = algolia.maxResultsPerGroup;
+                const totalPages = Math.ceil(state.context.nbHits / maxHitsPerPage);
                 let children = [];
-                if (state.context.nbHits > maxHits)
-                children = [
-                    `${state.context.nbHits} hits found!
-                    Refine your query to get all your query hits (we show maximum ${algolia.maxResultsPerGroup}).
-                    `
-                    ];
+                if (state.context.nbHits > maxHitsPerPage)
+                    children = [
+                        `${state.context.nbHits} hits found in ${totalPages} results pages!
+                        Refine your query to get all your query hits (we show maximum ${algolia.maxResultsPerGroup} per results page).
+                        `
+                        ];
                 else
-                children = [
-                    `${state.context.nbHits} hit(s) found!
-                    All of them are shown.
-                    `
-                ];
+                    children = [
+                        `${state.context.nbHits} hit(s) found!
+                        All of them are shown.
+                        `
+                    ];
+                
                 return {
-                type: 'div',
-                ref: undefined,
-                constructor: undefined,
-                key: state.query,
-                props: {
-                    class: 'w-100 d-flex justify-content-center text-dark bg-warning-subtle rounded p-3 fw-medium',
-                    children: children
-                },
-                __v: null,
-                };
+                    type: 'div',
+                    ref: undefined,
+                    constructor: undefined,
+                    key: state.query,
+                    props: {
+                        class: 'w-100 d-flex justify-content-center text-dark bg-warning-subtle rounded p-3 fw-medium',
+                        children: children
+                    },
+                    __v: null,
+                    };
             },
 
             getMissingResultsUrl({ query }) {
