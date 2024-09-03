@@ -4,12 +4,19 @@
 preFlight = {
 
     formatPath: (path) => {
-        let startsWithSlash = path.startsWith('/') ? path : `/${path}`;
-        let endsWithSlash = startsWithSlash.endsWith('/') ? startsWithSlash : `${startsWithSlash}/`;
-        if (startsWithSlash === endsWithSlash && path.endsWith('/')) {
-            return [startsWithSlash.slice(0, -1), endsWithSlash];
-        }
-        return [startsWithSlash, endsWithSlash];
+        const basePath = path.replace(/^\/|\/$/g, '');
+
+        const noSlash = basePath;              // 'path'
+        const leadingSlash = `/${basePath}`;   // '/path'
+        const trailingSlash = `${basePath}/`;  // 'path/'
+        const bothSlash = `/${basePath}/`;     // '/path/'
+
+        const variants = [noSlash, leadingSlash, trailingSlash, bothSlash];
+
+        const uniqueVariants = [...new Set(variants)]
+            .filter(variant => variant !== '' && !variant.includes('//'));
+
+        return uniqueVariants;
     },
 
     getPageSettings: (permalinkOptions, allPagesSettings) => {
@@ -223,6 +230,9 @@ const tagList = allSettings.tagList;
 const tagDetails = allSettings.tagDetails;
 const allPageSettings = allSettings.pageSettings;
 
+// we use a function to get permalink options
+// as permalink extraction from url returns always /permalink/
+// and we don't know how permalink are defined in the page front matter
 const permalinkOptions = preFlight.formatPath(window.location.pathname);
 const pageSettings = preFlight.getPageSettings(permalinkOptions, allPageSettings);
 
@@ -257,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         else {
             console.log(jQuery)
-            preFlight.prettyError('Sorry, can\'t move forward, jQuery is not loaded!');
+            preFlight.prettyError('Sorry, can move forward, jQuery is not loaded!');
         }
     
     }

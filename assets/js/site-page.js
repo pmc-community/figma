@@ -524,29 +524,124 @@ const page__setSelectedTextContextMenu = () =>{
             1. current page
             2. menu item clicked
             3. selected text
-            4. the rectangle on the screen where the selcted text is located
+            4. the rectangle on the screen where the selected text is located
         */
         const addCommentToSelectedText = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
-            console.log(page);
-            console.log(selectedTextHtml);
-            console.log('click ' + itemText + ' annotate ' + selectedText);
-            console.log(rectangle);
-
             $('div[sitefunction="pageAddCommentToSelectedText_text"]').text(selectedText);
             $('div[siteFunction="pageAddCommentToSelectedText_container"]').removeClass('d-none');
             $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]')[0].setSelectionRange(0, 0);
             $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').focus();
-
         }
 
         const searchInSite = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
             if (!algoliaSettings.algoliaEnabled) return;
             algolia.searchInSite(selectedText, (results) => {
-                console.log(results);
                 $('.DocSearch').click();
                 $('#selected-text-context-menu').hide();
                 $('body').css('overflow', '');
             });
+        }
+
+        const tagDocWithSelectedText = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
+            if (
+                _.words(selectedText).length > settings.selectedTextContextMenu.tags.maxWords || 
+                selectedText.length > settings.selectedTextContextMenu.tags.maxChars) {
+                    showToast(
+                        `Tags are imited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
+                        'bg-danger', 
+                        'text-light'
+                    );
+                    return;
+                }
+            const tag = DOMPurify.sanitize(selectedText);
+            const pageParam = {
+                siteInfo: {
+                    permalink: page.siteInfo.permalink,
+                    title: page.siteInfo.title
+                }
+            };
+
+            if (addTag(tag, pageParam)) {
+                updateGlobalTagLists(tag);
+                pageInfo = {
+                    siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
+                    savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+                }
+                $('div[siteFunction="pageCustomTagButton"]').remove();
+                $('div[id="pageLastUpdateAndPageInfo"]').remove();
+                refreshPageDynamicInfo(true);
+            }
+
+            $('#selected-text-context-menu').hide();
+            $('body').css('overflow', '');
+            $('div[siteFunction="pageCustomTagButton"]').remove();
+        }
+
+        const tagAllDocsWithSelectedText = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
+            if (!algoliaSettings.algoliaEnabled) return;
+            if (
+                _.words(selectedText).length > settings.selectedTextContextMenu.tags.maxWords || 
+                selectedText.length > settings.selectedTextContextMenu.tags.maxChars) {
+                    showToast(
+                        `Tags are imited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
+                        'bg-danger', 
+                        'text-light'
+                    );
+                    return;
+                }
+            algolia.searchInSite(selectedText, (results) => {
+                const pageURLs = _.uniq(_.map(results, 'url_without_anchor'));
+                const permalinkOptions = [];
+
+                const permalinks = getPermalinksFromURLArray(pageURLs);
+                
+                permalinks.forEach( permalink => {
+                    // we use a function defined in preflight-check.js to get permalink options
+                    // as permalink extraction from url returns always /permalink/
+                    // and we don't know how permalink are defined in the page front matter
+                    permalinkOptions.push(preFlight.formatPath(permalink)); 
+                })
+                let matchingPages = [];
+                permalinkOptions.forEach(permalinkArray => {
+                    matchingPages.push(_.filter(pageList, (obj) => _.includes(permalinkArray, obj.permalink)));
+                });
+
+                const flatMatchingPages = _.flatten(matchingPages);
+                const uniqueMatchingPages = _.uniqWith(flatMatchingPages, _.isEqual);
+                const cleanMatchingPages = _.filter(uniqueMatchingPages, obj => !_.isEmpty(obj));
+
+                const tag = DOMPurify.sanitize(selectedText);
+
+                if (cleanMatchingPages.length < pageList.length) {
+                    cleanMatchingPages.forEach(page => {
+                        const pageParam = {
+                            siteInfo: {
+                                permalink: page.permalink,
+                                title: page.title
+                            }
+                        }
+                        // tag page if is in saved items, otherwise skip
+                        if ( getPageSavedInfo(page.permalink, page.title) !=='none' ) addTag(tag, pageParam);
+                    });
+                    updateGlobalTagLists(tag);
+                    pageInfo = {
+                        siteInfo: getObjectFromArray ({permalink: pageInfo.siteInfo.permalink, title: pageInfo.siteInfo.title}, pageList),
+                        savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+                    }
+                    $('div[siteFunction="pageCustomTagButton"]').remove();
+                    $('div[id="pageLastUpdateAndPageInfo"]').remove();
+                    refreshPageDynamicInfo(true);
+                }
+                else
+                    showToast(
+                        `All documents should be tagged with tag <strong class="badge text-bg-success">${tag}</strong> and this doesn't make sense! We skip ... `, 
+                        'bg-warning', 
+                        'text-dark'
+                    );
+            });
+            
+            $('#selected-text-context-menu').hide();
+            $('body').css('overflow', '');
         }
 
         // return the context menu item handler
@@ -568,12 +663,20 @@ const page__setSelectedTextContextMenu = () =>{
                     handler: '' 
                 },
                 {
-                    label: 'Add comment',
+                    label: settings.selectedTextContextMenu.comments.enabled ? 'Add comment' : '',
                     handler: addCommentToSelectedText
                 },
                 {
-                    label: 'Search in site',
+                    label: algoliaSettings.algoliaEnabled ? 'Search in site' : '',
                     handler: searchInSite, // works only with algolia
+                },
+                {
+                    label: 'Tag document',
+                    handler: tagDocWithSelectedText,
+                },
+                {
+                    label: algoliaSettings.algoliaEnabled ? 'Tag all documents' : '',
+                    handler: tagAllDocsWithSelectedText,
                 }
             ],
             ops: 
@@ -595,7 +698,7 @@ const page__setSelectedTextContextMenu = () =>{
                             rows="2">
                         </textarea>
             
-                        <div class="mb-2">
+                        <div class="mb-2 d-flex justify-content-between">
                             <button 
                                 sitefunction="pageAddCommentToSelectedText_btn" 
                                 id="pageAddCommentToSelectedText_btn" 
@@ -603,6 +706,16 @@ const page__setSelectedTextContextMenu = () =>{
                                 class="focus-ring focus-ring-warning btn btn-sm btn-success mt-2 position-relative pageExcerptInListItems">
                                 Add comment     
                             </button>
+                            <div class="d-flex justify-content-end align-items-center mt-2"> 
+                                <span 
+                                    sitefunction="addCommentSelectedTextContextMenuWords" 
+                                    class="align-middle mr-2 pageExcerptInListItems text-dark">W: 0
+                                </span> 
+                                <span 
+                                    sitefunction="addCommentSelectedTextContextMenuChars" 
+                                    class="align-middle pageExcerptInListItems text-dark">C: 0
+                                </span>
+                            </div>
                         </div>
                     </div>
                 `
@@ -615,17 +728,39 @@ const page__setSelectedTextContextMenu = () =>{
             $('div[sitefunction="pageAddCommentToSelectedText_text"]').text('');
         }
 
-        const onOpenCallback = initAddCommentContainer;
-        const onCloseCallback = initAddCommentContainer;
+        const onOpenCallback = (selectedText=null, selectedTextHtml=null, rect=null) => {
+            initAddCommentContainer();
+        }
+        
+        const onCloseCallback = (selectedText=null, selectedTextHtml=null, rect=null) => {
+            initAddCommentContainer();
+        }
 
-        const onBeforeInitCallback = () => {
+        // HEADS UP!!!
+        // HERE WE SET THE HANDLERS FOR BUTTONS OR ACTIVE ELEMENTS WE HAVE ON OPS CONTAINER
+        const onBeforeInitCallback = (selectedText, selectedTextHtml, rectangle) => {
+            keepTextInputLimits(
+                'textarea[sitefunction="pageAddCommentToSelectedText_comment"]',
+                5,
+                50,
+                'span[sitefunction="addCommentSelectedTextContextMenuWords"]',
+                'span[sitefunction="addCommentSelectedTextContextMenuChars"]'
+            );
             $(document)
                 .off('click', 'button[sitefunction="pageAddCommentToSelectedText_btn"]')
-                .on('click', 'button[sitefunction="pageAddCommentToSelectedText_btn"]', function() {
-                    initAddCommentContainer();
-                    $('#selected-text-context-menu').hide();
-                    $('body').css('overflow', '');
-                });
+                .on('click', 'button[sitefunction="pageAddCommentToSelectedText_btn"]', handleAddCommentToSelectedText.bind(null, page, selectedText, selectedTextHtml, rectangle));
+        }
+
+        // HANDLERS
+        const handleAddCommentToSelectedText = (page, selectedText, selectedTextHtml, rectangle) => {
+            console.log(page);
+            console.log(selectedText);
+            console.log(rectangle);
+            highlightTextInRectangle (selectedText, rectangle);
+
+            initAddCommentContainer();
+            $('#selected-text-context-menu').hide();
+            $('body').css('overflow', '');    
         }
 
         // set the menu
@@ -638,7 +773,7 @@ const page__setSelectedTextContextMenu = () =>{
             },
             () => onCloseCallback(),
             () => onOpenCallback(),
-            () => onBeforeInitCallback()
+            (selectedText, selectedTextHtml, rectangle) => onBeforeInitCallback(selectedText, selectedTextHtml, rectangle)
         );
 
     });
@@ -711,14 +846,14 @@ const page__showPageCustomTags = () => {
 };
 
 // INTERNAL FUNCTIONS, NOT CALLED FROM HTML TEMPLATES
-const refreshPageDynamicInfo = () => {
+const refreshPageDynamicInfo = (flag=false) => {
+    // using flag to avoid reload information if not necessary (i.e. when tagging using selected text)
     page__showPageCustomTags();
     page__getPageInfo();
-    page__getPageNotes();
-    page__getRelatedPages();
-    page__getAutoSummary();
-    page__getPageFeedbackAndSupport();
-    //page__getPageFeedbackForm();
+    if(!flag) page__getPageNotes();
+    if(!flag) page__getRelatedPages();
+    if(!flag) page__getAutoSummary();
+    if(!flag) page__getPageFeedbackAndSupport();
     
 }
 

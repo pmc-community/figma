@@ -93,3 +93,10 @@ selectedTextContextMenu:
   enabled: true
   minWords: 1
   maxWords: 10
+  comments:
+    enabled: false
+    maxChar: 250
+    maxWords: 50
+  tags:
+    maxWords: 3
+    maxChars: 20

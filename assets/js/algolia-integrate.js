@@ -11,9 +11,22 @@ algolia = {
     searchInSite: (query, searchResultsCallback) => {
         const client = algoliasearch(algolia.appId, algolia.apiKey);
         const index = client.initIndex(algolia.indexName);
+        let results = [];
+        let resultsPages = 0;
         index.search(query)
             .then(function(searchResults) {
-                searchResultsCallback(searchResults.hits);
+                resultsPages = searchResults.nbPages;
+                for (let i = 0; i < resultsPages; i++) {
+                    index.search(query, {page: i})
+                        .then(function(searchResults) {
+                            results =  _.concat(results, searchResults.hits);
+                            if (i === resultsPages-1) searchResultsCallback(results);
+                        })
+                        .catch(function(error) {
+                            showToast('Something went wrong with this search!<br><br>You may try again later. If the problem persist, contact support.', 'bg-danger', 'text-light');
+                            console.error('Search error:', error);
+                        });
+                }
             })
             .catch(function(error) {
                 showToast('Something went wrong with this search!<br><br>You may try again later. If the problem persist, contact support.', 'bg-danger', 'text-light');

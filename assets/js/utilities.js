@@ -1850,7 +1850,9 @@ const setSelectedTextContextMenu = (
 
     const contextMenuOptionsHtml = (contextMenuContent) => {
         const getMenuItemHtml = (itemText) => {
-            return `<li class="selected-text-context-menu-item">${itemText}</li>`;
+            return itemText !=='' ? 
+                `<li class="selected-text-context-menu-item">${itemText}</li>` :
+                '';
         }
 
         let itemsHtml = '';
@@ -1865,8 +1867,6 @@ const setSelectedTextContextMenu = (
     $('#selected-text-context-menu').empty();
 
     if (!checkContextMenuContent(contextMenuContent)) return;
-
-    if (contextMenuCallbackBeforeInit) contextMenuCallbackBeforeInit();
 
     let rect =  null;
     let selectedText = ''
@@ -1895,11 +1895,16 @@ const setSelectedTextContextMenu = (
 
         if (
             selectedText.toString().trim().length > 0 && 
-            isValidText(selectedText.toString().trim(), settings.selectedTextContextMenu.minWords, settings.selectedTextContextMenu.maxWords) &&
+            isValidText(
+                selectedText.toString().trim(), 
+                settings.selectedTextContextMenu.minWords, 
+                settings.selectedTextContextMenu.maxWords) &&
             !textContainsHtmlTags(selectedTextHtml)
         ) {
             const range = selectedText.getRangeAt(0);
             rect = range.getBoundingClientRect();
+
+            if (contextMenuCallbackBeforeInit) contextMenuCallbackBeforeInit(selectedText.toString().trim(), selectedTextHtml, rect);
 
             $('#selected-text-context-menu').css({
                 top: rect.y + rect.height + 5 + 'px',
@@ -1907,7 +1912,7 @@ const setSelectedTextContextMenu = (
                 zIndex: 1000
             });
 
-            if (contextMenuOpenCallback) contextMenuOpenCallback();
+            if (contextMenuOpenCallback) contextMenuOpenCallback(selectedText.toString().trim(), selectedTextHtml, rect);
             $('#selected-text-context-menu').show();
             $('body').css('overflow', 'hidden'); // freeze scrolling
 
@@ -1916,14 +1921,14 @@ const setSelectedTextContextMenu = (
             $('#selected-text-context-menu').data('selectedTextHtml', selectedTextHtml);
         } else {
             $('#selected-text-context-menu').hide();
-            $('body').css('overflow', '');
+            $('body').css('overflow', ''); // unfreze scrolling
         }
     });
 
     // Hide context menu when clicking outside it
     $(document).on('mousedown', function (e) {
         if (!$(e.target).closest('#selected-text-context-menu, ' + hotZoneSelector).length) {
-            if (contextMenuCloseCallback) contextMenuCloseCallback();
+            if (contextMenuCloseCallback) contextMenuCloseCallback(selectedText.toString().trim(), selectedTextHtml, rect);
             $('#selected-text-context-menu').hide();
             $('body').css('overflow', '');
         }
@@ -2067,6 +2072,18 @@ const extendSelectionToWholeWords = () => {
     // Clear the selection and reapply with the new range
     selection.removeAllRanges();
     selection.addRange(range);
+}
+
+const getPermalinksFromURLArray = (urlArray) => {
+    const permalinks = _.map(urlArray, (url) => {
+        try {
+          const urlObj = new URL(url, 'https://placeholder.com');
+          return urlObj.pathname;
+        } catch (e) {
+          return url;
+        }
+    });
+    return permalinks;
 }
 
 
