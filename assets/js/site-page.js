@@ -502,7 +502,15 @@ const page__getPageInfo = () => {
     $(document).ready(function() {
         
         if (pageInfo.siteInfo === 'none') return;
-        $(settings.layouts.contentArea.contentWrapper).prepend($(pageInfoContainer(pageInfo)));
+        
+        // adding pageInfo section 
+        // and preventing document to scroll when #pageLastUpdateAndPageInfo is removed and replaced 
+        prependFirstSectionWithNoScroll(
+            '#pageLastUpdateAndPageInfo', 
+            settings.layouts.contentArea.contentWrapper, 
+            $(pageInfoContainer(pageInfo))
+        );
+        
         $(document)
             .off('click', 'button[sitefunction="pageShowPageFullInfo"]')
             .on('click', 'button[sitefunction="pageShowPageFullInfo"]', function() {
@@ -558,7 +566,7 @@ const page__setSelectedTextContextMenu = () =>{
                 _.words(selectedText).length > settings.selectedTextContextMenu.tags.maxWords || 
                 selectedText.length > settings.selectedTextContextMenu.tags.maxChars) {
                     showToast(
-                        `Tags are imited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
+                        `Tags are limited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
                         'bg-danger', 
                         'text-light'
                     );
@@ -579,8 +587,12 @@ const page__setSelectedTextContextMenu = () =>{
                     savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
                 }
                 $('div[siteFunction="pageCustomTagButton"]').remove();
-                $('div[id="pageLastUpdateAndPageInfo"]').remove();
                 refreshPageDynamicInfo();
+                showToast(
+                    `Tag <span class="badge mx-1 text-bg-primary fw-normal">${tag}</span> was applied to the document!`, 
+                    'bg-success', 
+                    'text-light'
+                );
             }
 
             $('#selected-text-context-menu').hide();
@@ -594,7 +606,7 @@ const page__setSelectedTextContextMenu = () =>{
                 _.words(selectedText).length > settings.selectedTextContextMenu.tags.maxWords || 
                 selectedText.length > settings.selectedTextContextMenu.tags.maxChars) {
                     showToast(
-                        `Tags are imited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
+                        `Tags are limited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
                         'bg-danger', 
                         'text-light'
                     );
@@ -622,7 +634,7 @@ const page__setSelectedTextContextMenu = () =>{
                 const cleanMatchingPages = _.filter(uniqueMatchingPages, obj => !_.isEmpty(obj));
 
                 const tag = DOMPurify.sanitize(selectedText);
-
+                let numPages = 0;
                 if (cleanMatchingPages.length < pageList.length) {
                     cleanMatchingPages.forEach(page => {
                         const pageParam = {
@@ -632,7 +644,11 @@ const page__setSelectedTextContextMenu = () =>{
                             }
                         }
                         // tag page if is in saved items, otherwise skip
-                        if ( getPageSavedInfo(page.permalink, page.title) !=='none' ) addTag(tag, pageParam);
+                        notSavedPages = [];
+                        if ( getPageSavedInfo(page.permalink, page.title) !=='none' ) {
+                            if (addTag(tag, pageParam)) numPages += 1;
+                            else notSavedPages.push(page.title);
+                        }
                     });
                     updateGlobalTagLists(tag);
                     pageInfo = {
@@ -640,12 +656,37 @@ const page__setSelectedTextContextMenu = () =>{
                         savedInfo: getPageSavedInfo (pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
                     }
                     $('div[siteFunction="pageCustomTagButton"]').remove();
-                    $('div[id="pageLastUpdateAndPageInfo"]').remove();
                     refreshPageDynamicInfo();
+
+                    if (numPages > 0) {
+
+                        const numPagesDiff = numPages === cleanMatchingPages.length ? 
+                        '' : 
+                        `(out of ${cleanMatchingPages.length})`;
+                        
+                        const toastEnd = numPages === cleanMatchingPages.length ? 
+                        '' : 
+                        `${cleanMatchingPages.length - numPages} document(s) not found in saved items`;
+
+                        showToast(
+                            `
+                                Tag 
+                                <span class="badge mx-1 text-bg-primary fw-normal">
+                                ${tag}
+                                </span> 
+                                was applied to 
+                                ${numPages} ${numPagesDiff} 
+                                document(s)!
+                                ${toastEnd}
+                            `, 
+                            'bg-success',
+                            'text-light'
+                        );
+                    }
                 }
                 else
                     showToast(
-                        `All documents should be tagged with tag <strong class="badge text-bg-success">${tag}</strong> and this doesn't make sense! We skip ... You can manually apply the tag on the docs you want.`, 
+                        `All documents should be tagged with tag <span class="badge mx-1 text-bg-primary fw-normal">${tag}</span> and this doesn't make sense! We skip ... You can manually apply the tag on the docs you want.`, 
                         'bg-warning', 
                         'text-dark'
                     );
@@ -855,18 +896,22 @@ const page__showPageCustomTags = () => {
         customTags.forEach( tag => {
             const numPages = getTagPages(tag);
             $('#pageTags').append($(tagElement(tag, numPages)));
-        });    
+        });
+        window.postMessage({ type: 'contentChanged' }, '*');
+    
     });
 };
 
 // INTERNAL FUNCTIONS, NOT CALLED FROM HTML TEMPLATES
 const refreshPageDynamicInfo = () => {
-    page__showPageCustomTags();
-    page__getPageInfo();
-    page__getPageNotes();
-    page__getRelatedPages();
-    page__getAutoSummary();
-    setTimeout(()=>$('div[siteFunction="pageFeedbackAndSupport"]').addClass('order'), 0);
+    keepScrollFixed(() => {
+        page__showPageCustomTags();
+        page__getPageInfo();
+        page__getPageNotes();
+        page__getRelatedPages();
+        page__getAutoSummary();
+        setTimeout(()=>$('div[siteFunction="pageFeedbackAndSupport"]').addClass('order'), 0);    
+    });
 }
 
 const setTriggerReorderSectionsInFooter = () => {
@@ -940,7 +985,6 @@ const refreshPageAfterOffCanvasClose = () => {
     removeObservers('.offcanvas class=hiding getClass=true');
     setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
         $('div[siteFunction="pageCustomTagButton"]').remove();
-        $('div[id="pageLastUpdateAndPageInfo"]').remove();
         refreshPageDynamicInfo();
     });
 }

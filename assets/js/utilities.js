@@ -18,13 +18,16 @@ $(window).on('scroll', () => {
 
 // prevents document to scroll and jump up and down when receiving this message
 // is good when dealing with iFrames which dynamically change their heights and make the doc to jump around
-$(window).on('message', function(event) {
+$(window).off('message').on('message', function(event) {
     const data = event.originalEvent.data;
     if (data.type === 'contentChanged') {
-        const scrollPos = $(window).scrollTop();
-        $(window).scrollTop(scrollPos);
+        const previousScrollTop = $(window).scrollTop();        
+        setTimeout(function() {
+            $(window).scrollTop(previousScrollTop); 
+        }, 0);
     }
 });
+
 
 /* SOME UTILITIES ADDED TO JQUERY*/
 
@@ -2116,6 +2119,60 @@ const orderSectionsBeforeElement = (order, lastElementSelector) => {
 
 }
 
+const loadInnerContentWithLoader = (callback) => {
+    const $loading = $(
+        `
+            <div id="innerContentLoading" class="d-flex justify-content-center align-items-center" style="position: fixed; top:0; left:0; width:100vw; height: 100vh">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `
+    );
+
+    $(settings.layouts.contentArea.mainContainer).css('visibility', 'hidden');
+    $('body').append($loading);
+
+    callback();
+
+    setTimeout(()=>{
+        $loading.remove(); 
+        $(settings.layouts.contentArea.mainContainer).css('visibility', 'visible')
+    }, 0);
+
+}
+
+const keepScrollFixed = (callback) => {
+    const scrollTop = window.scrollY;
+    const scrollLeft = window.scrollX;
+    
+    callback();
+    
+    window.scrollTo(scrollLeft, scrollTop);
+}
+
+const prependFirstSectionWithNoScroll = (whatToPrependSelector, whereToPrependSelector, $whatToPrependElement) => {
+    const $existingContainer = $(whatToPrependSelector);
+
+        if ($existingContainer.length > 0) {
+            let $newContainer = $whatToPrependElement;
+            const scrollTop = $(window).scrollTop();
+            const scrollLeft = $(window).scrollLeft();
+            const $placeholder = $('<div></div>')
+                .css({
+                    height: $newContainer.outerHeight(),
+                    width: $newContainer.outerWidth(),
+                    visibility: 'hidden'
+                });
+            $placeholder.insertBefore($existingContainer);
+            $existingContainer.replaceWith($newContainer);
+            $placeholder.remove();
+            $(window).scrollTop(scrollTop).scrollLeft(scrollLeft);
+
+        } else {
+            $(whereToPrependSelector).prepend($whatToPrependElement);
+        }
+}
 
 
 

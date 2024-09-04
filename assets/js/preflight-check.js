@@ -211,6 +211,14 @@ preFlight = {
         toRemove.remove();
     
         document.body.style.visibility = 'visible';
+    },
+
+    handle404: () => {
+        // here we may use jQuery since it should be loaded already if this point is reached
+        $(document).ready(function() {
+            $('#ihs_go_to_top_btn').remove();
+        });
+        
     }
 
 }

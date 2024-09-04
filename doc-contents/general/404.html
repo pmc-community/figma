@@ -6,23 +6,22 @@ layout: default
 nav_exclude: true
 ---
 
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
-
-<div id = "{{ site.data.siteConfig.marker404 }}" class="container">
-  <h1>404</h1>
-
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
+<div class="container position-relative" style="height: 40vh">
+  <div class="w-100 position-absolute start-50 translate-middle-x top-50">
+    <div> 
+      <img class="mb-4" src="/assets/img/404-250.png" />
+      <p>The requested document could not be found.</p>
+      <p>Contact support if you believe that the document should be here.</p>
+      <a 
+        type="button" 
+        class="btn btn-danger text-light"
+        href="{{site.data.siteConfig.links.supportLink}}"> 
+        Support 
+      </a>
+    </div>
+  </div>
 </div>
+
+<script>
+  preFlight.handle404();
+</script>

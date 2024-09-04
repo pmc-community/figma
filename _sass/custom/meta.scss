@@ -616,7 +616,7 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     }
 }
 
-// slected text context menu
+// selected text context menu
 @mixin selectedTextContextMenu($selectedTextContextMenuElements) {
     #{map-get($selectedTextContextMenuElements, container)} {
         display: $containerInitialVisibilty;
@@ -661,3 +661,13 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 
    
 }
+
+// 404
+@mixin page404($page404Elements) {
+    #{map-get($page404Elements, container)} {
+        margin: $containerMargin;
+        max-width: $containerMaxWidth;
+        text-align: $containerTextAlign;
+    }
+}
+
