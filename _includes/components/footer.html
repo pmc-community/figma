@@ -20,27 +20,29 @@
         {% assign footerClass = "" %}
     {% endif %}
 
-    {% if algolia.algoliaEnabled %}
-        {% assign permalink = page.permalink %}
-        {% if permalink %}
-            {% assign pages = site.data["page_list"] | jsonify | json_string_to_object %}
-            {% assign pg = pages | where: "permalink", permalink %}
-            {% assign pageObj = pg | json_string_to_object %}
-            {% if pageObj != empty %}
-                <page-data class="d-none">
-                    <page-data-title>{{pageObj[0].title}}</page-data-title>
-                    <page-data-permalink>{{pageObj[0].permalink}}</page-data-permalink>
-                    <page-data-summary>{{pageObj[0].autoSummary}}</page-data-summary>
-                    <page-data-excerpt>{{pageObj[0].excerpt}}</page-data-excerpt>
-                    <page-data-cats>{{pageObj[0].categories | join: ", "}}</page-data-cats>
-                    <page-data-tags>{{pageObj[0].tags | join: ", "}}</page-data-tags>
-                </page-data>
-            {% endif %}
-           
-        {% endif %}
-    {% endif %}
-
     <footer class="{{footerClass}}">
+
+        {% if algolia.algoliaEnabled %}
+            {% assign permalink = page.permalink %}
+            {% if permalink %}
+                {% assign pages = site.data.page_list | replace: "=>", ":"  | json_string_to_object %}
+                {% assign pg = pages | where: "permalink", permalink %}
+                {% assign pageObj = pg | replace: "=>", ":" | json_string_to_object %}
+                {% if pageObj != empty %}
+                    <page-data class="d-none">
+                        <page-data-title>{{pageObj[0].title}}</page-data-title>
+                        <page-data-permalink>{{pageObj[0].permalink}}</page-data-permalink>
+                        <page-data-summary>{{pageObj[0].autoSummary}}</page-data-summary>
+                        <page-data-excerpt>{{pageObj[0].excerpt}}</page-data-excerpt>
+                        <page-data-cats>{{pageObj[0].categories | join: ", "}}</page-data-cats>
+                        <page-data-tags>{{pageObj[0].tags | join: ", "}}</page-data-tags>
+                    </page-data>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+
+
         {{ footer_custom }}
     </footer>
 

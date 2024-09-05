@@ -2205,7 +2205,7 @@ const getPageTitleFromUrl = (url) => {
     });
     if (matchingPages.length !== 1) return '';
     const flatMatchingPages = _.flatten(matchingPages);
-    return flatMatchingPages[0].title;
+    return flatMatchingPages[0] ==='undefined' || !flatMatchingPages[0] ? '' : flatMatchingPages[0].title;
 }
 
 

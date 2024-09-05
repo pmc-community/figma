@@ -58,8 +58,8 @@ algolia = {
     },
 
     getResultItem: (result, index) => {
-        let permalink = getPageTitleFromUrl(result.url_without_anchor);
-        permalink = `<span class="text-dark">${permalink}</span>`;
+        let title = getPageTitleFromUrl(result.url_without_anchor);
+        title = `<span class="text-dark">${title}</span>`;
         
         return (
             `
@@ -88,8 +88,8 @@ algolia = {
                                         </span>
                                         <span class="DocSearch-Hit-path">
                                             ${result._snippetResult.content ?
-                                                permalink + ' | ' + result._highlightResult.hierarchy.lvl1.value:
-                                                permalink 
+                                                title + ' | ' + result._highlightResult.hierarchy.lvl1.value:
+                                                title 
                                             }
                                         </span>
                                     </div>
