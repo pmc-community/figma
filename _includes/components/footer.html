@@ -32,8 +32,8 @@
                     <page-data-permalink>{{pageObj[0].permalink}}</page-data-permalink>
                     <page-data-summary>{{pageObj[0].autoSummary}}</page-data-summary>
                     <page-data-excerpt>{{pageObj[0].excerpt}}</page-data-excerpt>
-                    <page-data-cats>{{pageObj[0].categories | join ","}}</page-data-cats>
-                    <page-data-tags>{{pageObj[0].tags | join ","}}</page-data-tags>
+                    <page-data-cats>{{pageObj[0].categories | join: ", "}}</page-data-cats>
+                    <page-data-tags>{{pageObj[0].tags | join: ", "}}</page-data-tags>
                 </page-data>
             {% endif %}
            
