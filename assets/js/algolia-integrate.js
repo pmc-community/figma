@@ -58,6 +58,9 @@ algolia = {
     },
 
     getResultItem: (result, index) => {
+        let permalink = getPageTitleFromUrl(result.url_without_anchor);
+        permalink = `<span class="text-dark">${permalink}</span>`;
+        
         return (
             `
                     <a 
@@ -76,13 +79,18 @@ algolia = {
                                 </div>
                                     <div class="DocSearch-Hit-content-wrapper">
                                         <span class="DocSearch-Hit-title">
-                                            ${result._highlightResult.content ?
-                                                result._highlightResult.content.value :
-                                                result._highlightResult.hierarchy.lvl1.value
+                                            ${result._snippetResult.content ?
+                                                result._snippetResult.content.value ?
+                                                    result._snippetResult.content.value :
+                                                    result._highlightResult.hierarchy.lvl1.value :
+                                                    result._highlightResult.hierarchy.lvl1.value  
                                             }
                                         </span>
                                         <span class="DocSearch-Hit-path">
-                                            ${result._highlightResult.hierarchy.lvl1.value}
+                                            ${result._snippetResult.content ?
+                                                permalink + ' | ' + result._highlightResult.hierarchy.lvl1.value:
+                                                permalink 
+                                            }
                                         </span>
                                     </div>
                                     <div class="DocSearch-Hit-action">
@@ -194,7 +202,8 @@ algolia = {
         const removePagination = () => {
             $('.pagination-buttons').remove();
         };
-    
+        
+        // HERE WE ACTUALLY DI THE SEARCH
         // Function to refresh the DocSearch results on pagination click
         const refreshResults = (query, page) => {
             
@@ -202,9 +211,7 @@ algolia = {
             const index = client.initIndex(algolia.indexName);
     
             index.search(query, { page }) // Search by page
-                .then(function(searchResults) {
-                    //console.log('Paginated results:', searchResults);
-    
+                .then(function(searchResults) {    
                     // Clear existing results and append new ones
                     $('#docsearch-list').empty();
                     
@@ -214,6 +221,7 @@ algolia = {
                     // the li attribute used for active list item is aria-selected 
                     // (stands for Accessible Rich Internet Applications), not area-selected
                     searchResults.hits.forEach(result => {
+                        console.log(result)
                         const resultItem = $('<li>')
                             .addClass('DocSearch-Hit')
                             .attr('id', `docsearch-item-${resIndex}`)

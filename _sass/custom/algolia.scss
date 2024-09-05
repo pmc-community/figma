@@ -1,0 +1,10 @@
+@import 'custom-vars.scss';
+
+$hitMarkerColor: $c-primary-theme-dark;
+
+$algoliaElements: (
+    hitMarker: '.algolia-docsearch-suggestion--highlight',
+);
+
+@import 'meta.scss';
+@include algolia($algoliaElements);

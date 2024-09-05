@@ -671,3 +671,10 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     }
 }
 
+// algolia DocSearch
+@mixin algolia($algoliaElements) {
+    #{map-get($algoliaElements, hitMarker)} {
+        color: $hitMarkerColor;
+    }
+}
+

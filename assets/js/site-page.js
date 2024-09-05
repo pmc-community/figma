@@ -554,11 +554,9 @@ const page__setSelectedTextContextMenu = () =>{
 
         const searchInSite = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
             if (!algoliaSettings.algoliaEnabled) return;
-            algolia.silentSearchInSite(selectedText, (results) => {
-                $('.DocSearch').click();
-                $('#selected-text-context-menu').hide();
-                $('body').css('overflow', '');
-            });
+            $('.DocSearch').click();
+            $('#selected-text-context-menu').hide();
+            $('body').css('overflow', '');
         }
 
         const tagDocWithSelectedText = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {

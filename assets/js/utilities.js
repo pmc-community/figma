@@ -2187,6 +2187,27 @@ const sanitizeUrl = (input) => {
     return DOMPurify.sanitize(input.replace(/[<>"']/g, ''));
 }
 
+const getPageTitleFromUrl = (url) => {
+    const urlArray = [url];
+    let matchingPages = [];
+    let permalinkOptions = [];
+    
+    const permalinks = getPermalinksFromURLArray(urlArray);
+    permalinks.forEach( permalink => {
+        // we use a function defined in preflight-check.js to get permalink options
+        // as permalink extraction from url returns always /permalink/
+        // and we don't know how permalink are defined in the page front matter
+        permalinkOptions.push(preFlight.formatPath(permalink)); 
+    })
+
+    permalinkOptions.forEach(permalinkArray => {
+        matchingPages.push(_.filter(pageList, (obj) => _.includes(permalinkArray, obj.permalink)));
+    });
+    if (matchingPages.length !== 1) return '';
+    const flatMatchingPages = _.flatten(matchingPages);
+    return flatMatchingPages[0].title;
+}
+
 
 
 
