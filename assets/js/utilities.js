@@ -2174,6 +2174,19 @@ const prependFirstSectionWithNoScroll = (whatToPrependSelector, whereToPrependSe
         }
 }
 
+const isValidUrl = (url) => {
+    try {
+        new URL(url);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+const sanitizeUrl = (input) => {
+    return DOMPurify.sanitize(input.replace(/[<>"']/g, ''));
+}
+
 
 
 

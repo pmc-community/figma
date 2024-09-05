@@ -554,7 +554,7 @@ const page__setSelectedTextContextMenu = () =>{
 
         const searchInSite = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
             if (!algoliaSettings.algoliaEnabled) return;
-            algolia.searchInSite(selectedText, (results) => {
+            algolia.silentSearchInSite(selectedText, (results) => {
                 $('.DocSearch').click();
                 $('#selected-text-context-menu').hide();
                 $('body').css('overflow', '');
@@ -612,7 +612,8 @@ const page__setSelectedTextContextMenu = () =>{
                     );
                     return;
                 }
-            algolia.searchInSite(selectedText, (results) => {
+            const crtPage = page;
+            algolia.silentSearchInSite(selectedText, (results) => {
                 const pageURLs = _.uniq(_.map(results, 'url_without_anchor'));
                 const permalinkOptions = [];
 
@@ -658,15 +659,19 @@ const page__setSelectedTextContextMenu = () =>{
                     $('div[siteFunction="pageCustomTagButton"]').remove();
                     refreshPageDynamicInfo();
 
+                    const crtPageInfo = getPageSavedInfo(crtPage.siteInfo.permalink, crtPage.siteInfo.title) ==='none' ?
+                        'This document was not found in saved items, so the tag was not applied to it.' :
+                        '';
+
                     if (numPages > 0) {
 
                         const numPagesDiff = numPages === cleanMatchingPages.length ? 
                         '' : 
                         `(out of ${cleanMatchingPages.length})`;
-                        
+
                         const toastEnd = numPages === cleanMatchingPages.length ? 
                         '' : 
-                        `${cleanMatchingPages.length - numPages} document(s) not found in saved items`;
+                        `${cleanMatchingPages.length - numPages} document(s) not found in saved items. `;
 
                         showToast(
                             `
@@ -678,6 +683,7 @@ const page__setSelectedTextContextMenu = () =>{
                                 ${numPages} ${numPagesDiff} 
                                 document(s)!
                                 ${toastEnd}
+                                ${crtPageInfo}
                             `, 
                             'bg-success',
                             'text-light'
