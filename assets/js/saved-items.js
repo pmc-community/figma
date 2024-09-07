@@ -354,6 +354,9 @@ const addTag = (tag, pageInfo) => {
         return false;
     }
 
+    tag = tag.replace(/["'.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+    tag = tag.replace(/[^a-zA-Z0-9]/g, ' ');
+    tag = DOMPurify.sanitize(tag);
     if (tag.trim() === '') {
         //showToast('Nothing to add, write something ...', 'bg-warning', 'text-dark');
         return false;
@@ -393,6 +396,9 @@ const addCat = (cat, pageInfo) => {
         return false;
     }
 
+    cat = cat.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+    cat = cat.replace(/[^a-zA-Z0-9]/g, ' ');
+    cat = DOMPurify.sanitize(cat);
     if (cat.trim() === '') {
         //showToast('Nothing to add, write something ...', 'bg-warning', 'text-dark');
         return false;
@@ -520,6 +526,9 @@ const deleteCatFromAllPages = (cat, pageInfo={}) => {
 }
 
 const updateTagForAllPages = (oldTag, newTag) => {
+    newTag = newTag.replace(/["'.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+    newTag = newTag.replace(/[^a-zA-Z0-9]/g, ' ');
+    newTag = DOMPurify.sanitize(newTag);
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
@@ -550,6 +559,9 @@ const updateTagForAllPages = (oldTag, newTag) => {
 }
 
 const updateCatForAllPages = (oldCat, newCat) => {
+    newCat = newCat.replace(/["'.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+    newCat = newCat.replace(/[^a-zA-Z0-9]/g, ' ');
+    newCat = DOMPurify.sanitize(newCat);
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
@@ -580,6 +592,9 @@ const updateCatForAllPages = (oldCat, newCat) => {
 }
 
 const updateTagForPage = (oldTag, newTag, pageInfo={}) => {
+    newTag = newTag.replace(/["'.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+    newTag = newTag.replace(/[^a-zA-Z0-9]/g, ' ');
+    newTag = DOMPurify.sanitize(newTag);
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {
@@ -615,6 +630,9 @@ const updateTagForPage = (oldTag, newTag, pageInfo={}) => {
 }
 
 const updateCatForPage = (oldCat, newCat, pageInfo={}) => {
+    newCat = newCat.replace(/["'.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+    newCat = newCat.replace(/[^a-zA-Z0-9]/g, ' ');
+    newCat = DOMPurify.sanitize(newCat);
 
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     if (savedItems.length === 0 ) {

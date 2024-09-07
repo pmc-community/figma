@@ -115,7 +115,8 @@ $alwaysBlackTextElements: (
     'button[siteFunction="tableNavigateToCategories"] span',
     'a[sitefunction="menuItemLevel2"]',
     '.dtsp-caret',
-    '.selected-text-context-menu-item'
+    '.selected-text-context-menu-item',
+    '.DocSearch-Hit-title'
 );
 @each $element in $alwaysBlackTextElements {
     #{$element} {

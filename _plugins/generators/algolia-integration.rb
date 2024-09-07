@@ -37,6 +37,7 @@ module Jekyll
           "algoliaSearchBoxContainer" => site.data["buildConfig"]["algoliaSearch"]["container"],
           "algoliaDebug" => site.data["buildConfig"]["algoliaSearch"]["debug"],
           "algoliaMaxResultsPerGroup" => site.data["buildConfig"]["algoliaSearch"]["maxResultsPerGroup"],
+          "algoliaHitsPerPage" => site.data["buildConfig"]["algoliaSearch"]["hitsPerPage"],
           "algoliaSendInsights" => site.data["buildConfig"]["algoliaSearch"]["insights"],
           "algoliaRaiseIssueLink" => "https://github.com/#{site.data["buildConfig"]["github"]["user"]}/#{site.data["buildConfig"]["github"]["repo"]}/issues/new?title="
         }

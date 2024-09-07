@@ -60,6 +60,7 @@ algoliaSearch:
   container: '#docsearch'
   debug: false
   maxResultsPerGroup: 20
+  hitsPerPage: 10
   insights: true
 prodUrl: "https://figmares.innohub.space"
 JTDSearch:

@@ -755,6 +755,7 @@
     "algoliaSearchBoxContainer": "#docsearch",
     "algoliaDebug": false,
     "algoliaMaxResultsPerGroup": 20,
+    "algoliaHitsPerPage": 10,
     "algoliaSendInsights": true,
     "algoliaRaiseIssueLink": "https://github.com/pmc-community/figma/issues/new?title="
   },

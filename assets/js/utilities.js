@@ -1112,6 +1112,52 @@ const iframe__setElementChangeClassObserver = ($elementInsideIFrame, elementSele
     });
 };
 
+// observes when an element with selector = elementSelector change the value of attributeName
+const setElementChangeAttributeObserver = (elementSelector, attributeName, callback = () => {}) => {
+    // Start observing the body for mutations
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.type === 'attributes' && mutation.attributeName === attributeName) {
+                const targetElement = mutation.target;
+                if (targetElement.matches(elementSelector)) {
+                    const attributeValue = targetElement.getAttribute(attributeName);
+                    callback(attributeValue);
+                }
+            }
+        });
+    });
+
+    const config = { attributes: true, attributeFilter: [attributeName], subtree: true };
+    siteObservers.set(observer, `${elementSelector} change attribute=${attributeName}`);
+    observer.observe(document.body, config);
+    return observer;
+};
+
+// observes when an element with selector = elementSelector receives a new attribute
+const setElementReceiveAttributeObserver = (elementSelector, attributeName, callback = () => {}) => {
+    // Start observing the body for mutations
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.type === 'attributes' && mutation.attributeName === attributeName) {
+                const targetElement = mutation.target;
+                if (targetElement.matches(elementSelector)) {
+                    // Check if the attribute was not present before the change
+                    const oldValue = mutation.oldValue;
+                    if (oldValue === null) {
+                        const newValue = targetElement.getAttribute(attributeName);
+                        callback(newValue);
+                    }
+                }
+            }
+        });
+    });
+
+    const config = { attributes: true, attributeFilter: [attributeName], attributeOldValue: true, subtree: true };
+    siteObservers.set(observer, `${elementSelector} receive attribute=${attributeName}`);
+    observer.observe(document.body, config);
+    return observer;
+};
+
 // observes when an element with class=element Class is created and executes callback function
 const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => {
     const mutationCallback = function(mutationsList) {
@@ -1938,7 +1984,7 @@ const setSelectedTextContextMenu = (
     });
 
     // Hide the context menu when scrolling
-    // NOT USED, WE FREEZE SCROLLING WHILE CONTEXT MNU IS OPEN
+    // NOT USED, WE FREEZE SCROLLING WHILE CONTEXT MENU IS OPEN
     /*
     $(window).on('scroll', function() {
         if (contextMenuCloseCallback) contextMenuCloseCallback();
