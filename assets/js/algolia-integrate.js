@@ -4,7 +4,7 @@ removeObservers('.DocSearch-Reset receive attribute=hidden');
 setElementReceiveAttributeObserver('.DocSearch-Reset', 'hidden', () => {
    algolia.resetSearch();
    algolia.hideSearchHitDetailsContainer();
-})
+});
 
 // setup the search hit details box
 // we force esults to be shown in the custom fomat defined in setDocSearchBox/refreshResults by force navigating to first page
@@ -12,7 +12,7 @@ setElementReceiveAttributeObserver('.DocSearch-Reset', 'hidden', () => {
 removeObservers('body class=DocSearch--active getClass=true');
 setElementChangeClassObserver ('body', 'DocSearch--active', true, () => {
     algolia.createSearchHitDetailsContainer();
-    setTimeout(()=>algolia.forceNavigationToPage(0),100);
+    algolia.forceNavigationToPage(0);
 });
 
 // setting some events to modify the default behaviour of DocSearch
@@ -119,10 +119,10 @@ algolia = {
     },
 
     forceNavigationToPage: (page) => {
-        $(document).off('keydown').off('keypress');
         $('.DocSearch-Dropdown').css('visibility', 'hidden');
         setTimeout(()=>{       
             $(`button[siteFunction="docSearchPaginationPage_${page}"]`).click();
+            $(document).off('keydown').off('keypress');
             $('.DocSearch-Dropdown').css('visibility', 'visible');        
         }, 200);
         
@@ -186,27 +186,32 @@ algolia = {
             const currentPath = parentKey ? `${parentKey}.${key}` : key;
 
             if (typeof value === 'string' && markPattern.test(value)) {
-            result.push({ key: currentPath, value: value });
+                result.push({ key: currentPath, value: value });
             } else if (typeof value === 'object' && value !== null) {
-            result.push(...algolia.findMarkedStrings(value, currentPath, openingTag, closingTag));
+                result.push(...algolia.findMarkedStrings(value, currentPath, openingTag, closingTag));
             }
         }
-
-        if (Array.isArray(obj)) {
-            obj.forEach((item, index) => {
-            processKey(index, item);
-            });
-        } else {
-            Object.keys(obj).forEach((key) => {
-            processKey(key, obj[key]);
-            });
+        
+        if (obj) {
+            if (Array.isArray(obj)) {
+                obj.forEach((item, index) => {
+                    processKey(index, item);
+                });
+            } else {
+                Object.keys(obj).forEach((key) => {
+                    processKey(key, obj[key]);
+                });
+            }
         }
 
         return result;
     },
 
     getResultItem: (result) => {
-        let title = getPageTitleFromUrl(result.url_without_anchor);
+        let title;
+        if (result.url_without_anchor) title = getPageTitleFromUrl(result.url_without_anchor);
+        else if (result.url) title = getPageTitleFromUrl(result.url);
+
         const secondRow = () => {
             let row = [title];
             if (result.hierarchy.lvl1) row.push(result.hierarchy.lvl1);
@@ -218,7 +223,12 @@ algolia = {
             return row.join(' > ');
         }
 
-        marked = algolia.findMarkedStrings(result._snippetResult, '', algolia.highlightTextPrefixTag, algolia.highlightTextPostfixTag);
+        let marked;
+        if (result.url_without_anchor)
+            marked = algolia.findMarkedStrings(result._snippetResult, '', algolia.highlightTextPrefixTag, algolia.highlightTextPostfixTag);
+        else
+            marked = algolia.findMarkedStrings(result._highlightResult, '', algolia.highlightTextPrefixTag, algolia.highlightTextPostfixTag);
+
         const firstRow = () => {
             return marked.length > 0 ? marked[0].value : null;
         }
@@ -226,9 +236,9 @@ algolia = {
         return firstRow 
         ? (
             `
-                <a 
-                    href="${result.url}">
+                <a href="${result.url}">
                     <div class="DocSearch-Hit-Container">
+                        
                         <div class="DocSearch-Hit-icon">
                             <svg width="20" height="20" viewBox="0 0 20 20">
                                 <path 
@@ -239,33 +249,34 @@ algolia = {
                                     stroke-linejoin="round">
                                 </path>
                             </svg>
-                            </div>
-                                <div class="DocSearch-Hit-content-wrapper">
-                                    <span class="DocSearch-Hit-title">
-                                        ${firstRow()}
-                                    </span>
-                                    <span class="DocSearch-Hit-path">
-                                        ${secondRow()}
-                                    </span>
-                                </div>
-                                <div class="DocSearch-Hit-action">
-                                    <svg 
-                                        class="DocSearch-Hit-Select-Icon" 
-                                        width="20" height="20" 
-                                        viewBox="0 0 20 20">
-                                        <g 
-                                            stroke="currentColor" 
-                                            fill="none" 
-                                            fill-rule="evenodd" 
-                                            stroke-linecap="round" 
-                                            stroke-linejoin="round">
-                                            <path d="M18 3v4c0 2-2 4-4 4H2"></path>
-                                            <path d="M8 17l-6-6 6-6"></path>
-                                        </g>
-                                    </svg>
-                                </div>
-                            </div>
                         </div>
+                        
+                        <div class="DocSearch-Hit-content-wrapper">
+                            <span class="DocSearch-Hit-title">
+                                ${firstRow()}
+                            </span>
+                            <span class="DocSearch-Hit-path">
+                                ${secondRow()}
+                            </span>
+                        </div>
+
+                        <div class="DocSearch-Hit-action">
+                            <svg 
+                                class="DocSearch-Hit-Select-Icon" 
+                                width="20" height="20" 
+                                viewBox="0 0 20 20">
+                                <g 
+                                    stroke="currentColor" 
+                                    fill="none" 
+                                    fill-rule="evenodd" 
+                                    stroke-linecap="round" 
+                                    stroke-linejoin="round">
+                                    <path d="M18 3v4c0 2-2 4-4 4H2"></path>
+                                    <path d="M8 17l-6-6 6-6"></path>
+                                </g>
+                            </svg>
+                        </div>
+
                     </div>
                 </a>
             `
@@ -288,6 +299,46 @@ algolia = {
             maxResultsPerGroup: algolia.maxResultsPerGroup,
             insights: algolia.insights,
             raiseIssueLink: algolia.algoliaRaiseIssueLink,
+
+            // we use this DocSearch built-in callback to overwrite the default behaviour of the instant search
+            // in order to display the search hits in the same format as defined in algolia/getResultItem function
+            // otherwise the format will be different and the feature of search hit details box will not work if already open
+            // cannot use the normal behaviour of hitComponent since cannot return a proper JSX.Element in a regular (nonReact) app
+            hitComponent: ({ hit, children }) => {
+                algolia.setEvents();
+                resultItemContent = algolia.getResultItem(hit);
+            
+                // Create a new list item with the hit data
+                const resultItem = $('<li>')
+                    .addClass('DocSearch-Hit')
+                    .attr('id', `docsearch-item`)
+                    .attr('aria-selected', "false")
+                    .attr('role', 'option')
+                    .html(resultItemContent)
+                    .data('result', hit);
+            
+                const targetItem = $('#docsearch-list li').filter(function() {
+                    return _.isEqual($(this).data('result'), resultItem.data('result'));
+                });
+            
+                if (targetItem.length) {
+                    const originalHeight = targetItem.outerHeight();                
+                    resultItem.css('height', originalHeight);
+                    targetItem.css('height', originalHeight);
+                    targetItem.replaceWith(resultItem);
+                    resultItem.css('height', '');
+                }
+
+                $('#docsearch-list li').filter(function() {
+                    return $.trim($(this).html()) === '';
+                }).remove();
+                
+                // HEADS UP!!!
+                // HERE WE SHOULD RETURN A VALID JSX.Element OBJECT WHICH WE CANNOT PROPERLY CREATE HERE
+                // SO WE NOT RETURNING ANYTHING HERE
+                // THE SEARCH HITS WERE ADDED BFORE THROUGH DOM MANIPULATION
+            },
+
             
             // Create pagination and handle results
             // we use this docSearch built-in callback to create other elements: pagination btns, show more/less btns
@@ -486,16 +537,22 @@ algolia = {
     updateHitMoreInfo: ($newActiveItem) => {
 
         const getSearchHit = (hit) => {
-            //console.log(hit)
-            
-            const searchHit = algolia.findMarkedStrings(
+            let searchHit;
+            searchHit = algolia.findMarkedStrings(
                 hit._snippetResult, 
                 '', 
                 algolia.highlightTextPrefixTag, 
                 algolia.highlightTextPostfixTag
             );
-
-            console.log(searchHit)
+            
+            if (searchHit.length === 0)
+                searchHit = algolia.findMarkedStrings(
+                    hit._highlightResult, 
+                    '', 
+                    algolia.highlightTextPrefixTag, 
+                    algolia.highlightTextPostfixTag
+                );
+            //console.log(searchHit)
 
             $searchHit = 
                 `
@@ -516,7 +573,7 @@ algolia = {
     },
 
     handleKey: (event) => {
-        const $activeItem = $('.DocSearch-Hit[aria-selected="true"]');
+        let $activeItem = $('.DocSearch-Hit[aria-selected="true"]');
         let $newActiveItem;
         const $container = $('.DocSearch-Dropdown');
     
@@ -622,15 +679,33 @@ algolia = {
                 $temp.remove();
             }, 0);
         }
+
+        // just to be on the safe, side we remove the empty search hits items
+        // when navigating in the initial search hits list generated by instant search,
+        // sometimes an empty element is created because of the way we use hitComponent callback
+        // which manipulates the DOM and do not return a JSX.Element (same as returning an empty one)
+        $('#docsearch-list li').filter(function() {
+            return $.trim($(this).html()) === '';
+        }).remove();
+
+        /*
+        $activeItem = $('.DocSearch-Hit[aria-selected="true"]');
+        if ($activeItem.length === 0 ) {
+            $newActiveItem = $('.DocSearch-Hit').first();
+            $newActiveItem.attr('aria-selected', 'true');
+            algolia.scrollToView($newActiveItem, $container);
+            algolia.updateHitMoreInfo($newActiveItem);
+        }
+        */
     },
 
     scrollToView: ($item, $container) => {
-        var containerTop = $container.offset().top;
-        var containerScrollTop = $container.scrollTop();
-        var containerHeight = $container.height();
-        var itemTop = $item.offset().top;
-        var itemHeight = $item.outerHeight();
-        var margin = 100; // Minimum margin from the top
+        const containerTop = $container.offset().top;
+        const containerScrollTop = $container.scrollTop();
+        const containerHeight = $container.height();
+        const itemTop = $item.offset().top;
+        const itemHeight = $item.outerHeight();
+        const margin = $('.DocSearch-Hit-source').outerHeight() + 20 ; // Minimum margin from the top
     
         // Check if the item is above the visible container view
         if (itemTop - containerTop < margin) {
