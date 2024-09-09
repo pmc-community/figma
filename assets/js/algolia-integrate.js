@@ -1,37 +1,26 @@
 // removing addtional docSearch features when click on clear query button
 removeObservers('.DocSearch-Reset receive attribute=hidden');
 setElementReceiveAttributeObserver('.DocSearch-Reset', 'hidden', () => {
-    $('div[siteFunction="showMoreShowLessButtons"]').remove();
-    $('.pagination-buttons').remove();
-    $('div[siteFunction="docSearchListItemDetails"]').addClass('d-none');
+   algolia.resetSearch();
+   algolia.hideSearchHitDetailsContainer();
 })
 
 // setup the search hit details box
 removeObservers('body class=DocSearch--active getClass=true');
 setElementChangeClassObserver ('body', 'DocSearch--active', true, () => {
-    const styleListItemDetails = () => {
-        $('div[siteFunction="docSearchListItemDetails"]').css('background', '#010033');
-        $('div[siteFunction="docSearchListItemDetails"]').css('position', 'fixed');
-        $('div[siteFunction="docSearchListItemDetails"]').css('top', $('.DocSearch-Modal').offset().top + 'px');
-        $('div[siteFunction="docSearchListItemDetails"]').css('left', '20px');
-        $('div[siteFunction="docSearchListItemDetails"]').css('border-radius', 'inherit');
-        $('div[siteFunction="docSearchListItemDetails"]').css('z-index', '9999');
-
-        $('.DocSearch').css('z-index', '9999'); // necessary to have the list item details go over the header
-
-        $('div[siteFunction="docSearchListItemDetails"]').draggable({
-            containment: "window"
-        });        
-    }
-
-    if($('div[siteFunction="docSearchListItemListAndDetails"]').length === 0 ) {
-        $('.DocSearch-Modal').css('max-width', 'fit-content');
-        const $details = $('<div siteFunction="docSearchListItemDetails" class="d-none p-4 text-light">here we are</div>');
-        $('.DocSearch-Modal').prepend($details);
-        styleListItemDetails();
-        
-    }
+    algolia.forceNavigationToPage(0);
+    algolia.createSearchHitDetailsContainer();
 });
+
+// setting some events to modify the default behaviour of DocSearch 
+$(document).off('input', '.DocSearch-Input').on('input', '.DocSearch-Input', function() {
+    algolia.forceNavigationToPage(0);
+});
+
+$(document).off('focus', '.DocSearch-Input').on('focus', '.DocSearch-Input', function() {
+    algolia.forceNavigationToPage(algolia.currentPage);
+});
+
 
 algolia = {
     appId: algoliaSettings.algoliaAppID,
@@ -44,6 +33,94 @@ algolia = {
     raiseIssueLink: algoliaSettings.algoliaRaiseIssueLink,
     hitsPerPage: algoliaSettings.algoliaHitsPerPage,
     currentPage: 0,
+    highlightTextPrefixTag: algoliaSettings.algoliaTextHighlightPrefixTag,
+    highlightTextPostfixTag: algoliaSettings.algoliaTextHighlightPostfixTag,
+
+    resetSearch: () => {
+        $('div[siteFunction="showMoreShowLessButtons"]').remove();
+        $('.pagination-buttons').remove();
+        $('div[siteFunction="docSearchListItemDetails"]').addClass('d-none');
+    },
+
+    createSearchHitDetailsContainer: () => {
+        const styleListItemDetails = () => {
+                       
+            const width = $('.DocSearch-Modal').outerWidth();
+            const offset = $('.DocSearch-Modal').offset(); 
+            const rightDocSearchPosition = offset.left + width - $(window).scrollLeft();
+            const left = rightDocSearchPosition + 5;
+
+            $('div[siteFunction="docSearchListItemDetails"]')
+                .css(
+                    'top', 
+                    $('.main-header').offset().top + $('.main-header').height() + 'px'
+                )
+                .css(
+                    'left', 
+                    left + 'px'
+                )
+                .css(
+                    'width', 
+                    width + 'px'
+                );
+
+            $('div[siteFunction="docSearchListItemDetails"]').draggable({
+                containment: "window"
+            });
+        }
+
+        if($('div[siteFunction="docSearchListItemListAndDetails"]').length === 0 ) {
+            const $details = $('<div siteFunction="docSearchListItemDetails" class="d-none p-4 text-light">Search Hit Details</div>');
+            $('.DocSearch-Modal').prepend($details);
+            styleListItemDetails();
+           
+        }
+    },
+
+    showSearchHitDetailsContainer: () => {
+        const gutter = 5;
+        const width = $('.DocSearch-Modal').outerWidth();
+        const fullwidth = 2 * width + gutter;
+
+        const marginLeft = ($(window).width() - fullwidth)/2;
+        $('.DocSearch-Modal').css('margin-left', marginLeft + 'px');
+
+        const offset = $('.DocSearch-Modal').offset(); 
+        const rightDocSearchPosition = offset.left + width - $(window).scrollLeft();
+        const left = rightDocSearchPosition + gutter;
+
+        const top = $('.main-header').height();
+
+        $('div[siteFunction="docSearchListItemDetails"]')
+            .css(
+                'top', 
+                top + 'px'
+            )
+            .css(
+                'left', 
+                left + 'px'
+            );
+
+        $('div[siteFunction="docSearchListItemDetails"]').removeClass('d-none');
+        $('div[siteFunction="docSearchListItemDetails"]').fadeIn();
+
+    },
+
+    hideSearchHitDetailsContainer: () => {
+        $('div[siteFunction="docSearchListItemDetails"]').fadeOut();
+        $('div[siteFunction="docSearchListItemDetails"]').addClass('d-none');
+        $('.DocSearch-Modal').css('margin-left', '');
+    },
+
+    forceNavigationToPage: (page) => {
+        $(document).off('keydown').off('keypress');
+        $('.DocSearch-Dropdown').css('visibility', 'hidden');
+        setTimeout(()=>{       
+            $(`button[siteFunction="docSearchPaginationPage_${page}"]`).click();
+            $('.DocSearch-Dropdown').css('visibility', 'visible');        
+        }, 200);
+        
+    },
 
     silentSearchInSite: (query, searchResultsCallback) => {
         const client = algoliasearch(algolia.appId, algolia.apiKey);
@@ -94,6 +171,34 @@ algolia = {
 
     },
 
+    findMarkedStrings: (obj, parentKey = '', openingTag = '', closingTag = '') => {
+        const result = [];
+  
+        const markPattern = new RegExp(`${openingTag}(.*?)${closingTag}`, 'g'); // 'g' for global match
+
+        const processKey = (key, value) => {
+            const currentPath = parentKey ? `${parentKey}.${key}` : key;
+
+            if (typeof value === 'string' && markPattern.test(value)) {
+            result.push({ key: currentPath, value: value });
+            } else if (typeof value === 'object' && value !== null) {
+            result.push(...algolia.findMarkedStrings(value, currentPath, openingTag, closingTag));
+            }
+        }
+
+        if (Array.isArray(obj)) {
+            obj.forEach((item, index) => {
+            processKey(index, item);
+            });
+        } else {
+            Object.keys(obj).forEach((key) => {
+            processKey(key, obj[key]);
+            });
+        }
+
+        return result;
+    },
+
     getResultItem: (result) => {
         let title = getPageTitleFromUrl(result.url_without_anchor);
         const secondRow = () => {
@@ -106,65 +211,60 @@ algolia = {
             if (result.hierarchy.lvl6) row.push(result.hierarchy.lvl6);
             return row.join(' > ');
         }
-        
-        const firstRow = () => {
 
-            if (result._snippetResult.content) {
-                if (result._snippetResult.content.value)
-                    return result._snippetResult.content.value.substring(0, 80);
-                else
-                    return result._highlightResult.hierarchy.lvl1.value.substring(0, 80);
-            } else {
-                return result._highlightResult.hierarchy.lvl1.value.substring(0, 80);
-            }
+        marked = algolia.findMarkedStrings(result._snippetResult, '', algolia.highlightTextPrefixTag, algolia.highlightTextPostfixTag);
+        const firstRow = () => {
+            return marked.length > 0 ? marked[0].value : null;
         }
         
-        return (
+        return firstRow 
+        ? (
             `
-                    <a 
-                        href="${result.url}">
-                        <div class="DocSearch-Hit-Container">
-                            <div class="DocSearch-Hit-icon">
-                                <svg width="20" height="20" viewBox="0 0 20 20">
-                                    <path 
-                                        d="M17 5H3h14zm0 5H3h14zm0 5H3h14z" 
-                                        stroke="currentColor" 
-                                        fill="none" 
-                                        fill-rule="evenodd" 
-                                        stroke-linejoin="round">
-                                    </path>
-                                </svg>
+                <a 
+                    href="${result.url}">
+                    <div class="DocSearch-Hit-Container">
+                        <div class="DocSearch-Hit-icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <path 
+                                    d="M17 5H3h14zm0 5H3h14zm0 5H3h14z" 
+                                    stroke="currentColor" 
+                                    fill="none" 
+                                    fill-rule="evenodd" 
+                                    stroke-linejoin="round">
+                                </path>
+                            </svg>
+                            </div>
+                                <div class="DocSearch-Hit-content-wrapper">
+                                    <span class="DocSearch-Hit-title">
+                                        ${firstRow()}
+                                    </span>
+                                    <span class="DocSearch-Hit-path">
+                                        ${secondRow()}
+                                    </span>
                                 </div>
-                                    <div class="DocSearch-Hit-content-wrapper">
-                                        <span class="DocSearch-Hit-title">
-                                            ${firstRow()}
-                                        </span>
-                                        <span class="DocSearch-Hit-path">
-                                            ${secondRow()}
-                                        </span>
-                                    </div>
-                                    <div class="DocSearch-Hit-action">
-                                        <svg 
-                                            class="DocSearch-Hit-Select-Icon" 
-                                            width="20" height="20" 
-                                            viewBox="0 0 20 20">
-                                            <g 
-                                                stroke="currentColor" 
-                                                fill="none" 
-                                                fill-rule="evenodd" 
-                                                stroke-linecap="round" 
-                                                stroke-linejoin="round">
-                                                <path d="M18 3v4c0 2-2 4-4 4H2"></path>
-                                                <path d="M8 17l-6-6 6-6"></path>
-                                            </g>
-                                        </svg>
-                                    </div>
+                                <div class="DocSearch-Hit-action">
+                                    <svg 
+                                        class="DocSearch-Hit-Select-Icon" 
+                                        width="20" height="20" 
+                                        viewBox="0 0 20 20">
+                                        <g 
+                                            stroke="currentColor" 
+                                            fill="none" 
+                                            fill-rule="evenodd" 
+                                            stroke-linecap="round" 
+                                            stroke-linejoin="round">
+                                            <path d="M18 3v4c0 2-2 4-4 4H2"></path>
+                                            <path d="M8 17l-6-6 6-6"></path>
+                                        </g>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
+                </a>
             `
-        );
+        )
+        : null;
     },
 
     // setting DocSearch with pagination
@@ -240,7 +340,6 @@ algolia = {
         // Remove JTD search box after 5 seconds (this time interval is not important, can have any value)
         setTimeout(() => $('.search').remove(), 5000);
 
-
         // create Show More and Show Less btns
         const createShowMoreShowLess = (state=null) => {
             
@@ -255,8 +354,7 @@ algolia = {
                 .html('<i class="bi bi-chevron-bar-expand"></i>')
                 .click(function() {
                     $(`button[siteFunction="docSearchPaginationPage_${algolia.currentPage}"]`).click();
-                    $('div[siteFunction="docSearchListItemDetails"]').removeClass('d-none');
-                    $('div[siteFunction="docSearchListItemDetails"]').fadeIn();
+                    algolia.showSearchHitDetailsContainer();
                 });
 
             const buttonShowLess = $('<button>')
@@ -265,8 +363,7 @@ algolia = {
                 .css('height', 'fit-content')
                 .html('<i class="bi bi-chevron-bar-contract"></i>')
                 .click(function() {
-                    $('div[siteFunction="docSearchListItemDetails"]').fadeOut();
-                    $('div[siteFunction="docSearchListItemDetails"]').addClass('d-none');
+                   algolia.hideSearchHitDetailsContainer();
                 });
 
             showMoreShowLessContainer
@@ -334,15 +431,18 @@ algolia = {
                     // the li attribute used for active list item is aria-selected 
                     // (stands for Accessible Rich Internet Applications), not area-selected
                     searchResults.hits.forEach(result => {
-                        //console.log(result)
-                        const resultItem = $('<li>')
-                            .addClass('DocSearch-Hit')
-                            .attr('id', `docsearch-item-${resIndex}`)
-                            .attr('aria-selected', "false")
-                            .attr('role', 'option')
-                            .html(algolia.getResultItem(result, resIndex))
-                            .data('result', result);
-                        $('#docsearch-list').append(resultItem);
+                        resultItemContent = algolia.getResultItem(result, resIndex);
+
+                        if (resultItemContent) {
+                            const resultItem = $('<li>')
+                                .addClass('DocSearch-Hit')
+                                .attr('id', `docsearch-item-${resIndex}`)
+                                .attr('aria-selected', "false")
+                                .attr('role', 'option')
+                                .html(resultItemContent)
+                                .data('result', result);
+                            $('#docsearch-list').append(resultItem);
+                        }
                         resIndex += 1;
                     });
 
@@ -352,12 +452,9 @@ algolia = {
                     algolia.scrollToView($newActiveItem, $container);
                     algolia.updateHitMoreInfo($newActiveItem);
 
-                        // now is the moment to set the height and width of the search hit details box
-                        // because we know the height and width of the doc search modal after showing the search results list 
-                        const h = $('.DocSearch-Modal').height();
-                        $('div[siteFunction="docSearchListItemDetails"]').css('height', h + 'px');
-                        $('div[siteFunction="docSearchListItemDetails"]').css('width',  $('.DocSearch-Modal')[0].getBoundingClientRect().left -20 + 'px');
-
+                    // now is the moment to set the height of the search hit details box
+                    const h = $('.DocSearch-Modal').height();
+                    $('div[siteFunction="docSearchListItemDetails"]').css('height', h + 'px');      
                 })
                 .catch(function(error) {
                     console.error('Error while fetching paginated results:', error);
@@ -382,21 +479,21 @@ algolia = {
     updateHitMoreInfo: ($newActiveItem) => {
 
         const getSearchHit = (hit) => {
+            //console.log(hit)
             
-            let searchHit;
-            if (hit._snippetResult.content) {
-                if (hit._snippetResult.content.value)
-                    searchHit = hit._snippetResult.content.value;
-                else
-                    searchHit = hit._highlightResult.hierarchy.lvl1.value;
-            } else {
-                searchHit = hit._highlightResult.hierarchy.lvl1.value;
-            }
+            const searchHit = algolia.findMarkedStrings(
+                hit._snippetResult, 
+                '', 
+                algolia.highlightTextPrefixTag, 
+                algolia.highlightTextPostfixTag
+            );
+
+            console.log(searchHit)
 
             $searchHit = 
                 `
                     <div>
-                        ${searchHit}
+                        ${searchHit[0].value}
                     </div>
                 `
             return $($searchHit);
@@ -404,7 +501,7 @@ algolia = {
 
         const hit = $newActiveItem.data('result');
         if (hit) {
-            console.log(hit)
+            //console.log(hit)
             $('div[siteFunction="docSearchListItemDetails"]').empty();
             $('div[siteFunction="docSearchListItemDetails"]').append(getSearchHit(hit));
         }
@@ -412,7 +509,6 @@ algolia = {
     },
 
     handleKey: (event) => {
-
         const $activeItem = $('.DocSearch-Hit[aria-selected="true"]');
         let $newActiveItem;
         const $container = $('.DocSearch-Dropdown');

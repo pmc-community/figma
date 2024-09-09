@@ -62,6 +62,8 @@ algoliaSearch:
   maxResultsPerGroup: 20
   hitsPerPage: 10
   insights: true
+  textHighlightPrefixTag: "<mark>" # prefix and postfix tags must be exactly as defined in Algolia Index/Configuration/Hightlighting
+  textHighlightPostfixTag: "</mark>"
 prodUrl: "https://figmares.innohub.space"
 JTDSearch:
   searchBoxWidth: "fit-content"

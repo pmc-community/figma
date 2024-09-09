@@ -757,6 +757,8 @@
     "algoliaMaxResultsPerGroup": 20,
     "algoliaHitsPerPage": 10,
     "algoliaSendInsights": true,
+    "algoliaTextHighlightPrefixTag": "<mark>",
+    "algoliaTextHighlightPostfixTag": "</mark>",
     "algoliaRaiseIssueLink": "https://github.com/pmc-community/figma/issues/new?title="
   },
   "pageSettings": {

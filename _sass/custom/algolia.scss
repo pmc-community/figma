@@ -1,10 +1,19 @@
 @import 'custom-vars.scss';
 
 $hitMarkerColor: $c-primary-theme-dark;
+$hitDetailsContainerBackground: $c-searchHit-container;
+$hitDetailsContainerPosition: $pos-fixed;
+$hitDetailsContainerLeft: $s-20px;
+$hitDetailsContainerBorderRadius: $b-rad-inherit;
+$hitDetailsContainerBorderZIndex: $z-999;
+$docSearchBtnZIndex: $z-max + 1;
 
 $algoliaElements: (
     hitMarker: '.algolia-docsearch-suggestion--highlight',
+    hitDetailsContainer:'div[siteFunction="docSearchListItemDetails"]',
+    docSearchBtn: '.DocSearch'
 );
 
 @import 'meta.scss';
 @include algolia($algoliaElements);
+

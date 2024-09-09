@@ -676,5 +676,17 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     #{map-get($algoliaElements, hitMarker)} {
         color: $hitMarkerColor;
     }
+
+    #{map-get($algoliaElements, hitDetailsContainer)} {
+        background: $hitDetailsContainerBackground;
+        position: $hitDetailsContainerPosition;
+        //left: $hitDetailsContainerLeft !important;
+        border-radius: $hitDetailsContainerBorderRadius;
+        z-index: $hitDetailsContainerBorderZIndex;
+    }
+
+    #{map-get($algoliaElements, docSearchBtn)} {
+        z-index: $docSearchBtnZIndex !important;
+    }
 }
 
