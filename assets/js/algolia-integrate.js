@@ -1,4 +1,5 @@
 // removing addtional docSearch features when click on clear query button
+// since is not wise to try to overwrite the clear query button handler, we use a DOM event to handle this
 removeObservers('.DocSearch-Reset receive attribute=hidden');
 setElementReceiveAttributeObserver('.DocSearch-Reset', 'hidden', () => {
    algolia.resetSearch();
@@ -6,13 +7,18 @@ setElementReceiveAttributeObserver('.DocSearch-Reset', 'hidden', () => {
 })
 
 // setup the search hit details box
+// we force esults to be shown in the custom fomat defined in setDocSearchBox/refreshResults by force navigating to first page
+// we create the search hit details container
 removeObservers('body class=DocSearch--active getClass=true');
 setElementChangeClassObserver ('body', 'DocSearch--active', true, () => {
-    algolia.forceNavigationToPage(0);
     algolia.createSearchHitDetailsContainer();
+    setTimeout(()=>algolia.forceNavigationToPage(0),100);
 });
 
-// setting some events to modify the default behaviour of DocSearch 
+// setting some events to modify the default behaviour of DocSearch
+// search results must be shown in the custom fomat defined in setDocSearchBox/refreshResults
+// and search box dropdown list should navigate to first page of results
+// so we overwrite the default behaviour of showing results which based on the built-in instant search
 $(document).off('input', '.DocSearch-Input').on('input', '.DocSearch-Input', function() {
     algolia.forceNavigationToPage(0);
 });
@@ -35,6 +41,7 @@ algolia = {
     currentPage: 0,
     highlightTextPrefixTag: algoliaSettings.algoliaTextHighlightPrefixTag,
     highlightTextPostfixTag: algoliaSettings.algoliaTextHighlightPostfixTag,
+    hitItemDetailsBoxGutter: 5,
 
     resetSearch: () => {
         $('div[siteFunction="showMoreShowLessButtons"]').remove();
@@ -44,16 +51,16 @@ algolia = {
 
     createSearchHitDetailsContainer: () => {
         const styleListItemDetails = () => {
-                       
             const width = $('.DocSearch-Modal').outerWidth();
             const offset = $('.DocSearch-Modal').offset(); 
             const rightDocSearchPosition = offset.left + width - $(window).scrollLeft();
-            const left = rightDocSearchPosition + 5;
+            const left = rightDocSearchPosition + algolia.hitItemDetailsBoxGutter;
+            const height = $('.main-header').offset().top + $('.main-header').height();
 
             $('div[siteFunction="docSearchListItemDetails"]')
                 .css(
                     'top', 
-                    $('.main-header').offset().top + $('.main-header').height() + 'px'
+                    height + 'px'
                 )
                 .css(
                     'left', 
@@ -70,7 +77,7 @@ algolia = {
         }
 
         if($('div[siteFunction="docSearchListItemListAndDetails"]').length === 0 ) {
-            const $details = $('<div siteFunction="docSearchListItemDetails" class="d-none p-4 text-light">Search Hit Details</div>');
+            const $details = $('<div siteFunction="docSearchListItemDetails" class="d-none p-4 text-dark">Search Hit Details</div>');
             $('.DocSearch-Modal').prepend($details);
             styleListItemDetails();
            
@@ -78,16 +85,15 @@ algolia = {
     },
 
     showSearchHitDetailsContainer: () => {
-        const gutter = 5;
         const width = $('.DocSearch-Modal').outerWidth();
-        const fullwidth = 2 * width + gutter;
+        const fullwidth = 2 * width + algolia.hitItemDetailsBoxGutter;
 
         const marginLeft = ($(window).width() - fullwidth)/2;
         $('.DocSearch-Modal').css('margin-left', marginLeft + 'px');
 
         const offset = $('.DocSearch-Modal').offset(); 
         const rightDocSearchPosition = offset.left + width - $(window).scrollLeft();
-        const left = rightDocSearchPosition + gutter;
+        const left = rightDocSearchPosition + algolia.hitItemDetailsBoxGutter;
 
         const top = $('.main-header').height();
 
@@ -373,6 +379,7 @@ algolia = {
                 
         };
 
+        // remove Show More and Show Less btns
         const removeShowMoreShowLess = () => {
             $('div[siteFunction="showMoreShowLessButtons"]').remove();
         };
@@ -617,7 +624,6 @@ algolia = {
         }
     },
 
-    // Helper function to scroll the item into view
     scrollToView: ($item, $container) => {
         var containerTop = $container.offset().top;
         var containerScrollTop = $container.scrollTop();

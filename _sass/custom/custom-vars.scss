@@ -21,6 +21,7 @@ $c-error-message: #dc3545;
 $c-not-set: initial;
 $c-metal-grey: #f5f6fa;
 $c-searchHit-container: #010033;
+$c-inherit: inherit;
 
 // typography
 $siteFontFamily: 'poppins';
@@ -195,6 +196,7 @@ $ov-none: hidden;
 
 // shadows
 $sh-none: none;
+$sh-inherit: inherit;
 
 // container fill
 $fl-all-available-space: auto; //this is flex:auto

@@ -1,10 +1,11 @@
 @import 'custom-vars.scss';
 
 $hitMarkerColor: $c-primary-theme-dark;
-$hitDetailsContainerBackground: $c-searchHit-container;
+$hitDetailsContainerBackground: $c-inherit;
 $hitDetailsContainerPosition: $pos-fixed;
 $hitDetailsContainerLeft: $s-20px;
 $hitDetailsContainerBorderRadius: $b-rad-inherit;
+$hitDetailsContainerBoxShadow: $sh-inherit;
 $hitDetailsContainerBorderZIndex: $z-999;
 $docSearchBtnZIndex: $z-max + 1;
 

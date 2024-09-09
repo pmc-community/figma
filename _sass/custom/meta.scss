@@ -680,7 +680,7 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     #{map-get($algoliaElements, hitDetailsContainer)} {
         background: $hitDetailsContainerBackground;
         position: $hitDetailsContainerPosition;
-        //left: $hitDetailsContainerLeft !important;
+        box-shadow: $hitDetailsContainerBoxShadow;
         border-radius: $hitDetailsContainerBorderRadius;
         z-index: $hitDetailsContainerBorderZIndex;
     }
