@@ -8,11 +8,16 @@ $hitDetailsContainerBorderRadius: $b-rad-inherit;
 $hitDetailsContainerBoxShadow: $sh-inherit;
 $hitDetailsContainerBorderZIndex: $z-999;
 $docSearchBtnZIndex: $z-max + 1;
+$docSearchBtnOutline: $outl-none;
+$docSearchModalOutline: $outl-none;
+$docSeachFontSmallFontSize: $fs-0-75;
 
 $algoliaElements: (
     hitMarker: '.algolia-docsearch-suggestion--highlight',
     hitDetailsContainer:'div[siteFunction="docSearchListItemDetails"]',
-    docSearchBtn: '.DocSearch'
+    docSearchBtn: '.DocSearch',
+    docSearchModal: '.DocSearch-Modal',
+    docSeachFontSmall: '.docSeachFontSmall'
 );
 
 @import 'meta.scss';

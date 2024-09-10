@@ -77,7 +77,7 @@ algolia = {
         }
 
         if($('div[siteFunction="docSearchListItemListAndDetails"]').length === 0 ) {
-            const $details = $('<div siteFunction="docSearchListItemDetails" class="d-none p-4 text-dark">Search Hit Details</div>');
+            const $details = $('<div siteFunction="docSearchListItemDetails" class="d-none p-5 text-dark">Search Hit Details</div>');
             $('.DocSearch-Modal').prepend($details);
             styleListItemDetails();
            
@@ -186,13 +186,14 @@ algolia = {
             const currentPath = parentKey ? `${parentKey}.${key}` : key;
 
             if (typeof value === 'string' && markPattern.test(value)) {
-                result.push({ key: currentPath, value: value });
+                result.push({ key: currentPath, value: value});
             } else if (typeof value === 'object' && value !== null) {
                 result.push(...algolia.findMarkedStrings(value, currentPath, openingTag, closingTag));
             }
         }
         
         if (obj) {
+
             if (Array.isArray(obj)) {
                 obj.forEach((item, index) => {
                     processKey(index, item);
@@ -207,27 +208,31 @@ algolia = {
         return result;
     },
 
+    getHitFullPath: (pageTitle, result) => {
+        let row = [pageTitle];
+        if (result.hierarchy.lvl1) row.push(result.hierarchy.lvl1);
+        if (result.hierarchy.lvl2) row.push(result.hierarchy.lvl2);
+        if (result.hierarchy.lvl3) row.push(result.hierarchy.lvl3);
+        if (result.hierarchy.lvl4) row.push(result.hierarchy.lvl4);
+        if (result.hierarchy.lvl5) row.push(result.hierarchy.lvl5);
+        if (result.hierarchy.lvl6) row.push(result.hierarchy.lvl6);
+        return row.join(' > ');
+    },
+
     getResultItem: (result) => {
         let title;
         if (result.url_without_anchor) title = getPageTitleFromUrl(result.url_without_anchor);
         else if (result.url) title = getPageTitleFromUrl(result.url);
 
         const secondRow = () => {
-            let row = [title];
-            if (result.hierarchy.lvl1) row.push(result.hierarchy.lvl1);
-            if (result.hierarchy.lvl2) row.push(result.hierarchy.lvl2);
-            if (result.hierarchy.lvl3) row.push(result.hierarchy.lvl3);
-            if (result.hierarchy.lvl4) row.push(result.hierarchy.lvl4);
-            if (result.hierarchy.lvl5) row.push(result.hierarchy.lvl5);
-            if (result.hierarchy.lvl6) row.push(result.hierarchy.lvl6);
-            return row.join(' > ');
+            return algolia.getHitFullPath(title, result);
         }
 
         let marked;
         if (result.url_without_anchor)
             marked = algolia.findMarkedStrings(result._snippetResult, '', algolia.highlightTextPrefixTag, algolia.highlightTextPostfixTag);
         else
-            marked = algolia.findMarkedStrings(result._highlightResult, '', algolia.highlightTextPrefixTag, algolia.highlightTextPostfixTag);
+            marked = algolia.findMarkedStrings(result._snippetResult, '', algolia.highlightTextPrefixTag, algolia.highlightTextPostfixTag);
 
         const firstRow = () => {
             return marked.length > 0 ? marked[0].value : null;
@@ -336,10 +341,9 @@ algolia = {
                 // HEADS UP!!!
                 // HERE WE SHOULD RETURN A VALID JSX.Element OBJECT WHICH WE CANNOT PROPERLY CREATE HERE
                 // SO WE NOT RETURNING ANYTHING HERE
-                // THE SEARCH HITS WERE ADDED BFORE THROUGH DOM MANIPULATION
+                // THE SEARCH HITS WERE ADDED BEFORE THROUGH DOM MANIPULATION
             },
-
-            
+      
             // Create pagination and handle results
             // we use this docSearch built-in callback to create other elements: pagination btns, show more/less btns
             resultsFooterComponent({ state }) {
@@ -373,8 +377,6 @@ algolia = {
                     removeShowMoreShowLess();
                     $('div[siteFunction="docSearchListItemDetails"]').addClass('d-none');
                 }
-
-
             },
     
             // Handle missing results
@@ -535,9 +537,71 @@ algolia = {
     },
 
     updateHitMoreInfo: ($newActiveItem) => {
-
+        const nothingSelected = 
+            `
+                <div>
+                    <kbd class="DocSearch-Commands-Key">
+                        <svg width="15" height="15" aria-label="Arrow down" role="img">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2">
+                                <path d="M7.5 3.5v8M10.5 8.5l-3 3-3-3"></path>
+                            </g>
+                        </svg>
+                    </kbd>
+                    <kbd class="DocSearch-Commands-Key">
+                        <svg width="15" height="15" aria-label="Arrow up" role="img">
+                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2">
+                                <path d="M7.5 11.5v-8M10.5 6.5l-3-3-3 3"></path>
+                            </g>
+                        </svg>
+                    </kbd>
+                    <span class="DocSearch-Label">to navigate</span>
+                </div>
+                
+            `;
+        
         const getSearchHit = (hit) => {
-            let searchHit;
+
+            const backgroud = $('.DocSearch-Modal').css('background');
+
+            const searchHitContainer = (searchHitArray) => {
+
+                const searchHitItem = (hit) => {
+                    return (
+                        `   <tr>
+                                <td class="border-0 align-self-center align-middle text-primary bg-light">${hit.key.replace(/\.value/g, "").trim()}</td>
+                                <td class="border-0 align-self-center align-middle bg-light text-dark">${hit.value.replace(/^…/, '').replace(/…$/, '').trim()}</td>
+                            </tr>
+                        `
+                    );
+                }
+    
+                const searchHitItems = (searchHitArray) => {
+                    let html = ''
+                    searchHitArray.forEach(hit => {
+                        html += searchHitItem(hit);
+                    });
+                    return html;
+                }
+    
+                const container = 
+                    `
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="border-bottom border-secondary border-opacity-25 text-light bg-secondary bg-gradient fw-normal">Found in</th>
+                                    <th scope="col" class="border-bottom border-secondary border-opacity-25 text-light bg-secondary bg-gradient fw-normal">Hit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${searchHitItems(searchHitArray)}
+                            </tbody>
+                        </table>
+                    `
+    
+                return container;
+            }
+
+            let searchHit, $searchHit;
             searchHit = algolia.findMarkedStrings(
                 hit._snippetResult, 
                 '', 
@@ -552,27 +616,103 @@ algolia = {
                     algolia.highlightTextPrefixTag, 
                     algolia.highlightTextPostfixTag
                 );
+            
             //console.log(searchHit)
+            
+            if (searchHit.length > 0) $searchHit = searchHitContainer(searchHit);
+            else $searchHit = nothingSelected;
 
-            $searchHit = 
-                `
-                    <div>
-                        ${searchHit[0].value}
-                    </div>
-                `
             return $($searchHit);
         }
 
+        const getPageTitle = (hit) => {
+            const container = (hit) => {
+                return (
+                    `
+                        <div class="fs-5 fw-medium">${hit.pageTitle}</div>
+                    `
+                );
+            }
+
+            return $(container(hit));
+        }
+
+        const getHitFullPath = (hit) => {
+            const container = (hit) => {
+                return (
+                    `
+                        <div class="docSeachFontSmall fw-normal text-secondary">${algolia.getHitFullPath(hit.pageTitle, hit)}</div>
+                    `
+                );
+            }
+
+            return $(container(hit));
+        }
+
+        const getHitPageInfoBtn = (hit) => {
+            const container = (hit) => {
+                return (
+                    `
+                        <a href="${hit.pagePermalink}"
+                            target=_blank 
+                            class="btn btn-sm btn-primary">
+                            Read <i class="ml-2 bi bi-box-arrow-up-right"></i>
+                        </a>
+                    `
+                );
+            }
+
+            const $btnContainer = $(container(hit));
+            return $btnContainer;
+        }
+
+        const skeleton = () => {
+            return $(
+                `
+                    <div 
+                        siteFunction="docSearch_searchHitDetails_header"
+                        class= "d-flex align-items-center justify-content-between pr-2 mb-4">
+                        <div siteFunction="docSearch_searchHitDetails_header_title"></div>
+                    </div>
+
+                    <div siteFunction="docSearch_HitDetails_searchHit"></div>
+                `
+            );
+        }
+
         const hit = $newActiveItem.data('result');
+
         if (hit) {
-            //console.log(hit)
+
+            hitPageInfo = {
+                siteInfo: getObjectFromArray ({permalink: hit.pagePermalink, title: hit.pageTitle}, pageList),
+                savedInfo: getPageSavedInfo (hit.pagePermalink, hit.pageTitle),
+            };
+
+            console.log(hit)
             $('div[siteFunction="docSearchListItemDetails"]').empty();
-            $('div[siteFunction="docSearchListItemDetails"]').append(getSearchHit(hit));
+            $('div[siteFunction="docSearchListItemDetails"]').append(skeleton());
+
+            $('div[siteFunction="docSearch_searchHitDetails_header_title"]').append(getPageTitle(hit));
+            $('div[siteFunction="docSearch_searchHitDetails_header_title"]').append(getHitFullPath(hit));
+            $('div[siteFunction="docSearch_searchHitDetails_header"]').append(getHitPageInfoBtn(hit));
+
+
+            $('div[siteFunction="docSearch_HitDetails_searchHit"]').append(getSearchHit(hit));
         }
         else $('div[siteFunction="docSearchListItemDetails"]').empty();
     },
 
     handleKey: (event) => {
+
+        // just to be on the safe side, we remove the empty search hits items
+        // when navigating in the initial search hits list generated by instant search,
+        // sometimes an empty element is created because of the way we use hitComponent callback
+        // which manipulates the DOM and do not return a JSX.Element (same as returning an empty one)
+        $('#docsearch-list li').filter(function() {
+            return $.trim($(this).html()) === '';
+        }).remove();
+
         let $activeItem = $('.DocSearch-Hit[aria-selected="true"]');
         let $newActiveItem;
         const $container = $('.DocSearch-Dropdown');
@@ -645,7 +785,7 @@ algolia = {
         } else if (event.key === 'Enter') {
             // Handle selection of the currently active item
             if ($activeItem.length) {
-                console.log('Selected item:', $activeItem.find('a').attr('href'));
+                //console.log('Selected item:', $activeItem.find('a').attr('href'));
                 url = sanitizeUrl($activeItem.find('a').attr('href'));
                 if (isValidUrl(url)) {
                     window.location.href = url;
@@ -679,24 +819,6 @@ algolia = {
                 $temp.remove();
             }, 0);
         }
-
-        // just to be on the safe, side we remove the empty search hits items
-        // when navigating in the initial search hits list generated by instant search,
-        // sometimes an empty element is created because of the way we use hitComponent callback
-        // which manipulates the DOM and do not return a JSX.Element (same as returning an empty one)
-        $('#docsearch-list li').filter(function() {
-            return $.trim($(this).html()) === '';
-        }).remove();
-
-        /*
-        $activeItem = $('.DocSearch-Hit[aria-selected="true"]');
-        if ($activeItem.length === 0 ) {
-            $newActiveItem = $('.DocSearch-Hit').first();
-            $newActiveItem.attr('aria-selected', 'true');
-            algolia.scrollToView($newActiveItem, $container);
-            algolia.updateHitMoreInfo($newActiveItem);
-        }
-        */
     },
 
     scrollToView: ($item, $container) => {

@@ -687,6 +687,15 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 
     #{map-get($algoliaElements, docSearchBtn)} {
         z-index: $docSearchBtnZIndex !important;
+        outline: $docSearchBtnOutline !important;
+    }
+
+    #{map-get($algoliaElements, docSearchModal)} {
+        outline: $docSearchModalOutline !important;
+    }
+
+    #{map-get($algoliaElements, docSeachFontSmall)} {
+        font-size: $docSeachFontSmallFontSize !important;
     }
 }
 

@@ -202,7 +202,6 @@ sitePagesFn = {
         pageInfo = {
             siteInfo: getObjectFromArray ({permalink: page.permalink, title: page.title}, pageList),
             savedInfo: getPageSavedInfo (page.permalink, page.title),
-            page: page
         };
         showPageFullInfoCanvas(pageInfo);
     },

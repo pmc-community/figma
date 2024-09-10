@@ -87,15 +87,10 @@ const page__getRelatedPages = () => {
 
     $(document).ready(function() {
         const relatedPages = pageInfo.siteInfo.relatedPages || [];
-        if (relatedPages.length === 0) {
-            $('#pageRelatedPages').remove();
-            return;
-        }
-        $('#pageRelatedPages').remove();
+        if (relatedPages.length === 0) { $('#pageRelatedPages').remove(); return;}
+        $('#pageRelatedPages').remove(); 
         $('footer[class!="site-footer"]').append(createRelatedPageContainer(pageInfo));
-
     });
-
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-notes.html
@@ -148,11 +143,8 @@ const page__getPageNotes = () => {
 
     $(document).ready(function() {
         const customNotes = _.orderBy(pageInfo.savedInfo.customNotes || [],  [obj => new Date(obj.date)], ['desc']) ;
-        if (customNotes.length === 0) {
-            $('#pageNotes').remove();
-            return;
-        }
-        $('#pageNotes').remove();
+        if (customNotes.length === 0) { $('#pageNotes').remove(); return;}
+        $('#pageNotes').remove(); 
         $('footer[class!="site-footer"]').append(createNotesContainer(pageInfo));
     });
 }
@@ -914,7 +906,7 @@ const refreshPageDynamicInfo = () => {
         page__getPageNotes();
         page__getRelatedPages();
         page__getAutoSummary();
-        setTimeout(()=>$('div[siteFunction="pageFeedbackAndSupport"]').addClass('order'), 0);    
+        setTimeout(()=>$('div[siteFunction="pageFeedbackAndSupport"]').addClass('order'), 0); 
     });
 }
 
