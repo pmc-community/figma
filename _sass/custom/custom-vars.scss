@@ -36,6 +36,8 @@ $fs-small: 14px;
 $fs-btn-sm: 0.875rem;
 $fs-0-75: 0.75rem;
 $fs-0-60: 0.6rem;
+$fs-0-90em: 0.9em; // used for DocSearch hit details
+$fs-docSearchStandard: $fs-0-90em;
 
 $siteHeaderBackground: $c-heavy-dark; // HERE TO CHANGE SITE HEADER COLOR (ABOVE SIDE-BAR, ABOVE CONTENT, ETC.)
 $siteHeaderTextColor: $c-white; // HERE TO CHANGE SITE HEADER TEXT COLOR (ABOVE SIDE-BAR, ABOVE CONTENT, ETC.)
@@ -170,6 +172,7 @@ $pos-left-neg-25px: $s-neg-25px;
 
 // cursors
 $cr-pointer: pointer;
+$cr-default: default;
 
 // display
 $d-hidden: none;

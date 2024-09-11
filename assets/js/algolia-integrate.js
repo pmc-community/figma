@@ -1,4 +1,4 @@
-// removing addtional docSearch features when click on clear query button
+// removing additional docSearch features when click on clear query button
 // since is not wise to try to overwrite the clear query button handler, we use a DOM event to handle this
 removeObservers('.DocSearch-Reset receive attribute=hidden');
 setElementReceiveAttributeObserver('.DocSearch-Reset', 'hidden', () => {
@@ -13,7 +13,7 @@ removeObservers('body class=DocSearch--active getClass=true');
 setElementChangeClassObserver ('body', 'DocSearch--active', true, () => {
     algolia.createSearchHitDetailsContainer();
     algolia.forceNavigationToPage(0);
-});
+}); 
 
 // setting some events to modify the default behaviour of DocSearch
 // search results must be shown in the custom fomat defined in setDocSearchBox/refreshResults
@@ -26,7 +26,6 @@ $(document).off('input', '.DocSearch-Input').on('input', '.DocSearch-Input', fun
 $(document).off('focus', '.DocSearch-Input').on('focus', '.DocSearch-Input', function() {
     algolia.forceNavigationToPage(algolia.currentPage);
 });
-
 
 algolia = {
     appId: algoliaSettings.algoliaAppID,
@@ -77,7 +76,7 @@ algolia = {
         }
 
         if($('div[siteFunction="docSearchListItemListAndDetails"]').length === 0 ) {
-            const $details = $('<div siteFunction="docSearchListItemDetails" class="d-none p-5 text-dark">Search Hit Details</div>');
+            const $details = $('<div siteFunction="docSearchListItemDetails" class="docSearchListItemDetails d-none text-dark">Search Hit Details</div>');
             $('.DocSearch-Modal').prepend($details);
             styleListItemDetails();
            
@@ -568,8 +567,8 @@ algolia = {
                 const searchHitItem = (hit) => {
                     return (
                         `   <tr>
-                                <td class="border-0 align-self-center align-middle text-primary bg-light">${hit.key.replace(/\.value/g, "").trim()}</td>
-                                <td class="border-0 align-self-center align-middle bg-light text-dark">${hit.value.replace(/^…/, '').replace(/…$/, '').trim()}</td>
+                                <td class="docSearchFontStd border-0 align-self-center align-middle text-primary bg-light">${hit.key.replace(/\.value/g, "").trim()}</td>
+                                <td class="docSearchFontStd border-0 align-self-center align-middle bg-light text-dark">${hit.value.replace(/^…/, '').replace(/…$/, '').trim()}</td>
                             </tr>
                         `
                     );
@@ -585,11 +584,11 @@ algolia = {
     
                 const container = 
                     `
-                        <table class="table table-hover table-striped">
+                        <table class="table table-hover table-striped mb-0">
                             <thead>
                                 <tr>
-                                    <th scope="col" class="border-bottom border-secondary border-opacity-25 text-light bg-secondary bg-gradient fw-normal">Found in</th>
-                                    <th scope="col" class="border-bottom border-secondary border-opacity-25 text-light bg-secondary bg-gradient fw-normal">Hit</th>
+                                    <th scope="col" class="docSearchFontStd border-bottom border-secondary border-opacity-25 text-light bg-secondary bg-gradient fw-normal">Found in</th>
+                                    <th scope="col" class="docSearchFontStd border-bottom border-secondary border-opacity-25 text-light bg-secondary bg-gradient fw-normal">Hit</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -641,7 +640,7 @@ algolia = {
             const container = (hit) => {
                 return (
                     `
-                        <div class="docSeachFontSmall fw-normal text-secondary">${algolia.getHitFullPath(hit.pageTitle, hit)}</div>
+                        <div class="docSearchFontSmall fw-normal text-secondary">${algolia.getHitFullPath(hit.pageTitle, hit)}</div>
                     `
                 );
             }
@@ -651,11 +650,14 @@ algolia = {
 
         const getHitPageInfoBtn = (hit) => {
             const container = (hit) => {
+                let permalink = hit.pagePermalink;
+                if (permalink.charAt(0) !== '/') permalink = '/' + permalink;
                 return (
                     `
-                        <a href="${hit.pagePermalink}"
+                        <a href="${permalink}"
                             target=_blank 
-                            class="btn btn-sm btn-primary">
+                            class="btn btn-sm btn-primary"
+                            style="height: fit-content">
                             Read <i class="ml-2 bi bi-box-arrow-up-right"></i>
                         </a>
                     `
@@ -666,16 +668,164 @@ algolia = {
             return $btnContainer;
         }
 
-        const skeleton = () => {
+        const getPageSummary = (hit, page) => {
+            if (page.siteInfo === 'none') return;
+            const autoSummary = page.siteInfo.autoSummary || '';
+            if (autoSummary === '') return;
+
+            return $(
+                `
+                    <div class="fw-semibold text-primary">Summary</div>
+                    <div class="text-dark fw-medium docSearchFontStd">${autoSummary}</div>
+                `
+            );
+        }
+
+        const getPageExcerpt = (hit, page) => {
+            if (page.siteInfo === 'none') return;
+            const excerpt = page.siteInfo.excerpt || '';
+            if (excerpt === '') return;
+
+            return $(
+                `
+                    <div class="fw-semibold text-primary">Excerpt</div>
+                    <div class="text-dark fw-medium docSearchFontStd">${excerpt}</div>
+                `
+            );
+        }
+
+        const getPageToc = async (hit) => {
+            let url = hit.pagePermalink;
+            if (url.charAt(0) !== '/') url = '/' + url;
+
+            const getMargin = (tag) => {
+                const level = parseInt(tag.match(/\d+/)[0]);
+                return level >= 2 ? `style="margin-left: ${5 * (level - 1)}px"` : '';
+            };
+
+            const markOutput = (output) => {
+                const hitAnchor = hit.anchor.toLowerCase();
+                const $output = $(output);
+            
+                $output.find('li[siteFunction="docSearch_searchHitDetails_hitPage_Toc_Item_Text"]').each(function() {
+                    if ($(this).attr('anchorRef') === hitAnchor) {
+                        $(this).contents().filter(function() {
+                            return this.nodeType === 3; // Only target text nodes
+                        }).each(function() {
+                            const text = $(this).text().trim();
+                            if (text.length > 0) {
+                                const markedText = $(`${algolia.highlightTextPrefixTag}${text}${algolia.highlightTextPostfixTag}`);
+                                $(this).replaceWith(markedText);
+                            }
+                        });
+                        return false; // Break the loop once the condition is met
+                    }
+                });
+            
+                return $output;
+            };
+            
+            const popoverText = 
+                `
+                    This ToC does not capture dynamic target document headings. The target document content may be larger in the case of dynamic content.
+                `
+
+            const popoverTitle = 
+                `
+                    <span class='text-dark'>Heads up!!!</span>
+                `
+            // we need to fetch the hit target page and extract headings
+            // cannot use #toc_content of the hit target page because is dynamically generated
+            // so the toc we generate here may be smaller than the actual toc of the hit target page
+            //however, dynamic client-side content is not searchable either (not by JTD search or Algolia)
+            const fetchToc = async (url) => {
+                try {                    
+                    const response = await $.get(url);
+                    const html = $(response);
+                    const content = html.find('main');
+                    const headings = content.find('h1, h2, h3, h4, h5, h6');
+                    let output = `
+                        <div siteFunction="docSearch_searchHitDetails_hitPage_Toc">
+                            <button
+                                siteFunction="docSearch_HitDetails_pageToc_ContentsBtn" 
+                                class="btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none fw-medium mb-3" 
+                                tabindex="0" 
+                                data-bs-toggle="popover" 
+                                data-bs-placement="right"
+                                data-bs-custom-class="custom-popover"
+                                data-bs-title="${popoverTitle}"
+                                data-bs-trigger="hover focus"
+                                data-bs-content="${popoverText}">
+                                Contents
+                            </button>
+                            <ul 
+                                class="pl-0 list-unstyled"
+                                siteFunction="docSearch_searchHitDetails_hitPage_Toc_List"
+                                style="width: fit-content">
+                        `;
+
+                    if (headings.length === 0) output = '';
+                    else {
+                        headings.each(function () {
+                            output += 
+                                `
+                                    <a 
+                                        href="${url}#${$(this).attr('id')}"
+                                        target="_blank"
+                                        anchorRef="${$(this).attr('id')}"
+                                        siteFunction="docSearch_searchHitDetails_hitPage_Toc_Item">
+                                        <li 
+                                            siteFunction="docSearch_searchHitDetails_hitPage_Toc_Item_Text"
+                                            class="docSearchFontStd text-dark fw-medium" ${getMargin($(this).prop("tagName"))}
+                                            anchorRef="${$(this).attr('id')}">
+                                            ${$(this).text()}
+                                        </li>
+                                    </a>
+                                `;
+                        });
+                        output += '</div></ul>';
+                    }
+
+                    // Caching the hit target TOC to avoid redundant requests
+                    docSearchHitPageToc.push({ permalink: url, toc: output });
+        
+                    return markOutput(output);
+                } catch (error) {
+                    throw console.error ('Error fetching the page', error);
+                }
+            };
+        
+            const outputObj = getObjectFromArray({ permalink: url }, docSearchHitPageToc);
+            if (outputObj !== 'none') {
+                return markOutput(outputObj.toc);
+            } else {
+                return await fetchToc(url);
+            }
+        };
+        
+        const skeleton = (page) => {
+            const pageDetailsClass = page.siteInfo === 'none' ? 'class="d-none"' : '';
             return $(
                 `
                     <div 
-                        siteFunction="docSearch_searchHitDetails_header"
-                        class= "d-flex align-items-center justify-content-between pr-2 mb-4">
-                        <div siteFunction="docSearch_searchHitDetails_header_title"></div>
+                        siteFunction="docSearch_searchHitDetails_header_container"
+                        class="card p-3 border-0 shadow-sm mb-2 rounded-0">
+                        <div 
+                            siteFunction="docSearch_searchHitDetails_header"
+                            class="d-flex align-items-top justify-content-between">
+                            <div siteFunction="docSearch_searchHitDetails_header_title" class="col-8"></div>
+                        </div>
                     </div>
 
-                    <div siteFunction="docSearch_HitDetails_searchHit"></div>
+                    <div class="p-3">
+                        <div siteFunction="docSearch_HitDetails_searchHit" class="mb-2 card p-3 border-0 shadow-sm"></div>
+
+                        <div ${pageDetailsClass}>
+                            <div siteFunction="docSearch_HitDetails_pageSummary" class="mb-2 card p-3 border-0 shadow-sm"></div>
+                            <div siteFunction="docSearch_HitDetails_pageExcerpt" class="mb-2 card p-3 border-0 shadow-sm"></div>
+                            <div siteFunction="docSearch_HitDetails_pageToc" class="d-none mb-2 card p-3 border-0 shadow-sm"></div>
+                        </div>
+                    </div>
                 `
             );
         }
@@ -689,16 +839,42 @@ algolia = {
                 savedInfo: getPageSavedInfo (hit.pagePermalink, hit.pageTitle),
             };
 
-            console.log(hit)
+            //console.log(hitPageInfo)
+
+            //console.log(hit)
             $('div[siteFunction="docSearchListItemDetails"]').empty();
-            $('div[siteFunction="docSearchListItemDetails"]').append(skeleton());
+            $('div[siteFunction="docSearchListItemDetails"]').append(skeleton(hitPageInfo));
 
             $('div[siteFunction="docSearch_searchHitDetails_header_title"]').append(getPageTitle(hit));
             $('div[siteFunction="docSearch_searchHitDetails_header_title"]').append(getHitFullPath(hit));
             $('div[siteFunction="docSearch_searchHitDetails_header"]').append(getHitPageInfoBtn(hit));
 
-
             $('div[siteFunction="docSearch_HitDetails_searchHit"]').append(getSearchHit(hit));
+
+            $('div[siteFunction="docSearch_HitDetails_pageSummary"]').append(getPageSummary(hit, hitPageInfo));
+            $('div[siteFunction="docSearch_HitDetails_pageExcerpt"]').append(getPageExcerpt(hit, hitPageInfo));
+
+            getPageToc(hit).then(toc  => {
+                $('div[siteFunction="docSearch_HitDetails_pageToc"]').empty();
+                if (toc.html() === undefined) $('div[siteFunction="docSearch_HitDetails_pageToc"]').addClass('d-none');
+                else {
+
+                    $('div[siteFunction="docSearch_HitDetails_pageToc"]').removeClass('d-none');
+                    $('div[siteFunction="docSearch_HitDetails_pageToc"]').append(toc);
+
+                    contentBtnPopover = new bootstrap.Popover('[data-bs-toggle="popover"]', {html:true, sanitize: true})
+
+                    $(document)
+                        .off('mouseenter', 'button[siteFunction="docSearch_HitDetails_pageToc_ContentsBtn"]')
+                        .on('mouseenter', 'button[siteFunction="docSearch_HitDetails_pageToc_ContentsBtn"]', function() {
+                            contentBtnPopover.show();
+                        })
+                        .off('mouseleave', 'button[siteFunction="docSearch_HitDetails_pageToc_ContentsBtn"]')
+                        .on('mouseleave', 'button[siteFunction="docSearch_HitDetails_pageToc_ContentsBtn"]', function() {
+                            contentBtnPopover.hide()
+                        })
+                }
+            });
         }
         else $('div[siteFunction="docSearchListItemDetails"]').empty();
     },
@@ -825,7 +1001,7 @@ algolia = {
         const containerTop = $container.offset().top;
         const containerScrollTop = $container.scrollTop();
         const containerHeight = $container.height();
-        const itemTop = $item.offset().top;
+        const itemTop = $item.length > 0 ? $item.offset().top : 0;
         const itemHeight = $item.outerHeight();
         const margin = $('.DocSearch-Hit-source').outerHeight() + 20 ; // Minimum margin from the top
     

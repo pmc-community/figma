@@ -25,9 +25,8 @@ const customiseTheme = (pageObj = null) => {
 
     // clean local storage, remove orphan datatables such as site-pages searchPanes tables
     getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
-
+    
     setTheTheme();
-    clearTheUrl();
     setGoToTopBtn();
     setFullPageToc();
     handleTocOnWindowsResize();
@@ -36,7 +35,8 @@ const customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     handleTocActiveElementsOnScroll();
-    
+    clearTheUrl();
+
     $(document).ready(() => {
 
         // last checks on page toc
@@ -68,10 +68,8 @@ const customiseTheme = (pageObj = null) => {
 
         setTimeout( () => {
             $('body').css('visibility','visible');
-            $('#contentLoading').addClass('d-none');
-        
+            $('#contentLoading').addClass('d-none');  
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
-
     });
 
 }
@@ -264,18 +262,32 @@ const setGoToTopBtn = () => {
 
 const clearTheUrl = () => {
     $(window).on('scroll', function() {
-        if(window.location.hash) {
+        hash = window.location.hash;
+        if(hash) {
             // remove the hash and keep everything else
             history.replaceState({}, document.title, location.pathname + location.search);
+            setTimeout (() =>
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: $(`${hash}`).offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+                }, 100), 
+            0);
+
         }
     });
 
     $(window).on('load', function() {
-        if(window.location.hash) {
-            // remove the hash and keep everything else
+        hash = window.location.hash;
+        if(hash) {
             history.replaceState({}, document.title, location.pathname + location.search);
+
+            setTimeout (() =>
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: $(`${hash}`).offset().top - $(settings.headerAboveContent.headerID).height() - settings.headerAboveContent.offsetWhenScroll
+                }, 100), 
+            0);
         }
     });
+    
 
 }
 

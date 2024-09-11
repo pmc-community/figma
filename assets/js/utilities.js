@@ -149,7 +149,14 @@ const arrayDuplicates = (arr) => {
     return duplicateValues;
 }
 
-// read external contents between markers to dynamically add it to documents on client side
+// read external content between markers to dynamically add it to documents on client side
+// this content is not searchable
+// page ToC accepts dynamic content
+// hit target page in DocSearch hit details box doesn't take into consideration dynamic content
+// HEADS UP!!!
+// DO NOT USE DYNAMIC CLIENT-SIDE CONTENT IF THIS CONTENT IS IMPORTANT AND MUST BE SEARCHABLE (BY JTD SEARCH OR BY ALGOLIA)
+// INSTEAD USE JEKYLL SPECIFIC LIQUID TAGS TO GENERATE THE CONTENT AT BUILD TIME
+// DYNAMIC CLIENT-SIDE CLIENT MAY BE USEFUL WHEN NEED TO SHOW CONTENT LIKE NEWS OR ANNOUNCEMENTS OR SIMILAR
 const getExternalContent = async (file, position, startMarker , endMarker, header, whereID, whoCalled) => {
     $(window).on('load', () => {
         // prevent returning unwanted quantity of content

@@ -265,7 +265,7 @@ const page__getPageInfo = () => {
                         Tags
                     </span>
                 `;
-
+    
         if (page.siteInfo.relatedPages.length > 0 ) 
             siteInfoBadges += 
                 `
@@ -292,11 +292,11 @@ const page__getPageInfo = () => {
             '' :
             '<div>' + siteInfoBadges + '</div>';
     }
-
+    
     const pageSavedInfoBadges = (page) => {
         if (page.savedInfo === 'none') return '';
         let savedInfoBadges = '';
-
+    
         if (page.savedInfo.customTags.length > 0 ) 
             savedInfoBadges += 
                 `
@@ -329,11 +329,11 @@ const page__getPageInfo = () => {
                         Notes
                     </span>
                 `;
-
+    
         return savedInfoBadges === '' ?
             '' :
             '<div>' + savedInfoBadges + '</div>';
-
+    
     }
 
     const pageCategories = (page) => {

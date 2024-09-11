@@ -683,19 +683,39 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         box-shadow: $hitDetailsContainerBoxShadow;
         border-radius: $hitDetailsContainerBorderRadius;
         z-index: $hitDetailsContainerBorderZIndex;
+        overflow-y: $hitDetailsContainerOverflowY;
     }
 
     #{map-get($algoliaElements, docSearchBtn)} {
         z-index: $docSearchBtnZIndex !important;
         outline: $docSearchBtnOutline !important;
+        cursor: $docSearchBtnCursor !important;
     }
 
     #{map-get($algoliaElements, docSearchModal)} {
         outline: $docSearchModalOutline !important;
     }
 
-    #{map-get($algoliaElements, docSeachFontSmall)} {
-        font-size: $docSeachFontSmallFontSize !important;
+    #{map-get($algoliaElements, docSearchFontSmall)} {
+        font-size: $docSearchFontSmallFontSize !important;
+    }
+
+    #{map-get($algoliaElements, docSearchFontStandard)} {
+        font-size: $docSearchFontStandardFontSize !important;
+    }
+
+    #{map-get($algoliaElements, docSearchHitDetailsHeader)} {
+        position: $docSearchHitDetailsHeaderPosition;
+        top: $docSearchHitDetailsHeaderTop;
+        z-index: $docSearchHitDetailsHeaderZIndex !important
+    }
+
+    #{map-get($algoliaElements, docSearchHitDetailsHitTargetContentItem)}:hover {
+        text-decoration: $docSearchHitDetailsHitTargetContentItemDecoration !important;
+    }
+
+    #{map-get($algoliaElements, hitTargetPageTocPopover)} .popover-body {
+        --bs-popover-body-font-size: $hitTargetPageTocPopoverBodyFontSize
     }
 }
 
