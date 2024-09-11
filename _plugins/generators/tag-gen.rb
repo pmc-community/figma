@@ -3,7 +3,7 @@ require_relative "../../tools/modules/globals"
 module Jekyll
 
   class TagListGenerator < Generator
-    priority :normal  
+    priority :high  
     
     attr_accessor :allTags
 
