@@ -122,16 +122,20 @@
 
 <!-- necessary for deployments in multiple domains -->
 <!-- mandatory if using Algolia search. the crawler rejects url which does not match its allowed domains -->
-{% assign baseUrl = site.data. deploy_base_url %}
+{% assign baseUrl = site.data.deploy_base_url %}
 {% assign permalink = page.permalink %}
 
 {% if permalink[0] != '/' %}
-    {% assign permalink_with_slash = '/' | append: path %}
+    {% assign permalink_with_slash = '/' | append: permalink %}
 {% else %}
     {% assign permalink_with_slash = permalink %}
 {% endif %}
-{% assign canonicalPath = baseUrl | append: permalink_with_slash %}
 
-<link rel="canonical" href="{{canonicalPath}}">
+{% assign canonicalPath = baseUrl | append: permalink_with_slash %}
+{% assign canonicalPath_with_placeholder = canonicalPath | replace: '://', 'PLACEHOLDER' %}
+{% assign canonicalPath_replaced_string = canonicalPath_with_placeholder | replace: '//', '/' %}
+{% assign canonicalPath_final_string = canonicalPath_replaced_string | replace: 'PLACEHOLDER', '://' %}
+
+<link rel="canonical" href="{{canonicalPath_final_string}}">
 
 
