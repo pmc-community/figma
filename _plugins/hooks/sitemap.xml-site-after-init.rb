@@ -4,6 +4,9 @@
 
 require 'yaml'
 require_relative "../../tools/modules/globals"
+require 'dotenv'
+
+Dotenv.load
 
 Jekyll::Hooks.register :site, :after_init do |site|
     Globals.putsColText(Globals::PURPLE,"Generating sitemap.xml ...")
@@ -29,8 +32,9 @@ Jekyll::Hooks.register :site, :after_init do |site|
             url = file_path.sub(site.source, '').sub(/\.md$/, '.html').sub(/\.html$/, '')
             url = url.chomp('index') if url.end_with?('index')
             permalink = front_matter["permalink"]
+            permalink = permalink.start_with?('/') ? permalink : "/#{permalink}"
             sitemap << {
-                'url' => site.config["url"] + permalink,
+                'url' => ENV["DEPLOY_PROD_BASE_URL"] + permalink,
                 'lastmod' => front_matter['lastmod'] || File.mtime(file_path).strftime('%Y-%m-%d'),
                 'changefreq' => front_matter['changefreq'] || 'weekly',
                 'priority' => front_matter['priority'] || '0.5'

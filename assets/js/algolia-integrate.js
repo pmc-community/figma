@@ -675,7 +675,11 @@ algolia = {
 
             return $(
                 `
-                    <div class="fw-semibold text-primary">Summary</div>
+                    <div class="fw-semibold text-primary">
+                        <button class="d-flex align-items-center btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none fw-medium mb-3">
+                            Summary
+                        </button>
+                    </div>
                     <div class="text-dark fw-medium docSearchFontStd">${autoSummary}</div>
                 `
             );
@@ -688,7 +692,11 @@ algolia = {
 
             return $(
                 `
-                    <div class="fw-semibold text-primary">Excerpt</div>
+                    <div class="fw-semibold text-primary">
+                        <button class="d-flex align-items-center btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none fw-medium mb-3">
+                            Excerpt
+                        </button>
+                    </div>
                     <div class="text-dark fw-medium docSearchFontStd">${excerpt}</div>
                 `
             );
@@ -726,15 +734,13 @@ algolia = {
                 return $output;
             };
             
-            /*
-            const dynamicContent = hasDynamicContent
-                ? `"${title}" has dynamic content!` 
-                : `"${title}" doesn't have dynamic content!`;
-            */
+            const dynamicContent = hit.pageHasDynamicContent === 'true'
+                ? `${title} \u2192 has dynamic content!` 
+                : `${title} \u2192 doesn't have dynamic content!`;
 
             const popoverText = 
                 `
-                    This ToC does not capture dynamic target document headings.
+                    This ToC does not capture dynamic target document headings. ${dynamicContent}
                 `
 
             const popoverTitle = 
@@ -751,11 +757,16 @@ algolia = {
                     const html = $(response);
                     const content = html.find('main');
                     const headings = content.find('h1, h2, h3, h4, h5, h6');
+
+                    const dynamicContentIndicator = hit.pageHasDynamicContent === 'true'
+                        ? '<span class="spinner-grow spinner-grow-sm ml-2 text-danger" aria-hidden="true"></span>'
+                        : '';
+
                     let output = `
                         <div siteFunction="docSearch_searchHitDetails_hitPage_Toc">
                             <button
                                 siteFunction="docSearch_HitDetails_pageToc_ContentsBtn" 
-                                class="btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none fw-medium mb-3" 
+                                class="d-flex align-items-center btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none fw-medium mb-3" 
                                 tabindex="0" 
                                 data-bs-toggle="popover" 
                                 data-bs-placement="right"
@@ -763,7 +774,7 @@ algolia = {
                                 data-bs-title="${popoverTitle}"
                                 data-bs-trigger="hover focus"
                                 data-bs-content="${popoverText}">
-                                Contents
+                                Contents ${dynamicContentIndicator}
                             </button>
                             <ul 
                                 class="pl-0 list-unstyled"
@@ -809,6 +820,117 @@ algolia = {
                 return await fetchToc(url);
             }
         };
+
+        const getPageTags = (hit, page) => {
+
+            const tagItem = (tag, type) => {
+                tag = tag.replace(/["'.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+                tag = tag.replace(/[^a-zA-Z0-9]/g, ' ');
+                tag = DOMPurify.sanitize(tag);
+                let tagItemColorClass = 'btn-primary';
+                let numPages = 0;
+                if (type !== 'siteTag') {
+                    tagItemColorClass = 'btn-success';
+                    numPages = getTagPages(tag);
+                } else {
+                    numPages = tagDetails[tag].numPages;
+                }
+                return (
+                    `
+                        <div siteFunction="docSearch_searchHitDetails_tags_tagBtn_container" class="d-inline-flex align-items-center">
+                            <a 
+                                href="/tag-info?tag=${tag}"
+                                target=_blank
+                                sitefunction="docSearch_searchHitDetails_tags_tagBtn" 
+                                type="button" 
+                                class="focus-ring focus-ring-warning mt-3 mr-1 btn btn-sm ${tagItemColorClass} position-relative">
+                                ${tag}
+                            </a> 
+                            <span 
+                                sitefunction="docSearch_searchHitDetails_tags_badge" 
+                                class="position-relative translate-middle badge rounded-pill text-bg-warning"
+                                style="left: -5px; top: 5px"> 
+                                ${numPages} 
+                                <span class="visually-hidden" >number of pages</span>
+                            </span>
+                        </div>
+                    `
+                );
+            }
+
+            if (page.siteInfo === 'none') return $('');
+            //console.log(page)
+            const siteTags = page.siteInfo.tags || [];
+
+            let customTags = [];
+            if (page.savedInfo !== 'none') customTags = page.savedInfo.customTags || [];
+
+            let tagsHtml = ''
+            siteTags.forEach(tag => {
+                tagsHtml += tagItem(tag, 'siteTag');
+            });
+
+            customTags.forEach(tag => {
+                tagsHtml += tagItem(tag, 'customTag');
+            });
+
+            return $(tagsHtml) ? $(tagsHtml) : '';
+        }
+
+        const getPageCats = (hit, page) => {
+
+            const catItem = (cat, type) => {
+                cat = cat.replace(/["'.,/#!$%^&*;:{}=\-_`~()]/g, ' ');
+                cat = cat.replace(/[^a-zA-Z0-9]/g, ' ');
+                cat = DOMPurify.sanitize(cat);
+                let catItemColorClass = 'text-danger';
+                let numPages = 0;
+                if (type !== 'siteCat') {
+                    catItemColorClass = 'text-success';
+                    numPages = getCatPages(cat);
+                } else {
+                    numPages = catDetails[cat].numPages;
+                }
+                return (
+                    `
+                        <div siteFunction="docSearch_searchHitDetails_cats_catsBtn_container" class="mr-3 d-inline-flex align-items-center">
+                            <a 
+                                href="/cat-info?cat=${cat}"
+                                target=_blank
+                                sitefunction="docSearch_searchHitDetails_cats_catBtn" 
+                                type="button" 
+                                class="fw-medium btn btn-sm border-0 shadow-none px-0 my-1 mr-1 ${catItemColorClass}">
+                                ${cat}
+                            </a> 
+                            <span 
+                                sitefunction="docSearch_searchHitDetails_cats_badge" 
+                                class="fw-normal border px-2 rounded bg-warning-subtle text-dark"> 
+                                ${numPages} 
+                                <span class="visually-hidden" >number of pages</span>
+                            </span>
+                        </div>
+                    `
+                );
+            }
+
+            if (page.siteInfo === 'none') return $('');
+            //console.log(page)
+            const siteCats = page.siteInfo.categories || [];
+
+            let customCats = [];
+            if (page.savedInfo !== 'none') customCats = page.savedInfo.customCategories || [];
+
+            let catsHtml = ''
+            siteCats.forEach(cat => {
+                catsHtml += catItem(cat, 'siteCat');
+            });
+
+            customCats.forEach(cat => {
+                catsHtml += catItem(cat, 'customCat');
+            });
+
+            return $(catsHtml);
+        }
         
         const skeleton = (page) => {
             const pageDetailsClass = page.siteInfo === 'none' ? 'class="d-none"' : '';
@@ -817,24 +939,52 @@ algolia = {
                     <div 
                         siteFunction="docSearch_searchHitDetails_header_container"
                         class="card p-3 border-0 shadow-sm mb-2 rounded-0">
+                        
                         <div 
                             siteFunction="docSearch_searchHitDetails_header"
                             class="d-flex align-items-top justify-content-between">
                             <div siteFunction="docSearch_searchHitDetails_header_title" class="col-8"></div>
                         </div>
+
                         <div 
                             siteFunction="docSearch_searchHitDetails_header_nav"
                             class="mt-2">
                         </div>
+
+                        <div id="docSearch_searchHitDetails_preview"></div>
+
                     </div>
 
                     <div class="p-3">
+
                         <div siteFunction="docSearch_HitDetails_searchHit" class="mb-2 card p-3 border-0 shadow-sm"></div>
 
                         <div ${pageDetailsClass}>
+
                             <div siteFunction="docSearch_HitDetails_pageSummary" class="mb-2 card p-3 border-0 shadow-sm"></div>
+
                             <div siteFunction="docSearch_HitDetails_pageExcerpt" class="mb-2 card p-3 border-0 shadow-sm"></div>
+
                             <div siteFunction="docSearch_HitDetails_pageToc" class="d-none mb-2 card p-3 border-0 shadow-sm"></div>
+
+                            <div siteFunction="docSearch_HitDetails_pageTags" class="d-none mb-2 card p-3 border-0 shadow-sm">
+                                <div siteFunction="docSearch_HitDetails_pageTags_title" class="text-primary fw-medium">
+                                    <button class="d-flex align-items-center btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none fw-medium">
+                                        Tags
+                                     </button>
+                                </div>
+                                <div siteFunction="docSearch_HitDetails_pageTags_tag_btns"></div>
+                            </div>
+
+                            <div siteFunction="docSearch_HitDetails_pageCats" class="d-none mb-2 card p-3 border-0 shadow-sm">
+                                <div siteFunction="docSearch_HitDetails_pageCats_title" class="text-primary fw-medium">
+                                    <button class="d-flex align-items-center btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none fw-medium">
+                                        Categories
+                                     </button>
+                                </div>
+                                <div siteFunction="docSearch_HitDetails_pageTags_cat_btns"></div>
+                            </div>
+
                         </div>
                     </div>
                 `
@@ -851,20 +1001,27 @@ algolia = {
             };
 
             const $navBtn = (navTarget, btnText) => {
+
                 $btn = $(
                     `
                         <button class="m-1 btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none">
                             ${btnText}
                         </button>
                     `
-                ).click(function() {
-                    $('div[siteFunction="docSearchListItemDetails"]').animate({
-                        scrollTop: $(navTarget).offset().top - $('div[siteFunction="docSearch_searchHitDetails_header_container"]').height() - 100
-                    }, 100);
+                )
+                .off('click')
+                .click(function() {
+                    const scrollContainer = $('div[siteFunction="docSearchListItemDetails"]');
+                    const headerContainer = $('div[siteFunction="docSearch_searchHitDetails_header_container"]');
+                    const headerBottom = headerContainer.offset().top + headerContainer.outerHeight();
+                    const targetScrollTop = $(navTarget).offset().top - headerBottom - 20;
+            
+                    scrollContainer.stop(true, true).animate({ scrollTop: targetScrollTop }, 100);
                 });
-
+            
                 return $btn;
             };
+
             //console.log(hitPageInfo)
 
             //console.log(hit)
@@ -885,18 +1042,20 @@ algolia = {
 
             // hit target page summary and excerpt
             $('div[siteFunction="docSearch_HitDetails_pageSummary"]').append(getPageSummary(hit, hitPageInfo));
-            $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
-                .append($navBtn(
-                    'div[siteFunction="docSearch_HitDetails_pageSummary"]', 
-                    'Summary'
-                ));
+            if (hitPageInfo.siteInfo !== 'none')
+                $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                    .append($navBtn(
+                        'div[siteFunction="docSearch_HitDetails_pageSummary"]', 
+                        'Summary'
+                    ));
 
             $('div[siteFunction="docSearch_HitDetails_pageExcerpt"]').append(getPageExcerpt(hit, hitPageInfo));
-            $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
-                .append($navBtn(
-                    'div[siteFunction="docSearch_HitDetails_pageExcerpt"]', 
-                    'Excerpt'
-                ));
+            if (hitPageInfo.siteInfo !== 'none')
+                $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                    .append($navBtn(
+                        'div[siteFunction="docSearch_HitDetails_pageExcerpt"]', 
+                        'Excerpt'
+                    ));
 
             // hit target page toc
             getPageToc(hit).then(toc  => {
@@ -926,6 +1085,32 @@ algolia = {
                         })
                 }
             });
+
+            // hit target page tags
+            tags = getPageTags(hit, hitPageInfo);
+            if (tags.html() === undefined) $('div[siteFunction="docSearch_HitDetails_pageTags"]').addClass('d-none');
+            else {
+                $('div[siteFunction="docSearch_HitDetails_pageTags"]').removeClass('d-none');
+                $('div[siteFunction="docSearch_HitDetails_pageTags_tag_btns"]').append(tags);
+                $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                    .append($navBtn(
+                        'div[siteFunction="docSearch_HitDetails_pageTags"]', 
+                        'Tags'
+                    ));
+            }
+
+            // hit target page cats
+            cats = getPageCats(hit, hitPageInfo);
+            if (cats.html() === undefined) $('div[siteFunction="docSearch_HitDetails_pageCats"]').addClass('d-none');
+            else {
+                $('div[siteFunction="docSearch_HitDetails_pageCats"]').removeClass('d-none');
+                $('div[siteFunction="docSearch_HitDetails_pageTags_cat_btns"]').append(cats);
+                $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                    .append($navBtn(
+                        'div[siteFunction="docSearch_HitDetails_pageCats"]', 
+                        'Categories'
+                    ));
+            }
         }
         else $('div[siteFunction="docSearchListItemDetails"]').empty();
     },
@@ -1025,8 +1210,28 @@ algolia = {
         } 
     
         // Move the mouse outside the container
-        const isMouseInside = $container.is(':hover');
-        if (isMouseInside) {
+
+        const isMouseInside = ($container) => {
+            // Get the container's position and size
+            const offset = $container.offset();
+            const width = $container.outerWidth();
+            const height = $container.outerHeight();
+        
+            // Get the current mouse position
+            const mouseX = event.pageX;
+            const mouseY = event.pageY;
+        
+            // Check if mouse is within the container's boundaries
+            return (
+                mouseX >= offset.left &&
+                mouseX <= offset.left + width &&
+                mouseY >= offset.top &&
+                mouseY <= offset.top + height
+            );
+        };
+
+        //const isMouseInside = $container.is(':hover');
+        if (isMouseInside($container)) {
             // Create a temporary element to move the mouse cursor out
             const $temp = $('<div>').css({
                 position: 'absolute',

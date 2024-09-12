@@ -71,6 +71,7 @@ jobs:
           ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
           ALGOLIA_PUBLIC_API_KEY: ${{ secrets.ALGOLIA_PUBLIC_API_KEY }}
           ALGOLIA_SEARCH_ENABLED: ${{ secrets.ALGOLIA_SEARCH_ENABLED }}
+          DEPLOY_PROD_BASE_URL: ${{ secrets.DEPLOY_PROD_BASE_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
