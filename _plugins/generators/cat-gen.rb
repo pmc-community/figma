@@ -48,7 +48,7 @@ module Jekyll
   end
 
   class CategoryDetailsGenerator < Generator
-    priority :normal
+    priority :normal # should be lower than CategoryListGenerator above
     def generate(site)
       Globals.putsColText(Globals::PURPLE,"Generating categories details ...")
       categoriesDetails = getCategoriesDetails(site.data["category_list"], site.data['page_list'])

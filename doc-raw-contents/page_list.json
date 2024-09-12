@@ -22,7 +22,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Intro Child Page",
@@ -45,7 +46,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Intro Grand Child Page",
@@ -68,7 +70,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Play with content",
@@ -94,7 +97,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "External content",
@@ -120,7 +124,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Terms",
@@ -143,7 +148,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Collection-1/G1",
@@ -166,7 +172,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Collection-1/G11",
@@ -192,7 +199,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Collection-2/Y",
@@ -215,7 +223,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   },
   {
     "title": "Collection-2/Z",
@@ -239,7 +248,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": true
   },
   {
     "title": "Collection-2/X",
@@ -262,7 +272,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": true
   },
   {
     "title": "Subfolder/F1",
@@ -285,6 +296,7 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false
   }
 ]

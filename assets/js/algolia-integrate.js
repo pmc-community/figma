@@ -696,6 +696,7 @@ algolia = {
 
         const getPageToc = async (hit) => {
             let url = hit.pagePermalink;
+            let title = hit.pageTitle;
             if (url.charAt(0) !== '/') url = '/' + url;
 
             const getMargin = (tag) => {
@@ -725,9 +726,15 @@ algolia = {
                 return $output;
             };
             
+            /*
+            const dynamicContent = hasDynamicContent
+                ? `"${title}" has dynamic content!` 
+                : `"${title}" doesn't have dynamic content!`;
+            */
+
             const popoverText = 
                 `
-                    This ToC does not capture dynamic target document headings. The target document content may be larger in the case of dynamic content.
+                    This ToC does not capture dynamic target document headings.
                 `
 
             const popoverTitle = 
@@ -815,6 +822,10 @@ algolia = {
                             class="d-flex align-items-top justify-content-between">
                             <div siteFunction="docSearch_searchHitDetails_header_title" class="col-8"></div>
                         </div>
+                        <div 
+                            siteFunction="docSearch_searchHitDetails_header_nav"
+                            class="mt-2">
+                        </div>
                     </div>
 
                     <div class="p-3">
@@ -839,6 +850,21 @@ algolia = {
                 savedInfo: getPageSavedInfo (hit.pagePermalink, hit.pageTitle),
             };
 
+            const $navBtn = (navTarget, btnText) => {
+                $btn = $(
+                    `
+                        <button class="m-1 btn btn-sm btn-outline-secondary border border-secondary border-opacity-25 shadow-none">
+                            ${btnText}
+                        </button>
+                    `
+                ).click(function() {
+                    $('div[siteFunction="docSearchListItemDetails"]').animate({
+                        scrollTop: $(navTarget).offset().top - $('div[siteFunction="docSearch_searchHitDetails_header_container"]').height() - 100
+                    }, 100);
+                });
+
+                return $btn;
+            };
             //console.log(hitPageInfo)
 
             //console.log(hit)
@@ -849,11 +875,30 @@ algolia = {
             $('div[siteFunction="docSearch_searchHitDetails_header_title"]').append(getHitFullPath(hit));
             $('div[siteFunction="docSearch_searchHitDetails_header"]').append(getHitPageInfoBtn(hit));
 
+            // found in ... table
             $('div[siteFunction="docSearch_HitDetails_searchHit"]').append(getSearchHit(hit));
+            $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                .append($navBtn(
+                    'div[siteFunction="docSearch_HitDetails_searchHit"]', 
+                    'Found in'
+                ));
 
+            // hit target page summary and excerpt
             $('div[siteFunction="docSearch_HitDetails_pageSummary"]').append(getPageSummary(hit, hitPageInfo));
-            $('div[siteFunction="docSearch_HitDetails_pageExcerpt"]').append(getPageExcerpt(hit, hitPageInfo));
+            $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                .append($navBtn(
+                    'div[siteFunction="docSearch_HitDetails_pageSummary"]', 
+                    'Summary'
+                ));
 
+            $('div[siteFunction="docSearch_HitDetails_pageExcerpt"]').append(getPageExcerpt(hit, hitPageInfo));
+            $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                .append($navBtn(
+                    'div[siteFunction="docSearch_HitDetails_pageExcerpt"]', 
+                    'Excerpt'
+                ));
+
+            // hit target page toc
             getPageToc(hit).then(toc  => {
                 $('div[siteFunction="docSearch_HitDetails_pageToc"]').empty();
                 if (toc.html() === undefined) $('div[siteFunction="docSearch_HitDetails_pageToc"]').addClass('d-none');
@@ -861,6 +906,12 @@ algolia = {
 
                     $('div[siteFunction="docSearch_HitDetails_pageToc"]').removeClass('d-none');
                     $('div[siteFunction="docSearch_HitDetails_pageToc"]').append(toc);
+
+                    $('div[siteFunction="docSearch_searchHitDetails_header_nav"]')
+                        .append($navBtn(
+                            'div[siteFunction="docSearch_HitDetails_pageToc"]', 
+                            'Contents'
+                        ));
 
                     contentBtnPopover = new bootstrap.Popover('[data-bs-toggle="popover"]', {html:true, sanitize: true})
 

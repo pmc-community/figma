@@ -6,7 +6,7 @@ module Jekyll
 
     class PageAutoSummary < Generator
       safe true
-      priority :normal
+      priority :normal # must be after pageList gnerator from _plugins/generators/pages-gen.rb
   
         def generate(site)
 

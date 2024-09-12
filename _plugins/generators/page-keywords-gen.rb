@@ -10,7 +10,9 @@ module Jekyll
 
   class PageKeywordsGenerator < Generator
     safe true
-    priority :normal # Must be after PageListGenerator from _plugins/generators/pages-gen.rb
+    # must be after PageListGenerator from _plugins/generators/pages-gen.rb 
+    # but before FilteredCollectionsGenerator from _plugins/generators/fitered-collections.rb
+    priority :normal 
 
     def generate(site)
       if (site.data['buildConfig']["pageKeywords"]["enable"])

@@ -11,7 +11,7 @@ module Jekyll
 
   class AlgoliaSettingsGenerator < Generator
     safe true
-    priority :high
+    priority :high # actually can be anywhere, but the sooner, the better
 
     def generate(site)
       # better have it in env, to be able to set it fast in any deployment env, 

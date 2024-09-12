@@ -4,7 +4,7 @@ require 'fileutils'
 module Jekyll
   class FilteredCollectionsGenerator < Generator
     safe true
-    priority :low
+    priority :low # can be the last generator
 
     def generate(site)
       if (site.data["pageBuildConfig"]["/"]["sections"]["collections_section"]["enabledInHome"])

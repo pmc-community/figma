@@ -6,7 +6,7 @@ module Jekyll
 
     class PageSimilarByContent < Generator
       safe true
-      priority :normal
+      priority :normal # must be after pageList generator from _plugins/generators/pages-gen.rb
   
         def generate(site)
 

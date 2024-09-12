@@ -10,7 +10,7 @@ module Jekyll
 
   class SiteSettings < Generator
     safe true
-    priority :low
+    priority :lowest # better to be the last
 
     def generate(site)
       Globals.putsColText(Globals::PURPLE,"Generating site settings ...")

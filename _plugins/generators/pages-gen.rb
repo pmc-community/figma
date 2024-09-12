@@ -1,5 +1,6 @@
 require_relative "../../tools/modules/globals"
 require_relative "../../tools/modules/file-utilities"
+require_relative "../../tools/modules/extContent-utilities"
 require 'nokogiri'
 require 'tf-idf-similarity'
 require 'matrix'
@@ -9,7 +10,7 @@ module Jekyll
 
   class PageListGenerator < Generator
     safe true
-    priority :highest
+    priority :highest # should be the first
 
     # HEADS UP!!!
     # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE
@@ -38,10 +39,10 @@ module Jekyll
       # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
       FileUtilities.generate_raw_content(site)
 
-      modified_files_path = "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json"
-      modified_files = File.exist?(modified_files_path)? FileUtilities.read_json_file(modified_files_path) : {"files" => []}
+      #modified_files_path = "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json"
+      #modified_files = File.exist?(modified_files_path)? FileUtilities.read_json_file(modified_files_path) : {"files" => []}
 
-      if (modified_files["files"].length > 0 )
+      #if (modified_files["files"].length > 0 )
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ...")
       
         numPages = 0
@@ -57,6 +58,7 @@ module Jekyll
           excerpt = front_matter['excerpt']
           lastUpdate = File.mtime(file_path)
           createTime = File.birthtime(file_path)
+          hasDynamicContent = ExtContentUtilities.checkCallsForExternalContent(file_path)
 
           document_data = {
             'title' => title,
@@ -70,8 +72,9 @@ module Jekyll
             'createTimeUTC' => createTime.to_time.to_i || 0,
             'relatedPages' => [],
             'autoSummary' => "",
-            'similarByContent': [],
-            'readingTime': 0
+            'similarByContent' => [],
+            'readingTime' => 0,
+            'hasDynamicContent' => hasDynamicContent
           }
 
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
@@ -81,9 +84,9 @@ module Jekyll
         Globals.moveUpOneLine
         Globals.clearLine
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (#{numPages} pages)")
-      else
-        Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (no content changes)")
-      end
+      #else
+      #  Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (no content changes)")
+      #end
 
       site.data['page_list'] = FileUtilities.read_json_file(page_list_path).to_json
       
@@ -95,7 +98,9 @@ module Jekyll
   
   class RelatedPagesGenerator < Generator
     safe true
-    priority :normal # Must be after PageKeyordsGenerator from _plugins/generators/page-keywords-gen.rb
+    # Must be after PageKeyordsGenerator from _plugins/generators/page-keywords-gen.rb
+    # Must be after tagsDetails (_plugins/generators/tag-gen.rb) and catDetails generators (_plugins/generators/cat-gen.rb)
+    priority :low
   
     def generate(site)
       if site.data['buildConfig']["relatedPages"]["enable"]

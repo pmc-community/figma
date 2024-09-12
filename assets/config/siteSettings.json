@@ -177,7 +177,8 @@
           "title": "Intro Child Page"
         }
       ],
-      "readingTime": 6
+      "readingTime": 6,
+      "hasDynamicContent": false
     },
     {
       "title": "Intro Child Page",
@@ -218,7 +219,8 @@
           "title": "Introduction"
         }
       ],
-      "readingTime": 1
+      "readingTime": 1,
+      "hasDynamicContent": false
     },
     {
       "title": "Intro Grand Child Page",
@@ -241,7 +243,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 1
+      "readingTime": 1,
+      "hasDynamicContent": false
     },
     {
       "title": "Play with content",
@@ -278,7 +281,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 2
+      "readingTime": 2,
+      "hasDynamicContent": false
     },
     {
       "title": "External content",
@@ -307,7 +311,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 1
+      "readingTime": 1,
+      "hasDynamicContent": false
     },
     {
       "title": "Terms",
@@ -337,7 +342,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 13
+      "readingTime": 13,
+      "hasDynamicContent": false
     },
     {
       "title": "Collection-1/G1",
@@ -367,7 +373,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 5
+      "readingTime": 5,
+      "hasDynamicContent": false
     },
     {
       "title": "Collection-1/G11",
@@ -396,7 +403,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 3
+      "readingTime": 3,
+      "hasDynamicContent": false
     },
     {
       "title": "Collection-2/Y",
@@ -437,7 +445,8 @@
           "title": "Introduction"
         }
       ],
-      "readingTime": 1
+      "readingTime": 1,
+      "hasDynamicContent": false
     },
     {
       "title": "Collection-2/Z",
@@ -468,7 +477,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 1
+      "readingTime": 1,
+      "hasDynamicContent": true
     },
     {
       "title": "Collection-2/X",
@@ -498,7 +508,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 1
+      "readingTime": 1,
+      "hasDynamicContent": true
     },
     {
       "title": "Subfolder/F1",
@@ -532,7 +543,8 @@
       "similarByContent": [
 
       ],
-      "readingTime": 3
+      "readingTime": 3,
+      "hasDynamicContent": false
     }
   ],
   "tagList": [

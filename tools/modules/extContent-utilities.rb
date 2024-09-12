@@ -26,6 +26,16 @@ module ExtContentUtilities
         return results
     end
 
+    def self.checkCallsForExternalContent(file_path)
+      function_call_regex = /getExternalContent\s*\(\s*(['"])(.*?)\1\s*,\s*(['"])(.*?)\3\s*,\s*(['"])(.*?)\5\s*,\s*(['"])(.*?)\7\s*,\s*(['"])(.*?)\9\s*,\s*(['"])(.*?)\11\s*,\s*(['"])(.*?)\13\s*\)/
+      result = false
+      file_content = File.read(file_path)
+      if file_content.match(function_call_regex) 
+        result = true
+      end
+      return result
+    end
+
     def self.replaceLiquidTags(value, yaml_file)
       value.gsub(/\{\{\s*site.data\.([^\s}]+)\s*\}\}/) do |match|
         yaml_path = $1

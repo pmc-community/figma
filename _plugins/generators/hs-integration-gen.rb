@@ -11,7 +11,7 @@ module Jekyll
 
   class HSClientSettingsGenerator < Generator
     safe true
-    priority :highest
+    priority :highest # actually can be anywhere, but the sooner, the better
 
     # HEADS UP!!!
     # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE
@@ -40,7 +40,7 @@ module Jekyll
 
   class HSPortalID < Generator
     safe true
-    priority :high
+    priority :high # must after HSClientSettingsGenerator above
 
     def generate(site)
       if (site.data["siteConfig"]["hsIntegration"]["enabled"])

@@ -47,7 +47,7 @@ module Jekyll
   end
 
   class TagDetailsGenerator < Generator
-    priority :normal
+    priority :normal # should be lower than TagListGenerator above
     def generate(site)
       Globals.putsColText(Globals::PURPLE,"Generating tags details ...")
       tagsDetails = getTagsDetails(site.data["tag_list"], site.data['page_list'])

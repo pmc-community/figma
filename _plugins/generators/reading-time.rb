@@ -6,7 +6,7 @@ require_relative "../../tools/modules/file-utilities"
 module Jekyll
   class ReadingTimeGenerator < Generator
     safe true
-    priority :normal
+    priority :normal # must be after pageListGenerator from _plugins/generators/pages-gen.rb
 
     def get_average_wpm(site)
       sources = {
