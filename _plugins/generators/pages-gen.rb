@@ -291,6 +291,17 @@ module Jekyll
     end
     
   end
+
+  class DeployDomain < Generator
+    safe true
+    priority :high # must after HSClientSettingsGenerator above
+
+    def generate(site)      
+        baseURL = ENV["DEPLOY_PROD_BASE_URL"]
+        site.data['deploy_base_url'] = baseURL
+    end
+
+  end
   
 end
   

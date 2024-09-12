@@ -59,7 +59,6 @@ jobs:
         run: bundle exec jekyll build --incremental --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
-          TEST_VAL: ${{ secrets.TEST_VAL }}
           JEKYLL_ACCESS_TOKEN: ${{ secrets.JEKYLL_ACCESS_TOKEN }}
           JEKYLL_GIT_USER: ${{ secrets.JEKYLL_GIT_USER }}
           CONSOLE_BLANK_SPINNER_CHARS: ${{ secrets.CONSOLE_BLANK_SPINNER_CHARS }}
