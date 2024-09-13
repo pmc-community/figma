@@ -64,7 +64,6 @@ algoliaSearch:
   insights: true
   textHighlightPrefixTag: "<mark>" # prefix and postfix tags must be exactly as defined in Algolia Index/Configuration/Hightlighting
   textHighlightPostfixTag: "</mark>"
-prodUrl: "https://figmares.innohub.space"
 JTDSearch:
   searchBoxWidth: "fit-content"
 changeLog:
