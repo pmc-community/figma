@@ -62,8 +62,11 @@ algoliaSearch:
   maxResultsPerGroup: 20
   hitsPerPage: 10
   insights: true
-  textHighlightPrefixTag: "<mark>" # prefix and postfix tags must be exactly as defined in Algolia Index/Configuration/Hightlighting
+  textHighlightPrefixTag: "<mark>" # prefix and postfix tags must be exactly as defined in Algolia DocSearch Index/Configuration/Hightlighting
   textHighlightPostfixTag: "</mark>"
+  netlifySearchBranch: "main"
+  netlifySiteId: "337777c9-8f1b-4962-a904-9c5542b6e0b2"
+  customIndexContentMaxSize: 500
 JTDSearch:
   searchBoxWidth: "fit-content"
 changeLog:

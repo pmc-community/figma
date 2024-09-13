@@ -71,5 +71,16 @@ module PermalinksUtilities
             return 2
         end
     end
+
+    def self.find_collection_name_by_permalink(filtered_collections, permalink)
+        filtered_collections.each do |collection|
+          collection['docs'].each do |doc|
+            if doc['permalink'] == permalink
+              return collection['custom_name']
+            end
+          end
+        end
+        nil
+    end
     
 end

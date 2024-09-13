@@ -29,6 +29,20 @@ module Jekyll
           "algoliaPublicApiKey" => ENV["ALGOLIA_PUBLIC_API_KEY"]
         }
 
+        if (ENV["ALGOLIA_NETLIFY_ENABLED"] == 'true')
+          algoliaSettings["algoliaNetlifyAppID"] = ENV["ALGOLIA_NETLIFY_APP_ID"] 
+          algoliaSettings["algoliaNetlifyIndex"] = ENV["ALGOLIA_NETLIFY_INDEX"]
+          algoliaSettings["algoliaNetlifyWriteApiKey"] = ENV["ALGOLIA_NETLIFY_WRITE_API_KEY"]
+          algoliaSettings["algoliaNetlifyAdminApiKey"] = ENV["ALGOLIA_NETLIFY_ADMIN_API_KEY"]
+        end
+
+        if (ENV["ALGOLIA_CUSTOM_ENABLED"] == 'true')
+          algoliaSettings["algoliaCustomAppID"] = ENV["ALGOLIA_CUSTOM_APP_ID"] 
+          algoliaSettings["algoliaCustomIndex"] = ENV["ALGOLIA_CUSTOM_INDEX"]
+          algoliaSettings["algoliaCustomWriteApiKey"] = ENV["ALGOLIA_CUSTOM_WRITE_API_KEY"]
+          algoliaSettings["algoliaCustomAdminApiKey"] = ENV["ALGOLIA_CUSTOM_ADMIN_API_KEY"]
+        end
+
         algoliaClientSettings = {
           "algoliaEnabled" => algoliaEnabled,
           "algoliaAppID" => ENV["ALGOLIA_APP_ID"],
@@ -43,6 +57,20 @@ module Jekyll
           "algoliaTextHighlightPostfixTag" => site.data["buildConfig"]["algoliaSearch"]["textHighlightPostfixTag"],
           "algoliaRaiseIssueLink" => "https://github.com/#{site.data["buildConfig"]["github"]["user"]}/#{site.data["buildConfig"]["github"]["repo"]}/issues/new?title="
         }
+
+        if (ENV["ALGOLIA_NETLIFY_ENABLED"] == 'true')
+          algoliaClientSettings["algoliaNetlifyAppID"] = ENV["ALGOLIA_NETLIFY_APP_ID"] 
+          algoliaClientSettings["algoliaNetlifyIndex"] = ENV["ALGOLIA_NETLIFY_INDEX"]
+          algoliaClientSettings["algoliaNetlifyPublicApiKey"] = ENV["ALGOLIA_NETLIFY_PUBLIC_API_KEY"]
+          algoliaClientSettings["algoliaNetlifySiteID"] = site.data["buildConfig"]["algoliaSearch"]["netlifySiteId"]
+          algoliaClientSettings["algoliaNetlifyBranch"] = site.data["buildConfig"]["algoliaSearch"]["netlifySearchBranch"]
+        end
+
+        if (ENV["ALGOLIA_CUSTOM_ENABLED"] == 'true')
+          algoliaClientSettings["algoliaCustomAppID"] = ENV["ALGOLIA_CUSTOM_APP_ID"] 
+          algoliaClientSettings["algoliaCustomIndex"] = ENV["ALGOLIA_CUSTOM_INDEX"]
+          algoliaClientSettings["algoliaCustomPublicApiKey"] = ENV["ALGOLIA_CUSTOM_PUBLIC_API_KEY"]
+        end
 
         site.data["algolia_integration"] = algoliaSettings.to_json
         site.data["algolia_client_integration"] = algoliaClientSettings.to_json

@@ -45,8 +45,6 @@ module Jekyll
               ) || doc.data['excerpt']
             }
 
-            
-
           end
 
           sorted_docs = docs.sort_by { |doc| -doc["last_update"].to_i } 

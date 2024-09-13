@@ -68,4 +68,4 @@ gem 'hubspot-api-client'
 gem 'securerandom'
 
 # for Algolia
-gem 'algolia', '~> 2.3.4'
+gem 'algolia', '~> 3.0.0'
