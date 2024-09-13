@@ -37,8 +37,8 @@
                         <page-data-has-dynamic-content>{{pageObj[0].hasDynamicContent}}</page-data-has-dynamic-content>
                         <page-data-summary>{{pageObj[0].autoSummary}}</page-data-summary>
                         <page-data-excerpt>{{pageObj[0].excerpt}}</page-data-excerpt>
-                        <page-data-cats>{{pageObj[0].categories | jsonify}}</page-data-cats>
-                        <page-data-tags>{{pageObj[0].tags | jsonify}}</page-data-tags>
+                        <page-data-cats>{{pageObj[0].categories | join: ", "}}</page-data-cats>
+                        <page-data-tags>{{pageObj[0].tags | join: ", "}}</page-data-tags>
                     </page-data>
                 {% endif %}
             {% endif %}
