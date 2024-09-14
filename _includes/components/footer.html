@@ -48,6 +48,11 @@
                         <page-data-excerpt>{{pageObj[0].excerpt}}</page-data-excerpt>
                         <page-data-cats>{{pageObj[0].categories | join: ", "}}</page-data-cats>
                         <page-data-tags>{{pageObj[0].tags | join: ", "}}</page-data-tags>
+                        <page-related-pages>{{pageObj[0].relatedPages | jsonify }}</page-related-pages>
+                        <page-similar-pages>{{pageObj[0].similarByContent | jsonify }}</page-similar-pages>
+                        <page-create-time>{{pageObj[0].createTime}}</page-create-time>
+                        <page-last-update>{{pageObj[0].lastUpdate}}</page-last-update>
+                        <page-read-time>{{pageObj[0].readingTime}}</page-read-time>
                     </page-data>
                 {% endif %}
             {% endif %}
