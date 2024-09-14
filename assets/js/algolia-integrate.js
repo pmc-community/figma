@@ -18,7 +18,7 @@ setElementChangeClassObserver ('body', 'DocSearch--active', true, () => {
 // setting some events to modify the default behaviour of DocSearch
 // search results must be shown in the custom fomat defined in setDocSearchBox/refreshResults
 // and search box dropdown list should navigate to first page of results
-// so we overwrite the default behaviour of showing results which based on the built-in instant search
+// so we overwrite the default behaviour of showing results which is based on the built-in DocSearch autocomplete
 $(document).off('input', '.DocSearch-Input').on('input', '.DocSearch-Input', function() {
     algolia.forceNavigationToPage(0);
 });
@@ -734,7 +734,7 @@ algolia = {
                 return $output;
             };
             
-            const dynamicContent = hit.pageHasDynamicContent === 'true'
+            const dynamicContent = hit.pageHasDynamicContent
                 ? `${title} \u2192 has dynamic content!` 
                 : `${title} \u2192 doesn't have dynamic content!`;
 
@@ -758,7 +758,7 @@ algolia = {
                     const content = html.find('main');
                     const headings = content.find('h1, h2, h3, h4, h5, h6');
 
-                    const dynamicContentIndicator = hit.pageHasDynamicContent === 'true'
+                    const dynamicContentIndicator = hit.pageHasDynamicContent
                         ? '<span class="spinner-grow spinner-grow-sm ml-2 text-danger" aria-hidden="true"></span>'
                         : '';
 

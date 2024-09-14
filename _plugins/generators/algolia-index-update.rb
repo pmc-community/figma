@@ -60,7 +60,8 @@ module Jekyll
                   record["pageHasDynamicContent"] = page["hasDynamicContent"] if !page.empty?
                   record["pageCollection"] = PermalinksUtilities.find_collection_name_by_permalink(
                     site.data['filtered_collections'], 
-                  permalink)if !page.empty?
+                    permalink
+                  ) if !page.empty?
 
                   relatedPages = []
                   if (!page.empty?)      

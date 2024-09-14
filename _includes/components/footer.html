@@ -34,6 +34,15 @@
                 {% assign pageObj = pg | replace: "=>", ":" | json_string_to_object %}
                 {% if pageObj != empty %}
                     <page-data class="d-none">
+                        {% capture permalink_param %}
+                            {
+                                "permalink": "{{permalink}}"
+                            }
+                        {% endcapture %}
+                        {% capture collection %}
+                            {% PageCollection {{ permalink_param | json_string_to_object }} %}
+                        {% endcapture %}
+                        <page-data-collection>{{- collection | strip | default: "" -}}</page-data-collection>
                         <page-data-has-dynamic-content>{{pageObj[0].hasDynamicContent}}</page-data-has-dynamic-content>
                         <page-data-summary>{{pageObj[0].autoSummary}}</page-data-summary>
                         <page-data-excerpt>{{pageObj[0].excerpt}}</page-data-excerpt>
@@ -43,8 +52,6 @@
                 {% endif %}
             {% endif %}
         {% endif %}
-
-
 
         {{ footer_custom }}
     </footer>

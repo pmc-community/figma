@@ -1,5 +1,7 @@
 require 'json'
 require_relative "../../tools/modules/globals"
+require_relative "../../tools/modules/permalinks-utilities"
+require_relative "../../tools/modules/col-utilities"
 
 module Jekyll
 
@@ -18,12 +20,12 @@ module Jekyll
                         _ = info # noop to prevent warnings for not using variable. to be removed when the variable will be used
 
                     end
+                rescue
+                    begin
+                        info = JSON.parse(@input)
                     rescue
-                        begin
-                            info = JSON.parse(@input)
-                            rescue
-                                Globals.putsColText(Globals::RED, "SitePages tag got bad json string as input\n")
-                        end
+                        Globals.putsColText(Globals::RED, "SitePages tag got bad json string as input\n")
+                    end
                 end
                 context.registers[:site].data["page_list"] if context && context.registers[:site] && context.registers[:site].data
                 
@@ -47,13 +49,13 @@ module Jekyll
                             []
                         matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     end
+                rescue
+                    begin
+                        param = JSON.parse(@input)
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     rescue
-                        begin
-                            param = JSON.parse(@input)
-                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
-                        rescue
-                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageExcerpt tag got bad json string as input\n")
-                        end
+                        Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageExcerpt tag got bad json string as input\n")
+                    end
                 end
                 excerpt = matched_page["excerpt"] ? matched_page["excerpt"] : "" if matched_page
                 excerpt
@@ -77,15 +79,15 @@ module Jekyll
                         pages = JSON.parse(context.registers[:site].data["page_list"])
                         matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     end
+                rescue
+                    begin
+                        param = JSON.parse(@input)
+                        permalink = param["permalink"]
+                        tagExcept = JSON.parse(param["except"].to_json) || []
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     rescue
-                        begin
-                            param = JSON.parse(@input)
-                            permalink = param["permalink"]
-                            tagExcept = JSON.parse(param["except"].to_json) || []
-                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
-                        rescue
-                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageTags tag got bad json string as input(#{param})\n")
-                        end
+                        Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageTags tag got bad json string as input(#{param})\n")
+                    end
                 end
                 tags = matched_page["tags"] ? matched_page["tags"] : [] if matched_page
                 tagExcept.each do |tag|
@@ -112,15 +114,15 @@ module Jekyll
                         pages = JSON.parse(context.registers[:site].data["page_list"])
                         matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     end
+                rescue
+                    begin
+                        param = JSON.parse(@input)
+                        permalink = param["permalink"]
+                        catExcept = JSON.parse(param["except"].to_json) || []
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     rescue
-                        begin
-                            param = JSON.parse(@input)
-                            permalink = param["permalink"]
-                            catExcept = JSON.parse(param["except"].to_json) || []
-                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
-                        rescue
-                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageCats tag got bad json string as input(#{param})\n")
-                        end
+                        Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageCats tag got bad json string as input(#{param})\n")
+                    end
                 end
                 cats = matched_page["categories"] ? matched_page["categories"] : [] if matched_page
                 catExcept.each do |cat|
@@ -147,15 +149,15 @@ module Jekyll
                         pages = JSON.parse(context.registers[:site].data["page_list"])
                         matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     end
+                rescue
+                    begin
+                        param = JSON.parse(@input)
+                        permalink = param["permalink"]
+                        relatedExcept = JSON.parse(param["except"].to_json) || []
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     rescue
-                        begin
-                            param = JSON.parse(@input)
-                            permalink = param["permalink"]
-                            relatedExcept = JSON.parse(param["except"].to_json) || []
-                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
-                        rescue
-                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageRelated tag got bad json string as input(#{param})\n")
-                        end
+                        Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageRelated tag got bad json string as input(#{param})\n")
+                    end
                 end
                 related = matched_page["relatedPages"] ? matched_page["relatedPages"] : [] if matched_page
                 relatedExcept.each do |page|
@@ -182,15 +184,15 @@ module Jekyll
                         pages = JSON.parse(context.registers[:site].data["page_list"])
                         matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     end
+                rescue
+                    begin
+                        param = JSON.parse(@input)
+                        permalink = param["permalink"]
+                        similarExcept = JSON.parse(param["except"].to_json) || []
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     rescue
-                        begin
-                            param = JSON.parse(@input)
-                            permalink = param["permalink"]
-                            similarExcept = JSON.parse(param["except"].to_json) || []
-                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
-                        rescue
-                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageSimilarByContent tag got bad json string as input(#{param})\n")
-                        end
+                        Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageSimilarByContent tag got bad json string as input(#{param})\n")
+                    end
                 end
                 similarByContent = matched_page["similarByContent"] ? matched_page["similarByContent"] : [] if matched_page
                 similarExcept.each do |page|
@@ -218,16 +220,40 @@ module Jekyll
                             []
                         matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     end
+                rescue
+                    begin
+                        param = JSON.parse(@input)
+                        matched_page = pages.find { |obj| obj["permalink"] == permalink }
                     rescue
-                        begin
-                            param = JSON.parse(@input)
-                            matched_page = pages.find { |obj| obj["permalink"] == permalink }
-                        rescue
-                            Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageAutoSummary tag got bad json string as input\n")
-                        end
+                        Globals.putsColText(Globals::RED, "#{context['page']['url']}: PageAutoSummary tag got bad json string as input\n")   
+                    end
                 end
                 summary = matched_page["autoSummary"] ? matched_page["autoSummary"] : "" if matched_page
                 summary
+            end
+            
+        end
+
+        class PageCollection < Liquid::Tag
+  
+            def initialize(tag_name, input, context)
+                super
+                @input = input
+            end
+
+            def render(context)
+                if( !@input.nil? && !@input.empty? )
+                    param = Liquid::Template.parse(@input).render(context)
+                    permalink = JSON.parse(param.gsub('=>', ':'))["permalink"]
+                    collections = ColUtilities.getSiteCollections(context.registers[:site])
+                    collection = PermalinksUtilities.find_collection_name_by_permalink(
+                        collections,
+                        permalink
+                    )
+                    #puts "#{permalink}: #{collection}"
+                end
+            
+                collection.nil? ? "" : collection.strip
             end
             
         end
@@ -242,4 +268,5 @@ Liquid::Template.register_tag('PageCats', Jekyll::SitePages::PageCats)
 Liquid::Template.register_tag('PageRelated', Jekyll::SitePages::PageRelated)
 Liquid::Template.register_tag('PageSimilarByContent', Jekyll::SitePages::PageSimilarByContent)
 Liquid::Template.register_tag('PageAutoSummary', Jekyll::SitePages::PageAutoSummary)
+Liquid::Template.register_tag('PageCollection', Jekyll::SitePages::PageCollection)
   
