@@ -584,9 +584,13 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 }
 
 // hs integration (for what is outside iframes)
-@mixin hsForms($hsFormsElements) {
-    #{map-get($hsFormsElements, formLink)} {
+@mixin hs($hsElements) {
+    #{map-get($hsElements, formLink)} {
         font-size: $hsFormLinkFontSize;
+    }
+
+    #{map-get($hsElements, cookieSettingsContainer)} {
+        background-color: $hsModalContentBackground !important;
     }
 }
 
