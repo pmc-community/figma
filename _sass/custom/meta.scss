@@ -591,6 +591,7 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 
     #{map-get($hsElements, cookieSettingsContainer)} {
         background-color: $hsModalContentBackground !important;
+        font-family: $hsModalContentFontFamily !important;
     }
 }
 

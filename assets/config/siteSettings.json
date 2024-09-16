@@ -111,8 +111,7 @@
           "propName": "source",
           "propValue": "figmares_doc_site"
         }
-      },
-      "cookieBanner": true
+      }
     },
     "scripts": {
       "jQuery": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
