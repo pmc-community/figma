@@ -61,6 +61,7 @@ layouts:
 toBeRemovedAfterLoad:
   - "script": # selector for the element to be removed, in the form of tag, .class, #id
     - "externalContent" # each selector[siteAttr = ...] will be removed
+    - "init_not_needed_anymore"
     - "page_var_init_script"
   - "h1":
     - "testAttr"

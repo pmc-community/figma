@@ -28,7 +28,6 @@ $(window).off('message').on('message', function(event) {
     }
 });
 
-
 /* SOME UTILITIES ADDED TO JQUERY*/
 
 // check if an element is on screen
@@ -68,56 +67,61 @@ $.fn.sizeChanged = function (handleFunction) {
     return element;
 };
 
-// init page toc
-$(function () {
-    var navSelector = settings.pageToc.toc;
-    var $myNav = $(navSelector);
-    if ($(`#${settings.marker404}`).length === 0) Toc.init($myNav);
-    // check if there is something in the ToC, if empty, the scrollspy raise errors in console
-    // page toc will be further removed from page when the page loads
-    if ($(`${settings.pageToc.toc} ul`).children('li').length > 0 ) $(settings.pageToc.scrollSpyBase).scrollspy({target: navSelector,});
-});
 
-// CONVERSION FUNCTIONS FOR DATATABLES SORTING PURPOSES
-// type dd-mmm-yyyy to Unix Timestamp
-$.fn.dataTable.ext.type.order['date-dd-mmm-yyyy-pre'] = function(d) {
-    const months = {
-        "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3,
-        "May": 4, "Jun": 5, "Jul": 6, "Aug": 7,
-        "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+
+if (pagePermalink !== '/') {
+
+    // init page toc
+    $(function () {
+        var navSelector = settings.pageToc.toc;
+        var $myNav = $(navSelector);
+        if ($(`#${settings.marker404}`).length === 0) Toc.init($myNav);
+        // check if there is something in the ToC, if empty, the scrollspy raise errors in console
+        // page toc will be further removed from page when the page loads
+        if ($(`${settings.pageToc.toc} ul`).children('li').length > 0 ) $(settings.pageToc.scrollSpyBase).scrollspy({target: navSelector,});
+    });
+
+    // CONVERSION FUNCTIONS FOR DATATABLES SORTING PURPOSES
+    // type dd-mmm-yyyy to Unix Timestamp
+
+    $.fn.dataTable.ext.type.order['date-dd-mmm-yyyy-pre'] = function(d) {
+        const months = {
+            "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3,
+            "May": 4, "Jun": 5, "Jul": 6, "Aug": 7,
+            "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+        };
+        const dateParts = stripHtml(d).split('-');
+        const day = parseInt(dateParts[0], 10);
+        const month = months[dateParts[1]];
+        const year = parseInt(dateParts[2], 10);
+
+        return new Date(year, month, day).getTime();
     };
-    const dateParts = stripHtml(d).split('-');
-    const day = parseInt(dateParts[0], 10);
-    const month = months[dateParts[1]];
-    const year = parseInt(dateParts[2], 10);
 
-    return new Date(year, month, day).getTime();
-};
+    // type html-string to html stripped text
+    $.fn.dataTable.ext.type.order['html-string-pre'] = function(s) {
+        return stripHtml(s);
+    };
 
-// type html-string to html stripped text
-$.fn.dataTable.ext.type.order['html-string-pre'] = function(s) {
-    return stripHtml(s);
-};
-
-// Extend DataTables with custom search function
-$.fn.dataTable.ext.type.search['raw-data'] = function(data) {
-    console.log('here')
-    try {
-        var parsedData = JSON.parse(data);
-        if (Array.isArray(parsedData)) {
-            if (typeof parsedData[0] === 'object' && parsedData[0] !== null) {
-                // Extract titles from array of objects
-                return parsedData.map(function(item) { return item.title; }).join(' ');
-            } else {
-                // Union of arrays
-                return [...new Set(parsedData.flat())].join(' ');
+    // Extend DataTables with custom search function
+    $.fn.dataTable.ext.type.search['raw-data'] = function(data) {
+        try {
+            var parsedData = JSON.parse(data);
+            if (Array.isArray(parsedData)) {
+                if (typeof parsedData[0] === 'object' && parsedData[0] !== null) {
+                    // Extract titles from array of objects
+                    return parsedData.map(function(item) { return item.title; }).join(' ');
+                } else {
+                    // Union of arrays
+                    return [...new Set(parsedData.flat())].join(' ');
+                }
             }
+        } catch (e) {
+            return data;
         }
-    } catch (e) {
         return data;
-    }
-    return data;
-};
+    };
+}
 
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);

@@ -2,23 +2,7 @@
 
 const customiseTheme = (pageObj = null) => {
     if (!preFlight.skyClear) return; // comes from preflight-check.js
-    
-    /*
-    const $loading = $(
-        `
-            <div id="contentLoading" class="d-flex justify-content-center align-items-center d-none" style="position: fixed; top:0; left:0; width:100vw; height: 100vh">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        `
-    );
-    // HEADS UP!!!! BODY VISIBILITY IS HIDDEN HERE (from head)
-    $('html').append($loading);
-    $('#contentLoading').removeClass('d-none');
-    $('body').attr('data-instant-intensity', 'viewport').attr('data-instant-vary-accept');
-    */
-   
+       
     // first things, first
     cleanSavedItems();
     createGlobalLists();
@@ -28,24 +12,25 @@ const customiseTheme = (pageObj = null) => {
     
     setTheTheme();
     setGoToTopBtn();
-    setFullPageToc();
-    handleTocOnWindowsResize();
-    handleTocDuplicates();  
+    if (pagePermalink !== '/') setFullPageToc();
+    if (pagePermalink !== '/') handleTocOnWindowsResize();
+    if (pagePermalink !== '/') handleTocDuplicates();  
     setSwitchThemeFunction();
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
-    handleTocActiveElementsOnScroll();
+    if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
     clearTheUrl();
 
     $(document).ready(() => {
-
-        // last checks on page toc
-        if($(`${settings.pageToc.toc} ul`).children('li').length >0)
-            // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
-            removeChildrenExceptFirst (settings.pageToc.toc); 
-        else 
-            // no need to have page toc on screen if there is nothing to see there
-            $(settings.pageToc.tocContainer).hide();
+        if (pagePermalink !== '/') {
+            // last checks on page toc
+            if($(`${settings.pageToc.toc} ul`).children('li').length >0)
+                // for some reason, toc is multiplied in firefox, edge, opera and safari, so we remove duplicates
+                removeChildrenExceptFirst (settings.pageToc.toc); 
+            else 
+                // no need to have page toc on screen if there is nothing to see there
+                $(settings.pageToc.tocContainer).hide();
+        }
 
         // remove some elements as set in siteConfig.toBeRemovedAfterLoad
         removeUselessElements();

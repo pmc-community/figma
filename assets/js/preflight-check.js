@@ -238,6 +238,7 @@ const tagList = allSettings.tagList;
 const tagDetails = allSettings.tagDetails;
 const allPageSettings = allSettings.pageSettings;
 
+
 // we use a function to get permalink options
 // as permalink extraction from url returns always /permalink/
 // and we don't know how permalink are defined in the page front matter

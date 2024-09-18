@@ -78,6 +78,7 @@
       {
         "script": [
           "externalContent",
+          "init_not_needed_anymore",
           "page_var_init_script"
         ]
       },
