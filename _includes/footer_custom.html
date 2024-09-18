@@ -6,26 +6,25 @@
     });
 </script>
 
+{% if page.permalink != "/" %}
+    <!-- offcanvas for page full information -->
+    {% include siteIncludes/partials/page-full-info.html %} 
 
-<!-- offcanvas for page full information -->
-{% include siteIncludes/partials/page-full-info.html %} 
+    <!-- page info -->
+    {% include siteIncludes/partials/page-common/page-info.html %}
 
+    <!-- page auto summary -->
+    {% include siteIncludes/partials/page-common/page-auto-summary.html %} 
 
-<!-- page info -->
-{% include siteIncludes/partials/page-common/page-info.html %}
+    <!-- Page Tags -->
+    {% include siteIncludes/partials/page-common/page-tags.html %} 
 
-<!-- page auto summary -->
-{% include siteIncludes/partials/page-common/page-auto-summary.html %} 
+    <!-- page custom notes -->
+    {% include siteIncludes/partials/page-common/page-notes.html %} 
 
-    
-<!-- Page Tags -->
-{% include siteIncludes/partials/page-common/page-tags.html %} 
-
-<!-- page custom notes -->
-{% include siteIncludes/partials/page-common/page-notes.html %} 
-
-<!-- page related pages -->
-{% include siteIncludes/partials/page-common/page-related-pages.html %}
+    <!-- page related pages -->
+    {% include siteIncludes/partials/page-common/page-related-pages.html %}
+{% endif %}
 
 <!-- page feedback and support -->
 {% include siteIncludes/partials/page-common/page-feedback-and-support.html %}
