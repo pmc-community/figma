@@ -548,6 +548,7 @@ const setDataTable = (
     }; // should be defined here because is used in defaultSettings object (defaultSettings.language.searchPanes)
 
     const defaultSettings = {
+        serverSide: false,
         paging: true,
         pageLength: 5,
         ordering: true,
