@@ -67,8 +67,6 @@ $.fn.sizeChanged = function (handleFunction) {
     return element;
 };
 
-
-
 if (pagePermalink !== '/') {
 
     // init page toc
@@ -1351,21 +1349,27 @@ const setEditor = (placeholder, options={}, callbackEditor = ()=>{}, callbackEdi
                 {
                     label: 'Style',
                     withText: true,
-                    items: [ 'bold', 'italic', 'strikethrough', 'superscript', 'subscript' ]
+                    items: [ 'bold', 'italic', 'strikethrough' ]
                 },
                 '|',
                 {
                     label: 'Code Blocks',
                     withText: true,
-                    items: [ 'blockQuote', 'codeBlock' ]
+                    items: [ 'blockQuote' ]
                 },
                 '|', 'link', 'blockQuote', '|',
                 {
                     label: 'Lists',
                     withText: true,
-                    items: [ 'bulletedList', 'numberedList', 'todoList']
-                },   
-            ]
+                    items: [ 'bulletedList', 'numberedList']
+                },
+                {
+                    label: 'Media',
+                    withText: true,
+                    items: [ 'mediaEmbed' ]
+                }   
+            ],
+
         }
 
         const allBuiltInOptions = { ...defaultBuiltInOptions, ...options.builtInOptions }
