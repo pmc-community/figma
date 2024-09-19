@@ -78,4 +78,4 @@ siteFooter:
     - content: "<div class=\"footer_first_row\">Copyright <i class=\"bi bi-c-circle\"></i> <a href=\"https://pmc-expert.com\" target=_blank>PMC</a></div>"
 googleAnalytics:
   enabled: true
-  tag: "G-T86D5YQ5WF"
+  ga: "G-T86D5YQ5WF"

@@ -183,16 +183,3 @@
 {% endif %}
 
 <script src="//instant.page/5.2.0" type="module" integrity="sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxEtvFPiQYbXWUorga2aqZJ0z"></script>
-
-
-{% if site.data.buildConfig.googleAnalytics.enabled %}
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{site.data.buildConfig.googleAnalytics.tag}}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', '{{site.data.buildConfig.googleAnalytics.tag}}');
-    </script>
-{% endif %}
