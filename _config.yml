@@ -71,8 +71,8 @@ aux_links_new_tab: true
 # algolia search has priority even if search_enabled=true. see buildConfig.algoliaSearch
 search_enabled: true
 
-ga_tracking: G-T86D5YQ5WF # ihs
-ga_tracking_anonymize_ip: true
+#ga_tracking: G-T86D5YQ5WF # ihs
+#ga_tracking_anonymize_ip: true
 
 # heading anchors must be false because it generates a weird effect of showing huge blue anchors 
 # when loading the page and until the page is loaded. nevertheless, page ToC is good and enough

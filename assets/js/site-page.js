@@ -246,7 +246,7 @@ const feedbackFormCSSCorrection = ($form) => {
     $form.find('textarea').addClass('h-100');
     $form.find('.hs-form-required').addClass('d-none');
 
-    // remove for attr from labels because, anyway, most of them are wrong and generate page errors
+    // remove "for" attr from labels because, anyway, most of them are wrong and generates page errors
     $form.find('label').each(function() {
         $(this).removeAttr('for');
     });
