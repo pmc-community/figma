@@ -26,7 +26,10 @@ module Jekyll
           "algoliaAppID" => ENV["ALGOLIA_APP_ID"],
           "algoliaIndex" => ENV["ALGOLIA_INDEX"],
           "algoliaWriteApiKey" => ENV["ALGOLIA_WRITE_API_KEY"],
-          "algoliaPublicApiKey" => ENV["ALGOLIA_PUBLIC_API_KEY"]
+          "algoliaPublicApiKey" => ENV["ALGOLIA_PUBLIC_API_KEY"],
+          "algoliaDocSearchEnabled" => true,
+          "algoliaNetlifyEnabled" => false,
+          "algoliaCustomEnabled" => false
         }
 
         if (ENV["ALGOLIA_NETLIFY_ENABLED"] == 'true')
@@ -34,6 +37,9 @@ module Jekyll
           algoliaSettings["algoliaNetlifyIndex"] = ENV["ALGOLIA_NETLIFY_INDEX"]
           algoliaSettings["algoliaNetlifyWriteApiKey"] = ENV["ALGOLIA_NETLIFY_WRITE_API_KEY"]
           algoliaSettings["algoliaNetlifyAdminApiKey"] = ENV["ALGOLIA_NETLIFY_ADMIN_API_KEY"]
+          algoliaSettings["algoliaDocSearchEnabled"] = false
+          algoliaSettings["algoliaNetlifyEnabled"] = true
+          algoliaSettings["algoliaCustomEnabled"] = false
         end
 
         if (ENV["ALGOLIA_CUSTOM_ENABLED"] == 'true')
@@ -41,10 +47,13 @@ module Jekyll
           algoliaSettings["algoliaCustomIndex"] = ENV["ALGOLIA_CUSTOM_INDEX"]
           algoliaSettings["algoliaCustomWriteApiKey"] = ENV["ALGOLIA_CUSTOM_WRITE_API_KEY"]
           algoliaSettings["algoliaCustomAdminApiKey"] = ENV["ALGOLIA_CUSTOM_ADMIN_API_KEY"]
+          algoliaSettings["algoliaDocSearchEnabled"] = false
+          algoliaSettings["algoliaNetlifyEnabled"] = false
+          algoliaSettings["algoliaCustomEnabled"] = true
         end
 
         algoliaClientSettings = {
-          "algoliaEnabled" => algoliaEnabled,
+          "algoliaEnabled" => algoliaEnabled == 'true' ? true : false,
           "algoliaAppID" => ENV["ALGOLIA_APP_ID"],
           "algoliaIndex" => ENV["ALGOLIA_INDEX"],
           "algoliaPublicApiKey" => ENV["ALGOLIA_PUBLIC_API_KEY"],
@@ -55,7 +64,10 @@ module Jekyll
           "algoliaSendInsights" => site.data["buildConfig"]["algoliaSearch"]["insights"],
           "algoliaTextHighlightPrefixTag" => site.data["buildConfig"]["algoliaSearch"]["textHighlightPrefixTag"],
           "algoliaTextHighlightPostfixTag" => site.data["buildConfig"]["algoliaSearch"]["textHighlightPostfixTag"],
-          "algoliaRaiseIssueLink" => "https://github.com/#{site.data["buildConfig"]["github"]["user"]}/#{site.data["buildConfig"]["github"]["repo"]}/issues/new?title="
+          "algoliaRaiseIssueLink" => "https://github.com/#{site.data["buildConfig"]["github"]["user"]}/#{site.data["buildConfig"]["github"]["repo"]}/issues/new?title=",
+          "algoliaDocSearchEnabled" => true,
+          "algoliaNetlifyEnabled" => false,
+          "algoliaCustomEnabled" => false
         }
 
         if (ENV["ALGOLIA_NETLIFY_ENABLED"] == 'true')
@@ -64,12 +76,18 @@ module Jekyll
           algoliaClientSettings["algoliaNetlifyPublicApiKey"] = ENV["ALGOLIA_NETLIFY_PUBLIC_API_KEY"]
           algoliaClientSettings["algoliaNetlifySiteID"] = site.data["buildConfig"]["algoliaSearch"]["netlifySiteId"]
           algoliaClientSettings["algoliaNetlifyBranch"] = site.data["buildConfig"]["algoliaSearch"]["netlifySearchBranch"]
+          algoliaClientSettings["algoliaDocSearchEnabled"] = false
+          algoliaClientSettings["algoliaNetlifyEnabled"] = true
+          algoliaClientSettings["algoliaCustomEnabled"] = false
         end
 
         if (ENV["ALGOLIA_CUSTOM_ENABLED"] == 'true')
           algoliaClientSettings["algoliaCustomAppID"] = ENV["ALGOLIA_CUSTOM_APP_ID"] 
           algoliaClientSettings["algoliaCustomIndex"] = ENV["ALGOLIA_CUSTOM_INDEX"]
           algoliaClientSettings["algoliaCustomPublicApiKey"] = ENV["ALGOLIA_CUSTOM_PUBLIC_API_KEY"]
+          algoliaClientSettings["algoliaDocSearchEnabled"] = false
+          algoliaClientSettings["algoliaNetlifyEnabled"] = false
+          algoliaClientSettings["algoliaCustomEnabled"] = true
         end
 
         site.data["algolia_integration"] = algoliaSettings.to_json

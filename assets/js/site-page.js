@@ -551,7 +551,11 @@ const page__setSelectedTextContextMenu = () =>{
 
         const searchInSite = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
             if (!algoliaSettings.algoliaEnabled) return;
-            $('.DocSearch').click();
+            if (
+                algoliaSettings.algoliaDocSearchEnabled || 
+                (!algoliaSettings.algoliaCustomEnabled && !algoliaSettings.algoliaNetlifyEnabled)
+            ) $('.DocSearch').click();
+            
             $('#selected-text-context-menu').hide();
             $('body').css('overflow', '');
         }

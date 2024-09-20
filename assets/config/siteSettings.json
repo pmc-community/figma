@@ -764,7 +764,7 @@
     "feedbackFormID": "e166804c-61ea-4b51-801d-f4299cb5c06c"
   },
   "algoliaSettings": {
-    "algoliaEnabled": "true",
+    "algoliaEnabled": true,
     "algoliaAppID": "LU8ABE5OK9",
     "algoliaIndex": "figmares-innohub",
     "algoliaPublicApiKey": "14d176209af92e3c8ccb64e9b5da3832",
@@ -776,14 +776,9 @@
     "algoliaTextHighlightPrefixTag": "<mark>",
     "algoliaTextHighlightPostfixTag": "</mark>",
     "algoliaRaiseIssueLink": "https://github.com/pmc-community/figma/issues/new?title=",
-    "algoliaNetlifyAppID": "443L73GZ14",
-    "algoliaNetlifyIndex": "figmares-netlify-index",
-    "algoliaNetlifyPublicApiKey": "db8421441379e8a2176803c1bf7bfbb0",
-    "algoliaNetlifySiteID": "337777c9-8f1b-4962-a904-9c5542b6e0b2",
-    "algoliaNetlifyBranch": "main",
-    "algoliaCustomAppID": "0L8S7XNZUC",
-    "algoliaCustomIndex": "figmares-custom-index",
-    "algoliaCustomPublicApiKey": "903b2b8a6b994cfb78c904f2c2662e9d"
+    "algoliaDocSearchEnabled": true,
+    "algoliaNetlifyEnabled": false,
+    "algoliaCustomEnabled": false
   },
   "pageSettings": {
     "/": {

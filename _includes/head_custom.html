@@ -103,14 +103,42 @@
 {% endif %}
 
 <!-- algolia -->
-{% assign algolia = site.data.algolia_client_integration | json_string_to_object %}
+{% assign algolia = site.data.algolia_integration | json_string_to_object %}
 {% if algolia.algoliaEnabled %}
 
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" as="style" onload="this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"></noscript>
+    {% if algolia.algoliaDocSearchEnabled %}
+        <link rel="preload" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" as="style" onload="this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+        </noscript>
 
-    <link href="https://cdn.jsdelivr.net/npm/@docsearch/js@3" rel="preload" as="script">
-    <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+        <link href="https://cdn.jsdelivr.net/npm/@docsearch/js@3" rel="preload" as="script">
+        <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+
+    {% endif %}
+
+    {% if algolia.algoliaNetlifyEnabled %}
+
+        <link 
+            rel="preload" 
+            href="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.css" 
+            as="style" 
+            onload="this.rel='stylesheet'">
+        <noscript>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.css">
+        </noscript>
+
+        <link 
+        href="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.js" 
+        rel="preload" 
+        as="script">
+
+        <script 
+            type="text/javascript" 
+            src="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.js">
+        </script>
+
+    {% endif %}
 
     <link 
         href="https://cdn.jsdelivr.net/npm/algoliasearch@4.24.0/dist/algoliasearch.umd.js" 
@@ -189,3 +217,7 @@
 
 <!-- GA tag if applicable -->
 {% include siteIncludes/partials/page-common/page-ga-tag.html %}
+
+{% include siteIncludes/partials/page-common/page-new-relic-performance-monitoring.html %}
+
+

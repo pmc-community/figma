@@ -130,7 +130,7 @@ algolia = {
     silentSearchInSite: (query, searchResultsCallback) => {
         const client = algoliasearch(algolia.appId, algolia.apiKey);
         const index = client.initIndex(algolia.indexName);
-        index.search(query, { userToken: setAnonymousUserToken() })
+        index.search(query)
             .then(function(initialSearchResults) {
                 const resultsPages = initialSearchResults.nbPages;
                 let results = [];
@@ -141,7 +141,7 @@ algolia = {
                 };
 
                 const fetchPage = (i) => {
-                    return index.search(query, { page: i, userToken: setAnonymousUserToken() })
+                    return index.search(query, { page: i })
                         .then(function(searchResults) {
                             // Correctly concatenate results, ensuring no overwriting
                             results = results.concat(searchResults.hits);
@@ -477,9 +477,10 @@ algolia = {
         const refreshResults = (query, page) => {
             
             const client = algoliasearch(algolia.appId, algolia.apiKey);
+
             const index = client.initIndex(algolia.indexName);
     
-            index.search(query, { page: page,  hitsPerPage: algolia.hitsPerPage, userToken: setAnonymousUserToken() }) // Search by page
+            index.search(query, { page: page,  hitsPerPage: algolia.hitsPerPage })
                 .then(function(searchResults) {    
                     // Clear existing results and append new ones
                     $('#docsearch-list').empty();
