@@ -2270,9 +2270,12 @@ const getPageTitleFromUrl = (url) => {
     return flatMatchingPages[0] ==='undefined' || !flatMatchingPages[0] ? '' : flatMatchingPages[0].title;
 }
 
-
-
-
+// anonymous user token
+const setAnonymousUserToken = () => {
+    let userTokenCookie = Cookies.get(settings.user.userTokenCookie);
+    if (typeof userTokenCookie === 'undefined') Cookies.set(settings.user.userTokenCookie,`userToken_${uuid()}`, { expires:365 , secure: true, sameSite: 'strict' });
+    return Cookies.get(settings.user.userTokenCookie);
+}
 
 
 

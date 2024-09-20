@@ -19,6 +19,7 @@ const customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
+    setAnonymousUserToken();
     clearTheUrl();
 
     $(document).ready(() => {
@@ -60,6 +61,7 @@ const customiseTheme = (pageObj = null) => {
 }
 
 /* HERE ARE THE FUNCTIONS */
+
 const removeUselessElements = () => {
     const elements = settings.toBeRemovedAfterLoad;
     elements.forEach( element => {

@@ -134,6 +134,9 @@
         "maxWords": 3,
         "maxChars": 20
       }
+    },
+    "user": {
+      "userTokenCookie": "userToken"
     }
   },
   "pageList": [

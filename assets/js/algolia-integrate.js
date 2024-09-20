@@ -130,7 +130,7 @@ algolia = {
     silentSearchInSite: (query, searchResultsCallback) => {
         const client = algoliasearch(algolia.appId, algolia.apiKey);
         const index = client.initIndex(algolia.indexName);
-        index.search(query)
+        index.search(query, { userToken: setAnonymousUserToken() })
             .then(function(initialSearchResults) {
                 const resultsPages = initialSearchResults.nbPages;
                 let results = [];
@@ -479,7 +479,7 @@ algolia = {
             const client = algoliasearch(algolia.appId, algolia.apiKey);
             const index = client.initIndex(algolia.indexName);
     
-            index.search(query, { page: page,  hitsPerPage: algolia.hitsPerPage }) // Search by page
+            index.search(query, { page: page,  hitsPerPage: algolia.hitsPerPage, userToken: setAnonymousUserToken() }) // Search by page
                 .then(function(searchResults) {    
                     // Clear existing results and append new ones
                     $('#docsearch-list').empty();
