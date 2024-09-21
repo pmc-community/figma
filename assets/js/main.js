@@ -4,7 +4,7 @@ const customiseTheme = (pageObj = null) => {
     if (!preFlight.skyClear) return; // comes from preflight-check.js
        
     // first things, first
-    cleanSavedItems();
+    cleanSavedItems(); //removes page without any custom data from saved items
     createGlobalLists();
 
     // clean local storage, remove orphan datatables such as site-pages searchPanes tables
@@ -52,13 +52,11 @@ const customiseTheme = (pageObj = null) => {
         // set some utilities for iframes
         window.utilities = iframe__utilities();
 
-        setTimeout( () => {
+        //setTimeout( () => {
             $('body').css('visibility','visible');
             $('#contentLoading').addClass('d-none');  
-        }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
+        //}, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
     });
-
-    
 
 }
 
@@ -276,8 +274,6 @@ const clearTheUrl = () => {
             0);
         }
     });
-    
-
 }
 
 const handleTocActiveElementsOnScroll = () => {

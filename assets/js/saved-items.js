@@ -721,6 +721,7 @@ const getSavedItemsSize = () => {
     return savedItems.length;
 }
 
+// removes pages without any custom data because it makes no sens to keep them in saved items
 const cleanSavedItems = () => {
     const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     let savedItemIndex = 0;

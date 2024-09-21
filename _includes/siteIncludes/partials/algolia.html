@@ -2,7 +2,7 @@
 {% if algolia.algoliaEnabled == 'true' %}
   <div id="docsearch" class="pr-3"></div>
   <script id="algoliaSearch" type="text/javascript">
-    algolia.setDocSearchBox();
+    $(document).ready(function() {algolia.setDocSearchBox()});
   </script>
 {% elsif site.search_enabled %}
   <script>
