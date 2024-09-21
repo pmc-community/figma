@@ -47,7 +47,7 @@
         "light": "1px solid #44434d",
         "dark": "1px solid #44434d"
       },
-      "hideBodyUntilLoadTimeout": 200
+      "hideBodyUntilLoadTimeout": 0
     },
     "goToTopBtn": {
       "topOfPageId": "#ihs_top_of_page",

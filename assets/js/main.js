@@ -58,6 +58,8 @@ const customiseTheme = (pageObj = null) => {
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
     });
 
+    
+
 }
 
 /* HERE ARE THE FUNCTIONS */
