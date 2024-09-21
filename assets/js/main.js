@@ -52,10 +52,10 @@ const customiseTheme = (pageObj = null) => {
         // set some utilities for iframes
         window.utilities = iframe__utilities();
 
-        //setTimeout( () => {
+        setTimeout( () => {
             $('body').css('visibility','visible');
             $('#contentLoading').addClass('d-none');  
-        //}, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
+        }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
     });
 
 }
