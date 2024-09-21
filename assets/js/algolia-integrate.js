@@ -394,9 +394,6 @@ algolia = {
             },
 
         });
-    
-        // Remove JTD search box after 5 seconds (this time interval is not important, can have any value)
-        setTimeout(() => $('.search').remove(), 100);
 
         // create Show More and Show Less btns
         const createShowMoreShowLess = (state=null) => {
