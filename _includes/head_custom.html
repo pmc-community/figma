@@ -201,7 +201,7 @@
     <script src="/assets/js/hs-integrate.js"></script>
 {% endif %}
 
-{% assign algolia = site.data.algolia_client_integration | json_string_to_object %}
+{% assign algolia = site.data.algolia_integration | json_string_to_object %}
 {% if algolia.algoliaEnabled %}
     <link href="/assets/js/algolia-integrate.js" rel="preload" as="script">
     <script src="/assets/js/algolia-integrate.js" async defer></script>
@@ -218,6 +218,7 @@
 <!-- GA tag if applicable -->
 {% include siteIncludes/partials/page-common/page-ga-tag.html %}
 
-{% include siteIncludes/partials/page-common/page-new-relic-performance-monitoring.html %}
+<!-- New Relic tag if applicable -->
+{% include siteIncludes/partials/new-relic.html %}
 
 

@@ -71,6 +71,12 @@ jobs:
           ALGOLIA_PUBLIC_API_KEY: ${{ secrets.ALGOLIA_PUBLIC_API_KEY }}
           ALGOLIA_SEARCH_ENABLED: ${{ secrets.ALGOLIA_SEARCH_ENABLED }}
           DEPLOY_PROD_BASE_URL: ${{ secrets.DEPLOY_PROD_BASE_URL }}
+          NR_ENABLED: ${{ secrets.NR_ENABLED }}
+          NR_BROWSER_ENABLED: ${{ secrets.NR_BROWSER_ENABLED }}
+          NR_BROWSER_APP_ID: ${{ secrets.NR_BROWSER_APP_ID }}
+          NR_ACCOUNT_ID: ${{ secrets.NR_ACCOUNT_ID }}
+          NR_BROWSER_APP_LICENSE_KEY: ${{ secrets.NR_BROWSER_APP_LICENSE_KEY }}
+          NR_BROWSER_BEACON: ${{ secrets.NR_BROWSER_BEACON }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

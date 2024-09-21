@@ -82,10 +82,3 @@ googleAnalytics:
 googleTagManager:
   enabled: true
   gtm: "GTM-KCLM93S"
-newRelicMonitoring:
-  browserApp:
-    enabled: true
-    appID: "538635883"
-    accountID: "3359031"
-    licenseKey: "NRJS-ad2f0527cbd0763b12f"
-    beacon: "bam.eu01.nr-data.net"
