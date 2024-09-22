@@ -166,25 +166,21 @@
 {% if algolia.algoliaEnabled %}
 
     {% if algolia.algoliaDocSearchEnabled %}
-        <link 
-            rel="preload" 
-            href="https://cdnjs.cloudflare.com/ajax/libs/docsearch-css/3.6.1/style.css" 
+        <link rel="preload" 
+            href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" 
             as="style" 
             onload="this.rel='stylesheet'">
         <noscript>
             <link 
                 rel="stylesheet" 
-                href="https://cdnjs.cloudflare.com/ajax/libs/docsearch-css/3.6.1/style.css" 
-                integrity="sha512-D/hhZ65nttKapenpvY+6RAKOfwEp8U/fUBwHDLkTsyz6W1gkceu1xMlQytVvtJofHmVLqm5RCPJFyugihZ2GwQ==" crossorigin="anonymous" 
-                referrerpolicy="no-referrer" />
+                href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
         </noscript>
 
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/docsearch-js/3.6.1/umd/index.js" rel="preload" as="script">
-        <script 
-            src="https://cdnjs.cloudflare.com/ajax/libs/docsearch-js/3.6.1/umd/index.js" integrity="sha512-n1iwfZIE6N1bskZ901k488L9lU7rlbPQ5MbqtDgavGEF/AazzGzu6SWHQWWh+tTEHn/3RMLxZjUjOSLzSFQyfQ==" 
-            crossorigin="anonymous" 
-            referrerpolicy="no-referrer">
-        </script>
+        <link 
+            href="https://cdn.jsdelivr.net/npm/@docsearch/js@3" 
+            rel="preload" 
+            as="script">
+        <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
 
     {% endif %}
 
@@ -197,8 +193,8 @@
             onload="this.rel='stylesheet'">
         <noscript>
             <link 
-            rel="stylesheet" 
-            href="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.css">
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.css" />
         </noscript>
 
         <link 
@@ -213,18 +209,22 @@
     {% endif %}
 
     <link 
-        href="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.4.1/algoliasearch.umd.js" 
+        href="https://cdn.jsdelivr.net/npm/algoliasearch@4.24.0/dist/algoliasearch.umd.js" 
         rel="preload" 
-        as="script">
-    <script 
-        src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.4.1/algoliasearch.umd.js" integrity="sha512-2QU9ZNMkdVtmoDgTsPLfakcGq5bggTyGSucznuzbRRHp0NtPLJszRHqkClTLs/NQEb08mzuXoi5Jq4B2b+ebWA==" 
-        crossorigin="anonymous" 
-        referrerpolicy="no-referrer">
+        as="script"
+        integrity="sha256-xuCFeRamFnnQX5L73AAMtQnz1S1xwihimc5dVgI5Kq8="
+        crossorigin="anonymous">
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/algoliasearch@4.24.0/dist/algoliasearch.umd.js"
+        integrity="sha256-xuCFeRamFnnQX5L73AAMtQnz1S1xwihimc5dVgI5Kq8="
+        crossorigin="anonymous">
     </script>
 
     <link rel="preconnect" href="https://{{algolia.algoliaAppID}}-dsn.algolia.net" crossorigin />
     
 {% endif %}
+    
 
 <!-- site js assets -->
 <link href="/assets/config/siteSettings.js" rel="preload" as="script">
