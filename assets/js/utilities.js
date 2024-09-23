@@ -2274,7 +2274,20 @@ const getPageTitleFromUrl = (url) => {
 const setAnonymousUserToken = () => {
     let userTokenCookie = Cookies.get(settings.user.userTokenCookie);
     if (typeof userTokenCookie === 'undefined') Cookies.set(settings.user.userTokenCookie,`userToken_${uuid()}`, { expires:365 , secure: true, sameSite: 'strict' });
-    return Cookies.get(settings.user.userTokenCookie);
+    const userToken = Cookies.get(settings.user.userTokenCookie);
+    return userToken;
+}
+
+const pushInfoToGTM = (pageInfo) => {
+    const userToken = Cookies.get(settings.user.userTokenCookie);
+    const userUseSavedItems = pageInfo.savedInfo === 'none' || pageInfo.savedInfo.customNotes.length + pageInfo.savedInfo.customTags.length + pageInfo.savedInfo.customCategories.length + pageInfo.savedInfo.customComments.length === 0 ? false : true;
+    if (gData.gtm.enabled) {
+        window.dataLayer.push({
+            'event': 'userData',
+            'userToken': userToken,
+            'userUseSavedItems': userUseSavedItems
+        });
+    }
 }
 
 

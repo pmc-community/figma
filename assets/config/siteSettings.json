@@ -790,5 +790,15 @@
         }
       }
     }
+  },
+  "gData": {
+    "ga": {
+      "enabled": true,
+      "ga": "G-T86D5YQ5WF"
+    },
+    "gtm": {
+      "enabled": true,
+      "gtm": "GTM-KCLM93S"
+    }
   }
 }

@@ -19,7 +19,6 @@ const customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
-    setAnonymousUserToken();
     clearTheUrl();
 
     $(document).ready(() => {
@@ -51,6 +50,9 @@ const customiseTheme = (pageObj = null) => {
 
         // set some utilities for iframes
         window.utilities = iframe__utilities();
+
+        setAnonymousUserToken();
+        if (gData.gtm.enabled) pushInfoToGTM(pageInfo);
 
         setTimeout( () => {
             $('body').css('visibility','visible');

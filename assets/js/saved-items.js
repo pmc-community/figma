@@ -727,7 +727,7 @@ const cleanSavedItems = () => {
     let savedItemIndex = 0;
     let toRemove = [];
     savedItems.forEach(page => {
-        if (page.customNotes.length + page.customTags.length + page.customCategories.length === 0)
+        if (page.customNotes.length + page.customTags.length + page.customCategories.length + page.customComments.length === 0)
             toRemove.push(savedItemIndex); 
         savedItemIndex += 1;
     });

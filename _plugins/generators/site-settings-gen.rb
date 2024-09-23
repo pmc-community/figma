@@ -24,7 +24,11 @@ module Jekyll
         "catDetails" => site.data["categories_details"],
         "hsSettings" => JSON.parse(site.data["hs_integration"]),
         "algoliaSettings" => JSON.parse(site.data["algolia_client_integration"]),
-        "pageSettings" => site.data["pageConfig"]
+        "pageSettings" => site.data["pageConfig"],
+        "gData" => {
+          "ga" => site.data["buildConfig"]["googleAnalytics"],
+          "gtm" => site.data["buildConfig"]["googleTagManager"]
+        }
 
       }
 

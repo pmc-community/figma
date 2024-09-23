@@ -237,7 +237,7 @@ const catDetails = allSettings.catDetails;
 const tagList = allSettings.tagList;
 const tagDetails = allSettings.tagDetails;
 const allPageSettings = allSettings.pageSettings;
-
+const gData = allSettings.gData;
 
 // we use a function to get permalink options
 // as permalink extraction from url returns always /permalink/
