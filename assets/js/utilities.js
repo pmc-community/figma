@@ -2285,7 +2285,7 @@ const pushInfoToGTM = (pageInfo) => {
         window.dataLayer.push({
             'event': 'userData',
             'userToken': userToken,
-            'pageHasSavedItems': userUseSavedItems
+            'pageHasSavedItems': `${pageInfo.siteInfo.permalink}: ${userUseSavedItems}`
         });
     }
 }
