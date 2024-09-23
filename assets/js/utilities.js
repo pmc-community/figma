@@ -2280,12 +2280,12 @@ const setAnonymousUserToken = () => {
 
 const pushInfoToGTM = (pageInfo) => {
     const userToken = Cookies.get(settings.user.userTokenCookie);
-    const userUseSavedItems = pageInfo.savedInfo === 'none' || pageInfo.savedInfo.customNotes.length + pageInfo.savedInfo.customTags.length + pageInfo.savedInfo.customCategories.length + pageInfo.savedInfo.customComments.length === 0 ? false : true;
+    const userUseSavedItems = pageInfo.savedInfo === 'none' || pageInfo.savedInfo.customNotes.length + pageInfo.savedInfo.customTags.length + pageInfo.savedInfo.customCategories.length + pageInfo.savedInfo.customComments.length === 0 ? 0 : 1;
     if (gData.gtm.enabled) {
         window.dataLayer.push({
             'event': 'userData',
             'userToken': userToken,
-            'userUseSavedItems': userUseSavedItems
+            'pageHasSavedItems': userUseSavedItems
         });
     }
 }
