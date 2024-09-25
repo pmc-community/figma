@@ -141,7 +141,7 @@
 </script>
 
 
-<!-- jqury ui load last to ensure that jquery is available -->
+<!-- jquery ui load last to ensure that jquery is available -->
 <link 
     rel="preload" 
     href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/themes/base/jquery-ui.min.css" 
@@ -274,9 +274,6 @@
 <link href="/assets/js/preflight-check.js" rel="preload" as="script">
 <script src="/assets/js/preflight-check.js"></script>
 
-<link href="/assets/js/hooks.js" rel="preload" as="script">
-<script src="/assets/js/hooks.js"></script>
-
 <link href="/assets/js/utilities.js" rel="preload" as="script">
 <script src="/assets/js/utilities.js"></script>
 
@@ -325,6 +322,11 @@
 {% if page.permalink == "/" %}
     <link rel="preload" as="image" href="/assets/img/home-600.webp" type="image/webp">
 {% endif %}
+
+<!-- hooks are last to allow hooking everywhere -->
+<link href="/assets/js/hooks.js" rel="preload" as="script">
+<script src="/assets/js/hooks.js"></script>
+<!-- end site js assets -->
 
 <script 
     src="//instant.page/5.2.0" 

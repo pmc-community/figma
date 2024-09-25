@@ -122,6 +122,7 @@ if (pagePermalink !== '/') {
 }
 
 /* SOME GENERAL PURPOSE UTILITIES */
+
 // global function execution interceptor
 // functions to be interceptd must be in global scope, 
 // so must be defined like window.func = () => {} instead of const func = () => {}
@@ -164,6 +165,16 @@ if (pagePermalink !== '/') {
        }
    }, 100); // Check every 100 milliseconds
 })();
+
+// binding extra arguments at the end of the default arguments for a function
+// can be useful for hooks
+// boundArgs must be iterable, so it must be given as [something-here]
+
+const bindArgsAtEnd = (fn, boundArgs) => {
+    return function(...defaultArgs) {
+        return fn(...defaultArgs, ...boundArgs);
+    };
+}
 
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);
@@ -2332,4 +2343,8 @@ const pushInfoToGTM = (pageInfo) => {
             'pageHasSavedItems': `${pageInfo.siteInfo.permalink}: ${userUseSavedItems}`
         });
     }
+}
+
+const fireGTMTag = (gtmObject) => {
+    if (gData.gtm.enabled) window.dataLayer.push(gtmObject);
 }
