@@ -130,40 +130,56 @@ if (pagePermalink !== '/') {
 // the list must be available prior to the definition of this interceptor
 (function () {
 
-   const interceptFunction = (fn, functionName, cb=null) => {
-       return function (...args) {
+    const interceptFunction = (fn, functionName, cb=null) => {
+        return function (...args) {
             const result = fn.apply(this, args);
             cb.forEach(callback => {
                 if (callback) callback(functionName, result, args);
             })
             return result;
-       };
-   }
+        };
+    }
 
-   // Function to wrap specified standalone functions in the global scope
-   const wrapStandaloneFunctions = () => {
-        const targetFunctions = _.map(hooks.targetFunctions, 'func');
+    // Function to wrap specified standalone functions in the global scope
+    const wrapStandaloneFunctions = (functions) => {
+        //const targetFunctions = _.map(postHooks.targetFunctions, 'func');
+        const targetFunctions = _.map(functions, 'func');
         targetFunctions.forEach(functionName => {
            const fn = window[functionName]; 
            if (typeof fn === "function" && !fn.__intercepted) {
-                const cb = getObjectFromArray({func: functionName}, hooks.targetFunctions).cb;
+                const cb = getObjectFromArray({func: functionName}, functions).cb;
                 // Wrap the function and replace it in the global scope
                 window[functionName] = interceptFunction(fn, functionName, cb);
                 window[functionName].__intercepted = true; // Flag to prevent re-wrapping
-           }
-       });
+            }
+        });
    }
 
-   // Polling mechanism to check for the functions
-   const checkInterval = setInterval(() => {
-       wrapStandaloneFunctions(); // Attempt to wrap functions
-       const targetFunctions = _.map(hooks.targetFunctions, 'func');
-       // Check if all target functions have been wrapped successfully
-       const allWrapped = targetFunctions.every(fn => typeof window[fn] === 'function' && window[fn].__intercepted);
-       if (allWrapped) {
-           clearInterval(checkInterval); // Stop checking once all functions are wrapped
-       }
+    // Polling mechanism to check for the functions
+    const checkInterval_POST_HOOKS = setInterval(() => {
+        functions = postHooks.targetFunctions;
+        wrapStandaloneFunctions(functions); // Attempt to wrap functions
+        const targetFunctions = _.map(functions, 'func');
+        // Check if all target functions have been wrapped successfully
+        const allWrapped = targetFunctions.every(fn => typeof window[fn] === 'function' && window[fn].__intercepted);
+        if (allWrapped) {
+            clearInterval(checkInterval_POST_HOOKS); // Stop checking once all functions are wrapped
+        }
    }, 100); // Check every 100 milliseconds
+
+    // Polling mechanism to check for the functions
+    const checkInterval_PRE_HOOKS = setInterval(() => {
+        functions = preHooks.targetFunctions;
+        wrapStandaloneFunctions(functions); // Attempt to wrap functions
+        const targetFunctions = _.map(functions, 'func');
+        // Check if all target functions have been wrapped successfully
+        const allWrapped = targetFunctions.every(fn => typeof window[fn] === 'function' && window[fn].__intercepted);
+        if (allWrapped) {
+            clearInterval(checkInterval_PRE_HOOKS); // Stop checking once all functions are wrapped
+        }
+    }, 100); // Check every 100 milliseconds
+
+
 })();
 
 // binding extra arguments at the end of the default arguments for a function

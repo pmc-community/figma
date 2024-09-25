@@ -64,7 +64,7 @@ const customiseTheme = (pageObj = null) => {
 
 /* HERE ARE THE FUNCTIONS */
 
-const removeUselessElements = () => {
+window.removeUselessElements = () => {
     const elements = settings.toBeRemovedAfterLoad;
     elements.forEach( element => {
        const selector  = Object.keys(element)[0];
@@ -249,7 +249,7 @@ const setGoToTopBtn = () => {
     $(window).on('scroll', () =>{hideWhenNotNeeded();});
 }        
 
-const clearTheUrl = () => {
+window.clearTheUrl = () => {
     $(window).on('scroll', function() {
         hash = window.location.hash;
         if(hash) {

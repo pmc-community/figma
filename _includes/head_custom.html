@@ -277,6 +277,10 @@
 <link href="/assets/js/utilities.js" rel="preload" as="script">
 <script src="/assets/js/utilities.js"></script>
 
+<!-- hooks to functions executed until page loaded -->
+<link href="/assets/js/pre-hooks.js" rel="preload" as="script">
+<script src="/assets/js/pre-hooks.js"></script>
+
 <link href="/assets/js/main.js" rel="preload" as="script">
 <script src="/assets/js/main.js"></script>
 
@@ -324,8 +328,8 @@
 {% endif %}
 
 <!-- hooks are last to allow hooking everywhere -->
-<link href="/assets/js/hooks.js" rel="preload" as="script">
-<script src="/assets/js/hooks.js"></script>
+<link href="/assets/js/post-hooks.js" rel="preload" as="script">
+<script src="/assets/js/post-hooks.js"></script>
 <!-- end site js assets -->
 
 <script 

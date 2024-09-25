@@ -152,7 +152,10 @@ window.addNote = (note, pageInfo) => {
 
 }
 
-const deleteNote = (noteId, pageInfo) => {
+// if we ned to intercept this function with the global intrceptor (see utilities.js)
+// and we don't want to define it in the global scope like window.func = (...) => {}
+// we cannot use arrow function syntax and we ned to stick to the classical function definition
+function deleteNote(noteId, pageInfo)  {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
         title: pageInfo.siteInfo.title

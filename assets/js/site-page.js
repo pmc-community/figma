@@ -928,7 +928,7 @@ const setTriggerReorderSectionsInFooter = () => {
     });
 }
 
-const setPageButtonsFunctions = () => {
+window.setPageButtonsFunctions = () => {
     // click "Tags" badge
     $(document)
         .off('click', 'span[siteFunction="pageHasCustomTagsBadge"]')
