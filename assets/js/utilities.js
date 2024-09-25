@@ -121,6 +121,50 @@ if (pagePermalink !== '/') {
     };
 }
 
+/* SOME GENERAL PURPOSE UTILITIES */
+// global function execution interceptor
+// functions to be interceptd must be in global scope, 
+// so must be defined like window.func = () => {} instead of const func = () => {}
+// the interceptor use a list of functions that are set to be intrercepted
+// the list must be available prior to the definition of this interceptor
+(function () {
+
+   const interceptFunction = (fn, functionName, cb=null) => {
+       return function (...args) {
+            const result = fn.apply(this, args);
+            cb.forEach(callback => {
+                if (callback) callback(functionName, result, args);
+            })
+            return result;
+       };
+   }
+
+   // Function to wrap specified standalone functions in the global scope
+   const wrapStandaloneFunctions = () => {
+        const targetFunctions = _.map(hooks.targetFunctions, 'func');
+        targetFunctions.forEach(functionName => {
+           const fn = window[functionName]; 
+           if (typeof fn === "function" && !fn.__intercepted) {
+                const cb = getObjectFromArray({func: functionName}, hooks.targetFunctions).cb;
+                // Wrap the function and replace it in the global scope
+                window[functionName] = interceptFunction(fn, functionName, cb);
+                window[functionName].__intercepted = true; // Flag to prevent re-wrapping
+           }
+       });
+   }
+
+   // Polling mechanism to check for the functions
+   const checkInterval = setInterval(() => {
+       wrapStandaloneFunctions(); // Attempt to wrap functions
+       const targetFunctions = _.map(hooks.targetFunctions, 'func');
+       // Check if all target functions have been wrapped successfully
+       const allWrapped = targetFunctions.every(fn => typeof window[fn] === 'function' && window[fn].__intercepted);
+       if (allWrapped) {
+           clearInterval(checkInterval); // Stop checking once all functions are wrapped
+       }
+   }, 100); // Check every 100 milliseconds
+})();
+
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);
     var $children = $node.children();
@@ -2283,13 +2327,9 @@ const pushInfoToGTM = (pageInfo) => {
     const userUseSavedItems = pageInfo.savedInfo === 'none' || pageInfo.savedInfo.customNotes.length + pageInfo.savedInfo.customTags.length + pageInfo.savedInfo.customCategories.length + pageInfo.savedInfo.customComments.length === 0 ? 0 : 1;
     if (gData.gtm.enabled) {
         window.dataLayer.push({
-            'event': 'userData',
+            'event': 'User_Data',
             'userToken': userToken,
             'pageHasSavedItems': `${pageInfo.siteInfo.permalink}: ${userUseSavedItems}`
         });
     }
 }
-
-
-
-

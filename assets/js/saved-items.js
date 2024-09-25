@@ -104,7 +104,7 @@ const removeAllCustomNotes = (pageInfo) => {
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
 }
 
-const addNote = (note, pageInfo) => {
+window.addNote = (note, pageInfo) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
         title: pageInfo.siteInfo.title
@@ -337,7 +337,7 @@ const getPageStatusInSavedItems = (pageInfo) => {
     return findObjectInArray({permalink: pageInfo.siteInfo.permalink, title:pageInfo.siteInfo.title}, savedItems);
 }
 
-const addTag = (tag, pageInfo) => {
+window.addTag = (tag, pageInfo) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
         title: pageInfo.siteInfo.title
@@ -379,7 +379,7 @@ const addTag = (tag, pageInfo) => {
 
 }
 
-const addCat = (cat, pageInfo) => {
+window.addCat = (cat, pageInfo) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
         title: pageInfo.siteInfo.title
