@@ -1,33 +1,36 @@
-// hooks can be any function that is executed until the page is fully loaded
+// hooks can be any function that is executed from document.ready event until the page is fully loaded
 // functions must be defined in the global scope (window.func = (...) => {...})
+// functions must be called inside a $(document).ready(function() {.....}) block
+// functions must be not defined as props of some objects to be instantiated during loading
+// because "hook by function object" is not available since the objects doesn't exist yet
 
-preHooks = {
+// these are usefull to hook in the process of loading the page, after document.ready event and before page fully loaded
+// these cannot use assets, functions, objects of the site, only superglobals and globals are visible here
+// these will not capture hooks triggered by <script> tags or triggered outside $(document).ready(function() {.....}) blocks
 
-    get currentPage() { return {title: $('page-data-title').text(), permalink: $('page-data-permalink').text()} },
-    targetFunctions: [],
+// HEADS UP!!!
+// HOOK ACTIONS CAN BE PLACED IN ANY JS SCRIPT FILE, BUT SHOULD:
+// 1. BE PLACED AT THE START OF THE FILE, BEFORE ANYTHING ELSE IS EXECUTED (OTHRWISE WILL EB REMOVED WHEN THE PAGE IS CHANGED)
+// 2. TO BE SURE THAT THE HOOK FUNCTION WILL BE EXECUTED ADTER PLACING AN ACTION FOR IT
+// 3. IT IS RECOMMENDED TO PLACE THE ACTIONS IN THEIR DEDICATED FILES,DEPENDING ON THEIR PURPOSE 
+//  - pre-hooks.js: BEST FOR HOOKS TRIGGERED FROM document.ready EVENT UNTIL THE PAGE IS FULLY LOADED - SOME RESTRICTIONS FOR USING ASSETS
+//  - post-hooks.js: BEST FOR HOOKS TRIGGERED BY USER ACTIONS (CLICK ON BUTTONS, ETC.) - NO RESTRICTIONS FOR USING ASSETS
+//  -  _includes/siteIncludes/partials/global-utilities.html): BEST FOR HOOKS TRIGGRED BY <script> TAGS AND OUTSIDE document.ready BLOCKS: - CANNOT USE ANY ASSETS EXCEPT INIT VARS INSERTED BY JEKYLL DURING THE BUILD PROCESS
 
-    addAction: (whereToAdd, action ) => {
-        hook = _.find(preHooks.targetFunctions, {func: whereToAdd});
-        if (!hook || hook === undefined) {
-            funcObj = {
-                func: whereToAdd,
-                cb:[]
-            }
-            
-            preHooks.targetFunctions.push(funcObj);
-            hook = _.find(preHooks.targetFunctions, {func: whereToAdd});
-        }
-        if (hook && hook !== undefined) hook.cb.push(action);
-    },
+hooks.addAction('removeUselessElements', (functionName, result, args) => { 
+    console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
+}, 5);
 
-    addActionEX: (func, action ) => {
-        whereToAdd = func.name;
-        // first, moving to global scope and remove the original
-        //if  (typeof window[whereToAdd] !== 'function') { window[func.name] = func; func=undefined;}
-        postHooks.addAction(whereToAdd, action);
-    },
+hooks.addAction('removeUselessElements', (functionName, result, args) => { 
+    console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()} higher priority`) 
+}, 4);
 
-}
-preHooks.addAction('removeUselessElements', (functionName, result, args) => { console.log(`sample pre-hook after: ${functionName} on ${preHooks.currentPage.permalink}`) });
-preHooks.addAction('setPageButtonsFunctions', (functionName, result, args) => { console.log(`sample pre-hook after: ${functionName} on ${preHooks.currentPage.permalink}`) });
+hooks.addAction('setPageButtonsFunctions', (functionName, result, args) => { 
+    console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
+});
+
+hooks.addAction('addCat', (functionName, result, args) => { 
+    console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()} lower priority`) 
+},7);
+
 

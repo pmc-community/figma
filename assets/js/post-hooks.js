@@ -1,38 +1,13 @@
 // hooks can be any function that was not yet executed at the moment when this script is loaded
 // it works both with functions already defined in the global scope (window.func = () => {...})
 // or with functions that are not in the global scope, but defined in the classical way, not as arrow functions
-// these are useful whn needed to extend the functionality of functions that are executed based on user action
+// these are useful when needed to extend the functionality of functions that are executed based on user action (e.g. click on buttons)
+// these can use any asset, function, object and accessible variable of the site
+// HEADS UP!!!
+// CANNOT DEFINE AN ACTION FOR A HOOK IN MULTIPLE PLACES. HOOK ACTIONS MUST BE DEFINED AS init OR pre OR post.
+// DEFINING ACTIONS IN MULTIPLE PLACES WILL NOT RAISE ERRORS BUT WILL EXECUTE THE FIRST FOUND ACTION ONLY 
 
-postHooks = {
-
-    get currentPage() { return {title: $('page-data-title').text(), permalink: $('page-data-permalink').text()} },
-
-    targetFunctions: [],
-
-    addAction: (whereToAdd, action ) => {
-        hook = _.find(postHooks.targetFunctions, {func: whereToAdd});
-        if (!hook || hook === undefined) {
-            funcObj = {
-                func: whereToAdd,
-                cb:[]
-            }
-            
-            postHooks.targetFunctions.push(funcObj);
-            hook = _.find(postHooks.targetFunctions, {func: whereToAdd});
-        }
-        if (hook && hook !== undefined) hook.cb.push(action);
-    },
-
-    // used for functions that are not defined in the global scope
-    // HEADS UP!!! THESE FUNCTIONS MUST BE DEFINED IN CLASSICAL WAY function func(args) {}
-    // ARROW FUNCTION DEFINITIONS DOESN'T WORK; IT MOVES THE FUNCTION TO THE GLOBAL SCOPE,
-    // BUT DOESN'T REMOVE THE ORIGINAL, THUS WILL EXECUTE IT AND WILL NOT BE INTERCEPTED
-    addActionEX: (func, action ) => {
-        whereToAdd = func.name;
-        // first, moving to global scope and remove the original
-        if  (typeof window[whereToAdd] !== 'function') { window[func.name] = func; func=undefined;}
-        postHooks.addAction(whereToAdd, action);
-    },
+postHooksActions = {
 
     addNoteAction: (functionName, result, args, ...extraArgs) => {
         const userToken = Cookies.get(settings.user.userTokenCookie);
@@ -61,9 +36,16 @@ postHooks = {
     }
 }
 
-postHooks.addAction('addNote', bindArgsAtEnd(postHooks.addNoteAction, [])); // hook by function name
-postHooks.addAction('addTag', bindArgsAtEnd(postHooks.addTagAction, []));
-postHooks.addAction('addCat', bindArgsAtEnd(postHooks.addCatAction, []));
-postHooks.addActionEX(deleteNote, (functionName, result, args) => { 
-    console.log(`sample post-hook after: ${functionName} on ${postHooks.currentPage.permalink}`) 
+hooks.addAction('addNote', globUtils.bindArgsAtEnd(postHooksActions.addNoteAction, [])); // hook by function name
+hooks.addAction('addTag', globUtils.bindArgsAtEnd(postHooksActions.addTagAction, []));
+hooks.addAction('addCat', globUtils.bindArgsAtEnd(postHooksActions.addCatAction, []));
+hooks.addActionEX(deleteNote, (functionName, result, args) => { 
+    console.log(`sample post-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
 }); // hook by function object
+
+hooks.addAction('addCat', (functionName, result, args) => { 
+    console.log(`sample post-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
+},4);
+hooks.addAction('addCat', (functionName, result, args) => { 
+    console.log(`sample post-hook after: ${functionName} on ${$('page-data-permalink').text()} higher priority`) 
+},3);

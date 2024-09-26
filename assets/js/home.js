@@ -1,4 +1,4 @@
-const home__headerSection = () => {
+window.home__headerSection = () => {
     $(document).ready(function() {{
         homePage.setHeaderButtonsFunctions();
     }});

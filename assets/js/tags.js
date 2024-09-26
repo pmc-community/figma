@@ -1,7 +1,14 @@
 // Let's do some work
+
+// placing some hooks if needed. should be on top of the file, before anything else is executed
+hooks.addAction('addCat', (functionName, result, args) => { 
+    console.log(`sample random: ${functionName} on ${$('page-data-permalink').text()} high priority`) 
+},2);
+
 const setTagsSupport = () => {
 
     $(document).ready(()=> {
+    
         setPageSavedButtonsStatus();  
         setCustomTagCloud();
         setTagInfoPageButtonsFunctions();
@@ -542,6 +549,7 @@ const setCustomTagCloud = () => {
 
 // here we set the datatable with tag details
 const showTagDetails = (tag) => {
+
     if ( !tag ) return;
     if ( tag === 'undefined' ) return;
     if ( tag === '' ) return;
