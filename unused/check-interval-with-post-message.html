@@ -60,7 +60,10 @@
                 return typeof fn === 'function' && fn.__intercepted;
             });
 
-            if (!allWrapped) window.postMessage({ type: 'functionWrapNotReady' }, '*');
+            if (allWrapped) {
+                console.log("All target functions have been wrapped.");
+            }
+            else window.postMessage({ type: 'functionWrapNotReady' }, '*');
             
         },
 

@@ -40,7 +40,7 @@ hooks.addAction('addNote', globUtils.bindArgsAtEnd(postHooksActions.addNoteActio
 hooks.addAction('addTag', globUtils.bindArgsAtEnd(postHooksActions.addTagAction, []));
 hooks.addAction('addCat', globUtils.bindArgsAtEnd(postHooksActions.addCatAction, []));
 hooks.addActionEX(deleteNote, (functionName, result, args) => { 
-    console.log(`sample post-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
+    console.log(`sample post-hook by object after: ${functionName} on ${$('page-data-permalink').text()}`) 
 }); // hook by function object
 
 hooks.addAction('addCat', (functionName, result, args) => { 

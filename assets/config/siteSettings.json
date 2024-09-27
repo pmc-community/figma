@@ -268,7 +268,18 @@
       "createTime": "2024-08-22 12:39:46 +0300",
       "createTimeUTC": 1724319586,
       "relatedPages": [
-
+        {
+          "title": "Introduction",
+          "permalink": "/intro/"
+        },
+        {
+          "title": "Collection-2/X",
+          "permalink": "collection-2/X/x/"
+        },
+        {
+          "title": "Collection-2/Y",
+          "permalink": "/collection-2/y/y/"
+        }
       ],
       "autoSummary": "markdown content direct included in the page. heads up!!!links to other site docs must be given using the permalinks, not the ...",
       "similarByContent": [
@@ -488,7 +499,14 @@
       "createTime": "2024-08-22 12:39:46 +0300",
       "createTimeUTC": 1724319586,
       "relatedPages": [
-
+        {
+          "title": "Play with content",
+          "permalink": "/pwc/"
+        },
+        {
+          "title": "Collection-2/Z",
+          "permalink": "/collection-2/Z/z/"
+        }
       ],
       "autoSummary": "own markdown content. this the content directly typed in collection-2/x. this is one good inline external link to https://pmc ...",
       "similarByContent": [

@@ -51,17 +51,21 @@
         },
 
         wrapExistingFunctions: () => {
-            hooks.targetFunctions.forEach(({ func }) => {
-                hooks.wrapFunction(func); 
-            });
+            const checkInterval = setInterval(() => {
+                hooks.targetFunctions.forEach(({ func }) => {
+                    hooks.wrapFunction(func); 
+                });
 
-            const allWrapped = hooks.targetFunctions.every(({ func }) => {
-                const fn = window[func];
-                return typeof fn === 'function' && fn.__intercepted;
-            });
+                const allWrapped = hooks.targetFunctions.every(({ func }) => {
+                    const fn = window[func];
+                    return typeof fn === 'function' && fn.__intercepted;
+                });
 
-            if (!allWrapped) window.postMessage({ type: 'functionWrapNotReady' }, '*');
-            
+                if (allWrapped) {
+                    clearInterval(checkInterval); 
+                    console.log("All target functions have been wrapped.");
+                }
+            }, 100); 
         },
 
         monitorFunctions: () => {
@@ -78,6 +82,9 @@
             return new Proxy(window, handler);
         },
 
+        checkAndWrapBeforeReady: () => {
+            hooks.wrapExistingFunctions(); 
+        }
     };
 
     const globUtils = {
@@ -87,6 +94,7 @@
             };
         }
     };
+
 
 </script>
 
@@ -108,13 +116,7 @@
 
 <script id="start-hooks">
     
-    window.addEventListener('message', (event) => {
-        if (event.data.type === 'functionWrapNotReady') {
-            hooks.wrapExistingFunctions(); 
-        }
-    });
-    
-    window.postMessage({ type: 'functionWrapNotReady' }, '*');
+    hooks.checkAndWrapBeforeReady(); 
     hooks.monitorFunctions(); 
 
 </script>
