@@ -800,5 +800,8 @@
       "enabled": true,
       "gtm": "GTM-KCLM93S"
     }
+  },
+  "newRelicSettings": {
+    "newRelicEnabled": "true"
   }
 }

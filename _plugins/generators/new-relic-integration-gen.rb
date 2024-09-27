@@ -25,13 +25,22 @@ module Jekyll
           "newRelicBrowserAppBeacon" => ENV["NR_BROWSER_BEACON"]
         }
 
+        newRelicClientSettings = {
+          "newRelicEnabled" => nrEnabled
+        }
+
         site.data["new_relic_integration"] = newRelicSettings.to_json
+        site.data["new_relic_client_integration"] = newRelicClientSettings.to_json
         Globals.moveUpOneLine
         Globals.clearLine
         Globals.putsColText(Globals::PURPLE,"Generating New Relic settings ... done")
       else
         newRelicSettings = {}
+        newRelicClientSettings = {
+          "newRelicEnabled" => nrEnabled
+        }
         site.data["new_relic_integration"] = newRelicSettings.to_json
+        site.data["new_relic_client_integration"] = newRelicClientSettings.to_json
       end
     end
 

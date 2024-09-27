@@ -9,6 +9,10 @@
 // these will not capture hooks triggered by <script> tags or triggered outside $(document).ready(function() {.....}) blocks
 
 // HEADS UP!!!
+// this version supports functions and nested functions defined inside functions
+// this version does not support DOM events handlers and variable assigned functions
+
+// HEADS UP!!!
 // HOOK ACTIONS CAN BE PLACED IN ANY JS SCRIPT FILE, BUT SHOULD:
 // 1. BE PLACED AT THE START OF THE FILE, BEFORE ANYTHING ELSE IS EXECUTED (OTHRWISE WILL EB REMOVED WHEN THE PAGE IS CHANGED)
 // 2. TO BE SURE THAT THE HOOK FUNCTION WILL BE EXECUTED ADTER PLACING AN ACTION FOR IT

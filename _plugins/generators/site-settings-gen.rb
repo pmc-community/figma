@@ -28,7 +28,8 @@ module Jekyll
         "gData" => {
           "ga" => site.data["buildConfig"]["googleAnalytics"],
           "gtm" => site.data["buildConfig"]["googleTagManager"]
-        }
+        },
+        "newRelicSettings" => JSON.parse(site.data["new_relic_client_integration"])
 
       }
 

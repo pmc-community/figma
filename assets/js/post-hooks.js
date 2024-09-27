@@ -51,5 +51,19 @@ hooks.addAction('addCat', (functionName, result, args) => {
 },3);
 
 hooks.addAction('createAutoSummaryPageContainer', (functionName, result, args) => { 
-    console.log(`sample post-hook after nested function: ${functionName} on ${$('page-data-permalink').text()}`) 
+    console.log(`sample post-hook after nested function: ${functionName} on ${$('page-data-permalink').text()}`);
+
+    if (nrSettings.newRelicEnabled === 'true') {
+        logCustomAttributes = {
+            source: 'Figmares',
+            permalink: $('page-data-permalink').text(),
+            datetime: getFullCurrentDateTime(),
+            action:'created createAutoSummaryPageContainer',
+            function: functionName,
+            args: args,
+            result: result,
+            user: Cookies.get(settings.user.userTokenCookie)
+        }
+        newrelic.log(`created createAutoSummaryPageContainer`, {customAttributes: logCustomAttributes});
+    }
 }); // nested function but not used as dynamic handler; hook by function object is not possible for nested functions

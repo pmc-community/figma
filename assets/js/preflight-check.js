@@ -238,6 +238,7 @@ const tagList = allSettings.tagList;
 const tagDetails = allSettings.tagDetails;
 const allPageSettings = allSettings.pageSettings;
 const gData = allSettings.gData;
+const nrSettings = allSettings.newRelicSettings;
 
 // we use a function to get permalink options
 // as permalink extraction from url returns always /permalink/
