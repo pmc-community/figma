@@ -2,7 +2,8 @@
 // called from _includes/siteIncludes/partials/page-common/page-auto-summary.html
 const page__getAutoSummary = () => {
 
-    const createAutoSummaryPageContainer = (page) => {
+    // defined as window.func because we want to hook actions on it
+    window.createAutoSummaryPageContainer = (page) => {
         const autoSummary = page.siteInfo.autoSummary || [];
         
         return (

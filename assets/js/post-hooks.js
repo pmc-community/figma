@@ -49,3 +49,7 @@ hooks.addAction('addCat', (functionName, result, args) => {
 hooks.addAction('addCat', (functionName, result, args) => { 
     console.log(`sample post-hook after: ${functionName} on ${$('page-data-permalink').text()} higher priority`) 
 },3);
+
+hooks.addAction('createAutoSummaryPageContainer', (functionName, result, args) => { 
+    console.log(`sample post-hook after nested function: ${functionName} on ${$('page-data-permalink').text()}`) 
+}); // nested function but not used as dynamic handler; hook by function object is not possible for nested functions

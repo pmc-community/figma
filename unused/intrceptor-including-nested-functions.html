@@ -1,16 +1,4 @@
-<script id="glob-utilities">
-
-    const globUtils = {
-        bindArgsAtEnd: (fn, boundArgs) => {
-            return function (...defaultArgs) {
-                return fn(...defaultArgs, ...boundArgs);
-            };
-        }
-    };
-
-</script>
-
-<script id="hooks-utilities">
+<script id="global-utilities">
 
     const hooks = {
         targetFunctions: [],
@@ -113,11 +101,36 @@
 
             return new Proxy(window, handler);
         },
+
+    };
+
+    const globUtils = {
+        bindArgsAtEnd: (fn, boundArgs) => {
+            return function (...defaultArgs) {
+                return fn(...defaultArgs, ...boundArgs);
+            };
+        }
     };
 
 </script>
 
-<script id="hooks-start">
+<script id="init-hooks">
+
+    hooks.addAction('home__headerSection', (functionName, result, args) => { 
+        console.log(`sample init hook after: ${functionName} on {{page.permalink}}`);
+    }, 10);
+
+    hooks.addAction('clearTheUrl', (functionName, result, args) => { 
+        console.log(`sample init hook after: ${functionName} on {{page.permalink}}`);
+    }, 10);
+
+    hooks.addAction('deleteNote', (functionName, result, args) => { 
+        console.log(`sample init hook after: ${functionName} on {{page.permalink}}`);
+    }, 10);
+
+</script>
+
+<script id="start-hooks">
     
     window.addEventListener('message', (event) => {
         if (event.data.type === 'functionWrapNotReady') {
@@ -129,4 +142,3 @@
     hooks.monitorFunctions(); 
 
 </script>
-
