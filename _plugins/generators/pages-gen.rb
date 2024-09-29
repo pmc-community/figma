@@ -12,19 +12,16 @@ module Jekyll
     safe true
     priority :highest # should be the first
 
-    # HEADS UP!!!
-    # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE
-    # THE FILE IS buildConfig.yml AND IS LOCATED IN _data FOLDER
-    # content.index(site.data["siteConfig"]["marker404"])
-
     def generate(site)
 
-      # we generate the list of pages  in a separate file because we need to preserve the documents timestamps
+      # we generate the list of pages in a separate file because we need to preserve the documents timestamps
       # if we do not do so, timestamps will be replaced when deploying to github or netlily or similar
       # we generate the list of pages only if there are changes in the content from doc-contents
       
       page_list_path = "#{site.data["buildConfig"]["rawContentFolder"]}/page_list.json"
+      current_page_list  = File.exist?(page_list_path) ? FileUtilities.read_json_file(page_list_path) : []
       doc_contents_dir = File.join(site.source, Globals::DOCS_ROOT)
+      doc_raw_content_dir = Globals::RAW_DOCS_ROOT
       doc_list = []
       documents = []
       Dir.glob(File.join(doc_contents_dir, '**', '*.{md,html}')).each do |file_path|
@@ -53,14 +50,14 @@ module Jekyll
           front_matter, _ = FileUtilities.parse_front_matter(File.read(file_path))
           title = front_matter['title']
           permalink = front_matter['permalink']
+          raw_file_name = "#{doc_raw_content_dir}/#{permalink.gsub('/', '_')}"
           categories = front_matter['categories']
           tags = front_matter['tags']
           excerpt = front_matter['excerpt']
           lastUpdate = File.mtime(file_path)
           createTime = File.birthtime(file_path)
           hasDynamicContent = ExtContentUtilities.checkCallsForExternalContent(file_path)
-
-          document_data = {
+          document_data_raw = {
             'title' => title,
             'permalink' => permalink,
             'categories' => categories || [],
@@ -76,6 +73,18 @@ module Jekyll
             'readingTime' => 0,
             'hasDynamicContent' => hasDynamicContent
           }
+          
+          if (modified_files["files"].include?(raw_file_name) || current_page_list.length > 0)
+
+            document_data = document_data_raw
+          else
+            page_data = Globals.find_object_by_multiple_key_value(current_page_list, {"permalink" => permalink}) || []
+            if (page_data.length === 1) 
+              document_data = page_data[0]
+            else
+              document_data = document_data_raw
+            end
+          end
 
           documents << document_data if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
           numPages += 1 if front_matter != {} && !file_path.index("404") && front_matter['layout'] && front_matter['layout'] == "page"
