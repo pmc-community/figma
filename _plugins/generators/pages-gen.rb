@@ -39,10 +39,10 @@ module Jekyll
       # RAW CONTENT AND MODIFIED PAGES SINCE LAST BUILD
       FileUtilities.generate_raw_content(site)
 
-      #modified_files_path = "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json"
-      #modified_files = File.exist?(modified_files_path)? FileUtilities.read_json_file(modified_files_path) : {"files" => []}
+      modified_files_path = "#{site.data["buildConfig"]["rawContentFolder"]}/modified_files.json"
+      modified_files = File.exist?(modified_files_path)? FileUtilities.read_json_file(modified_files_path) : {"files" => []}
 
-      #if (modified_files["files"].length > 0 )
+      if (modified_files["files"].length > 0 )
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ...")
       
         numPages = 0
@@ -84,9 +84,9 @@ module Jekyll
         Globals.moveUpOneLine
         Globals.clearLine
         Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (#{numPages} pages)")
-      #else
-      #  Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (no content changes)")
-      #end
+      else
+        Globals.putsColText(Globals::PURPLE,"Generating list of pages ... done (no content changes)")
+      end
 
       site.data['page_list'] = FileUtilities.read_json_file(page_list_path).to_json
       

@@ -724,20 +724,48 @@ const getSavedItemsSize = () => {
     return savedItems.length;
 }
 
-// removes pages without any custom data because it makes no sens to keep them in saved items
+// removes pages without any custom data because it makes no sense to keep them in saved items
 const cleanSavedItems = () => {
-    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    let customNotes =[];
+    let customTags =[];
+    let customCategories = [];
+    let customComments = [];
+
+    // first, normalize savedItems item stucture to not have issues when starting the app
+    savedItems.forEach(page => {
+        if (page.customNotes || page.customNotes === undefined) page.customNotes = customNotes;
+        if (!page.customTags || page.customTags === undefined) page.customTags = customTags;
+        if (!page.customCategories || page.customCategories === undefined) page.customCategories = customCategories
+        if (!page.customComments || page.customComments === undefined) page.customComments = customComments;
+
+        const pageToSave = {
+            permalink: sanitizeURL(page.permalink),
+            title: DOMPurify.sanitize(page.title),
+            customTags: customTags,
+            customCategories: customCategories,
+            customNotes: customNotes,
+            customComments: customComments
+        }
+
+        const savedPage = getObjectFromArray({permalink: page.permalink, title: page.title}, savedItems);
+        const modifiedSavedPage = _.defaults(savedPage, pageToSave);
+        const tempSavedItems = replaceObjectInArray(savedItems, modifiedSavedPage, {permalink: page.permalink, title: page.title});
+        localStorage.setItem('savedItems', JSON.stringify(tempSavedItems));
+        
+    });
+
+    // second, remove empty items as it makes no sense to keep them in savedItems
     let savedItemIndex = 0;
     let toRemove = [];
+    savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
     savedItems.forEach(page => {
         if (page.customNotes.length + page.customTags.length + page.customCategories.length + page.customComments.length === 0)
             toRemove.push(savedItemIndex); 
         savedItemIndex += 1;
     });
 
-    toRemove.forEach(index => {
-        _.pullAt(savedItems, index);
-    });
+    _.pullAt(savedItems, toRemove);
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
 }
 
@@ -746,5 +774,7 @@ const getItemsNoHavingCustomProp = (what) => {
     let count;
     if (what === 'tags') count = _.filter(savedItems, obj => _.size(obj.customTags) > 0).length;
     if (what === 'cats') count = _.filter(savedItems, obj => _.size(obj.customCategories) > 0).length;
+    if (what === 'notes') count = _.filter(savedItems, obj => _.size(obj.customNotes) > 0).length;
+    if (what === 'comments') count = _.filter(savedItems, obj => _.size(obj.customComments) > 0).length;
     return count;
 }
