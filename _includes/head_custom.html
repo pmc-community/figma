@@ -1,3 +1,5 @@
+<style>body {visibility: hidden}</style>
+
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://cdn.datatables.net" crossorigin>
@@ -18,7 +20,6 @@
 {% include siteIncludes/partials/init-hooks.html %}
 
 <link rel="icon" type="image/png" href="{{ '/favicon.png' | relative_url }}">
-<style>body {visibility: hidden}</style>
 <script siteAttr="init_not_needed_anymore">const pagePermalink = "{{page.permalink}}"</script>
 
 {% assign pageArray= site.data.page_list  | json_string_to_object %}
@@ -140,7 +141,7 @@
     referrerpolicy="no-referrer">
 </script>
 
-<!-- jquery ui load last to ensure that jquery is available -->
+<!-- jquery ui load last to be sure that jquery is available -->
 <link 
     rel="preload" 
     href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.0/themes/base/jquery-ui.min.css" 
@@ -255,13 +256,14 @@
 {% endif %}
     
 <!-- site js assets -->
+
 <link href="/assets/js/preflight-check.js" rel="preload" as="script">
 <script src="/assets/js/preflight-check.js"></script>
 
 <link href="/assets/js/utilities.js" rel="preload" as="script">
 <script src="/assets/js/utilities.js"></script>
 
-<!-- hooks to functions executed until page loaded -->
+<!-- pre-hooks to functions executed until page loaded -->
 <link href="/assets/js/pre-hooks.js" rel="preload" as="script">
 <script src="/assets/js/pre-hooks.js"></script>
 
@@ -311,9 +313,10 @@
     <link rel="preload" as="image" href="/assets/img/home-600.webp" type="image/webp">
 {% endif %}
 
-<!-- hooks are last to allow hooking everywhere -->
+<!-- post-hooks are last to allow hooking everywhere -->
 <link href="/assets/js/post-hooks.js" rel="preload" as="script">
 <script src="/assets/js/post-hooks.js"></script>
+
 <!-- end site js assets -->
 
 <script 

@@ -175,6 +175,12 @@ preFlight = {
 
     get deviceInfo() { return this.getDeviceTypeAndOrientation()},
     get browser() { return this.getBrowserInfo() },
+    get envInfo() { 
+        return { 
+            device: preFlight.deviceInfo, 
+            browser: preFlight.browser, 
+        } 
+    },
 
     clearForTakeOff: (browser, deviceInfo) => {
         const result = {
@@ -224,8 +230,7 @@ preFlight = {
 }
 
 // LET'S START
-console.log(preFlight.deviceInfo);
-console.log(`${preFlight.browser.browserName} ${preFlight.browser.fullVersion} `);
+console.log(preFlight.envInfo);
 
 // init superglobals
 const settings = allSettings.settings;
@@ -271,14 +276,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `
             );
-            // HEADS UP!!!! BODY VISIBILITY IS HIDDEN HERE (from head)
+            // HEADS UP!!!! BODY VISIBILITY IS HIDDEN HERE (from _includes/head_custom.html)
             $('html').append($loading);
             $('#contentLoading').removeClass('d-none');
             $('body').attr('data-instant-intensity', 'viewport').attr('data-instant-vary-accept');
         }
         else {
             console.log(jQuery)
-            preFlight.prettyError('Sorry, can move forward, jQuery is not loaded!');
+            preFlight.prettyError('Sorry, can\'t move forward, jQuery is not loaded!');
         }
     
     }

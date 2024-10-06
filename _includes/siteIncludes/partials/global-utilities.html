@@ -15,7 +15,7 @@
     const hooks = {
         targetFunctions: [],
 
-        addAction: (whereToAdd, action, priority = 0) => {
+        addAction: (whereToAdd, action, priority = 0, type = 'not_set') => {
             let hook = hooks.targetFunctions.find(item => item.func === whereToAdd);
 
             if (!hook) {
@@ -25,17 +25,17 @@
                 };
                 hooks.targetFunctions.push(hook);
             }
-            hook.cb.push({ action: action, priority: priority });
+            hook.cb.push({ action: action, priority: priority, type: type });
             hook.cb.sort((a, b) => a.priority - b.priority);
             hooks.wrapFunction(whereToAdd); 
         },
 
-        addActionEX: (func, action, priority = 0) => {
+        addActionEX: (func, action, priority = 0, type = 'not_set') => {
             const whereToAdd = func.name;
             if (typeof window[whereToAdd] !== 'function') {
                 window[whereToAdd] = func; 
             }
-            hooks.addAction(whereToAdd, action, priority);
+            hooks.addAction(whereToAdd, action, priority, type);
         },
 
         interceptFunction: (fn, functionName, cb = null) => {

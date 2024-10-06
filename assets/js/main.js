@@ -1,6 +1,6 @@
 /* LET'S DO SOME WORK */
 
-const customiseTheme = (pageObj = null) => {
+window.customiseTheme = (pageObj = null) => {
     if (!preFlight.skyClear) return; // comes from preflight-check.js
        
     // first things, first
@@ -82,14 +82,21 @@ const setSwitchThemeFunction = () => {
         $(`#${settings.themeSwitch.btnId}`).off('click').on('click', () => {
             $('body').css('visibility','hidden');
             let themeCookie = Cookies.get(settings.themeSwitch.cookie);
-            if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+            if (typeof themeCookie === 'undefined') 
+                Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+            
             themeCookie = Cookies.get(settings.themeSwitch.cookie);
-            if (themeCookie === '0' ) Cookies.set(settings.themeSwitch.cookie,1, { expires:365 , secure: true, sameSite: 'strict' });
-            else Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+            if (themeCookie === '0' ) 
+                Cookies.set(settings.themeSwitch.cookie,1, { expires:365 , secure: true, sameSite: 'strict' });
+            else 
+                Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+            
             setTheTheme();
+            
             themeCookie = Cookies.get(settings.themeSwitch.cookie);
             if (themeCookie === '0' ) applyColorSchemaCorrections('light');
             else applyColorSchemaCorrections('dark');
+            
             setTimeout( () => {$('body').css('visibility','visible');}, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
         });
 
@@ -132,7 +139,9 @@ const advRestoreCodeBlocksStyle = () => {
 
 const setTheTheme = () => {
     let themeCookie = Cookies.get(settings.themeSwitch.cookie);
-    if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+    if (typeof themeCookie === 'undefined') 
+        Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+    
     themeCookie = Cookies.get(settings.themeSwitch.cookie);
     if (Cookies.get(settings.themeSwitch.cookie) === '0' ) { 
         jtd.setTheme('light'); 

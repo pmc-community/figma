@@ -4,8 +4,8 @@
 // functions must be not defined as props of some objects to be instantiated during loading
 // because "hook by function object" is not available since the objects doesn't exist yet
 
-// these are usefull to hook in the process of loading the page, after document.ready event and before page fully loaded
-// these cannot use assets, functions, objects of the site, only superglobals and globals are visible here
+// these are usefull to hook into the process of loading the page, after document.ready event and before page fully loaded
+// these cannot use assets, functions, objects, only superglobals and globals are visible here
 // these will not capture hooks triggered by <script> tags or triggered outside $(document).ready(function() {.....}) blocks
 
 // HEADS UP!!!
@@ -26,20 +26,19 @@
 // DEFINED PRIORITY. IF PRIORITY IS NOT PROVIDED AR REGISTRATION TIME, WILL BE EQUAL TO 0 (HIGHEST).
 // SAME PRIORITIES WILL BE EXECUTED IN THE ORDER OF REGISTRATION 
 
+
 hooks.addAction('removeUselessElements', (functionName, result, args) => { 
     console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
-}, 5);
+}, 5, 'pre');
 
 hooks.addAction('removeUselessElements', (functionName, result, args) => { 
     console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()} higher priority`) 
-}, 4);
+}, 4, 'pre');
 
 hooks.addAction('setPageButtonsFunctions', (functionName, result, args) => { 
     console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
-});
+}, 1, 'pre');
 
 hooks.addAction('addCat', (functionName, result, args) => { 
     console.log(`sample pre-hook after: ${functionName} on ${$('page-data-permalink').text()} lower priority`) 
-},7);
-
-
+},7, 'pre');

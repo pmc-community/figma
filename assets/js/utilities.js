@@ -2314,6 +2314,6 @@ const pushInfoToGTM = (pageInfo) => {
 }
 
 const fireGTMTag = (gtmObject) => {
-    console.log('gtm')
+    console.log('gtm');
     if (gData.gtm.enabled) window.dataLayer.push(gtmObject);
 }

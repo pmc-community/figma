@@ -137,7 +137,8 @@
     },
     "user": {
       "userTokenCookie": "userToken"
-    }
+    },
+    "siteTitle": "Figma Resources"
   },
   "pageList": [
     {

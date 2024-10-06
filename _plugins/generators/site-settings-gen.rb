@@ -30,8 +30,8 @@ module Jekyll
           "gtm" => site.data["buildConfig"]["googleTagManager"]
         },
         "newRelicSettings" => JSON.parse(site.data["new_relic_client_integration"])
-
       }
+      allSettings["settings"]["siteTitle"] = site.config["title"]
 
       FileUtilities.overwrite_file(settings_path, JSON.pretty_generate(allSettings))
 
