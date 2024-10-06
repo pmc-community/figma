@@ -46,6 +46,7 @@ hooks.addActionEX(deleteNote, (functionName, result, args) => {
 hooks.addAction('addCat', (functionName, result, args) => { 
     console.log(`sample post-hook after: ${functionName} on ${$('page-data-permalink').text()}`) 
 },4);
+
 hooks.addAction('addCat', (functionName, result, args) => { 
     console.log(`sample post-hook after: ${functionName} on ${$('page-data-permalink').text()} higher priority`) 
 },3);
@@ -53,17 +54,14 @@ hooks.addAction('addCat', (functionName, result, args) => {
 hooks.addAction('createAutoSummaryPageContainer', (functionName, result, args) => { 
     console.log(`sample post-hook after nested function: ${functionName} on ${$('page-data-permalink').text()}`);
 
-    if (nrSettings.newRelicEnabled === 'true') {
-        logCustomAttributes = {
-            source: 'Figmares',
-            permalink: $('page-data-permalink').text(),
-            datetime: getFullCurrentDateTime(),
-            action:'created createAutoSummaryPageContainer',
-            function: functionName,
-            args: args,
+    nrLog(
+        'created createAutoSummaryPageContainer', 
+        'created createAutoSummaryPageContainer', 
+        'info', 
+        {
+            functionName: functionName,
             result: result,
-            user: Cookies.get(settings.user.userTokenCookie)
+            args: args
         }
-        newrelic.log(`created createAutoSummaryPageContainer`, {customAttributes: logCustomAttributes});
-    }
+    );
 }); // nested function but not used as dynamic handler; hook by function object is not possible for nested functions

@@ -7,11 +7,15 @@
 <link rel="preconnect" href="https://js.hsforms.net" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+<!-- make settings available asap -->
+<link href="/assets/config/siteSettings.js" rel="preload" as="script">
+<script src="/assets/config/siteSettings.js"></script>
+
+<!-- New Relic if applicable -->
+{% include siteIncludes/partials/new-relic.html %}
+
 {% include siteIncludes/partials/global-utilities.html %}
 {% include siteIncludes/partials/init-hooks.html %}
-
-<!-- GTM tag if applicable -->
-{% include siteIncludes/partials/gtm-head.html %}
 
 <link rel="icon" type="image/png" href="{{ '/favicon.png' | relative_url }}">
 <style>body {visibility: hidden}</style>
@@ -136,7 +140,6 @@
     referrerpolicy="no-referrer">
 </script>
 
-
 <!-- jquery ui load last to ensure that jquery is available -->
 <link 
     rel="preload" 
@@ -251,11 +254,7 @@
     
 {% endif %}
     
-
 <!-- site js assets -->
-<link href="/assets/config/siteSettings.js" rel="preload" as="script">
-<script src="/assets/config/siteSettings.js"></script>
-
 <link href="/assets/js/preflight-check.js" rel="preload" as="script">
 <script src="/assets/js/preflight-check.js"></script>
 
@@ -325,8 +324,10 @@
 <!-- GA tag if applicable -->
 {% include siteIncludes/partials/ga-tag.html %}
 
-<!-- New Relic if applicable -->
-{% include siteIncludes/partials/new-relic.html %}
+<!-- GTM tag if applicable -->
+{% include siteIncludes/partials/gtm-head.html %}
+    
+
 
 
 

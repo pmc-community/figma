@@ -1,4 +1,3 @@
-verbose: true #not used
 pyEnable: true
 pyLaunch: "python3"
 pyPageSummary:

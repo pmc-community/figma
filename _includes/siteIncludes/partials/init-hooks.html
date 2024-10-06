@@ -2,6 +2,16 @@
 
     hooks.addAction('home__headerSection', (functionName, result, args) => { 
         console.log(`sample init hook after: ${functionName} on {{page.permalink}}`);
+        nrLog(
+            'created home__headerSection', 
+            'created home__headerSection', 
+            'info', 
+            {
+                functionName: functionName,
+                result: result,
+                args: args
+            }
+        );
     }, 10);
 
     hooks.addAction('clearTheUrl', (functionName, result, args) => { 
