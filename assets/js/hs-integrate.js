@@ -183,6 +183,13 @@ hsIntegrate = {
         $form.find('textarea')
             .css('background', $('body').css('background'))
             .css('color', $('body').css('color'))
+            .css('font-family', $('body').css('font-family'))
+            .addClass('border border-secondary border-opacity-25 textAreaText');
+
+        $form.find('input')
+            .css('background', $('body').css('background'))
+            .css('color', $('body').css('color'))
+            .css('font-family', $('body').css('font-family'))
             .addClass('border border-secondary border-opacity-25 textAreaText');
         
         $form.find('input[type!="submit"]')

@@ -15,6 +15,7 @@ const nrLog = (logMessage, logAction, logLevel = null, funcData) => {
             user: Cookies.get(settings.user.userTokenCookie),
             envInfo: !preFlight ? {} : !preFlight.envInfo ? {} : preFlight.envInfo,
         }
+        
         newrelic.log(logMessage, {level: logLevel, customAttributes: logCustomAttributes});
     }
 }
