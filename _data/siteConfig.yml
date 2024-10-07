@@ -87,6 +87,7 @@ hsIntegration:
       propValue: "figmares_doc_site"
 scripts:
   jQuery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+  fontFamily: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
 links:
   privacyLink: "https://innohub.space/eng/privacy"
   supportLink: "https://innohub.space/eng/mypmc/technical-support/"

@@ -1873,6 +1873,11 @@ const iframe__addCustomScriptsToIFrames = ($elementInsideIFrame, cssScripts = []
     const $iframeDocument = $elementInsideIFrame[0].ownerDocument;
     const $iframeHead = $($iframeDocument).find('head');
     const $iframeBody = $($iframeDocument).find('body');
+
+    // adding main font family
+    if (settings.scripts.fontFamily && settings.scripts.fontFamily !== undefined && settings.scripts.fontFamily !== '')
+        $($iframeHead).append(`<link rel="stylesheet" href="${settings.scripts.fontFamily}">`);
+
     cssScripts.forEach( script => {
         $($iframeHead).append(`<link rel="stylesheet" href="/assets/css/${script}">`);
     })

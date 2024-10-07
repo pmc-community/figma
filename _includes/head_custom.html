@@ -8,6 +8,11 @@
 <link rel="preconnect" href="https://js.hs-scripts.com" crossorigin>
 <link rel="preconnect" href="https://js.hsforms.net" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+
+{% if site.data.siteConfig.scripts.fontFamily and site.data.siteConfig.scripts.fontFamily != "" %}
+    <link href="{{ site.data.siteConfig.scripts.fontFamily }}" rel="stylesheet">
+{% endif %}
 
 <!-- make settings available asap -->
 <link href="/assets/config/siteSettings.js" rel="preload" as="script">
