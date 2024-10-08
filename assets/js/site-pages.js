@@ -1221,37 +1221,22 @@ sitePagesFn = {
 
         // save the saved items to a local file
         $('#saveStorageToFile').off('click').click( function() {
-            saveLocalStorageKeyAsJsonFile('savedItems', 'si.json')
+            const fileName = `savedItems_${getCurrentDateTime()}_${shortUuid()}`
+            saveLocalStorageKeyAsJsonFile('savedItems', fileName);
         });
         
         // loads from local file and save to local storage
         $('#selectedLocalFile').off('change').on('change', function(event) {
-            const file = event.target.files[0];
-    
-            if (file) {
-                const reader = new FileReader();
-    
-                reader.onload = function(e) {
-                    try {
-                        const json = JSON.parse(e.target.result);
-                        const key = 'myLocalStorageKey'; // Replace with your desired key
-                        localStorage.setItem(key, JSON.stringify(json));
-                        showToast(`JSON data from file ${file.name} has been loaded`, 'bg-success', 'text-light');
-
-                    } catch (error) {
-                        showToast(`The file ${file.name} is not a valid JSON file and cannot be parsed`, 'bg-danger', 'text-light');
-                    }
-                };
-    
-                reader.onerror = function() {
-                    console.error('Error reading file:', reader.error);
-                    showToast(`Error reading file ${file.name}`, 'bg-danger', 'text-light');
-                };
-    
-                reader.readAsText(file);
-            } else {
-                showToast('No file selected', 'bg-warning', 'text-dark');
+            if (settings.savedItems.autoSaveBeforeLoad) {
+                // saving first, just in case
+                const fileName = `savedItems_autoSaved_${getCurrentDateTime()}_${shortUuid()}`
+                saveLocalStorageKeyAsJsonFile('savedItems', fileName);
             }
+
+            const file = event.target.files[0];
+            if (!file || file === undefined || file === '') return;
+            loadLocalStorageKeyFromJsonFile ('savedItems', file);
+            cleanSavedItems();
         });
     },
 }

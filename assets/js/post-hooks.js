@@ -30,13 +30,43 @@ postHooksActions = {
             'event': 'Add_Custom_Cat' 
         };
         fireGTMTag(gtmObject);
+    },
+    savedItemsToJsonAction: (functionName, result, args) => {
+        nrLog(
+            'savedItems to JSON', 
+            'savedItems saved to JSON', 
+            'info', 
+            {
+                functionName: functionName,
+                result: result,
+                args: args
+            }
+        );
+    },
+    savedItemsFromJsonAction: (functionName, result, args, ...extraArgs) => {
+        nrLog(
+            'savedItems from JSON', 
+            'savedItems loaded from JSON', 
+            'info', 
+            {
+                functionName: functionName,
+                result: result,
+                args: args, 
+                argsExtra: extraArgs, 
+            }
+        );
     }
+
 }
 
 hooks.addAction('addNote', globUtils.bindArgsAtEnd(postHooksActions.addNoteAction, []), 0, 'post'); // hook by function name
 hooks.addAction('addTag', globUtils.bindArgsAtEnd(postHooksActions.addTagAction, []), 0, 'post');
 hooks.addAction('addCat', globUtils.bindArgsAtEnd(postHooksActions.addCatAction, []), 0, 'post');
+hooks.addAction('saveLocalStorageKeyAsJsonFile', postHooksActions.savedItemsToJsonAction, 0, 'post');
+hooks.addAction('loadLocalStorageKeyFromJsonFile', globUtils.bindArgsAtEnd(postHooksActions.savedItemsFromJsonAction, [{ autoSaveBeforeLoad: settings.savedItems.autoSaveBeforeLoad }]), 0, 'post');
 
+
+// the following are tests, may be removed later
 hooks.addActionEX(deleteNote, (functionName, result, args) => { 
     console.log(`sample post-hook by object after: ${functionName} on ${$('page-data-permalink').text()}`) 
 }, 0, 'post'); // hook by function object

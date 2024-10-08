@@ -3,7 +3,7 @@
     <div siteFunction="sitePagesSavedItems" class="border border-secondary border-opacity-25 card shadow bg-transparent">
         
         <div class="card-header d-flex justify-content-between border-bottom border-secondary border-opacity-25">
-            <span class="fs-6 fw-medium">Saved Items</span>
+            <span class="fs-6 fw-medium">Saved Documents</span>
             <button 
                 siteFunction="btnClose" 
                 whatToClose='div[siteFunction="sitePagesSavedItems"]' 
@@ -15,40 +15,47 @@
 
         <div class="card-body">
 
-            <div siteFunction="saveStorageToFile" class="mb-2">
+            <div siteFunction="saveAndLoadStorageContainer" class="my-4 d-flex">
+
+                <!-- save saved items as json in downloads -->
                 <button 
                     siteFunction="saveStorageToFile" 
                     id="saveStorageToFile" 
                     type="button" 
-                    class="btn btn-success"
-                    title= "Save to file"
-                    style="width:8rem; height:100%">
+                    class="btn btn-success mx-2 savedDocsSectionButton"
+                    title= "Save to file">
                     Save to file
                 </button>
-                <button 
+
+               <!-- loads saved items from json -->
+                <div siteFunction="loadToStorageFromFile">
+                <div class="input-group mx-2">
+                    <input type="file" class="form-control" id="selectedLocalFile" aria-label="Select">
+                </div>
+
+        </div>
+            </div>
+
+            <div id="setPagesTableFilters" class="my-4">
+                 <!-- show saved items in pages table -->
+                 <button 
                     siteFunction="showSavedItems" 
                     id="showSavedItems" 
                     type="button" 
-                    class="btn btn-primary"
-                    title= "Show saved items"
-                    style="width:10rem; height:100%">
-                    See saved items
-                </button>
+                    class="btn btn-primary mx-2 savedDocsSectionButton"
+                    title= "Show saved items">
+                    Saved docs
+                 </button>
+
+             <!-- show saved items in pages table -->
                 <button 
                     siteFunction="showNotSavedItems" 
                     id="showNotSavedItems" 
                     type="button" 
-                    class="btn btn-warning"
-                    title= "Show not saved items"
-                    style="width:12rem; height:100%">
-                    See not saved items
+                    class="btn btn-warning mx-2 savedDocsSectionButton"
+                    title= "Show not saved items">
+                    Not saved docs
                 </button>
-            </div>
-
-            <div siteFunction="loadToStorageFromFile">
-                <div class="input-group">
-                    <input type="file" class="form-control" id="selectedLocalFile" aria-label="Select">
-                </div>
             </div>
                             
         </div>

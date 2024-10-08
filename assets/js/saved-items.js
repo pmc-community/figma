@@ -675,14 +675,14 @@ const getAllSavedItems = () => {
 }
 
 // Function to save a local storage key as a JSON file
-const saveLocalStorageKeyAsJsonFile = (key, filename) => {
+window.saveLocalStorageKeyAsJsonFile = (key, filename) => {
     const data = localStorage.getItem(key);
     let jsonData;
     try {
         jsonData = JSON.parse(data);
     } catch (error) {
         showToast(`Can\'t save local storage! Error parsing key ${key}`, 'bg-danger', 'text-light');
-        return;
+        return `Can\'t save local storage! Error parsing key ${key}`;
     }
 
     const jsonString = JSON.stringify(jsonData, null, 4); // 4 spaces indentation
@@ -693,6 +693,38 @@ const saveLocalStorageKeyAsJsonFile = (key, filename) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    return filename;
+}
+
+window.loadLocalStorageKeyFromJsonFile = (key, file) => {
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                const json = sanitizeJson(JSON.parse(e.target.result));
+                localStorage.setItem(key, JSON.stringify(json));
+                showToast(`JSON data from file ${file.name} has been loaded`, 'bg-success', 'text-light');
+                return file.name;
+
+            } catch (error) {
+                showToast(`The file ${file.name} is not a valid JSON file and cannot be parsed`, 'bg-danger', 'text-light');
+                return `${file.name} is not a valid JSON file`
+            }
+        };
+
+        reader.onerror = function() {
+            console.error('Error reading file:', reader.error);
+            showToast(`Error reading file ${file.name}`, 'bg-danger', 'text-light');
+            return `Error reading file ${file.name}`;
+        };
+
+        reader.readAsText(file);
+        return file.name;
+    } else {
+        showToast('No file selected', 'bg-warning', 'text-dark');
+        return `no file selected`
+    }
 }
 
 const getTopCustomCats = () => {
@@ -767,6 +799,22 @@ const cleanSavedItems = () => {
 
     _.pullAt(savedItems, toRemove);
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
+
+    // third, remove all items for which permalink is not in the pages list
+    // and replace title with the title from pages list
+    savedItemIndex = 0;
+    toRemove = [];
+    savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    savedItems.forEach(page => {
+        const sitePage = getObjectFromArray({permalink: page.permalink}, pageList);
+        if (sitePage === 'none') toRemove.push(savedItemIndex);
+        else page.title = sitePage.title;
+        savedItemIndex += 1;
+    });
+
+    _.pullAt(savedItems, toRemove);
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+
 }
 
 const getItemsNoHavingCustomProp = (what) => {

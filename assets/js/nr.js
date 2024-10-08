@@ -11,8 +11,10 @@ const nrLog = (logMessage, logAction, logLevel = null, funcData) => {
             action:logAction,
             function: funcData.functionName,
             args: funcData.args,
+            argsExtra: funcData.argsExtra ? funcData.argsExtra : [],
             result: funcData.result ? funcData.result : `func ${funcData.functionName} doesn\'t return anything`,
             user: Cookies.get(settings.user.userTokenCookie),
+            userIP: userIP,
             envInfo: !preFlight ? {} : !preFlight.envInfo ? {} : preFlight.envInfo,
         }
         

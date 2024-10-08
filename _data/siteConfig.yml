@@ -104,3 +104,5 @@ selectedTextContextMenu:
     maxChars: 20
 user:
   userTokenCookie: "userToken"
+savedItems:
+  autoSaveBeforeLoad: true

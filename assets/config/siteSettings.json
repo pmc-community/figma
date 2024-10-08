@@ -139,6 +139,9 @@
     "user": {
       "userTokenCookie": "userToken"
     },
+    "savedItems": {
+      "autoSaveBeforeLoad": true
+    },
     "siteTitle": "Figma Resources"
   },
   "pageList": [

@@ -581,6 +581,19 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         background-color: $pageSearchResultsItemMarkedBackground;
     }
 
+    #{map-get($pageSearchElements, searchDocsSectionButton)} {
+        width: $searchDocsSectionButtonWidth;
+        height: $searchDocsSectionButtonHeight;
+    }
+
+}
+
+// page saved items
+@mixin pageSavedItems($pageSavedItemsElements) {
+    #{map-get($pageSavedItemsElements, savedDocsSectionButton)} {
+        width: $savedDocsSectionButtonWidth;
+        height: $savedDocsSectionButtonHeight;
+    }
 }
 
 // hs integration (for what is outside iframes)

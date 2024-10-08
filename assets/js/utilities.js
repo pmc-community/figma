@@ -144,6 +144,15 @@ const uuid = () => {
     });
 }
 
+const shortUuid = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let uuid = '';
+    for (let i = 0; i < 10; i++) {
+        uuid += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return uuid;
+}
+
 const hashFromString = (string) => {
     const regex = /#(.*)/;
     const match = string.match(regex);
@@ -1681,6 +1690,29 @@ const getContextMenuItemHandler = (action, menuContent) => {
 
 const cleanText = (text) => {
     return DOMPurify.sanitize(text.replace(/<[^>]*>/g, '').replace(/(\n|&nbsp;)/g, ''));
+}
+
+const sanitizeJson = (obj) => {
+    if (typeof obj === 'string') {
+        return cleanText(obj);  // Sanitize string values
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(sanitizeJson);  // Recursively sanitize each array element
+    }
+
+    if (typeof obj === 'object' && obj !== null) {
+        const sanitizedObj = {};
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const sanitizedKey = cleanText(key);  // Sanitize the key
+                sanitizedObj[sanitizedKey] = sanitizeJson(obj[key]);  // Recursively sanitize value
+            }
+        }
+        return sanitizedObj;
+    }
+
+    return obj;  // Return value as is if it's neither a string, array, nor object
 }
 
 const replaceAllOccurrencesCaseInsensitive = (array, target, replacement) => {
