@@ -66,7 +66,7 @@ hooks.addAction('saveLocalStorageKeyAsJsonFile', postHooksActions.savedItemsToJs
 hooks.addAction('loadLocalStorageKeyFromJsonFile', globUtils.bindArgsAtEnd(postHooksActions.savedItemsFromJsonAction, [{ autoSaveBeforeLoad: settings.savedItems.autoSaveBeforeLoad }]), 0, 'post');
 
 
-// the following are tests, may be removed later
+// the following hooks are tests, may be removed later
 hooks.addActionEX(deleteNote, (functionName, result, args) => { 
     console.log(`sample post-hook by object after: ${functionName} on ${$('page-data-permalink').text()}`) 
 }, 0, 'post'); // hook by function object

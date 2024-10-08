@@ -594,6 +594,10 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         width: $savedDocsSectionButtonWidth;
         height: $savedDocsSectionButtonHeight;
     }
+
+    #{map-get($pageSavedItemsElements, savedDocsInfoText)} {
+        font-size: $savedDocsInfoTextFontSize;
+    }
 }
 
 // hs integration (for what is outside iframes)

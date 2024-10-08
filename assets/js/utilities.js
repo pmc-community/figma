@@ -233,6 +233,7 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
     })   
 }
 
+// some object utilities
 const findObjectInArray = (searchCriteria, objectArray) => {
     return _.some(objectArray, (obj) => {
         const matches = Object.entries(searchCriteria).every(([key, value]) => obj[key] === value);
@@ -256,6 +257,86 @@ const replaceObjectInArray = (arr, newObject, searchCriteria) => {
     const index = _.findIndex(arr, searchCriteria);
     if (index !== -1) arr[index] = newObject;
     return arr;
+}
+
+// validating the structure of an array of objects that must have the same structure
+// schema is the structure of an item from the array to be validated
+// see schema sample in assets/js/site-pages.js, sitePagesFn.savedItemsSchema
+const isValidArrayOfObjectsStructure = (arr, schema) => {
+    // Helper function to validate types
+    const validateType = (value, expectedType) => {
+      if (expectedType === "array") {
+        return Array.isArray(value);
+      }
+      if (expectedType === "string") {
+        return typeof value === "string";
+      }
+      if (expectedType === "object") {
+        return typeof value === "object" && value !== null && !Array.isArray(value);
+      }
+      if (expectedType === "emptyArray") {
+        return Array.isArray(value) && value.length === 0;
+      }
+      return false;
+    }
+  
+    // Helper function to validate custom date format (dd-MMM-YYYY)
+    const isValidDate = (dateStr) => {
+      const datePattern = /^\d{2}-[A-Za-z]{3}-\d{4}$/;  // Matches dd-MMM-YYYY
+      if (!datePattern.test(dateStr)) return false;
+  
+      const dateObj = new Date(dateStr.replace(/-/g, ' '));
+      return dateObj instanceof Date && !isNaN(dateObj);
+    }
+  
+    // Recursive function to validate objects based on schema
+    const validateObject = (obj, schema) => {
+      for (let key in schema) {
+        let expectedType = schema[key];
+  
+        // Handle arrays of specific types
+        if (Array.isArray(expectedType)) {
+          if (!Array.isArray(obj[key])) return false;
+  
+          // If it's an array of objects with a structure, recursively validate the structure
+          if (typeof expectedType[0] === "object") {
+            if (!obj[key].every(item => validateObject(item, expectedType[0]))) {
+              return false;
+            }
+          } else {
+            // Validate array of primitive types (e.g., array of strings)
+            if (!obj[key].every(item => validateType(item, expectedType[0]))) {
+              return false;
+            }
+          }
+        } else if (expectedType === "date") {
+          // Check for valid date
+          if (!isValidDate(obj[key])) {
+            return false;
+          }
+        } else {
+          // Validate primitive types or objects
+          if (!validateType(obj[key], expectedType)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+  
+    // Check if the input is an array
+    if (!Array.isArray(arr)) {
+      return false;
+    }
+  
+    // Validate each object in the array
+    for (let obj of arr) {
+      if (!validateObject(obj, schema)) {
+        return false;
+      }
+    }
+  
+    return true;
 }
 
 const readQueryString = (queryParameter) => {

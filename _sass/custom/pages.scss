@@ -31,6 +31,8 @@ $savedDocsSectionButtonHeight: $sz-full;
 $searchDocsSectionButtonWidth: $sz-8rem;
 $searchDocsSectionButtonHeight: $sz-full;
 
+$savedDocsInfoTextFontSize: $fs-btn-sm;
+
 // no selector identifier (#, .) to be used for some selectors because page search box
 // may be creaded dynamic and the css selector may be in the form #<something>_pageSearchInput
 // see mixin @mixin pageSearch in meta scss
@@ -41,7 +43,8 @@ $pageSearchElements: (
 );
 
 $pageSavedItemsElements: (
-    savedDocsSectionButton: '.savedDocsSectionButton'
+    savedDocsSectionButton: '.savedDocsSectionButton',
+    savedDocsInfoText: '.savedDocsInfoText'
 );
 
 @import 'meta.scss';

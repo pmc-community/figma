@@ -1130,6 +1130,19 @@ sitePagesFn = {
 
     },
 
+    savedItemsSchema: {
+        "permalink": "string",
+        "title": "string",
+        "customTags": ["string"],  // Array of strings
+        "customCategories": ["string"],  // Array of strings
+        "customNotes": [{  // Array of objects with a specific structure
+          "date": "date",  // Custom date validation
+          "note": "string",
+          "id": "string"
+        }],
+        "customComments": "emptyArray"  // Empty array
+    },
+
     // saved items section
     setSavedItemsButtonsFunctions: () => {
 
@@ -1220,13 +1233,13 @@ sitePagesFn = {
         });
 
         // save the saved items to a local file
-        $('#saveStorageToFile').off('click').click( function() {
+        $('#saveSavedItemsToFile').off('click').click( function() {
             const fileName = `savedItems_${getCurrentDateTime()}_${shortUuid()}`
             saveLocalStorageKeyAsJsonFile('savedItems', fileName);
         });
         
         // loads from local file and save to local storage
-        $('#selectedLocalFile').off('change').on('change', function(event) {
+        $('#selectedSavedItemsFile').off('change').on('change', function(event) {
             if (settings.savedItems.autoSaveBeforeLoad) {
                 // saving first, just in case
                 const fileName = `savedItems_autoSaved_${getCurrentDateTime()}_${shortUuid()}`
@@ -1234,8 +1247,8 @@ sitePagesFn = {
             }
 
             const file = event.target.files[0];
-            if (!file || file === undefined || file === '') return;
-            loadLocalStorageKeyFromJsonFile ('savedItems', file);
+            if (!file || file === undefined || file.name === '') return;
+            loadLocalStorageKeyFromJsonFile ('savedItems', file, sitePagesFn.savedItemsSchema);
             cleanSavedItems();
         });
     },

@@ -693,19 +693,28 @@ window.saveLocalStorageKeyAsJsonFile = (key, filename) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    showToast(`Saved documents are now in downloads folder, ${filename}.json`, 'bg-success', 'text-light');
     return filename;
 }
 
-window.loadLocalStorageKeyFromJsonFile = (key, file) => {
+window.loadLocalStorageKeyFromJsonFile = (key, file, schema = null) => {
     if (file) {
         const reader = new FileReader();
 
         reader.onload = function(e) {
             try {
                 const json = sanitizeJson(JSON.parse(e.target.result));
-                localStorage.setItem(key, JSON.stringify(json));
-                showToast(`JSON data from file ${file.name} has been loaded`, 'bg-success', 'text-light');
-                return file.name;
+                let validSchema = true;
+                if (schema) validSchema = isValidArrayOfObjectsStructure(json, schema);
+                if (validSchema) {
+                    localStorage.setItem(key, JSON.stringify(json));
+                    showToast(`JSON data from file ${file.name} has been loaded`, 'bg-success', 'text-light');
+                    return file.name;
+                }
+                else {
+                    showToast(`Can\'t load ${file.name} because it has invalid schema`, 'bg-danger', 'text-light');
+                    return `${file.name} has invalid schema`;
+                }
 
             } catch (error) {
                 showToast(`The file ${file.name} is not a valid JSON file and cannot be parsed`, 'bg-danger', 'text-light');

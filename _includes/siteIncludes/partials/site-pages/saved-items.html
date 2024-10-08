@@ -15,47 +15,68 @@
 
         <div class="card-body">
 
-            <div siteFunction="saveAndLoadStorageContainer" class="my-4 d-flex">
+            <div siteFunction="saveAndLoadSavedItemsContainer" class="my-4 d-flex">
 
-                <!-- save saved items as json in downloads -->
-                <button 
-                    siteFunction="saveStorageToFile" 
-                    id="saveStorageToFile" 
-                    type="button" 
-                    class="btn btn-success mx-2 savedDocsSectionButton"
-                    title= "Save to file">
-                    Save to file
-                </button>
-
-               <!-- loads saved items from json -->
-                <div siteFunction="loadToStorageFromFile">
-                <div class="input-group mx-2">
-                    <input type="file" class="form-control" id="selectedLocalFile" aria-label="Select">
+                <div class="p-2 d-flex align-items-end">
+                    <!-- save saved items as json in downloads -->
+                    <button 
+                        siteFunction="saveSavedItemsToFile" 
+                        id="saveSavedItemsToFile" 
+                        type="button" 
+                        class="btn btn-success savedDocsSectionButton h-auto"
+                        title= "Save to file">
+                        Save to file
+                    </button>
                 </div>
 
-        </div>
+               <!-- loads saved items from json -->
+                <div 
+                    siteFunction="loadSavedItemsFromFile"
+                    class="col-5 p-2">
+                    <p class="text-primary savedDocsInfoText">
+                        Select local file to load saved documents configuration.
+                        {% if site.data.siteConfig.savedItems.autoSaveBeforeLoad %}
+                            Save before load is active for this site. Your current saved documents configuration will be saved in a local file before loading the new one.
+                        {% else %}
+                            Save before load is not active for this site. We recommend to save the current saved documents configuration before loading the new one
+                        {% endif %} 
+                    </p>
+                    <div class="input-group">
+                        <input 
+                            type="file" 
+                            class="form-control" 
+                            id="selectedSavedItemsFile" 
+                            aria-label="Select">
+                    </div>
+                </div>
+
             </div>
 
-            <div id="setPagesTableFilters" class="my-4">
-                 <!-- show saved items in pages table -->
-                 <button 
-                    siteFunction="showSavedItems" 
-                    id="showSavedItems" 
-                    type="button" 
-                    class="btn btn-primary mx-2 savedDocsSectionButton"
-                    title= "Show saved items">
-                    Saved docs
-                 </button>
+            <div id="setPagesTableFilters" class="my-4 d-flex">
+                <div class="p-2">
+                    <!-- show saved items in pages table -->
+                    <button 
+                        siteFunction="showSavedItems" 
+                        id="showSavedItems" 
+                        type="button" 
+                        class="btn btn-primary savedDocsSectionButton h-auto"
+                        title= "Show saved items">
+                        Saved docs
+                    </button>
+                </div>
 
-             <!-- show saved items in pages table -->
-                <button 
-                    siteFunction="showNotSavedItems" 
-                    id="showNotSavedItems" 
-                    type="button" 
-                    class="btn btn-warning mx-2 savedDocsSectionButton"
-                    title= "Show not saved items">
-                    Not saved docs
-                </button>
+                <div class="p-2">
+                    <!-- show saved items in pages table -->
+                    <button 
+                        siteFunction="showNotSavedItems" 
+                        id="showNotSavedItems" 
+                        type="button" 
+                        class="btn btn-warning savedDocsSectionButton h-auto"
+                        title= "Show not saved items">
+                        Not saved docs
+                    </button>
+                </div>
+
             </div>
                             
         </div>
