@@ -17,32 +17,52 @@
 
             <div class="col-8">
             
-                <div siteFunction="saveAndLoadSavedItemsContainer" class="my-4 d-flex">
+                <div siteFunction="savedPagesButtonsContainer" class="my-4 d-flex">
 
-                    <div class="col-2 p-2 d-flex flex-column justify-content-between">
+                    <div class="col-4 p-2 d-flex flex-column justify-content-between">
                         <!-- save saved items as json in downloads -->
-                        <i class="fs-1 bi bi-cloud-download text-primary mx-auto"></i>
                         <button 
                             siteFunction="saveSavedItemsToFile" 
                             id="saveSavedItemsToFile" 
                             type="button" 
-                            class="btn btn-success savedDocsSectionButton h-auto"
+                            class="btn btn-success savedDocsSectionButton h-auto my-1"
                             title= "Save to file">
                             Save to file
                         </button>
+
+                        <!-- show saved docs in docs table -->
+                        <button 
+                            siteFunction="showSavedItems" 
+                            id="showSavedItems" 
+                            type="button" 
+                            class="btn btn-primary savedDocsSectionButton h-auto my-1"
+                            title= "Show saved items">
+                            Saved docs
+                        </button>
+
+                        <!-- show not saved docs in docs table -->
+                        <button 
+                            siteFunction="showNotSavedItems" 
+                            id="showNotSavedItems" 
+                            type="button" 
+                            class="btn btn-warning savedDocsSectionButton h-auto my-1"
+                            title= "Show not saved items">
+                            Not saved docs
+                        </button>
+
                     </div>
 
                     <!-- loads saved items from json -->
                     <div 
                         siteFunction="loadSavedItemsFromFile"
-                        class="col-10 p-2">
+                        class="col-8 p-2 d-flex flex-column justify-content-between">
 
                         <p class="text-primary savedDocsInfoText col-10">
-                            Select local file to load saved documents configuration.
+                            Choose configuration file to load saved documents configuration. <span class="text-primary savedDocsInfoTextDesktopOnly">You can also drop a file in the drop zone.</span> 
                             {% if site.data.siteConfig.savedItems.autoSaveBeforeLoad %}
-                                <span class="fw-medium text-danger">Save before load is active</span> for this site. Your current saved documents configuration will be saved to a local file before loading the new one.
+                                <span class="text-danger">Save before load is active</span> for this site. Your current saved documents configuration will be saved to a local file before loading the new one.
                             {% else %}
-                                <span class="fw-medium text-danger">Save before load is not active</span> for this site. We recommend to save the current saved documents configuration before loading the new one.
+                                <span class="text-danger">Save before load is not active</span> for this site. We recommend to save the current saved documents configuration before loading the new one.
                             {% endif %} 
                         </p>
                         
@@ -72,33 +92,6 @@
 
                 </div>
 
-                <div id="setPagesTableFilters" class="my-4 d-flex">
-                    <div class="col-2 p-2">
-                        <!-- show saved items in pages table -->
-                        <button 
-                            siteFunction="showSavedItems" 
-                            id="showSavedItems" 
-                            type="button" 
-                            class="btn btn-primary savedDocsSectionButton h-auto"
-                            title= "Show saved items">
-                            Saved docs
-                        </button>
-                    </div>
-
-                    <div class="col-10 p-2">
-                        <!-- show saved items in pages table -->
-                        <button 
-                            siteFunction="showNotSavedItems" 
-                            id="showNotSavedItems" 
-                            type="button" 
-                            class="btn btn-warning savedDocsSectionButton h-auto"
-                            title= "Show not saved items">
-                            Not saved docs
-                        </button>
-                    </div>
-
-                </div>
-            
             </div>
 
             <div

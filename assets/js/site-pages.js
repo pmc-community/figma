@@ -1178,6 +1178,7 @@ sitePagesFn = {
 
         // open saved items section and scroll until the section is in view
         $('#openSitePagesSavedItems').off('click').click( function() {
+            if (preFlight.envInfo.device.deviceType !== 'desktop') $('.savedDocsInfoTextDesktopOnly').hide();
             setSingleFileUploadDropArea('div[siteFunction="savedItemsFileDropZone"]', '#selectedSavedItemsFile', (files) => {
                 sitePagesFn.loadSavedItemsFromJsonFileHandler(files);
             });
