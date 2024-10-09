@@ -681,8 +681,8 @@ window.saveLocalStorageKeyAsJsonFile = (key, filename) => {
     try {
         jsonData = JSON.parse(data);
     } catch (error) {
-        showToast(`Can\'t save local storage! Error parsing key ${key}`, 'bg-danger', 'text-light');
-        return `Can\'t save local storage! Error parsing key ${key}`;
+        showToast(`Can\'t save local storage key! Error parsing key ${key}`, 'bg-danger', 'text-light');
+        return `error parsing local storage key ${key}`;
     }
 
     const jsonString = JSON.stringify(jsonData, null, 4); // 4 spaces indentation
@@ -693,7 +693,7 @@ window.saveLocalStorageKeyAsJsonFile = (key, filename) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast(`Saved documents are now in downloads folder, ${filename}.json`, 'bg-success', 'text-light');
+    showToast(`Your saved data is now in downloads folder, ${filename}.json`, 'bg-success', 'text-light');
     return filename;
 }
 
@@ -708,7 +708,7 @@ window.loadLocalStorageKeyFromJsonFile = (key, file, schema = null) => {
                 if (schema) validSchema = isValidArrayOfObjectsStructure(json, schema);
                 if (validSchema) {
                     localStorage.setItem(key, JSON.stringify(json));
-                    showToast(`JSON data from file ${file.name} has been loaded`, 'bg-success', 'text-light');
+                    showToast(`Data from file ${file.name} has been loaded`, 'bg-success', 'text-light');
                     return file.name;
                 }
                 else {
@@ -775,7 +775,7 @@ const cleanSavedItems = () => {
 
     // first, normalize savedItems item stucture to not have issues when starting the app
     savedItems.forEach(page => {
-        if (page.customNotes || page.customNotes === undefined) page.customNotes = customNotes;
+        if (!page.customNotes || page.customNotes === undefined) page.customNotes = customNotes;
         if (!page.customTags || page.customTags === undefined) page.customTags = customTags;
         if (!page.customCategories || page.customCategories === undefined) page.customCategories = customCategories
         if (!page.customComments || page.customComments === undefined) page.customComments = customComments;

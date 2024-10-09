@@ -13,72 +13,107 @@
             </button>
         </div>
 
-        <div class="card-body">
+        <div class="card-body d-flex">
 
-            <div siteFunction="saveAndLoadSavedItemsContainer" class="my-4 d-flex">
+            <div class="col-8">
+            
+                <div siteFunction="saveAndLoadSavedItemsContainer" class="my-4 d-flex">
 
-                <div class="p-2 d-flex align-items-end">
-                    <!-- save saved items as json in downloads -->
-                    <button 
-                        siteFunction="saveSavedItemsToFile" 
-                        id="saveSavedItemsToFile" 
-                        type="button" 
-                        class="btn btn-success savedDocsSectionButton h-auto"
-                        title= "Save to file">
-                        Save to file
-                    </button>
-                </div>
-
-               <!-- loads saved items from json -->
-                <div 
-                    siteFunction="loadSavedItemsFromFile"
-                    class="col-5 p-2">
-                    <p class="text-primary savedDocsInfoText">
-                        Select local file to load saved documents configuration.
-                        {% if site.data.siteConfig.savedItems.autoSaveBeforeLoad %}
-                            Save before load is active for this site. Your current saved documents configuration will be saved in a local file before loading the new one.
-                        {% else %}
-                            Save before load is not active for this site. We recommend to save the current saved documents configuration before loading the new one
-                        {% endif %} 
-                    </p>
-                    <div class="input-group">
-                        <input 
-                            type="file" 
-                            class="form-control" 
-                            id="selectedSavedItemsFile" 
-                            aria-label="Select">
+                    <div class="col-2 p-2 d-flex flex-column justify-content-between">
+                        <!-- save saved items as json in downloads -->
+                        <i class="fs-1 bi bi-cloud-download text-primary mx-auto"></i>
+                        <button 
+                            siteFunction="saveSavedItemsToFile" 
+                            id="saveSavedItemsToFile" 
+                            type="button" 
+                            class="btn btn-success savedDocsSectionButton h-auto"
+                            title= "Save to file">
+                            Save to file
+                        </button>
                     </div>
+
+                    <!-- loads saved items from json -->
+                    <div 
+                        siteFunction="loadSavedItemsFromFile"
+                        class="col-10 p-2">
+
+                        <p class="text-primary savedDocsInfoText col-10">
+                            Select local file to load saved documents configuration.
+                            {% if site.data.siteConfig.savedItems.autoSaveBeforeLoad %}
+                                <span class="fw-medium text-danger">Save before load is active</span> for this site. Your current saved documents configuration will be saved to a local file before loading the new one.
+                            {% else %}
+                                <span class="fw-medium text-danger">Save before load is not active</span> for this site. We recommend to save the current saved documents configuration before loading the new one.
+                            {% endif %} 
+                        </p>
+                        
+                        <div class="d-flex">
+                            <div class="col-10">
+                                <div class="input-group">
+                                    <input 
+                                        type="file" 
+                                        class="form-control" 
+                                        id="selectedSavedItemsFile" 
+                                        aria-label="Select"
+                                        accept=".json">
+                                </div>
+                            </div>
+
+                            <div class="col-2 text-center"> 
+                                <div id="selectedSavedItemsFileLoading" class="ml-2 d-none">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
+                <div id="setPagesTableFilters" class="my-4 d-flex">
+                    <div class="col-2 p-2">
+                        <!-- show saved items in pages table -->
+                        <button 
+                            siteFunction="showSavedItems" 
+                            id="showSavedItems" 
+                            type="button" 
+                            class="btn btn-primary savedDocsSectionButton h-auto"
+                            title= "Show saved items">
+                            Saved docs
+                        </button>
+                    </div>
+
+                    <div class="col-10 p-2">
+                        <!-- show saved items in pages table -->
+                        <button 
+                            siteFunction="showNotSavedItems" 
+                            id="showNotSavedItems" 
+                            type="button" 
+                            class="btn btn-warning savedDocsSectionButton h-auto"
+                            title= "Show not saved items">
+                            Not saved docs
+                        </button>
+                    </div>
+
+                </div>
+            
             </div>
 
-            <div id="setPagesTableFilters" class="my-4 d-flex">
-                <div class="p-2">
-                    <!-- show saved items in pages table -->
-                    <button 
-                        siteFunction="showSavedItems" 
-                        id="showSavedItems" 
-                        type="button" 
-                        class="btn btn-primary savedDocsSectionButton h-auto"
-                        title= "Show saved items">
-                        Saved docs
-                    </button>
+            <div
+                siteFunction="savedItemsFileDropZone"
+                class="col-4 d-flex align-items-center justify-content-center savedItemsFileDropZone border-secondary border-opacity-25">
+                <div class="text-center">
+                    <i class="fs-1 bi bi-cloud-upload text-primary"></i>
+                    <div class="fs-5 fw-medium text-secondary">Drop file here</div>
+                    <p 
+                        siteFunction="savedItemsFileDropZoneFileName"
+                        class="d-none text-primary savedDocsInfoText">
+                        fileName
+                    </p>
                 </div>
-
-                <div class="p-2">
-                    <!-- show saved items in pages table -->
-                    <button 
-                        siteFunction="showNotSavedItems" 
-                        id="showNotSavedItems" 
-                        type="button" 
-                        class="btn btn-warning savedDocsSectionButton h-auto"
-                        title= "Show not saved items">
-                        Not saved docs
-                    </button>
-                </div>
-
             </div>
-                            
         </div>
 
     </div>

@@ -1143,11 +1143,45 @@ sitePagesFn = {
         "customComments": "emptyArray"  // Empty array
     },
 
+    loadSavedItemsFromJsonFileHandler: (files) => {
+        const file = files[0];
+        if (!file || file === undefined || file.name === '') return;
+        if (file.name.split('.').pop() !== 'json') {
+            showToast(`Sorry! Only *.json files allowed this time.`, 'bg-danger', 'text-light');
+            return;
+        }
+
+        if (settings.savedItems.autoSaveBeforeLoad) {
+            // saving first, just in case
+            const fileName = `savedItems_autoSaved_${getCurrentDateTime()}_${shortUuid()}`
+            saveLocalStorageKeyAsJsonFile('savedItems', fileName);
+        }
+
+        $('#selectedSavedItemsFileLoading').removeClass('d-none');
+        const loadSavedItems__ASYNC = () => {
+            return new Promise ( resolve => {
+                loadLocalStorageKeyFromJsonFile ('savedItems', file, sitePagesFn.savedItemsSchema);
+                cleanSavedItems();
+                sitePagesFn.bruteRebuildPagesTable();    
+                resolve();
+            });
+        }
+
+        loadSavedItems__ASYNC().then(()=> {
+            $('p[siteFunction="savedItemsFileDropZoneFileName"]').text(file.name).removeClass('d-none');
+            setTimeout(()=>$('#selectedSavedItemsFileLoading').addClass('d-none'), 200);
+        });
+    },
+
     // saved items section
     setSavedItemsButtonsFunctions: () => {
 
         // open saved items section and scroll until the section is in view
         $('#openSitePagesSavedItems').off('click').click( function() {
+            setSingleFileUploadDropArea('div[siteFunction="savedItemsFileDropZone"]', '#selectedSavedItemsFile', (files) => {
+                sitePagesFn.loadSavedItemsFromJsonFileHandler(files);
+            });
+
             $('#site_pages_saved_items').removeClass('d-none');
             $('div[sitefunction="sitePagesSavedItems"]').fadeIn();
             $('html, body').animate({
@@ -1240,16 +1274,7 @@ sitePagesFn = {
         
         // loads from local file and save to local storage
         $('#selectedSavedItemsFile').off('change').on('change', function(event) {
-            if (settings.savedItems.autoSaveBeforeLoad) {
-                // saving first, just in case
-                const fileName = `savedItems_autoSaved_${getCurrentDateTime()}_${shortUuid()}`
-                saveLocalStorageKeyAsJsonFile('savedItems', fileName);
-            }
-
-            const file = event.target.files[0];
-            if (!file || file === undefined || file.name === '') return;
-            loadLocalStorageKeyFromJsonFile ('savedItems', file, sitePagesFn.savedItemsSchema);
-            cleanSavedItems();
+            sitePagesFn.loadSavedItemsFromJsonFileHandler(event.target.files);
         });
     },
 }

@@ -2435,3 +2435,53 @@ const fireGTMTag = (gtmObject) => {
     console.log('gtm');
     if (gData.gtm.enabled) window.dataLayer.push(gtmObject);
 }
+
+// single file drop upload 
+const setSingleFileUploadDropArea = (dropAreaSelector, fileInputSelector, callback) => {
+    const $dropArea = $(dropAreaSelector);
+    const $fileInput = $(fileInputSelector);
+
+    $dropArea.on('dragover', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $dropArea.addClass('fileDropAreaDragover');
+    });
+
+    $dropArea.on('dragleave', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $dropArea.removeClass('fileDropAreaDragover');
+    });
+
+    $dropArea.on('drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $dropArea.removeClass('fileDropAreaDragover');
+        const files = e.originalEvent.dataTransfer.files;
+        if (callback) callback(files);
+    });
+
+    $dropArea.on('click', function() {
+        $fileInput.click();
+    });
+
+    // prevent opening a new tab and navigate to the file
+    // when drop outside drop zone
+    $(document).on('dragover', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+    $(document).on('drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+    // Additionally, handle the 'dragenter' and 'dragleave' to ensure all drag events are captured
+    $(window).on('dragenter dragleave dragover drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+
+}

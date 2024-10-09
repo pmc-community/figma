@@ -598,6 +598,14 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     #{map-get($pageSavedItemsElements, savedDocsInfoText)} {
         font-size: $savedDocsInfoTextFontSize;
     }
+
+    #{map-get($pageSavedItemsElements, savedItemsFileDropZone)} {
+        border: $savedItemsFileDropZoneBorder;
+    }
+
+    #{map-get($pageSavedItemsElements, savedItemsFileDropZoneDragover)} {
+        background: $savedItemsFileDropZoneDragoverBackground;
+    }
 }
 
 // hs integration (for what is outside iframes)
@@ -624,6 +632,10 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     
     #{map-get($singlePageElements, pageInfoButtons)} {
         width: $pageInfoButtonsWidth;
+    }
+
+    #{map-get($singlePageElements, breadcrumbItem)}::after {
+        content: $breadcrumbItemSeparatorContent;
     }
 }
 
