@@ -33,15 +33,22 @@ layout: table_wrappers
       {% assign match4 = pageList | where: "permalink", c4 %}
       {% assign match = match1.size | plus: match2.size | plus: match3.size | plus: match4.size %}
       
+      {% assign mainContentWrapPadding = "px-0 pt-0 px-md-5 pt-md-5" %}
 
-      <div class="main-content-wrap p-0 p-md-5">
+      <!-- document page needs extra x padding -->
+      {% if match > 0 %}
+        {% assign mainContentWrapPadding = "px-5 pt-0 px-md-5 pt-md-5" %}
+      {% endif %}
+
+      <div class="main-content-wrap {{mainContentWrapPadding}}">
+
         <div id="ihs_top_of_page"></div>
         {% include components/breadcrumbs.html %}
         
         <div id="main-content" class="main-content">
         
           {% if match > 0 %}
-            
+            <!-- this is a document page -->
             <hr sitefunction="pageContentTopSeparator" class="my-4 container-xl px-2">
             <div class="d-flex col-12 container-xl p-0">
               <main class="col-7">
@@ -62,6 +69,7 @@ layout: table_wrappers
             
             <hr sitefunction="pageContentBottomSeparator" class="my-4 container-xl px-2">         
           {% else %}
+            <!-- this is home page -->
             <main class="px-5">
               {% if site.heading_anchors != false %}
                 {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
@@ -74,9 +82,11 @@ layout: table_wrappers
         </div>
       
         {% include components/footer.html %}
+
       </div>
 
       <div id="ihs_go_to_top_btn" class="btn btn-sm btn-primary rounded-circle"><i class="bi bi-arrow-up"></i></div>
+
     </div>
     
     <div>
@@ -96,6 +106,5 @@ layout: table_wrappers
 
   <!-- selected text context menu -->
   {% include siteIncludes/partials/page-common/selected-text-context-menu.html %}
-
 
 </html>

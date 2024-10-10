@@ -793,7 +793,6 @@
   },
   "pageSettings": {
     "/": {
-      "additionalContentPadding": "p-0 p-md-5",
       "sections": {
         "mostRecentAndPopular_section": {
           "popularCatsToShow": 8,
