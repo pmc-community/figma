@@ -160,8 +160,8 @@ const page__getPageFeedbackAndSupport = () => {
 
         // modify some styles on home page
         if (window.location.pathname === '/') {
-            $('.main-content-wrap').addClass(pageSettings.additionalContentPadding);
-            $('footer[class!="site-footer"]').addClass(pageSettings.additionalContentPadding);
+            //$('.main-content-wrap').addClass(pageSettings.additionalContentPadding); //not needed - mobile css
+            //$('footer[class!="site-footer"]').addClass(pageSettings.additionalContentPadding);
             $('div[siteFunction="pageFeedbackAndSupport_Support"]').removeClass('col-3').addClass('col-4');
             $('div[siteFunction="pageFeedbackAndSupport_Involve"]').removeClass('col-3').addClass('col-4');
             $('div[siteFunction="pageFeedbackAndSupport_Feedback"]').removeClass('col-6').addClass('col-4');

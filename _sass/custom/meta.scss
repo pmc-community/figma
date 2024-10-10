@@ -10,6 +10,16 @@
     #{$contentAreaId} {
         margin-left: $contentAreaMarginLeft !important;
         max-width: 100%;
+
+        @include phone {
+            margin-left: $contentAreaMarginLeft_phone !important;
+            max-width: $contentAreaMaxWidth_phone;
+        }
+
+        @include tablet {
+            margin-left: $contentAreaMarginLeft_tablet !important;
+            max-width: $contentAreaMaxWidth_tablet;
+        }
     }
 
 }

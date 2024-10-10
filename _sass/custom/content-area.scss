@@ -6,6 +6,11 @@ $contentAreaMarginLeft: $sideBarFixedWidth !default;
 $contentAreaPaddingLeft: $p-10p;
 $contentAreaPaddingRight: $contentAreaPaddingLeft;
 
+$contentAreaMarginLeft_phone: $gen-inherit;
+$contentAreaMaxWidth_phone: $gen-inherit;
+$contentAreaMarginLeft_tablet: $contentAreaMarginLeft_phone;
+$contentAreaMaxWidth_tablet: $contentAreaMaxWidth_phone;
+
 @import 'meta.scss';
 
 // STYLE CONTENT AREA

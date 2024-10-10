@@ -1,4 +1,24 @@
+//media breakpoints
+$phone: 767px;
+$tablet: 1024px; // may be also 1199px
+
+@mixin phone {
+    @media only screen and (max-width: $phone) {
+        @content;
+      }
+}
+
+@mixin tablet {
+    @media only screen and (min-width: ($phone + 1px)) and (max-width: $tablet) {
+        @content;
+    }
+}
+
 // define the custom vars to be used instead of theme defaults
+
+//generics
+$gen-inherit: inherit;
+
 // colors
 $c-neutral: #eaeaea;
 $c-black: #000;
@@ -21,7 +41,7 @@ $c-error-message: #dc3545;
 $c-not-set: initial;
 $c-metal-grey: #f5f6fa;
 $c-searchHit-container: #010033;
-$c-inherit: inherit;
+$c-inherit: $gen-inherit;
 
 // typography
 $siteFontFamily: 'Poppins';
@@ -145,7 +165,7 @@ $brad-5px: 5px;
 $brad-50p: 50%;
 $brad-0px: 0px;
 $b-rad-0-2: 0.2rem;
-$b-rad-inherit: inherit;
+$b-rad-inherit: $gen-inherit;
 
 // outlines
 $outl-none: none;
@@ -204,7 +224,7 @@ $ov-none: hidden;
 
 // shadows
 $sh-none: none;
-$sh-inherit: inherit;
+$sh-inherit: $gen-inherit;
 
 // container fill
 $fl-all-available-space: auto; //this is flex:auto
