@@ -397,7 +397,7 @@ algolia = {
 
         // create Show More and Show Less btns
         const createShowMoreShowLess = (state=null) => {
-            
+            if (preFlight.envInfo.device.deviceType !== 'desktop') return;
             $('div[siteFunction="showMoreShowLessButtons"]').remove();
             
             const showMoreShowLessContainer = $('<div siteFunction="showMoreShowLessButtons">').addClass('showMoreShowLessButtons d-flex justify-content-center align-items-center');

@@ -1039,7 +1039,16 @@ const applyColorSchemaCorrections = (theme=null) => {
     // apply css corrections on HS forms if necessary
     hsForms.forEach($form => {
         hsIntegrate.applyCSSCorrection($form, null);
-    })
+    });
+
+    // apply color corrections on mobile
+    if (preFlight.envInfo.device.deviceType === 'mobile') {
+        textColor = $(settings.layouts.leftSideBar.siteTitle).css('color');
+        $(settings.layouts.leftSideBar.sideNav).css('background', $(settings.layouts.leftSideBar.header).css('background'));
+        $(settings.layouts.leftSideBar.link).css('cssText', `color: ${textColor} !important;`);
+        $(settings.layouts.leftSideBar.mobileMenuBtnIcon).css('cssText', `color: ${textColor} !important;`);
+        $(settings.layouts.leftSideBar.mobileNavLinkExpander).css('cssText', `color: ${textColor} !important;`);
+    }
 }
 
 const sanitizeURL = (url) => {

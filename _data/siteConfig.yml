@@ -58,6 +58,12 @@ layouts:
       contentWrapper: ".main-content"
     leftSideBar:
       container: ".side-bar"
+      sideNav: "#site-nav"
+      header: ".site-header"
+      link: ".nav-list-link"
+      siteTitle: ".site-title"
+      mobileMenuBtnIcon: ".site-button-icon"
+      mobileNavLinkExpander: ".page-with-children-expander"
 toBeRemovedAfterLoad:
   - "script": # selector for the element to be removed, in the form of tag, .class, #id
     - "externalContent" # each selector[siteAttr = ...] will be removed

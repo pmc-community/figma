@@ -71,7 +71,13 @@
         "contentWrapper": ".main-content"
       },
       "leftSideBar": {
-        "container": ".side-bar"
+        "container": ".side-bar",
+        "sideNav": "#site-nav",
+        "header": ".site-header",
+        "link": ".nav-list-link",
+        "siteTitle": ".site-title",
+        "mobileMenuBtnIcon": ".site-button-icon",
+        "mobileNavLinkExpander": ".page-with-children-expander"
       }
     },
     "toBeRemovedAfterLoad": [

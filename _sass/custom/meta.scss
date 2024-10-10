@@ -113,8 +113,12 @@
 
 // sidebar
 @mixin sidebar($sidebarContainer, $sidebarDocListContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, 
-$sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBtn) {
+$sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBtn, $sideBarButtonMobile) {
     
+    #{$sideBarButtonMobile} {
+        background-image: $sideBarButtonMobileBgImage !important;
+    }
+
     #{$sidebarContainer} {
         width: $sidebarWidth;
         min-width: $sidebarMinWidth;
@@ -134,6 +138,16 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         @extend .px-0 !optional;
     }
     
+    #{$sideBarDocLink}.active, #{$sideBarDocLink}:hover {
+        @include phone {
+            background-image: $sideBarLinkActiveBgImage !important;
+        }
+
+        @include tablet {
+            background-image: $sideBarLinkActiveBgImage !important;
+        }
+    }
+
     #{$sideBarCategoryBtn} {
         @extend .px-0 !optional;
     }
@@ -163,6 +177,7 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     #{$sideBarFooter} {
         border-top:$sidebarFooterBorderTop;
     }
+
 
 }
 

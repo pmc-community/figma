@@ -10,7 +10,7 @@
       collection_key, collection_value, collection.
   {%- endcomment -%}
   
-  <nav aria-label="Main" id="site-nav" class="site-nav px-5">
+  <nav aria-label="Main" id="site-nav" class="site-nav px-5 pt-4">
     {% assign pages_top_size = site.html_pages
           | where_exp:"item", "item.title != nil"
           | where_exp:"item", "item.parent == nil"
@@ -48,10 +48,10 @@
                 <li class="nav-list-item">
                   {%- if collection.size > 0 -%}
                   <button class="nav-list-expander btn-reset" aria-label="Toggle collection {{ collection_value.name }}" aria-pressed="false">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+                    <svg class="page-with-children-expander" viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
                   </button>
                   {%- endif -%}
-                  <div class="nav-category fs-6 fw-normal text-primary">{{ collection_value.name }}</div>
+                  <div class="nav-category fs-6 fw-normal text-primary border-bottom border-secondary border-opacity-25">{{ collection_value.name }}</div>
                   {% include components/nav/pages.html pages=collection all=include.all %}
                 </li>
               </ul>
