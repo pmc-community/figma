@@ -19,7 +19,8 @@
 
     </div>
   
-    {% include_cached components/site_nav.html %}
+    <!-- include_cached may be used too -->
+    {% include components/site_nav.html %}
   
     {% capture nav_footer_custom %}
       {%- include nav_footer_custom.html -%}

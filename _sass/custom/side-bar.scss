@@ -8,6 +8,10 @@ $sidebarFooterFirstRowMarginBottom: $m-10px;
 $sidebarLogoSize: $sz-25px;
 $sidebarTitlePaddingLeft: $siteTitlePaddingLeft;
 $sidebarFooterBorderTop:$b-SolThinGrey;
+
+$sideBarContainerWidth_phone: $sz-full;
+$sideBarContainerMinWidth_phone: $sideBarContainerWidth_phone;
+
 @import 'meta.scss';
 
 // STYLE SIDEBAR

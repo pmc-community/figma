@@ -120,26 +120,15 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         min-width: $sidebarMinWidth;
 
         @include phone {
-            width: 100%;
-            min-width: 100%;
+            width: $sideBarContainerWidth_phone;
+            min-width: $sideBarContainerMinWidth_phone;
         }
 
         @include tablet {
-            width:100%;
-            min-width: 100%;
+            width:$sideBarContainerWidth_phone;
+            min-width: $sideBarContainerMinWidth_phone;
         }
     }
-
-    /*
-    #{$sidebarDocListContainer} {
-        @extend .py-6 !optional;
-        @extend .px-6 !optional;
-    }
-
-    #{$sideBarHeader} {
-        @extend .px-6 !optional;
-    }
-    */
 
     #{$sideBarDocLink} {
         @extend .px-0 !optional;
