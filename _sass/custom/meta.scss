@@ -564,6 +564,17 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         }
     }
 
+    #{map-get($offcanvasElements, body)} {
+
+        @include phone {
+            font-size: $bodyFontSize !important;
+        }
+
+        @include tablet {
+            font-size: $bodyFontSize !important;
+        }
+    }
+
     #{map-get($offcanvasElements, tagsCardBody)} {
         //max-height: $tagsCardBodyMaxHeight;
         overflow-y: $tagsCardBodyOverflowY;
