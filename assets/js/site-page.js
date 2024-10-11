@@ -100,7 +100,7 @@ const page__getPageNotes = () => {
     const customNoteItem = (note) => {
         return (
             `
-                <div siteFunction="pageNote" class="col-4 my-2 card h-auto p-2 bg-transparent border-0 rounded-0 border-secondary border-opacity-25 shadow-none">
+                <div siteFunction="pageNote" class="col-12 col-md-4 my-2 card h-auto p-2 bg-transparent border-0 rounded-0 border-secondary border-opacity-25 shadow-none">
                     <div 
                         class="align-top mb-2 border-0 border-bottom rounded-0 border-secondary border-opacity-25" 
                         style="width: fit-content">
@@ -451,7 +451,7 @@ const page__getPageInfo = () => {
             `
                 <div id="pageLastUpdateAndPageInfo" class="my-4 p-0 container-xl">
                     ${catsHtml}
-                    <div class="d-mdd-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center justify-content-between mb-2 mb-md-0">
                         <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
                         <div class="badge fs-6 fw-light text-secondary border border-secondary border-opacity-25 shadow-none">
                             ${page.siteInfo.readingTime} min. read
@@ -461,7 +461,7 @@ const page__getPageInfo = () => {
                     <div class="d-md-flex justify-content-between align-items-center">
                         <div>
                             <div class="d-md-flex align-items-center">
-                                <div class="badge rounded-pill text-bg-secondary px-3 py-2 fw-medium">
+                                <div class="badge rounded-pill text-bg-secondary px-3 py-2 fw-medium mb-2 mb-md-0">
                                     Last update: ${formatDate(page.siteInfo.lastUpdate)}
                                 </div>
                                 <div class="d-md-flex">
@@ -471,7 +471,7 @@ const page__getPageInfo = () => {
                             </div>
                             
                         </div>
-                        <div>
+                        <div class="my-4 d-md-flex align-content-center">
                             <button 
                                 sitefunction="pageShowPageFullInfo" 
                                 type="button" 
