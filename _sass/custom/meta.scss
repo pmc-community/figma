@@ -559,6 +559,16 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     #{map-get($offcanvasElements, customNoteButton)} {
         width: $customNotesButtonWidth !important;
     }
+
+    #{map-get($offcanvasElements, alertInfoMessages)} {
+        @include phone {
+            font-size: $alertInfoMessagesFontSize_phone;
+        }
+
+        @include tablet {
+            font-size: $alertInfoMessagesFontSize_phone;
+        }
+    }
 }
 
 // context menu

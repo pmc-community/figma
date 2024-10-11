@@ -701,7 +701,7 @@ const postProcessCustomNotesTable = (table, pageInfo) => {
                 title: `Remove all custom notes for page ${pageInfo.siteInfo.title}`
             },
             className: 'btn-danger btn-sm text-light focus-ring focus-ring-warning mb-2',
-            text: 'Delete All Notes',
+            text: 'Delete Notes',
             action: () => {
                 REFRESH_PAGE_INFO_AFTER__removeAllCustomNotes(pageInfo);
                 const notesData = getPageNotes(pageInfo);

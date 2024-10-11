@@ -5,12 +5,14 @@ $offCanvasWidth_phone: $sz-full;
 $tagsCardBodyMaxHeight: $sz-200px;
 $tagsCardBodyOverflowY: $ov-auto;
 $customNotesButtonWidth: $sz-6rem;
+$alertInfoMessagesFontSize_phone: $fs-0-75;
 
 $offcanvasElements: (
     container: '.offcanvas',
     body: '.offcanvas-body',
     tagsCardBody: 'div[siteFunction="offcanvasPageFullInfoPageTags"]',
-    customNoteButton: '.offcanvasPageFullInfoPageGeneralCustomNoteButton'
+    customNoteButton: '.offcanvasPageFullInfoPageGeneralCustomNoteButton',
+    alertInfoMessages: 'div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesLimitsAlert"], div[siteFunction="offcanvasPageFullInfoPageGeneralCustomNotesSavePageAlert"], div[siteFunction="offcanvasPageFullInfoPageCustomCatsAlert"], div[siteFunction="offcanvasPageFullInfoPageCustomTagsAlert"]'
 );
 
 @import 'meta.scss';
