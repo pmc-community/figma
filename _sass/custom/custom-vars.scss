@@ -83,6 +83,7 @@ $s-neg-25px: -25px;
 
 // sizes, widths, heights
 $sz-full: 100%;
+$sz-auto: auto;
 $sz-70p: 70%;
 $sz-80p: 80%;
 $sz-20p: 20%;
@@ -237,6 +238,9 @@ $ls-none: none;
 
 // text wrapping
 $wr-no: nowrap;
+
+// flex utilities
+$flex-no-spread: 0 0 auto;
 
 // Bootstrap extesions
 .px-6 {

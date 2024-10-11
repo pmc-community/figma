@@ -472,6 +472,19 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         }
     }
 
+    #{map-get($tableElements, tableFooterButtons)} {
+        @include phone {
+            width: $tableFooterButtonsWidth_phone !important;
+            flex: $tableFooterButtonsFlexGrow_phone !important;
+        }
+
+        @include tablet {
+            width: $tableFooterButtonsWidth_phone !important;
+            flex: $tableFooterButtonsFlexGrow_phone !important;
+        }
+    }
+
+
 }
 
 // cat search
@@ -569,6 +582,7 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
             font-size: $alertInfoMessagesFontSize_phone;
         }
     }
+
 }
 
 // context menu

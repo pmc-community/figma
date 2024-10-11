@@ -43,6 +43,9 @@ $tableSearchInputGroupDisplay_phone: $d-flex;
 $tablePaginationLabelDisplay_phone: $d-flex;
 $tablePaginationDisplay_phone: $d-flex;
 
+$tableFooterButtonsWidth_phone: $sz-auto;
+$tableFooterButtonsFlexGrow_phone: $flex-no-spread;
+
 $tableElements: (
     tableWrapper: '.table-wrapper',
     paginationButtonLink: '.page-link',
@@ -72,7 +75,8 @@ $tableElements: (
     tableEntriesPerPageGroup: '.dt-length',
     tableSearchInputGroup: '.dt-search',
     tablePaginationLabel: '.dt-info',
-    tablePagination: '.dt-paging'
+    tablePagination: '.dt-paging',
+    tableFooterButtons: '.dt-buttons'
 );
 
 @import 'meta.scss';
