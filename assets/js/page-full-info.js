@@ -581,18 +581,20 @@ const fillPageRelatedPages = (pageInfo) => {
             
             html = html + 
                 `
-                    <a 
-                        title="${relatedPageExcerpt}" 
-                        class="m-1 py-1 px-2 bg-light-subtle rounded-pill" 
-                        href="${page.permalink.indexOf('/') === 0 ? page.permalink : '/'+page.permalink}">
-                        ${page.title}
-                    </a>
+                    <div class="my-3">
+                        <a 
+                            title="${relatedPageExcerpt}" 
+                            class="text-nowrap m-3 m-md-1 py-1 px-2 bg-light-subtle rounded-pill" 
+                            href="${page.permalink.indexOf('/') === 0 ? page.permalink : '/'+page.permalink}">
+                            ${page.title}
+                        </a>
+                    </div>
                 `
         });
         return html;
     }
     pageRelatedPages = pageInfo.siteInfo.relatedPages || [];
-    $('span[siteFunction="offcanvasPageFullInfoPageGeneralRelatedPagesText"]').html(relatedPagesHtml(pageRelatedPages));
+    $('div[siteFunction="offcanvasPageFullInfoPageGeneralRelatedPagesText"]').html(relatedPagesHtml(pageRelatedPages));
 }
 
 const fillPageSimilarPages = (pageInfo) => {
@@ -609,18 +611,20 @@ const fillPageSimilarPages = (pageInfo) => {
             
             html = html + 
                 `
-                    <a 
-                        title="${similarPageExcerpt}" 
-                        class="m-1 py-1 px-2 bg-body-secondary rounded-pill" 
-                        href="${page.permalink.indexOf('/') === 0 ? page.permalink : '/'+page.permalink}">
-                        ${page.title}
-                    </a>
+                    <div class="my-3">
+                        <a 
+                            title="${similarPageExcerpt}" 
+                            class="text-nowrap m-3 m-md-1 py-1 px-2 bg-light-subtle rounded-pill" 
+                            href="${page.permalink.indexOf('/') === 0 ? page.permalink : '/'+page.permalink}">
+                            ${page.title}
+                        </a>
+                    </div>
                 `
         });
         return html;
     }
     pageSimilarPages = pageInfo.siteInfo.similarByContent.slice(0, settings.similarByContent.maxPages) || [];
-    $('span[siteFunction="offcanvasPageFullInfoPageGeneralSimilarPagesText"]').html(similarPagesHtml(pageSimilarPages));
+    $('div[siteFunction="offcanvasPageFullInfoPageGeneralSimilarPagesText"]').html(similarPagesHtml(pageSimilarPages));
 }
 
 const fillPageAutoSummary = (pageInfo) => {

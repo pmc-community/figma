@@ -428,6 +428,50 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border-color: $paginationButtonThemeDarkBorderColor !important;
     }
 
+    /*
+    #{map-get($tableElements, tableEntriesPerPageLabel)} {
+        
+        @include phone {
+            display: $tableEntriesPerPageLabelVisibility_phone !important;
+        }
+    }
+    */
+
+    #{map-get($tableElements, tableEntriesPerPageGroup)} {
+        
+        @include phone {
+            display: $tableEntriesPerPageGroupDisplay_phone !important;
+        }
+    }
+
+    #{map-get($tableElements, tableSearchInputGroup)} {
+        
+        @include phone {
+            display: $tableSearchInputGroupDisplay_phone !important;
+        }
+    }
+
+    #{map-get($tableElements, tableEntriesPerPageGroup)} {
+        
+        @include phone {
+            display: $tableEntriesPerPageGroupDisplay_phone !important;
+        }
+    }
+
+    #{map-get($tableElements, tablePaginationLabel)} {
+        
+        @include phone {
+            display: $tablePaginationLabelDisplay_phone !important;
+        }
+    }
+
+    #{map-get($tableElements, tablePagination)} {
+        
+        @include phone {
+            display: $tablePaginationDisplay_phone !important;
+        }
+    }
+
 }
 
 // cat search

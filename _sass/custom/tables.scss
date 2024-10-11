@@ -36,6 +36,12 @@ $paginationButtonThemeLightBorderColor: $paginationButtonThemeLightBackground;
 $paginationButtonThemeDarkBackground: $c-primary-theme-dark;
 $paginationButtonThemeDarkBorderColor:$paginationButtonThemeDarkBackground;
 $paginationActivePageTextColor: $c-white;
+$tableEntriesPerPageLabelVisibility_phone: $d-hidden;
+
+$tableEntriesPerPageGroupDisplay_phone: $d-flex;
+$tableSearchInputGroupDisplay_phone: $d-flex;
+$tablePaginationLabelDisplay_phone: $d-flex;
+$tablePaginationDisplay_phone: $d-flex;
 
 $tableElements: (
     tableWrapper: '.table-wrapper',
@@ -61,7 +67,12 @@ $tableElements: (
     //used with cascade:true to avoid black background of "No data in the table" situation on dark theme
     tableBody: 'div.dt-scroll-body',
     paginationActivePageThemeDark: '.paginationActivePageThemeDark',
-    paginationActivePageThemeLight: '.paginationActivePageThemeLight'
+    paginationActivePageThemeLight: '.paginationActivePageThemeLight',
+    tableEntriesPerPageLabel:'.dt-length label',
+    tableEntriesPerPageGroup: '.dt-length',
+    tableSearchInputGroup: '.dt-search',
+    tablePaginationLabel: '.dt-info',
+    tablePagination: '.dt-paging'
 );
 
 @import 'meta.scss';
