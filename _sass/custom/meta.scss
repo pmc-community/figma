@@ -497,6 +497,14 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 @mixin offCanvasPageFullInfo($offcanvasElements) {
     #{map-get($offcanvasElements, container)} {
         width: $offcanvasWidth !important;
+
+        @include phone {
+            width: $offCanvasWidth_phone !important;
+        }
+
+        @include tablet {
+            width: $offCanvasWidth_phone !important;
+        }
     }
 
     #{map-get($offcanvasElements, tagsCardBody)} {
@@ -669,6 +677,16 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 
     #{map-get($singlePageElements, breadcrumbItem)}::after {
         content: $breadcrumbItemSeparatorContent;
+    }
+
+    #{map-get($singlePageElements, breadcrumb)} {
+        @include phone {
+            display: $breadcrumbVisibility_phone;
+        }
+
+        @include tablet {
+            display: $breadcrumbVisibility_phone;
+        }
     }
 }
 
