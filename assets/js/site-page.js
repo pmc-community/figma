@@ -160,8 +160,6 @@ const page__getPageFeedbackAndSupport = () => {
 
         // modify some styles on home page
         if (window.location.pathname === '/') {
-            //$('.main-content-wrap').addClass(pageSettings.additionalContentPadding); //not needed - mobile css
-            //$('footer[class!="site-footer"]').addClass(pageSettings.additionalContentPadding);
             $('div[siteFunction="pageFeedbackAndSupport_Support"]').removeClass('col-3').addClass('col-4');
             $('div[siteFunction="pageFeedbackAndSupport_Involve"]').removeClass('col-3').addClass('col-4');
             $('div[siteFunction="pageFeedbackAndSupport_Feedback"]').removeClass('col-6').addClass('col-4');
@@ -453,20 +451,20 @@ const page__getPageInfo = () => {
             `
                 <div id="pageLastUpdateAndPageInfo" class="my-4 p-0 container-xl">
                     ${catsHtml}
-                    <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-mdd-flex align-items-center justify-content-between">
                         <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
                         <div class="badge fs-6 fw-light text-secondary border border-secondary border-opacity-25 shadow-none">
                             ${page.siteInfo.readingTime} min. read
                         </div>
                     </div>
                     <div class="mb-4">${page.siteInfo.excerpt}</div>
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-md-flex justify-content-between align-items-center">
                         <div>
-                            <div class="d-flex align-items-center">
+                            <div class="d-md-flex align-items-center">
                                 <div class="badge rounded-pill text-bg-secondary px-3 py-2 fw-medium">
                                     Last update: ${formatDate(page.siteInfo.lastUpdate)}
                                 </div>
-                                <div class="d-flex">
+                                <div class="d-md-flex">
                                     ${pageSavedInfoBadges(page)}
                                     ${pageSiteInfoBadges(page)}
                                 </div>
