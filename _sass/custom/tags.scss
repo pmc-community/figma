@@ -31,8 +31,9 @@ $tagSearchElements: (
 );
 
 // tags on page
-$badgeTopPosition: $pos-top-neg-5px;
-$badgeLeftPositions: $pos-left-neg-25px;
+$badgeTopPosition: $pos-neg-5px;
+$badgeLeftPosition_phone: $pos-neg-5px;
+$badgeLeftPosition_desktop: $pos-neg-25px;
 
 $tagOnPageElements: (
     badge: 'span[siteFunction="tagBadgeOnPage"]'

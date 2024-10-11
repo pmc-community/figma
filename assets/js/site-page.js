@@ -77,7 +77,7 @@ const page__getRelatedPages = () => {
                     <div siteFunction="pageRelatedPagesContainer">
                         <div
                             siteFunction="pageRelatedPagesRow"
-                            class="row d-flex ${relatedPageItemsAlign}">
+                            class="row ${relatedPageItemsAlign} d-block d-md-flex">
                             ${relatedPagesHtml(page)}
                         </div>
                     </div>
@@ -133,7 +133,7 @@ const page__getPageNotes = () => {
                     <div siteFunction="pageNotesContainer">
                         <div
                             siteFunction="pageNotesRow"
-                            class="d-flex justify-content-start row">
+                            class="d-block d-md-flex justify-content-start row">
                             ${customNotesHtml}
                         </div>
                     </div>
@@ -418,7 +418,7 @@ const page__getPageInfo = () => {
                 `
                     <div 
                         sitefunction="pageFullInfoPageGeneralSimilarPages" 
-                        class="mt-2 mb-4 d-flex">
+                        class="mt-2 mb-4 d-md-flex">
                         <span 
                             class="fw-medium align-self-center" 
                             title="Similar pages based on content"> 
@@ -864,7 +864,7 @@ const page__showPageCustomTags = () => {
                         href="/tag-info?tag=${tag}" 
                         sitefunction="pageTagButton" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 my-2 mr-5 btn btn-sm btn-success position-relative">
+                        class="focus-ring focus-ring-warning px-3 my-2 mr-md-5 btn btn-sm btn-success position-relative">
                         ${tag}
                     </a> 
                     <span 

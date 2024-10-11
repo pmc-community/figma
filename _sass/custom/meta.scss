@@ -302,7 +302,15 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 @mixin tagsOnPage($tagOnPageElements) {
     #{map-get($tagOnPageElements, badge)} {
         top: $badgeTopPosition;
-        left: $badgeLeftPositions;
+        left: $badgeLeftPosition_desktop;
+
+        @include phone {
+            left: $badgeLeftPosition_phone;
+        }
+    
+        @include tablet {
+            left: $badgeLeftPosition_phone;
+        }
     }
 }
 
