@@ -46,6 +46,8 @@ $tocMobileZIndex: $z-max;
 $tocMobileMaxHeight: $sz-300px;
 $tocMobileOverflowY: $ov-auto;
 $tocMobileHeaderAfterVisibility: $d-hidden;
+$tocMobileHeaderFocusOutline: $gen-none;
+$tocMobileHeaderBoxShadow: $gen-none;
 
 @import 'meta.scss';
 
@@ -58,3 +60,4 @@ $tocMobile: '#toc_mobile';
 @include toc($toc);
 @include tocItem($tocBase);
 @include tocMobile($tocMobile);
+

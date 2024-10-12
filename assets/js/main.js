@@ -19,6 +19,7 @@ window.customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
+    handleSiteMenuClickOnMobile();
     handleTocOnMobile();
     clearTheUrl();
 
@@ -64,6 +65,14 @@ window.customiseTheme = (pageObj = null) => {
 }
 
 /* HERE ARE THE FUNCTIONS */
+
+const handleSiteMenuClickOnMobile = () => {
+    $(document).off('click', 'div[siteFunction="siteAuxControls"]').on('click', 'div[siteFunction="siteAuxControls"]', function() {
+        // toggle site menu off when tap on things that doesn't change page
+        // otherwise the sit menu will remain open when tap on change theme or search button
+        $('#menu-button').click();
+    });
+}
 
 const handleTocOnMobile = () => {
 

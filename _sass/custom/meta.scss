@@ -136,6 +136,18 @@
         }
     }
 
+    #{$tocMobile} .accordion-header button:focus, #{$tocMobile} .accordion-header button[aria-expanded="true"] {
+        @include phone {
+            outline: $tocMobileHeaderFocusOutline !important;
+            box-shadow: $tocMobileHeaderBoxShadow !important;
+        }
+
+        @include tablet {
+            outline: $tocMobileHeaderFocusOutline !important;
+            box-shadow: $tocMobileHeaderBoxShadow !important;
+        }
+    }
+
     #{$toc} {
         @include phone {
             overflow-y: $tocMobileOverflowY;
