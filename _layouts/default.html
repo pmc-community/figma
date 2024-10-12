@@ -51,18 +51,24 @@ layout: table_wrappers
             <!-- this is a document page -->
             <hr sitefunction="pageContentTopSeparator" class="my-4 container-xl px-2">
 
-            <div class="accordion d-md-none d-block accordion-flush border border-secondary border-opacity-25" id="toc_mobile">
+            <div 
+              class="accordion d-md-none d-block accordion-flush border border-start-0 border-end-0 border-secondary border-opacity-25"
+              id="toc_mobile">
               <div class="accordion-item">
                 <div class="accordion-header">
                   <button 
-                    class="accordion-button fw-medium fs-6" 
+                    class="px-0 accordion-button fw-medium text-primary d-flex justify-content-between align-items-center" 
                     type="button" 
                     data-bs-toggle="collapse" 
                     data-bs-target="#mobile_toc_content" 
                     aria-expanded="true" 
-                    aria-controls="collapseOne">
+                    aria-controls="#mobile_toc_content">
                     On this page
+                    <i
+                      siteFunction="togglePageTocOnMobile" 
+                      class="bg-success py-1 px-2 rounded bi bi-arrow-down text-light"></i>
                   </button>
+                  
                 </div>
                 <div id="mobile_toc_content" 
                   class="accordion-collapse collapse" 
@@ -71,7 +77,6 @@ layout: table_wrappers
                 </div>
               </div>
             </div>
-
 
             <div class="d-flex col-12 container-xl p-0">
               <main class="col-12 col-md-7">

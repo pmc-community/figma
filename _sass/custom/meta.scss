@@ -126,6 +126,16 @@
         }
     }
 
+    #{$tocMobile} .accordion-item .accordion-header button::after {
+        @include phone {
+            display: $tocMobileHeaderAfterVisibility !important;
+        }
+
+        @include tablet {
+            display: $tocMobileHeaderAfterVisibility !important;
+        }
+    }
+
     #{$toc} {
         @include phone {
             overflow-y: $tocMobileOverflowY;
