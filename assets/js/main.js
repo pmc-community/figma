@@ -19,6 +19,7 @@ window.customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
+    additionalSiteMenuButtonOnMobile();
     handleSiteMenuClickOnMobile();
     handleTocOnMobile();
     clearTheUrl();
@@ -65,6 +66,21 @@ window.customiseTheme = (pageObj = null) => {
 }
 
 /* HERE ARE THE FUNCTIONS */
+const additionalSiteMenuButtonOnMobile = () => {
+    if (preFlight.envInfo.device.deviceType === 'mobile') {
+        const switchOffSiteMenu = 
+            `
+                <li class="aux-nav-list-item align-items-center d-flex">
+                <button
+                    siteFunction="switchOffSiteMenuOnMobile"
+                    class="btn btn-danger">
+                    <i class="bi bi-menu-down"></i>
+                </button>
+                </li>
+            `
+        $('.aux-nav-list').append($(switchOffSiteMenu));
+    }
+}
 
 const handleSiteMenuClickOnMobile = () => {
     $(document).off('click', 'div[siteFunction="siteAuxControls"]').on('click', 'div[siteFunction="siteAuxControls"]', function() {

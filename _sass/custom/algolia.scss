@@ -11,6 +11,7 @@ $hitDetailsContainerBorderZIndex: $z-999;
 $docSearchBtnZIndex: $z-max + 1;
 $docSearchBtnOutline: $outl-none;
 $docSearchBtnCursor: $cr-default;
+$docSearchBtnLeftMargin: $m-0px; // correction because it does not look good on mobile
 $docSearchModalOutline: $outl-none;
 $docSearchFontSmallFontSize: $fs-0-75;
 $docSearchFontStandardFontSize: $fs-docSearchStandard;

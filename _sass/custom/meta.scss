@@ -902,6 +902,7 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         z-index: $docSearchBtnZIndex !important;
         outline: $docSearchBtnOutline !important;
         cursor: $docSearchBtnCursor !important;
+        margin-left: $docSearchBtnLeftMargin !important;
     }
 
     #{map-get($algoliaElements, docSearchModal)} {
