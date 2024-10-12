@@ -51,7 +51,7 @@ layout: table_wrappers
             <!-- this is a document page -->
             <hr sitefunction="pageContentTopSeparator" class="my-4 container-xl px-2">
             <div class="d-flex col-12 container-xl p-0">
-              <main class="col-7">
+              <main class="col-12 col-md-7">
                 {% if site.heading_anchors != false %}
                   {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
                 {% else %}
@@ -59,8 +59,8 @@ layout: table_wrappers
                 {% endif %}
               </main>
 
-              <div class="col-1" siteFunction="contentAreaConten2TocSeparator"></div>
-              <div class="col-4">
+              <div class="col-1 d-none d-md-block" siteFunction="contentAreaConten2TocSeparator"></div>
+              <div class="col-4 d-none d-md-block">
                 <!-- Page Toc -->
                 {% include siteIncludes/partials/page-common/page-toc.html %}
               </div>
