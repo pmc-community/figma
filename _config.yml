@@ -62,7 +62,7 @@ exclude:
 aux_links:
   "GitHub":
     - "//github.com/pmc-community/figma"
-  "About us":
+  "About":
     - "//pmc-expert.com"
 
 # Makes Aux links open in a new tab. Default is false
