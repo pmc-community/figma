@@ -38,6 +38,12 @@ $tocItemLinkFontSize: $fs-small;
 
 $tocItemLinkBorderLeftOnActiveLight: $b-Sol2pxBlack !default;
 $tocItemLinkBorderLeftOnActiveDark: $b-Sol2pxWhite !default;
+
+// toc mobile
+$tocMobilePosition: $pos-sticky;
+$tocMobileTop: $m-20px;
+$tocMobileZIndex: $z-max;
+
 @import 'meta.scss';
 
 // STYLE PAGE TOC
@@ -45,5 +51,7 @@ $tocBase: 'toc';
 $toc: '#'+$tocBase;
 $tocItemActiveLight: '.pageTocActiveLight';
 $tocItemActiveDark: '.pageTocActiveDark';
+$tocMobile: '#toc_mobile';
 @include toc($toc);
 @include tocItem($tocBase);
+@include tocMobile($tocMobile);

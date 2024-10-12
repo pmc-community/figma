@@ -111,6 +111,22 @@
     
 }
 
+@mixin tocMobile($tocMobile) {
+    #{$tocMobile} {
+        @include phone {
+            position: $tocMobilePosition;
+            top: $tocMobileTop;
+            z-index: $tocMobileZIndex !important;
+        }
+
+        @include tablet {
+            position: $tocMobilePosition;
+            top: $tocMobileTop;
+            z-index: $tocMobileZIndex !important;
+        }
+    }
+}
+
 // sidebar
 @mixin sidebar($sidebarContainer, $sidebarDocListContainer, $sidebarElements, $sidebarContentList, $sidebarCustomFooter, $sidebarTitle, 
 $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBtn, $sideBarButtonMobile) {

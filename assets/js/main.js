@@ -19,6 +19,7 @@ window.customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
+    handleTocClickOnMobile();
     clearTheUrl();
 
     $(document).ready(() => {
@@ -63,6 +64,12 @@ window.customiseTheme = (pageObj = null) => {
 }
 
 /* HERE ARE THE FUNCTIONS */
+
+const handleTocClickOnMobile = () => {
+    $('#mobile_toc_content').off('click').on('click', function() {
+        $(this).removeClass('show');
+    })
+}
 
 window.removeUselessElements = () => {
     const elements = settings.toBeRemovedAfterLoad;
@@ -223,6 +230,10 @@ const handleTocOnWindowsResize = () => {
 const setFullPageToc = () => {
     $(window).on('load', () => {
         initPageToc();
+        if (preFlight.envInfo.device.deviceType === 'mobile') {
+            $('#mobile_toc_content .accordion-body').append($('#toc'));
+            $('#toc_container').remove();
+        }
     });
 }
 
