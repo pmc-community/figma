@@ -19,7 +19,7 @@ window.customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
-    handleTocClickOnMobile();
+    handleTocOnMobile();
     clearTheUrl();
 
     $(document).ready(() => {
@@ -65,9 +65,16 @@ window.customiseTheme = (pageObj = null) => {
 
 /* HERE ARE THE FUNCTIONS */
 
-const handleTocClickOnMobile = () => {
+const handleTocOnMobile = () => {
+
+    // close toc content when click on toc item
     $('#mobile_toc_content').off('click').on('click', function() {
         $(this).removeClass('show');
+    });
+
+    // set the height for toc content when open
+    setElementChangeClassObserver('#mobile_toc_content', 'show', true, () => {
+        $('#toc').css('height', settings.pageToc.mobile.height);
     })
 }
 

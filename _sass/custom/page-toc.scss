@@ -43,6 +43,8 @@ $tocItemLinkBorderLeftOnActiveDark: $b-Sol2pxWhite !default;
 $tocMobilePosition: $pos-sticky;
 $tocMobileTop: $m-20px;
 $tocMobileZIndex: $z-max;
+$tocMobileMaxHeight: $sz-300px;
+$tocMobileOverflowY: $ov-auto;
 
 @import 'meta.scss';
 

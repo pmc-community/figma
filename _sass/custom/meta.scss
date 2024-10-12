@@ -125,6 +125,16 @@
             z-index: $tocMobileZIndex !important;
         }
     }
+
+    #{$toc} {
+        @include phone {
+            overflow-y: $tocMobileOverflowY;
+        }
+
+        @include tablet {
+            overflow-y: $tocMobileOverflowY;
+        }
+    }
 }
 
 // sidebar

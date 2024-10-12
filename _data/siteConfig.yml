@@ -18,6 +18,8 @@ pageToc:
     offsetFromHeader: 35
     offsetFromReferenceContainer: 100
     leftSideBar: ".side-bar"
+  mobile:
+    height: "300px"
   pagesWithoutToc:
     - tag-info
     - cat-info
