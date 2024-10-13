@@ -81,6 +81,7 @@ $s-2rem:2rem;
 $s-2-5rem:2.5rem;
 $s-neg-1px:-1px;
 $s-neg-5px:-5px;
+$s-neg-4px:-4px;
 $s-neg-25px: -25px;
 
 // sizes, widths, heights
@@ -141,6 +142,8 @@ $m-10px: $s-10px;
 $m-20px: $s-20px;
 $m-top0px: $s-0px;
 $m-corr-1px: $s-neg-1px;
+$m-corr-4px: $s-neg-4px;
+$m-corr-5px: $s-neg-5px;
 $m-50px: $s-50px;
 $m-1-5rem: $s-1-5rem;
 $m-2rem: $s-2rem;

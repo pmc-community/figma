@@ -340,14 +340,6 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 
         overflow-y: $tagSearchResultsOverflowY !important;
 
-        @include phone {
-            width: $tagSearchWidth_phone;
-        }
-
-        @include tablet {
-            width: $tagSearchWidth_phone;
-        }
-
     }
 
     #{map-get($tagSearchElements, searchResults)} li {

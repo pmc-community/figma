@@ -387,7 +387,8 @@ const setSearchList = (
     searchResultsItemClosingTag,
     caseSensitive = false,
     callback,
-    callbackFilteredList = null
+    callbackFilteredList = null,
+    envInfo = null
 ) => {  
 
     const handleSetSearcResults = (
@@ -407,8 +408,17 @@ const setSearchList = (
             // otherwise the search results position may not be related the final position of the search input and
             // the search results may be shown somewhere on the page, not stick to the search imput
             setTimeout(() => {
+
+                // for desktop the width for searchResults is set with css
+                // so we don't set it here
                 $searchResults.css('left', $(searchInputSelector).position().left + 'px');
-                $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');    
+                $searchResults.css('top', $(searchInputSelector).position().top + $(searchInputSelector).outerHeight(true) + 'px');
+                
+                // for mobile we need to dynamically set the width for searchResults
+                // because the searchInput has width:100% in a variable width container
+                if (envInfo.device.deviceType === 'mobile') {
+                    $searchResults.css('cssText', `width: ${$(searchInputSelector).css('width')} !important`);
+                }
             }, 100);
 
             let list = [];

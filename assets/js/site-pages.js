@@ -183,7 +183,8 @@ sitePagesFn = {
             '</li>',
             false,
             (result) => { sitePagesFn.showPageInfo(transformStringFromPageSearchList(result)); },
-            (filteredList) => {}
+            (filteredList) => {},
+            preFlight.envInfo
         );
     },
 

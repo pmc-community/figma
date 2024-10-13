@@ -6,13 +6,13 @@
                 <span class="fs-6 fw-medium">Search document</span>
             </div>
             <div class="card-body d-md-flex justify-content-between">
-                <input type="text" autocomplete="off" class="form-control mb-4 mb-md-0" id="pageSearchInput" placeholder="type, select, hit enter ...">
+                <input type="text" autocomplete="off" class="form-control" id="pageSearchInput" placeholder="type, select, hit enter ...">
                 <ul siteFunction="searchPageList" id="pageSearchResults">
                     {% for pageItem in pageArray %}
                         <li siteFunction="searchPageListItem">{{pageItem["title"]}} ({{pageItem["permalink"]}})</li>
                     {% endfor %}
                 </ul>
-                <div>
+                <div class="mt-md-0 mt-4">
                     <button 
                         siteFunction="openSitePagesDetails" 
                         id="openSitePagesDetails" 

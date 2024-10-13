@@ -475,7 +475,8 @@ const setTagSearchList = () => {
         '</li>',
         false, // case insensitive
         (result) => { showTagDetails(result); },
-        (filteredList) => { updateTagSearchListItems(filteredList); }
+        (filteredList) => { updateTagSearchListItems(filteredList); },
+        preFlight.envInfo
     );
 }
 
@@ -1075,7 +1076,8 @@ const setTagInfoPageSearchList = (tag) => {
                 '</li>',
                 false,
                 (result) => { tagInfoAddPageToTag(result); },
-                (filteredList) => {}
+                (filteredList) => {},
+                preFlight.envInfo
             );
         })
         .then(() => {

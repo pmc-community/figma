@@ -171,7 +171,8 @@ const setCatSearchList = () => {
         '</li>',
         false,
         (result) => { showCatDetails(result); },
-        (filteredList) => { updateCatSearchListItems(filteredList); }
+        (filteredList) => { updateCatSearchListItems(filteredList); },
+        preFlight.envInfo
     );
 }
 
@@ -228,7 +229,8 @@ const setCatInfoPageSearchList = (cat) => {
                 '</li>',
                 false,
                 (result) => { catInfoAddPageToCat(result); },
-                (filteredList) => {}
+                (filteredList) => {},
+                preFlight.envInfo
             );
         })
         .then(() => {
