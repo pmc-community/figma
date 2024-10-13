@@ -223,6 +223,15 @@ preFlight = {
         // here we may use jQuery since it should be loaded already if this point is reached
         $(document).ready(function() {
             $('#ihs_go_to_top_btn').remove();
+            if (preFlight.envInfo.device.deviceType === 'mobile') $('.site-footer').remove();
+            nrLog(
+                '404 page not found', 
+                'page not found', 
+                'error', 
+                {
+                    functionName: 'handle404',
+                }
+            );
         });
         
     }

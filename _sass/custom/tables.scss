@@ -46,6 +46,8 @@ $tablePaginationDisplay_phone: $d-flex;
 $tableFooterButtonsWidth_phone: $sz-auto;
 $tableFooterButtonsFlexGrow_phone: $flex-no-spread;
 
+$tablePaginationPgNumbersPaddingLeft_phone: $p-0;
+
 $tableElements: (
     tableWrapper: '.table-wrapper',
     paginationButtonLink: '.page-link',
@@ -76,6 +78,7 @@ $tableElements: (
     tableSearchInputGroup: '.dt-search',
     tablePaginationLabel: '.dt-info',
     tablePagination: '.dt-paging',
+    tablePaginationPgNumbers: '.pagination', // this is the ul element inside .dt-paging
     tableFooterButtons: '.dt-buttons'
 );
 

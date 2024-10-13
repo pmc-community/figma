@@ -492,15 +492,6 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border-color: $paginationButtonThemeDarkBorderColor !important;
     }
 
-    /*
-    #{map-get($tableElements, tableEntriesPerPageLabel)} {
-        
-        @include phone {
-            display: $tableEntriesPerPageLabelVisibility_phone !important;
-        }
-    }
-    */
-
     #{map-get($tableElements, tableEntriesPerPageGroup)} {
         
         @include phone {
@@ -548,6 +539,15 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         }
     }
 
+    #{map-get($tableElements, tablePaginationPgNumbers)} {
+        @include phone {
+            padding-left: $tablePaginationPgNumbersPaddingLeft_phone !important;
+        }
+
+        @include tablet {
+            padding-left: $tablePaginationPgNumbersPaddingLeft_phone !important;
+        }
+    }
 
 }
 

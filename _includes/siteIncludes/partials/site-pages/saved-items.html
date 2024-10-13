@@ -13,19 +13,19 @@
             </button>
         </div>
 
-        <div class="card-body d-flex">
+        <div class="card-body d-md-flex">
 
-            <div class="col-8">
+            <div class="col-md-8 col-12">
             
-                <div siteFunction="savedPagesButtonsContainer" class="my-4 d-flex">
+                <div siteFunction="savedPagesButtonsContainer" class="my-4 d-md-flex">
 
-                    <div class="col-4 p-2 d-flex flex-column justify-content-between">
+                    <div class="col-md-4 col-12 p-2 d-md-flex flex-md-column justify-content-between">
                         <!-- save saved items as json in downloads -->
                         <button 
                             siteFunction="saveSavedItemsToFile" 
                             id="saveSavedItemsToFile" 
                             type="button" 
-                            class="btn btn-success savedDocsSectionButton h-auto my-1"
+                            class="btn btn-success savedDocsSectionButton h-auto my-2 mr-2 my-md-1 mr-md-0 text-nowrap"
                             title= "Save to file">
                             Save to file
                         </button>
@@ -35,7 +35,7 @@
                             siteFunction="showSavedItems" 
                             id="showSavedItems" 
                             type="button" 
-                            class="btn btn-primary savedDocsSectionButton h-auto my-1"
+                            class="btn btn-primary savedDocsSectionButton h-auto my-2 mr-2 my-md-1 mr-md-0 text-nowrap"
                             title= "Show saved items">
                             Saved docs
                         </button>
@@ -45,7 +45,7 @@
                             siteFunction="showNotSavedItems" 
                             id="showNotSavedItems" 
                             type="button" 
-                            class="btn btn-warning savedDocsSectionButton h-auto my-1"
+                            class="btn btn-warning savedDocsSectionButton h-auto my-2 mr-2 my-md-1 mr-md-0 text-nowrap"
                             title= "Show not saved items">
                             Not saved docs
                         </button>
@@ -55,9 +55,9 @@
                     <!-- loads saved items from json -->
                     <div 
                         siteFunction="loadSavedItemsFromFile"
-                        class="col-8 p-2 d-flex flex-column justify-content-between">
+                        class="col-md-8 col-12 p-2 d-flex flex-column justify-content-between">
 
-                        <p class="text-primary savedDocsInfoText col-10">
+                        <p class="text-primary savedDocsInfoText col-md-10 col-12">
                             Choose configuration file to load saved documents configuration. <span class="text-primary savedDocsInfoTextDesktopOnly">You can also drop a file in the drop zone.</span> 
                             {% if site.data.siteConfig.savedItems.autoSaveBeforeLoad %}
                                 <span class="text-danger">Save before load is active</span> for this site. Your current saved documents configuration will be saved to a local file before loading the new one.
@@ -66,20 +66,20 @@
                             {% endif %} 
                         </p>
                         
-                        <div class="d-flex">
-                            <div class="col-10">
+                        <div class="d-md-flex">
+                            <div class="col-md-10 cola-12">
                                 <div class="input-group">
                                     <input 
                                         type="file" 
-                                        class="form-control" 
+                                        class="form-control mb-4 mb-md-0" 
                                         id="selectedSavedItemsFile" 
                                         aria-label="Select"
                                         accept=".json">
                                 </div>
                             </div>
 
-                            <div class="col-2 text-center"> 
-                                <div id="selectedSavedItemsFileLoading" class="ml-2 d-none">
+                            <div class="col-md-2 col-12 text-center"> 
+                                <div id="selectedSavedItemsFileLoading" class="ml-md-2 ml-0 d-none">
                                     <div class="spinner-border text-primary" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
@@ -96,7 +96,7 @@
 
             <div
                 siteFunction="savedItemsFileDropZone"
-                class="col-4 d-flex align-items-center justify-content-center savedItemsFileDropZone border-secondary border-opacity-25">
+                class="col-4 d-flex d-none d-md-flex align-items-center justify-content-center savedItemsFileDropZone border-secondary border-opacity-25">
                 <div class="text-center">
                     <i class="fs-1 bi bi-cloud-upload text-primary"></i>
                     <div class="fs-5 fw-medium text-secondary">Drop file here</div>
