@@ -74,7 +74,7 @@ const additionalSiteMenuButtonOnMobile = () => {
                 <button
                     siteFunction="switchOffSiteMenuOnMobile"
                     class="btn btn-danger">
-                    <i class="bi bi-menu-down"></i>
+                    <i class="bi bi-x-lg"></i>
                 </button>
                 </li>
             `
