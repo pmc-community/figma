@@ -101,8 +101,8 @@ homePage = {
                     <a href="/cat-info?cat=${cat.name}">
                         <li 
                             siteFunction="homeRecentAndPopular_popular_categories_cat"
-                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 pr-2 my-0 bg-transparent border-top border-secondary border-opacity-25">
-                            <div class="ms-2 me-auto">
+                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 pr-md-2 pr-0 my-0 bg-transparent border-top border-secondary border-opacity-25">
+                            <div class="ms-md-2 ms-0 me-auto">
                                 <div class="${catItemClass}">${cat.name}</div>
                             </div>
                             <span class="badge bg-warning-subtle text-dark rounded-pill">${cat.numPages}</span>
@@ -134,8 +134,8 @@ homePage = {
                     <a href="/tag-info?tag=${tag.name}">
                         <li 
                             siteFunction="homeRecentAndPopular_popular_tags_tag"
-                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 pr-2 my-0 bg-transparent border-top border-secondary border-opacity-25">
-                            <div class="ms-2 me-auto">
+                            class="list-group-item d-flex align-items-center justify-content-between align-items-start py-2 pr-md-2 pr-0 my-0 bg-transparent border-top border-secondary border-opacity-25">
+                            <div class="ms-md-2 ms-0 me-auto">
                                 <div class="${tagItemClass}">${tag.name}</div>
                             </div>
                             <span class="badge bg-warning text-dark rounded-pill">${tag.numPages}</span>
