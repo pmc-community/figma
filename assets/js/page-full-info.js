@@ -693,8 +693,29 @@ const processCustomNotesTabelsClickOnRow = (rowData, pageInfo) => {
     setSelectedNote(rowData);
 }
 
+const applyTableStylesOnMobile = () => {
+    // since we don't use responsive = true for datatables
+    // we need to apply some css corrections because some things may look weird on mobile 
+    if (preFlight.envInfo.device.deviceType === 'mobile') {
+        // apply corrections to entries per page group
+        $('.dt-length')
+            .addClass('d-flex justify-content-between align-items-center')
+            .children().first().addClass('order-2 mr-0 mr-md-1');
+
+         // apply corrections to search box group
+        $('.dt-search')
+            .addClass('d-flex justify-content-between align-items-center')
+            .children().last().css('width', '50%')
+            .children().first().addClass('order-2');
+    }
+}
+
 const postProcessCustomNotesTable = (table, pageInfo) => {
     if(table) {
+        // do some css corrections on mobile
+        applyTableStylesOnMobile();
+
+        // create additional buttons under the table
         deleteAllNotes = {
             attr: {
                 siteFunction: 'tablePageCustomNotesRemoveAllNotes',
