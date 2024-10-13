@@ -66,6 +66,7 @@ const page__getRelatedPages = () => {
         const relatedPages = page.siteInfo.relatedPages || [];
         const relatedPageItemsAlign = relatedPages.length > 3 ? 'justify-content-between' : 'justify-content-start';
         
+        // we apply small px-2 correction to pageRelatedPagesRow
         return (
             `   
                 <div 
@@ -77,7 +78,7 @@ const page__getRelatedPages = () => {
                     <div siteFunction="pageRelatedPagesContainer">
                         <div
                             siteFunction="pageRelatedPagesRow"
-                            class="row ${relatedPageItemsAlign} d-block d-md-flex">
+                            class="row ${relatedPageItemsAlign} d-block d-md-flex px-2"> 
                             ${relatedPagesHtml(page)}
                         </div>
                     </div>
