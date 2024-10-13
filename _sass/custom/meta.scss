@@ -307,6 +307,14 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border: $tagSearchBorders;
         color: $tagSearchTextColor;
 
+        @include phone {
+            width: $tagSearchWidth_phone;
+        }
+
+        @include tablet {
+            width: $tagSearchWidth_phone;
+        }
+
     }
 
     #{map-get($tagSearchElements, searchResults)} {
@@ -331,6 +339,14 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border-top: $tagSearchBorders;
 
         overflow-y: $tagSearchResultsOverflowY !important;
+
+        @include phone {
+            width: $tagSearchWidth_phone;
+        }
+
+        @include tablet {
+            width: $tagSearchWidth_phone;
+        }
 
     }
 
@@ -552,6 +568,13 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border: $catSearchBorders;
         color: $catSearchTextColor;
 
+        @include phone {
+            width: $catSearchWidth_phone;
+        }
+
+        @include tablet {
+            width: $catSearchWidth_phone;
+        }
     }
 
     #{map-get($catSearchElements, searchResults)} {
@@ -576,6 +599,15 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border-top: $catSearchBorders;
 
         overflow-y: $catSearchResultsOverflowY !important;
+
+        @include phone {
+            width: $catSearchWidth_phone;
+        }
+
+        @include tablet {
+            width: $catSearchWidth_phone;
+        }
+
     }
 
     #{map-get($catSearchElements, searchResults)} li {
@@ -716,6 +748,13 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border: $pageSearchBorders;
         color: $pageSearchTextColor;
 
+        @include phone {
+            width: $pageSearchWidth_phone;
+        }
+
+        @include tablet {
+            width: $pageSearchWidth_phone;
+        }
     }
 
     ##{map-get($pageSearchElements, searchResults)}, ul[id$="#{map-get($pageSearchElements, searchResults)}"] {
@@ -740,6 +779,15 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         border-top: $pageSearchBorders;
 
         overflow-y: $pageSearchResultsOverflowY !important;
+
+        @include phone {
+            width: $pageSearchWidth_phone;
+        }
+
+        @include tablet {
+            width: $pageSearchWidth_phone;
+        }
+
     }
 
     ##{map-get($pageSearchElements, searchResults)} li, ul[id$="#{map-get($pageSearchElements, searchResults)}"] li {

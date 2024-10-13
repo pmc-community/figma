@@ -163,11 +163,11 @@ const setCustomTagContextMenu = (pageInfo) => {
         header: '',
         menu:[
             {
-                html: getMenuItemHtml(`Remove the tag from the page ${pageInfo.siteInfo.title} only`,'Remove from page', 'bi-x-circle'),
+                html: getMenuItemHtml(`Remove the tag from the doc ${pageInfo.siteInfo.title} only`,'Remove from doc', 'bi-x-circle'),
                 handler: removeTagFromPage
             },
             {
-                html: getMenuItemHtml('Remove the tag from all pages tagged with it','Remove from all pages', 'bi-trash'),
+                html: getMenuItemHtml('Remove the tag from all docs tagged with it','Remove from all docs', 'bi-trash'),
                 handler: removeTagFromAllPages
             },
         ],
@@ -208,11 +208,11 @@ const setCustomCatContextMenu = (pageInfo) => {
         header: '',
         menu:[
             {
-                html: getMenuItemHtml(`Remove the category from the page ${pageInfo.siteInfo.title} only`,'Remove from page', 'bi-x-circle'),
+                html: getMenuItemHtml(`Remove the category from the doc ${pageInfo.siteInfo.title} only`,'Remove from doc', 'bi-x-circle'),
                 handler: removeCatFromPage
             },
             {
-                html: getMenuItemHtml('Remove the category from all pages','Remove from all pages', 'bi-trash'),
+                html: getMenuItemHtml('Remove the category from all docs','Remove from all docs', 'bi-trash'),
                 handler: removeCatFromAllPages
             },
         ],
