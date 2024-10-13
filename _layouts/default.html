@@ -33,11 +33,12 @@ layout: table_wrappers
       {% assign match4 = pageList | where: "permalink", c4 %}
       {% assign match = match1.size | plus: match2.size | plus: match3.size | plus: match4.size %}
       
+      <!-- to be applied on home page -->
       {% assign mainContentWrapPadding = "px-0 pt-0 px-md-5 pt-md-5" %}
 
       <!-- document page needs extra x padding -->
       {% if match > 0 %}
-        {% assign mainContentWrapPadding = "px-4 pt-0 px-md-5 pt-md-5" %}
+        {% assign mainContentWrapPadding = "px-5 pt-0 px-md-5 pt-md-5" %}
       {% endif %}
 
       <div class="main-content-wrap {{mainContentWrapPadding}}">
