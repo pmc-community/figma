@@ -245,7 +245,15 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         top:$stickyElementTopOffset;
         z-index:$stickyElementZIndex;
         margin-left:$correctionMargin;
-        justify-content: $elementsPositionInHeader; 
+        justify-content: $elementsPositionInHeader;
+
+        @include phone {
+            top: $stickyElementTop_phone !important;
+        }
+
+        @include tablet {
+            top: $stickyElementTop_phone !important;
+        }
     }
 
     // style aux links container and links

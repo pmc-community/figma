@@ -100,17 +100,16 @@ const handleTocOnMobile = () => {
     // set the height for toc content when open
     removeObservers('#mobile_toc_content class=show getClass=true');
     setElementChangeClassObserver('#mobile_toc_content', 'show', true, () => {
-        $('#toc').css('height', settings.pageToc.mobile.height);
         $('i[siteFunction="togglePageTocOnMobile"]')
             .removeClass('bg-success')
             .removeClass('bi-arrow-down')
             .addClass('bg-danger')
             .addClass('bi-arrow-up');
+        $('#toc').css('height', settings.pageToc.mobile.height);
     });
 
     removeObservers('#mobile_toc_content class=show getClass=false');
     setElementChangeClassObserver('#mobile_toc_content', 'show', false, () => {
-        $('#toc').css('height', settings.pageToc.mobile.height);
         $('i[siteFunction="togglePageTocOnMobile"]')
             .addClass('bg-success')
             .addClass('bi-arrow-down')
