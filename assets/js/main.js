@@ -2,7 +2,7 @@
 
 window.customiseTheme = (pageObj = null) => {
     if (!preFlight.skyClear) return; // comes from preflight-check.js
-       
+
     // first things, first
     cleanSavedItems(); //removes page without any custom data from saved items
     createGlobalLists();
@@ -19,12 +19,23 @@ window.customiseTheme = (pageObj = null) => {
     advRestoreCodeBlocksStyle();
     handleBtnClose(); //from utilities
     if (pagePermalink !== '/') handleTocActiveElementsOnScroll();
-    additionalSiteMenuButtonOnMobile();
-    handleSiteMenuClickOnMobile();
-    handleTocOnMobile();
+    additionalSiteMenuButtonOnMobile(); // button to switch off the site menu
+    handleSiteMenuClickOnMobile(); // switch off site menu when click on elements that doesn't change the page
+    handleTocOnMobile(); // page ToC functionality on mobile
     clearTheUrl();
 
     $(document).ready(() => {
+
+        if (preFlight.envInfo.device.deviceType === 'mobile') adjustBodyHeight();
+
+         // For mobile devices, listen to orientation change
+        $(window).on('orientationchange', adjustBodyHeight);
+
+        // Also trigger on page resize (useful for keyboard popup or resizing issues)
+        $(window).on('resize', function() {
+            if (preFlight.envInfo.device.deviceType === 'mobile') setTimeout(adjustBodyHeight, 200); // Delay to ensure proper height calculation on mobile
+        });
+        
         if (pagePermalink !== '/') {
             // last checks on page toc
             if($(`${settings.pageToc.toc} ul`).children('li').length >0)
@@ -66,6 +77,20 @@ window.customiseTheme = (pageObj = null) => {
 }
 
 /* HERE ARE THE FUNCTIONS */
+const adjustBodyHeight = () => {
+    var bodyHeight = $('body').height();
+    var viewportHeight = window.innerHeight; // Use innerHeight for accurate mobile viewport height
+
+    if (bodyHeight < viewportHeight) {
+        // Force body height to 100vh if smaller than the viewport
+        $('body').css('height', '100vh');
+    } else {
+        // Reset to default if body height is larger than the viewport
+        $('body').css('height', 'auto');
+    }
+}
+
+
 const additionalSiteMenuButtonOnMobile = () => {
     if (preFlight.envInfo.device.deviceType === 'mobile') {
         const switchOffSiteMenu = 

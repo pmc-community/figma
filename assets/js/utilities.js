@@ -933,9 +933,11 @@ const setDataTable = (
                             .css('width','30px').css('height','30px');
 
                         $('.dtsp-title').addClass('fw-medium text-primary p-0 text-center mb-4 w-100');
-                        $('div.dtsp-panesContainer button')
-                            .addClass('mx-2')
+                        $('div.dtsp-titleRow button')
+                            .addClass('my-2 mx-1')
                             .css('cssText','float: none !important');
+
+                        $('.dtsp-titleRow').addClass('p-0');
 
                         $('div.dt-button-collection').each(function() {
                             this.style.setProperty('overflow', '', 'important');  // Reset the overflow property

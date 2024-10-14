@@ -592,7 +592,7 @@ sitePagesFn = {
                 title:'Title',
                 type: 'html-string',
                 searchable: true,
-                width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '100px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '150px'
             }, 
     
             // last update
