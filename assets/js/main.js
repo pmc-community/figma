@@ -25,16 +25,6 @@ window.customiseTheme = (pageObj = null) => {
     clearTheUrl();
 
     $(document).ready(() => {
-
-        if (preFlight.envInfo.device.deviceType === 'mobile') adjustBodyHeight();
-
-         // For mobile devices, listen to orientation change
-        $(window).on('orientationchange', adjustBodyHeight);
-
-        // Also trigger on page resize (useful for keyboard popup or resizing issues)
-        $(window).on('resize', function() {
-            if (preFlight.envInfo.device.deviceType === 'mobile') setTimeout(adjustBodyHeight, 200); // Delay to ensure proper height calculation on mobile
-        });
         
         if (pagePermalink !== '/') {
             // last checks on page toc
@@ -78,18 +68,15 @@ window.customiseTheme = (pageObj = null) => {
 
 /* HERE ARE THE FUNCTIONS */
 const adjustBodyHeight = () => {
-    var bodyHeight = $('body').height();
-    var viewportHeight = window.innerHeight; // Use innerHeight for accurate mobile viewport height
+    const bodyHeight = $('body').height();
+    const viewportHeight = window.innerHeight;
 
     if (bodyHeight < viewportHeight) {
-        // Force body height to 100vh if smaller than the viewport
         $('body').css('height', '100vh');
     } else {
-        // Reset to default if body height is larger than the viewport
         $('body').css('height', 'auto');
     }
 }
-
 
 const additionalSiteMenuButtonOnMobile = () => {
     if (preFlight.envInfo.device.deviceType === 'mobile') {
