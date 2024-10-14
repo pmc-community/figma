@@ -324,7 +324,7 @@ sitePagesFn = {
                         .css('left', `${defaultLeft}px`);
                 }
             } else  {
-                $('div[sitefunction="sitePagesDetailsLastFilterDetails"]').remove();
+                $('div[sitefunction="sitePagesDetailsLastFilterDetails"]').hide();
                 $('div[sitefunction="sitePagesDetailsLastFilterHeader"]').removeClass('pb-2 border-bottom border-secondary border-opacity-25');
                 $('div[sitefunction="sitePagesDetailsLastFilter"]')
                     .css('left', '0').css('bottom', '-15px')
@@ -356,6 +356,27 @@ sitePagesFn = {
             sitePagesFn.showPageInfo({permalink: $(this).attr('pageSimilarPermalinkReference'), title:$(this).attr('pageSimilarTitleReference')});
         });
 
+        // show filter details on mobile
+        $('button[siteFunction="sitePagesDetailsShowFilter"]').off('click').click( function() {
+            if (preFlight.envInfo.device.deviceType !== 'mobile') return;
+            if ($(this).hasClass('noShow')) {
+                $(this)
+                    .removeClass('noShow').addClass('show')
+                    .removeClass('btn-success').addClass('btn-danger');
+                $(this).find('i').removeClass('bi-eye').addClass('bi-eye-slash');
+                $('div[sitefunction="sitePagesDetailsLastFilterDetails"]').show();
+                $('div[sitefunction="sitePagesDetailsLastFilterHeader"]').addClass('pb-2 border-bottom border-secondary border-opacity-25');
+            } else {
+                $(this)
+                    .addClass('noShow').removeClass('show')
+                    .addClass('btn-success').removeClass('btn-danger');
+                $(this).find('i').addClass('bi-eye').removeClass('bi-eye-slash');
+                $('div[sitefunction="sitePagesDetailsLastFilterDetails"]').hide();
+                $('div[sitefunction="sitePagesDetailsLastFilterHeader"]').removeClass('pb-2 border-bottom border-secondary border-opacity-25');
+            }
+
+        });
+
         // remove page from saved items when click on the related icon in the page title column of the table
         $(document)
             .off('click', 'button[siteFunction="pagesRemovePageFromSavedItems"]')
@@ -370,7 +391,8 @@ sitePagesFn = {
                     }
                 };
                 removePageFromSavedItems(page);
-                sitePagesFn.bruteRebuildPagesTable();            });
+                sitePagesFn.bruteRebuildPagesTable();            
+            });
 
         // save page to saved items when click on the related icon in the page title column of the table
         $(document)
@@ -570,7 +592,7 @@ sitePagesFn = {
                 title:'Title',
                 type: 'html-string',
                 searchable: true,
-                width:'200px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '100px'
             }, 
     
             // last update

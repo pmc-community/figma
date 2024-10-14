@@ -913,10 +913,23 @@ const setDataTable = (
                         $('div.dt-buttons div.dropdown-menu').draggable({
                             containment: "window"
                         });
-                    } else {
+                    } else { // do some mobile styling for search panes
                         $('div.dt-buttons div.dropdown-menu')
                             .css('top', '-5px').css('left', '0')
-                            .css('height', '100%').css('width', '100%');
+                            .css('height', '100%').css('width', '100%')
+                            .addClass('p-4');
+                        
+                        $('.dtb-popover-close')
+                            .css('font-size', '30px')
+                            .css('width','30px').css('height','30px');
+
+                        $('.dtsp-title').addClass('fw-medium text-primary');
+                        $('.dtsp-titleRow button').addClass('mb-2');
+
+                        $('.dt-info').addClass('text-start fs-6');
+
+                        $('.dt-length').find('label').addClass('text-capitalize fs-6');
+                        $('.dt-search').find('label').addClass('fs-6');
 
                         $('div.dt-button-collection').each(function() {
                             this.style.setProperty('overflow', '', 'important');  // Reset the overflow property
