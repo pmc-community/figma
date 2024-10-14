@@ -68,13 +68,16 @@ window.customiseTheme = (pageObj = null) => {
 
 /* HERE ARE THE FUNCTIONS */
 const adjustBodyHeight = () => {
-    const bodyHeight = $('body').height();
-    const viewportHeight = window.innerHeight;
+    var bodyHeight = $('body').outerHeight(true); // Get the outer height including margin
+    var viewportHeight = window.innerHeight; // Accurate for mobile viewport height
+    console.log(bodyHeight)
 
+    // If the body height is smaller than the viewport, enforce min-height
     if (bodyHeight < viewportHeight) {
-        $('body').css('height', '100vh');
+        $('body').css('min-height', '100vh');
     } else {
-        $('body').css('height', 'auto');
+        // Reset to auto only if body height is larger than the viewport
+        $('body').css('min-height', 'auto');
     }
 }
 
@@ -118,9 +121,11 @@ const handleTocOnMobile = () => {
             .addClass('bg-danger')
             .addClass('bi-arrow-up');
 
-        const listHeight = $('#toc ul li').length * 30;
+        $('#toc').css('visibility', 'hidden'); // first hide to not see the ToC until hight is set
+        const listHeight = $('#toc ul li').length * 30; // 30px per ToC item
         const height = listHeight > settings.pageToc.mobile.height ? settings.pageToc.mobile.height : listHeight;
         $('#toc').css('cssText', `height: ${height}px !important`);
+        $('#toc').css('visibility', 'visible');
     });
 
     removeObservers('#mobile_toc_content class=show getClass=false');
