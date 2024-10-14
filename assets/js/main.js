@@ -73,7 +73,7 @@ const adjustBodyHeight = () => {
     if (preFlight.envInfo.device.deviceType === 'mobile') {
         const bodyHeight = $('body').outerHeight(true);
         const viewportHeight = window.innerHeight;
-        if (bodyHeight < viewportHeight) $('body').css('min-height', '100vh');
+        if (bodyHeight < viewportHeight) $('body').css('min-height', '100dvh');
         else $('body').css('min-height', 'auto');
     }
 }
