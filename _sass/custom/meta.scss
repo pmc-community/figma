@@ -388,6 +388,7 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
 
 // data tables
 @mixin dataTable($tableElements) {
+    
     #{map-get($tableElements, tableWrapper)} {
         box-shadow: $tableBoxShadow;
         overflow-x: $tableOverflowX;
@@ -461,7 +462,6 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         z-index: $tableSearchPanesActiveFilterWarningZIndex;
         position: $tableSearchPanesActiveFilterWarningPosition;
         font-size: $tableSearchPanesActiveFilterWarningFontSize;
-
     }
 
     #{map-get($tableElements, searchPanesPaneList)} {
@@ -548,7 +548,6 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
             padding-left: $tablePaginationPgNumbersPaddingLeft_phone !important;
         }
     }
-
 }
 
 // cat search

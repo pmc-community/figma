@@ -297,32 +297,42 @@ sitePagesFn = {
 
             $('span[sitefunction="sitePagesDetailsLastFilterLabel"]').text(lastFilterLabel);
 
-            $('div[sitefunction="sitePagesDetailsLastFilter"]').draggable({
-                containment: "window"
-            });
+            if (preFlight.envInfo.device.deviceType === 'desktop') {
+                $('div[sitefunction="sitePagesDetailsLastFilter"]').draggable({
+                    containment: "window"
+                });    
+                const topPos = $('div[sitefunction="sitePagesDetailsLastFilter"]').css('top');
+                const leftPos =  $('div[sitefunction="sitePagesDetailsLastFilter"]').css('left');
+                
+                // topPos === 'auto' && leftPos === 'auto' means showing the active/last filter details for the first time after page is loaded
+                if (topPos === 'auto' || leftPos === 'auto') {
+                    const defaultLeft = 20;
+                    // first display outside viewport to calculate the height 
+                    $('div[sitefunction="sitePagesDetailsLastFilter"]')
+                        .css('top',`${$(window).height() + 200}px`)
+                        .css('left', `${defaultLeft}px`);
+                    $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
+                    const defaultTop = 
+                        $(window).height() - 
+                        $('div[sitefunction="sitePagesDetailsLastFilter"]').height() - 
+                        sitePagesFn.pageTableSearchPanesSelection.length*3*30; // 30px for each possible row of each filter possible selection
 
-            const topPos = $('div[sitefunction="sitePagesDetailsLastFilter"]').css('top');
-            const leftPos =  $('div[sitefunction="sitePagesDetailsLastFilter"]').css('left');
-            
-            // topPos === 'auto' && leftPos === 'auto' means showing the active/last filter details for the first time after page is loaded
-            if (topPos === 'auto' || leftPos === 'auto') {
-                const defaultLeft = 20;
-                // first display outside viewport to calculate the height 
+                    // display on the corect position
+                    $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
+                    $('div[sitefunction="sitePagesDetailsLastFilter"]')
+                        .css('top',`${defaultTop}px`)
+                        .css('left', `${defaultLeft}px`);
+                }
+            } else  {
+                $('div[sitefunction="sitePagesDetailsLastFilterDetails"]').remove();
+                $('div[sitefunction="sitePagesDetailsLastFilterHeader"]').removeClass('pb-2 border-bottom border-secondary border-opacity-25');
                 $('div[sitefunction="sitePagesDetailsLastFilter"]')
-                    .css('top',`${$(window).height() + 200}px`)
-                    .css('left', `${defaultLeft}px`);
-                $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
-                const defaultTop = 
-                    $(window).height() - 
-                    $('div[sitefunction="sitePagesDetailsLastFilter"]').height() - 
-                    sitePagesFn.pageTableSearchPanesSelection.length*3*30; // 30px for each possible row of each filter possible selection
-
-                // display on the corect position
-                $('div[sitefunction="sitePagesDetailsLastFilter"]').addClass('d-none');
-                $('div[sitefunction="sitePagesDetailsLastFilter"]')
-                    .css('top',`${defaultTop}px`)
-                    .css('left', `${defaultLeft}px`);
+                    .css('left', '0').css('bottom', '-15px')
+                    .css('width','100%')
+                    .css('border-radius', '0');
             }
+
+
             $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
         }
         else
@@ -851,8 +861,8 @@ sitePagesFn = {
                     sitePagesFn.onSearchPanesSelectionChange(tableSearchPanesSelection);
                 },
                 searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection || []
-            }
-            
+            },
+            preFlight.envInfo
         );
     },
 

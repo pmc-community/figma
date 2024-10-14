@@ -568,7 +568,8 @@ const setDataTable = (
     callback,  // will be executed after table is created, post processing the table
     callbackClickRow, // will be executed when click on row
     additionalSettings = {}, // any other settings besides the default ones (i.e. columnDefs to define individual search panes)
-    searchPanes = null // search panes configuration and callbacks
+    searchPanes = null, // search panes configuration and callbacks
+    envInfo = null
         /*
         {
             enable: true,
@@ -904,14 +905,26 @@ const setDataTable = (
                     // ... here to add search panes post-processing (after searchPanes container is created)
                     // using css visibility instead of .hide() because is faster and prevents display of the search panes
                     // when clicking clear filter btn on the active filter warning box
-                    $('.dropdown-menu[id!="category-menu-more-list"]').css('visibility','hidden');
-                    $('.dropdown-menu[id!="category-menu-more-list"]').css('position','fixed');
-                    $('.dropdown-menu[id!="category-menu-more-list"]').css('top',`${$(settings.headerAboveContent.headerID).height() + settings.headerAboveContent.offsetWhenScroll}px`);
-                    $('.dropdown-menu[id!="category-menu-more-list"]').css('left','20px');
-                    $('.dropdown-menu[id!="category-menu-more-list"]').draggable({
-                        containment: "window"
-                    });
-                    $('.dropdown-menu[id!="category-menu-more-list"]').css('visibility','visible');
+                    $('div.dt-buttons div.dropdown-menu').css('visibility','hidden');
+                    $('div.dt-buttons div.dropdown-menu').css('position','fixed');
+                    if(envInfo.device.deviceType === 'desktop') {
+                        $('div.dt-buttons div.dropdown-menu').css('top',`${$(settings.headerAboveContent.headerID).height() + settings.headerAboveContent.offsetWhenScroll}px`);
+                        $('div.dt-buttons div.dropdown-menu').css('left','20px');
+                        $('div.dt-buttons div.dropdown-menu').draggable({
+                            containment: "window"
+                        });
+                    } else {
+                        $('div.dt-buttons div.dropdown-menu')
+                            .css('top', '-5px').css('left', '0')
+                            .css('height', '100%').css('width', '100%');
+
+                        $('div.dt-button-collection').each(function() {
+                            this.style.setProperty('overflow', '', 'important');  // Reset the overflow property
+                            this.style.setProperty('overflow-y', 'auto', 'important');  // Set overflow-y: auto with !important
+                        });
+                    }
+
+                    $('div.dt-buttons div.dropdown-menu').css('visibility','visible');
 
                     setTimeout(() => {
                         tableSearchPanesSelection = searchPanes.searchPanesCurrentSelection || [];
