@@ -923,8 +923,8 @@ const setDataTable = (
                             .css('font-size', '30px')
                             .css('width','30px').css('height','30px');
 
-                        $('.dtsp-title').addClass('fw-medium text-primary');
-                        $('.dtsp-titleRow button').addClass('mb-2');
+                        $('.dtsp-title').addClass('fw-medium text-primary p-0 text-center mb-4 w-100');
+                        $('.dtsp-titleRow button').addClass('mx-3');
 
                         $('.dt-info').addClass('text-start fs-6');
 

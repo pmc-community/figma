@@ -734,7 +734,7 @@ sitePagesFn = {
                         show: true,
                         collapse: true,
                         viewCount: false,
-                        initCollapsed: false,
+                        initCollapsed: preFlight.envInfo.device.deviceType === 'desktop' ? false : true,
                         preSelect: true,
                         dtOpts: {
                             select: {
@@ -758,7 +758,7 @@ sitePagesFn = {
                             (selectedRow, selectedSearchPaneValue)=>{}
                         ),
                         show: true,
-                        initCollapsed: false,
+                        initCollapsed: preFlight.envInfo.device.deviceType === 'desktop' ? false : true,
                         viewCount: false,
                         preSelect: true,
                         dtOpts: {
@@ -784,7 +784,7 @@ sitePagesFn = {
                             (row, value)=>{}
                         ),
                         show: true,
-                        initCollapsed: false,
+                        initCollapsed: preFlight.envInfo.device.deviceType === 'desktop' ? false : true,
                         viewCount: false,
                         preSelect: true,
                         dtOpts: {
@@ -807,7 +807,7 @@ sitePagesFn = {
                             }
                         ),
                         show: true,
-                        initCollapsed: false,
+                        initCollapsed: preFlight.envInfo.device.deviceType === 'desktop' ? false : true,
                         viewCount: false,
                         preSelect: true,
                         dtOpts: {
@@ -832,7 +832,7 @@ sitePagesFn = {
                         ),
                 
                         show: true,
-                        initCollapsed: false,
+                        initCollapsed: preFlight.envInfo.device.deviceType === 'desktop' ? false : true,
                         viewCount: false,
                         preSelect: true,
                         dtOpts: {
