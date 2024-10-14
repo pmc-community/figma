@@ -25,7 +25,9 @@ window.customiseTheme = (pageObj = null) => {
     clearTheUrl();
 
     $(document).ready(() => {
-        
+
+        setResizeObserver_height('body', () => adjustBodyHeight()); // keep site-footer at bottom of screen on mobile
+
         if (pagePermalink !== '/') {
             // last checks on page toc
             if($(`${settings.pageToc.toc} ul`).children('li').length >0)
@@ -68,16 +70,11 @@ window.customiseTheme = (pageObj = null) => {
 
 /* HERE ARE THE FUNCTIONS */
 const adjustBodyHeight = () => {
-    var bodyHeight = $('body').outerHeight(true); // Get the outer height including margin
-    var viewportHeight = window.innerHeight; // Accurate for mobile viewport height
-    console.log(bodyHeight)
-
-    // If the body height is smaller than the viewport, enforce min-height
-    if (bodyHeight < viewportHeight) {
-        $('body').css('min-height', '100vh');
-    } else {
-        // Reset to auto only if body height is larger than the viewport
-        $('body').css('min-height', 'auto');
+    if (preFlight.envInfo.device.deviceType === 'mobile') {
+        const bodyHeight = $('body').outerHeight(true);
+        const viewportHeight = window.innerHeight;
+        if (bodyHeight < viewportHeight) $('body').css('min-height', '100vh');
+        else $('body').css('min-height', 'auto');
     }
 }
 

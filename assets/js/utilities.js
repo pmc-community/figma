@@ -753,15 +753,16 @@ const setDataTable = (
                     $('.dt-length')
                         .addClass('d-flex justify-content-between align-items-center')
                         .children().first().addClass('order-2 mr-0 mr-md-1')
+                        .children().last().addClass('order-1');
                     
-                    $('.dt-length').find('label')
-                            .addClass('text-capitalize fs-6');;
+                    $('.dt-length').find('label').addClass('text-capitalize fs-6');
             
                      // apply corrections to search box group
                     $('.dt-search')
                         .addClass('d-flex justify-content-between align-items-center')
                         .children().last().css('width', '50%')
                         .children().first().addClass('order-2')
+                        .children().last().addClass('order-1');
                     
                     $('.dt-search').find('label')
                             .addClass('fs-6');
@@ -1239,6 +1240,41 @@ const keepTextInputLimits = (textInputSelector, maxWords, maxChars, wordCountSel
 }
 
 // OBSERVERS
+// resize observer
+// observes when an element change its height and execute callback
+const setResizeObserver_height = (elSelector, callback) => {
+    const $element = $(elSelector); 
+        let isAdjusting = false; 
+
+        let previousHeight = $element.outerHeight(true);
+
+        const resizeObserver = new ResizeObserver(function(entries) {
+            if (isAdjusting) return;
+
+            entries.forEach(function(entry) {
+                const newHeight = entry.contentRect.height;
+
+                // Only react to actual height changes
+                if (newHeight !== previousHeight) {
+                    
+                    // Set the flag to avoid recursive triggering
+                    isAdjusting = true;
+
+                    if (callback) callback();
+
+                    // Reset the flag after a short delay (enough for adjustments to complete)
+                    setTimeout(function() {
+                        isAdjusting = false;
+                    }, 50);
+
+                    previousHeight = newHeight;
+                }
+            });
+        });
+
+        resizeObserver.observe($element[0]);
+}
+
 // observes when elementSelector receive class cls (getClass=true) or lose class cls (getClass=false)
 // and executes callback function
 const setElementChangeClassObserver = (elementSelector, cls, getClass, callback = () => {}) => {
