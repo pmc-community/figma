@@ -21,7 +21,7 @@
         "leftSideBar": ".side-bar"
       },
       "mobile": {
-        "height": "300px"
+        "height": 300
       },
       "pagesWithoutToc": [
         "tag-info",

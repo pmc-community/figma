@@ -105,7 +105,10 @@ const handleTocOnMobile = () => {
             .removeClass('bi-arrow-down')
             .addClass('bg-danger')
             .addClass('bi-arrow-up');
-        $('#toc').css('height', settings.pageToc.mobile.height);
+
+        const listHeight = $('#toc ul li').length * 30;
+        const height = listHeight > settings.pageToc.mobile.height ? settings.pageToc.mobile.height : listHeight;
+        $('#toc').css('cssText', `height: ${height}px !important`);
     });
 
     removeObservers('#mobile_toc_content class=show getClass=false');
@@ -277,9 +280,14 @@ const handleTocOnWindowsResize = () => {
 const setFullPageToc = () => {
     $(window).on('load', () => {
         initPageToc();
+
+        // here we adapt the toc for mobile
         if (preFlight.envInfo.device.deviceType === 'mobile') {
-            $('#mobile_toc_content .accordion-body').append($('#toc'));
-            $('#toc_container').remove();
+            if($('#toc ul li').length === 0 ) $('#toc_mobile').remove();
+            else {
+                $('#mobile_toc_content .accordion-body').append($('#toc'));
+                $('#toc_container').remove();
+            }
         }
     });
 }
