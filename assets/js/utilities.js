@@ -752,13 +752,22 @@ const setDataTable = (
                     // apply corrections to entries per page group
                     $('.dt-length')
                         .addClass('d-flex justify-content-between align-items-center')
-                        .children().first().addClass('order-2 mr-0 mr-md-1');
+                        .children().first().addClass('order-2 mr-0 mr-md-1')
+                    
+                    $('.dt-length').find('label')
+                            .addClass('text-capitalize fs-6');;
             
                      // apply corrections to search box group
                     $('.dt-search')
                         .addClass('d-flex justify-content-between align-items-center')
                         .children().last().css('width', '50%')
-                        .children().first().addClass('order-2');
+                        .children().first().addClass('order-2')
+                    
+                    $('.dt-search').find('label')
+                            .addClass('fs-6');
+
+                    $('.dt-info').addClass('text-start fs-6');
+
                 }
             }
             applyTableStylesOnMobile();
@@ -924,12 +933,9 @@ const setDataTable = (
                             .css('width','30px').css('height','30px');
 
                         $('.dtsp-title').addClass('fw-medium text-primary p-0 text-center mb-4 w-100');
-                        $('.dtsp-titleRow button').addClass('mx-3');
-
-                        $('.dt-info').addClass('text-start fs-6');
-
-                        $('.dt-length').find('label').addClass('text-capitalize fs-6');
-                        $('.dt-search').find('label').addClass('fs-6');
+                        $('div.dtsp-panesContainer button')
+                            .addClass('mx-2')
+                            .css('cssText','float: none !important');
 
                         $('div.dt-button-collection').each(function() {
                             this.style.setProperty('overflow', '', 'important');  // Reset the overflow property
