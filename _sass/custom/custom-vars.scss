@@ -247,6 +247,10 @@ $wr-no: nowrap;
 // flex utilities
 $flex-no-spread: 0 0 auto;
 
+// opacities
+$op-none: 0;
+$op-full: 1;
+
 // Bootstrap extesions
 .px-6 {
     padding-left: $s-2-5rem !important;

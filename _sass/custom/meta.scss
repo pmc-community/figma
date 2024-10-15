@@ -157,6 +157,33 @@
             overflow-y: $tocMobileOverflowY;
         }
     }
+
+    #{$tocMobileContent} {
+        @include phone {
+            height: $tocMobileContentHeightBeforeShow_phone;
+            opacity: $tocMobileContentOpacityBeforeShow_phone;
+            overflow: $tocMobileContentOpacityBeforeShow_phone;
+        }
+
+        @include tablet {
+            height: $tocMobileContentHeightBeforeShow_phone;
+            opacity: $tocMobileContentOpacityBeforeShow_phone;
+            overflow: $tocMobileContentOpacityBeforeShow_phone;
+        }
+    }
+
+    #{$tocMobileContent}.show {
+        @include phone {
+            height: $tocMobileContentHeightAfterShow_phone;
+            opacity: $tocMobileContentOpacityAfterShow_phone;
+        }
+
+        @include tablet {
+            height: $tocMobileContentHeightAfterShow_phone;
+            opacity: $tocMobileContentOpacityAfterShow_phone;
+        }
+    }
+
 }
 
 // sidebar

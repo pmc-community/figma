@@ -49,6 +49,12 @@ $tocMobileHeaderAfterVisibility: $d-hidden;
 $tocMobileHeaderFocusOutline: $gen-none;
 $tocMobileHeaderBoxShadow: $gen-none;
 
+$tocMobileContentHeightBeforeShow_phone: $sz-0;
+$tocMobileContentOpacityBeforeShow_phone: $op-none;
+$tocMobileContentOverflowBeforeShow_phone: $ov-none;
+$tocMobileContentHeightAfterShow_phone: $sz-auto;
+$tocMobileContentOpacityAfterShow_phone: $op-full;
+
 @import 'meta.scss';
 
 // STYLE PAGE TOC
@@ -57,6 +63,7 @@ $toc: '#'+$tocBase;
 $tocItemActiveLight: '.pageTocActiveLight';
 $tocItemActiveDark: '.pageTocActiveDark';
 $tocMobile: '#toc_mobile';
+$tocMobileContent: '.accordion-collapse';
 @include toc($toc);
 @include tocItem($tocBase);
 @include tocMobile($tocMobile);
