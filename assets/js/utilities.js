@@ -1809,7 +1809,7 @@ const setContextMenu = (
             }
         
             // context menu items
-            const dropdownMenuList = $('<ul class="context-menu-list">'); 
+            const dropdownMenuList = $('<ul class="context-menu-list mb-0">'); 
             const dropdownMenuListContainer = $('<div class="context-menu-list-container px-4">');
             dropdownMenu.append(dropdownMenuListContainer);
             dropdownMenuListContainer.append(dropdownMenuList);

@@ -81,3 +81,5 @@ googleAnalytics:
 googleTagManager:
   enabled: true
   gtm: "GTM-KCLM93S"
+breadcrumbs:
+  depth: 100

@@ -57,6 +57,7 @@ module Jekyll
           lastUpdate = File.mtime(file_path)
           createTime = File.birthtime(file_path)
           hasDynamicContent = ExtContentUtilities.checkCallsForExternalContent(file_path)
+          parent = front_matter['parent'] ? front_matter['parent'] : ""
           document_data_raw = {
             'title' => title,
             'permalink' => permalink,
@@ -71,7 +72,8 @@ module Jekyll
             'autoSummary' => "",
             'similarByContent' => [],
             'readingTime' => 0,
-            'hasDynamicContent' => hasDynamicContent
+            'hasDynamicContent' => hasDynamicContent,
+            'parent' => parent
           }
           
           if (modified_files["files"].include?(raw_file_name) || current_page_list.length > 0)

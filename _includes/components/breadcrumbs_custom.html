@@ -1,96 +1,68 @@
-{% assign url_parts = page.url | split: '/' %}
-{% assign full_url = "" %}
-{% assign breadcrumbs_count = url_parts | size %}
-
+{% assign breadcrumbs = "" %}
+{% assign breadcrumbsNo = 0 %}
+{% assign current_page = pageList | where: "title", page.title | first %}
+{% assign partTitle = "" %}
+{% assign partUrl = "" %}
+{% assign partTextClass = 'text-secondary' %}
 {% assign pageList = site.data['page_list'] | json_string_to_object %}
 {% assign collections= site.data.filtered_collections %}
-{% assign collectionsNo = collections | size %}   
-{% assign docCollection ='' %}
-    
-<!-- Only display breadcrumbs if there are more than one breadcrumb item -->
-{% if breadcrumbs_count > 2 %}
+{% assign docCollection = '' %}
+{% assign max_loops = site.data["buildConfig"]["breadcrumbs"]["depth"] %}
+
+<!-- Loop through parents -->
+{% for i in (1..max_loops) %}
+    {% if current_page.parent %}
+        {% assign parent_page = pageList | where: "title", current_page.parent | first %}
+        
+        {% if parent_page %}
+            {% assign partTitle = parent_page.title %}
+            {% assign partUrl = parent_page.permalink %}
+
+            <!-- Add leading slash if it doesn't exist -->
+            {% if partUrl[0] != "/" %}
+                {% assign partUrl = "/" | append: partUrl %}
+            {% endif %}
+
+            <!-- Add trailing slash if it doesn't exist -->
+            {% if partUrl[-1] != "/" %}
+                {% assign partUrl = partUrl | append: "/" %}
+            {% endif %}
+
+            {% assign partUrl = partUrl | replace: '//', '/' %}
+            
+            <!-- Add breadcrumb for parent -->
+            {% capture breadcrumb_item %}
+                <li class="breadcrumb-item my-1 px-2 py-0 rounded border border-warning border-opacity-25 shadow-none">
+                    <a class="fw-light {{ partTextClass }}" href="{{ partUrl }}">{{ partTitle }}</a>
+                </li>
+                <i class="align-self-center bi bi-chevron-right"></i>
+            {% endcapture %}
+            {% assign breadcrumbs = breadcrumb_item | append: breadcrumbs %}
+
+            {% assign breadcrumbsNo = breadcrumbsNo | plus: 1 %}
+            
+            <!-- Move up to the next parent -->
+            {% assign current_page = parent_page %}
+        {% else %}
+            {% break %}
+        {% endif %}
+    {% else %}
+        {% break %}
+    {% endif %}
+{% endfor %}
+
+<!-- Add current page as the active breadcrumb -->
+{% assign partTitle = page.title %}
+{% capture active_breadcrumb %}
+    <li class="breadcrumb-item active my-1 px-2 py-0 rounded border border-warning border-opacity-25 shadow-none" aria-current="page">{{ partTitle }}</li>
+{% endcapture %}
+{% assign breadcrumbs = breadcrumbs | append: active_breadcrumb %}
+
+<!-- Display breadcrumbs only if there's more than one breadcrumb -->
+{% if breadcrumbsNo > 0 %}
     <nav aria-label="breadcrumb" class="container-xl p-0 mt-4 mt-md-0">
         <ol class="breadcrumb">
-            <!-- Loop through URL parts to build breadcrumb -->
-            {% for part in url_parts %}
-                {% if part != "" and part != "index.html" %}
-                    
-                    {% assign full_url = full_url | append: "/" | append: part %}
-                    
-                    {% assign cleanPermalink = full_url | clean_permalink %}
-
-                    {% assign match1 = pageList | where: "permalink", cleanPermalink %}
-                    {% if match1.size > 0 %}
-                        {% assign partPage = match1[0] %}
-                    {% endif %}
-                    
-                    {% assign c2 = "/" | append: cleanPermalink %}
-                    {% assign match2 = pageList | where: "permalink",  c2 %}
-                    {% if match2.size > 0 %}
-                        {% assign partPage = match2[0] %}
-                    {% endif %}
-
-                    {% assign c3 = "/" | append: cleanPermalink | append: "/" %}
-                    {% assign match3 = pageList | where: "permalink", c3 %}
-                    {% if match3.size > 0 %}
-                        {% assign partPage = match3[0] %}
-                    {% endif %}
-     
-                    {% assign c4 = cleanPermalink | append:"/" %}
-                    {% assign match4 = pageList | where: "permalink", c4 %}
-                    {% if match4.size > 0 %}
-                        {% assign partPage = match4[0] %}
-                    {% endif %}
-
-                    {% assign match = match1.size | plus: match2.size | plus: match3.size | plus: match4.size %}
-
-                    {% assign partTitle = "" %}
-                    {% assign partUrl = ""  %}
-                    {% assign partTextClass = 'text-secondary' %}
-                    {% if match == 0 %}
-                        {% if collections.size > 0 %}
-                            {% assign partTextClass = 'text-primary' %}
-                            {% assign partUrl = '' %}
-                            {% assign collectionMatch =  collections | where: "name", part %}
-                            {% if collectionMatch.size > 0 %}
-                                {% assign partTitle = collectionMatch[0].custom_name %}
-                                {% assign partUrl = '' %}
-                                {% assign docCollection = '' %}
-                                {% assign docCollection = part | replace: '/', '' %}
-                            {% else %}
-                                {% assign partTitle = '' %}
-                                {% assign partUrl = '' %}
-                            {% endif %}
-                        {%else%}
-                            {% assign partTitle = part | replace: '-', ' ' | capitalize %}
-                            {% assign partUrl = '' %}
-                            {% assign partTextClass = 'text-primary' %}
-                        {% endif %}
-                    {% else %}
-                        {% assign partTitle = partPage.title %}
-                        {% assign partUrl = site.baseurl | append: full_url | append: '/'  %}
-                    {% endif %}
-
-                    {% if forloop.last %}
-                        <!-- Active breadcrumb item (current page) -->
-                        <li class="breadcrumb-item active my-1 px-2 py-0 rounded border border-warning border-opacity-25 shadow-none" aria-current="page">{{partTitle}}</li>
-                    {% else %}
-                        {% if partTitle != '' %}
-                            <!-- Regular breadcrumb items -->
-                            <li class="breadcrumb-item my-1 px-2 py-0 rounded border border-warning border-opacity-25 shadow-none">
-                                {% if partUrl != '' %}
-                                    <a class="fw-light {{partTextClass}}" href="{{partUrl}}">{{partTitle}}</a>
-                                {% else %}
-                                    <span class="fw-light {{partTextClass}}">{{partTitle}}</span>
-                                {% endif %}
-                            </li>
-                            <i class="align-self-center bi bi-chevron-right"></i>
-                        {% endif %}
-                    {% endif %}
-
-                {% endif %}
-            {% endfor %}
+            {{ breadcrumbs }}
         </ol>
     </nav>
 {% endif %}
-    

@@ -23,7 +23,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Intro Child Page",
@@ -47,7 +48,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": "Introduction"
   },
   {
     "title": "Intro Grand Child Page",
@@ -71,7 +73,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": "Intro Child Page"
   },
   {
     "title": "Play with content",
@@ -98,7 +101,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "External content",
@@ -125,7 +129,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Terms",
@@ -149,7 +154,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-1/G1",
@@ -173,7 +179,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-1/G11",
@@ -200,7 +207,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-2/Y",
@@ -224,7 +232,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-2/Z",
@@ -249,7 +258,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": true
+    "hasDynamicContent": true,
+    "parent": "Collection-2/X"
   },
   {
     "title": "Collection-2/X",
@@ -273,7 +283,8 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": true
+    "hasDynamicContent": true,
+    "parent": ""
   },
   {
     "title": "Subfolder/F1",
@@ -297,6 +308,7 @@
 
     ],
     "readingTime": 0,
-    "hasDynamicContent": false
+    "hasDynamicContent": false,
+    "parent": ""
   }
 ]
