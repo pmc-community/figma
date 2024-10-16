@@ -6,6 +6,7 @@
 {% assign collections= site.data.filtered_collections %}
 {% assign collectionsNo = collections | size %}   
 {% assign docCollection ='' %}
+    
 <!-- Only display breadcrumbs if there are more than one breadcrumb item -->
 {% if breadcrumbs_count > 2 %}
     <nav aria-label="breadcrumb" class="container-xl p-0 mt-4 mt-md-0">
@@ -72,11 +73,11 @@
 
                     {% if forloop.last %}
                         <!-- Active breadcrumb item (current page) -->
-                        <li class="breadcrumb-item active px-2 py-0 rounded border border-warning border-opacity-25 shadow-none" aria-current="page">{{partTitle}}</li>
+                        <li class="breadcrumb-item active my-1 px-2 py-0 rounded border border-warning border-opacity-25 shadow-none" aria-current="page">{{partTitle}}</li>
                     {% else %}
                         {% if partTitle != '' %}
                             <!-- Regular breadcrumb items -->
-                            <li class="breadcrumb-item px-2 py-0 rounded border border-warning border-opacity-25 shadow-none">
+                            <li class="breadcrumb-item my-1 px-2 py-0 rounded border border-warning border-opacity-25 shadow-none">
                                 {% if partUrl != '' %}
                                     <a class="fw-light {{partTextClass}}" href="{{partUrl}}">{{partTitle}}</a>
                                 {% else %}
