@@ -15,7 +15,7 @@
     {% assign match = match1.size | plus: match2.size | plus: match3.size | plus: match4.size %}
       
     {% if match > 0 %}
-        {% assign footerClass = "container-md" %}
+        {% assign footerClass = "container-md px-md-0" %}
     {% else %}
         {% assign footerClass = "px-0 px-md-0" %}
     {% endif %}

@@ -755,6 +755,10 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     #{map-get($contextMenuElements, pageTagContextMenuFooterButton)} {
         width: $contextMenuPageTagFooterBtnWidth;
     }
+
+    #{map-get($contextMenuElements, tagAndCatContextMenu)} {
+        font-size: $tagAndCatContextMenuFontSize !important;
+    }
 }
 
 // page search

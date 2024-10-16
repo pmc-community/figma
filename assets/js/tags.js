@@ -142,7 +142,7 @@ const setPageTagButtonsContextMenu = () => {
             <li title="${title}">
                 <a class="icon-link">
                     <i class="bi ${icon}"></i>
-                    ${text}
+                    <span class="tagAndCatContextMenu">${text}</span>
                 </a>
             </li>`
     }
@@ -213,7 +213,7 @@ const setPageTagButtonsContextMenu = () => {
             const $tagBtn = $(event.target).closest('button[sitefunction="pageTagButton"][tagtype="customTag"]').clone();
             const tag = $($tagBtn.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim();
             $('#pageTagEditCustomTagInput').val(tag);
-            $('#pageTagEditCustomTagInput').focus();
+            if (preFlight.envInfo.device.deviceType === 'dsktop') $('#pageTagEditCustomTagInput').focus();
 
             // tag for active tag details datatable
             const tagForActiveTagDetailsDatatable = $('div[siteFunction="tagDetails"]:not(.d-none) button[sitefunction="tagForActiveTagDetailsDatatable"]').text().trim();
@@ -322,7 +322,7 @@ const setTagCloudButtonsContextMenu = () => {
             <li title="${title}">
                 <a class="icon-link">
                     <i class="bi ${icon}"></i>
-                    ${text}
+                    <span class="tagAndCatContextMenu">${text}</span>
                 </a>
             </li>`
     }
@@ -373,7 +373,7 @@ const setTagCloudButtonsContextMenu = () => {
             const $tagBtn = $(event.target).closest('button[sitefunction="tagButton"][tagtype="customTag"]').clone();
             const tag = $($tagBtn.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim();
             $('#tagCloudEditCustomTagInput').val(tag);
-            $('#tagCloudEditCustomTagInput').focus();
+            if (preFlight.envInfo.device.deviceType === 'dsktop') $('#tagCloudEditCustomTagInput').focus();
 
             // tag for active tag details datatable
             const tagForActiveTagDetailsDatatable = $('div[siteFunction="tagDetails"]:not(.d-none) button[sitefunction="tagForActiveTagDetailsDatatable"]').text().trim();

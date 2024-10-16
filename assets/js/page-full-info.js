@@ -153,7 +153,7 @@ const setCustomTagContextMenu = (pageInfo) => {
             <li title="${title}">
                 <a class="icon-link">
                     <i class="bi ${icon}"></i>
-                    ${text}
+                    <span class="tagAndCatContextMenu">${text}</span>
                 </a>
             </li>`
     }
@@ -198,7 +198,7 @@ const setCustomCatContextMenu = (pageInfo) => {
             <li title="${title}">
                 <a class="icon-link">
                     <i class="bi ${icon}"></i>
-                    ${text}
+                    <span class="tagAndCatContextMenu">${text}</span>
                 </a>
             </li>`
     }

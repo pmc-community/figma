@@ -803,7 +803,7 @@ const setCatCloudButtonsContextMenu = () => {
             <li title="${title}">
                 <a class="icon-link">
                     <i class="bi ${icon}"></i>
-                    ${text}
+                    <span class="tagAndCatContextMenu">${text}</span>
                 </a>
             </li>`
     }
@@ -854,7 +854,7 @@ const setCatCloudButtonsContextMenu = () => {
             const $catBtn = $(event.target).closest('button[sitefunction="catButton"][catType="customCat"]').clone();
             const cat = $($catBtn.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim();
             $('#catCloudEditCustomCatInput').val(cat);
-            $('#catCloudEditCustomCatInput').focus();
+            if (preFlight.envInfo.device.deviceType === 'dektop') $('#catCloudEditCustomCatInput').focus();
 
             // cat for active cat details datatable
             const catForActiveCatDetailsDatatable = $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim();
@@ -915,7 +915,7 @@ const setPageCatButtonsContextMenu = () => {
             <li title="${title}">
                 <a class="icon-link">
                     <i class="bi ${icon}"></i>
-                    ${text}
+                    <span class="tagAndCatContextMenu">${text}</span>
                 </a>
             </li>`
     }
@@ -986,7 +986,7 @@ const setPageCatButtonsContextMenu = () => {
             const $catBtn = $(event.target).closest('button[sitefunction="pageCatButton"][catType="customCat"]').clone();
             const cat = $($catBtn.prop('outerHTML')).children().remove().end().text().replace(/[\n\r\t]/g, '').trim();
             $('#pageCatEditCustomCatInput').val(cat);
-            $('#pageCatEditCustomCatInput').focus();
+            if (preFlight.envInfo.device.deviceType === 'desktop') $('#pageCatEditCustomCatInput').focus();
 
             // cat for active cat details datatable
             const catForActiveCatDetailsDatatable = $('div[siteFunction="catDetails"]:not(.d-none) button[sitefunction="catForActiveCatDetailsDatatable"]').text().trim();
