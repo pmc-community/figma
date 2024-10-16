@@ -47,6 +47,10 @@
         {
             "permalink": "/intro/",
             "summary": "lorem ipsum, lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 ..."
+        },
+        {
+            "permalink": "/collection-1/g11/",
+            "summary": "g11 how it works the accordion uses internally to make it collapsible. click the accordions below to expand/collapse accord ..."
         }
     ]
 }

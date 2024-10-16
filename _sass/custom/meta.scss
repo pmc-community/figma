@@ -884,6 +884,14 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
         content: $breadcrumbItemSeparatorContent;
     }
 
+    #{map-get($singlePageElements, customBreadcrumbItem)}::before {
+        display: $customBreadcrumbItemSeparatorContentVisibility !important;
+    }
+
+    #{map-get($singlePageElements, customBreadcrumbItem)} {
+        font-size: $customBreadcrumbItemFontSize !important;
+    }
+
     #{map-get($singlePageElements, breadcrumb)} {
         @include phone {
             display: $breadcrumbVisibility_phone;

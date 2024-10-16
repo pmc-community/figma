@@ -396,7 +396,7 @@
     },
     {
       "title": "Collection-1/G11",
-      "permalink": "/collection1/g11/",
+      "permalink": "/collection-1/g11/",
       "categories": [
         "general",
         "content"
@@ -407,8 +407,8 @@
         "exa"
       ],
       "excerpt": "this a sample excerpt for a file. this will be shown wherever exerpt is needed",
-      "lastUpdate": "2024-08-22 12:39:46 +0300",
-      "lastUpdateUTC": 1724319586,
+      "lastUpdate": "2024-10-16 14:11:25 +0300",
+      "lastUpdateUTC": 1729077085,
       "createTime": "2024-08-22 12:39:46 +0300",
       "createTimeUTC": 1724319586,
       "relatedPages": [
@@ -591,8 +591,8 @@
       "pages": [
         {
           "title": "Collection-1/G11",
-          "permalink": "/collection1/g11/",
-          "lastUpdate": "22-Aug-2024"
+          "permalink": "/collection-1/g11/",
+          "lastUpdate": "16-Oct-2024"
         }
       ],
       "numPages": 1
@@ -601,8 +601,8 @@
       "pages": [
         {
           "title": "Collection-1/G11",
-          "permalink": "/collection1/g11/",
-          "lastUpdate": "22-Aug-2024"
+          "permalink": "/collection-1/g11/",
+          "lastUpdate": "16-Oct-2024"
         }
       ],
       "numPages": 1
@@ -641,8 +641,8 @@
         },
         {
           "title": "Collection-1/G11",
-          "permalink": "/collection1/g11/",
-          "lastUpdate": "22-Aug-2024"
+          "permalink": "/collection-1/g11/",
+          "lastUpdate": "16-Oct-2024"
         },
         {
           "title": "Collection-2/X",
@@ -725,8 +725,8 @@
         },
         {
           "title": "Collection-1/G11",
-          "permalink": "/collection1/g11/",
-          "lastUpdate": "22-Aug-2024"
+          "permalink": "/collection-1/g11/",
+          "lastUpdate": "16-Oct-2024"
         }
       ],
       "numPages": 2
@@ -745,8 +745,8 @@
         },
         {
           "title": "Collection-1/G11",
-          "permalink": "/collection1/g11/",
-          "lastUpdate": "22-Aug-2024"
+          "permalink": "/collection-1/g11/",
+          "lastUpdate": "16-Oct-2024"
         },
         {
           "title": "Collection-2/Z",

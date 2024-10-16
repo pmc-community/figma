@@ -3,11 +3,14 @@
 $pageInfoButtonsWidth: $sz-6rem;
 $breadcrumbItemSeparatorContent: '>';
 $breadcrumbVisibility_phone: $d-hidden;
+$customBreadcrumbItemSeparatorContentVisibility: $d-hidden;
+$customBreadcrumbItemFontSize: $fs-0-75;
 
 $singlePageElements: (
     pageInfoButtons: 'button[sitefunction="pageShowPageFullInfo"], button[sitefunction="pageNavigateToFeedbackAndSupport"]',
     breadcrumbItem: '.breadcrumb-nav-list-item',
-    breadcrumb: '.breadcrumb-nav'
+    breadcrumb: '.breadcrumb-nav',
+    customBreadcrumbItem: '.breadcrumb-item'
 );
 
 @import 'meta.scss';

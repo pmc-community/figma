@@ -43,12 +43,14 @@ layout: table_wrappers
 
       <div class="main-content-wrap {{mainContentWrapPadding}}">
 
+        {% include components/breadcrumbs_custom.html %}
+
         <div id="ihs_top_of_page"></div>
-        
-        
+
         <div id="main-content" class="main-content">
 
           {% if match > 0 %}
+
             <!-- this is a document page -->
             <hr sitefunction="pageContentTopSeparator" class="my-4 container-xl px-2">
 
