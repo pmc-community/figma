@@ -156,11 +156,11 @@ const setPageTagButtonsContextMenu = () => {
                 handler: handlePageTagDelete
             }
         ],
-        footer: 
+        footer: preFlight.envInfo.device.deviceType === 'desktop' ?
             `
-                <input type="text" autocomplete="off" class="form-control my-2" id="pageTagEditCustomTagInput">
+                <input type="text" autocomplete="off" class="form-control my-2 d-none d-md-block" id="pageTagEditCustomTagInput">
 
-                <div class="mb-2">
+                <div class="mb-2  d-none d-md-block">
                     <button 
                         siteFunction="pageTagEditCustomTag"
                         tagForTagTableDetailsReference="" 
@@ -181,7 +181,8 @@ const setPageTagButtonsContextMenu = () => {
                         Add      
                     </button>
                 </div>
-            `
+            ` :
+            ``
     };
     
     setContextMenu (
@@ -336,19 +337,20 @@ const setTagCloudButtonsContextMenu = () => {
                 handler: handleTagRemoval
             }
         ],
-        footer: 
+        footer: preFlight.envInfo.device.deviceType === 'desktop' ?
             `
-                <input type="text" autocomplete="off" class="form-control my-2" id="tagCloudEditCustomTagInput">
+                <input type="text" autocomplete="off" class="form-control my-2 d-none d-md-block" id="tagCloudEditCustomTagInput">
                 <button 
                     siteFunction="tagCloudEditCustomTag"
                     tagForTagTableDetailsReference="" 
                     tagReference=""
                     id="tagCloudEditCustomTag" 
                     type="button" 
-                    class="focus-ring focus-ring-warning btn btn-sm btn-warning my-2 position-relative">
+                    class="focus-ring focus-ring-warning btn btn-sm btn-warning my-2 position-relative d-none d-md-block">
                     Update      
                 </button>
-            `
+            ` :
+            ``
     };
     
     setContextMenu (

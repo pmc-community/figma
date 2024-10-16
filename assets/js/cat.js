@@ -817,19 +817,20 @@ const setCatCloudButtonsContextMenu = () => {
                 handler: handleCatRemoval
             }
         ],
-        footer: 
+        footer: preFlight.envInfo.device.deviceType === 'desktop' ?
             `
-                <input type="text" autocomplete="off" class="form-control my-2" id="catCloudEditCustomCatInput">
+                <input type="text" autocomplete="off" class="form-control my-2  d-none d-md-block" id="catCloudEditCustomCatInput">
                 <button 
                     siteFunction="catCloudEditCustomCat"
                     catForCatTableDetailsReference="" 
                     catReference=""
                     id="catCloudEditCustomCat" 
                     type="button" 
-                    class="focus-ring focus-ring-warning btn btn-sm btn-warning my-2 position-relative">
+                    class="focus-ring focus-ring-warning btn btn-sm btn-warning my-2 position-relative d-none d-md-block">
                     Update      
                 </button>
-            `
+            ` :
+            ``
     };
     
     setContextMenu (
@@ -929,11 +930,11 @@ const setPageCatButtonsContextMenu = () => {
                 handler: handlePageCatDelete
             }
         ],
-        footer: 
+        footer: preFlight.envInfo.device.deviceType === 'desktop' ?
             `
-                <input type="text" autocomplete="off" class="form-control my-2" id="pageCatEditCustomCatInput">
+                <input type="text" autocomplete="off" class="form-control my-2 d-none d-md-block" id="pageCatEditCustomCatInput">
 
-                <div class="mb-2">
+                <div class="mb-2 d-none d-md-block">
                     <button 
                         siteFunction="pageCatEditCustomCat"
                         catForCatTableDetailsReference="" 
@@ -954,7 +955,8 @@ const setPageCatButtonsContextMenu = () => {
                         Add      
                     </button>
                 </div>
-            `
+            ` :
+            ``
     };
     
     setContextMenu (

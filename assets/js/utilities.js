@@ -1761,7 +1761,8 @@ const setContextMenu = (
     menuContent, // the html content of the context menu = header(custom) + body(menu item list) + footer(custom)
     callbackItem, // executed when click on a menu item from the menuContent items list
     callbackAfterShow = null, //executed after the context menu is shown to do some post processing if needed
-    additionalClass = [] // additional classes to be applied to the whole context menu container
+    additionalClass = [], // additional classes to be applied to the whole context menu container
+    envInfo = null
 ) => {
     $(document).ready(function() {
 
@@ -1803,7 +1804,7 @@ const setContextMenu = (
             if (menuContent.header.trim() !=='') {
                 const dropdownMenuHeader = $('<div class="context-menu-header px-4 py-2">');
                 dropdownMenuHeader.append($(menuContent.header));
-                const dropdownMenuSeparator = $('<hr class="my-0 mx-2" siteFunction="contextMenuSeparator">');
+                const dropdownMenuSeparator = $('<hr class="my-0 mx-2 d-none d-md-block" siteFunction="contextMenuSeparator">');
                 dropdownMenu.append(dropdownMenuHeader).append(dropdownMenuSeparator);
             }
         
@@ -1823,7 +1824,7 @@ const setContextMenu = (
             if (menuContent.footer.trim() !=='') {
                 const dropdownMenuFooter = $('<div class="context-menu-footer px-4 py-2">');
                 dropdownMenuFooter.append($(menuContent.footer));
-                const dropdownMenuSeparator = $('<hr class="my-0, mx-2" siteFunction="contextMenuSeparator">');
+                const dropdownMenuSeparator = $('<hr class="my-0 mx-2 d-none d-md-block" siteFunction="contextMenuSeparator">');
                 dropdownMenu.append(dropdownMenuSeparator).append(dropdownMenuFooter);
                 
             }
