@@ -738,6 +738,33 @@ const setDataTable = (
 
                 triggerApplyActiveFilter: (tableUniqueID) => {
                     $(`button[id="tableSearchPanes_${tableUniqueID}"]`).click();
+                },
+
+                applyTableStylesOnMobile: () => {
+                    // since we don't use responsive = true for datatables
+                    // we need to apply some css corrections because some things may look weird on mobile 
+                    if (preFlight.envInfo.device.deviceType === 'mobile') {
+                        // apply corrections to entries per page group
+                        $('.dt-length')
+                            .addClass('d-flex justify-content-between align-items-center')
+                            .find('select').addClass('order-2 mr-0 mr-md-1')
+                            .find('label').addClass('order-1');
+                        
+                        $('.dt-length').find('label').addClass('text-capitalize fs-6');
+                
+                         // apply corrections to search box group
+                        $('.dt-search')
+                            .addClass('d-flex justify-content-between align-items-center')
+                            .children().last().css('width', '50%')
+                            .children().first().addClass('order-2')
+                            .children().last().addClass('order-1');
+                        
+                        $('.dt-search').find('label')
+                                .addClass('fs-6');
+    
+                        $('.dt-info').addClass('text-start fs-6');
+    
+                    }
                 }
             }
 
@@ -745,33 +772,6 @@ const setDataTable = (
 
             // callback to be personalised for each table
             // for post processing the table (i.e. adding buttons based on context)
-            const applyTableStylesOnMobile = () => {
-                // since we don't use responsive = true for datatables
-                // we need to apply some css corrections because some things may look weird on mobile 
-                if (preFlight.envInfo.device.deviceType === 'mobile') {
-                    // apply corrections to entries per page group
-                    $('.dt-length')
-                        .addClass('d-flex justify-content-between align-items-center')
-                        .children().first().addClass('order-2 mr-0 mr-md-1')
-                        .children().last().addClass('order-1');
-                    
-                    $('.dt-length').find('label').addClass('text-capitalize fs-6');
-            
-                     // apply corrections to search box group
-                    $('.dt-search')
-                        .addClass('d-flex justify-content-between align-items-center')
-                        .children().last().css('width', '50%')
-                        .children().first().addClass('order-2')
-                        .children().last().addClass('order-1');
-                    
-                    $('.dt-search').find('label')
-                            .addClass('fs-6');
-
-                    $('.dt-info').addClass('text-start fs-6');
-
-                }
-            }
-            applyTableStylesOnMobile();
             callback(table);
 
             // set the columns which are active when click on row
@@ -830,7 +830,7 @@ const setDataTable = (
                 }
             }
 
-            // set clickabl columns as per the col definition in columnsConfig object (which is the columns option of DataTable) 
+            // set clickable columns as per the col definition in columnsConfig object (which is the columns option of DataTable) 
             table.off('click').on('click', composeRowClickColumnsSelector(), handleRowClick);
 
             // since tables are created dynamically, some color corrections may be lost 
@@ -1022,6 +1022,8 @@ const setDataTable = (
             searchPanes
         )
             .then((result) => {
+
+                result.table.helpers.applyTableStylesOnMobile();
                 
                 if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
                     return result.table;
@@ -1035,7 +1037,7 @@ const setDataTable = (
                 setTimeout(()=>table.fixedHeader.adjust(),100);
 
             })
-            .then(() => {
+            .then(() => {    
                 $('#dataTableLoading').remove(); // remove the table loader placeholder)
                 setTimeout(()=>$(tableSelector).show(), 100);
             }); 

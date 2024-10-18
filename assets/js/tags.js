@@ -440,7 +440,7 @@ const setPageOtherCustomTags = (pageInformation, crtTag = null) => {
                     tagReference="${tag}"
                     id="pageTag_${tag}" 
                     type="button" 
-                    class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm btn-success position-relative"
+                    class="align-self-center text-nowrap focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm btn-success position-relative"
                     title = "Details for tag ${tag}">${tag}
                 </button>
             `
@@ -649,6 +649,7 @@ const showTagDetails = (tag) => {
             title:'Other Tags',
             type: 'string',
             exceptWhenRowSelect: true,
+            width: '400px',
             createdCell: function(td, cellData, rowData, row, col) {
                 const permalink = $(rowData.pageActions).find('[siteFunction="tagPageItemLinkToDoc"]').attr('href');
                 $(td)
@@ -657,15 +658,21 @@ const showTagDetails = (tag) => {
                     .attr('pageTitleReference', `${rowData.pageTitle.replace(/<\/?[^>]+(>|$)/g, "").trim()}`)
                     .attr('pagePermalinkReference', `${permalink.trim()}`)
                     .addClass('fw-normal align-self-center align-middle');
+                if(preFlight.envInfo.device.deviceType === 'mobile') {
+                    $(td).children().first().addClass('d-flex');
+                }
             }
         }
     ];
 
     const commonAdditionalTableSettings = {
+
         scrollX:true,
+
         fixedColumns: {
             "left": 1
         },
+
         "createdRow": function(row, data, dataIndex) {
             const permalink = $(data.pageActions).find('[siteFunction="tagPageItemLinkToDoc"]').attr('href');
             $(row)

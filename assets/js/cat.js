@@ -363,6 +363,10 @@ const showCatDetails = (cat) => {
                     .attr('pageTitleReference', `${rowData.pageTitle.replace(/<\/?[^>]+(>|$)/g, "").trim()}`)
                     .attr('pagePermalinkReference', `${permalink.trim()}`)
                     .addClass('fw-normal align-self-center align-middle');
+                
+                if(preFlight.envInfo.device.deviceType === 'mobile') {
+                        $(td).children().first().addClass('d-flex');
+                    }
             }
         }
     ];
@@ -768,7 +772,7 @@ const setPageOtherCustomCats = (pageInformation, crtCat = null) => {
                     catReference="${cat}"
                     id="pageCat_${cat}" 
                     type="button" 
-                    class="focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm text-success fw-medium border-0 shadow-none position-relative"
+                    class="align-self-center text-nowrap focus-ring focus-ring-warning px-3 mr-2 my-1 btn btn-sm text-success fw-medium border-0 shadow-none position-relative"
                     title = "Details for category ${cat}">${cat}
                 </button>
             `

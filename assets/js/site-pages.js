@@ -613,7 +613,7 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: true,
-                width:preFlight.envInfo.device.deviceType === 'desktop' ? '400px' : '200px'
+                width: '400px' 
             }, 
 
             // related
@@ -624,7 +624,7 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: false,
-                width: preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
+                width: '400px' 
             },
 
             // similar
@@ -635,7 +635,7 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: false,
-                width: preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
+                width: '400px' 
             },
             
             // excerpt
@@ -646,7 +646,7 @@ sitePagesFn = {
                 orderable: false,
                 searchable: true,
                 visible: false,
-                width: preFlight.envInfo.device.deviceType === 'desktop' ? '400px' : '200px'
+                width: '400px' 
             },
 
             // auto summary
@@ -657,7 +657,7 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: false,
-                width: preFlight.envInfo.device.deviceType === 'desktop' ? '400px' : '200px'
+                width: '400px' 
             },
 
             // tags
@@ -668,7 +668,7 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: true,
-                width:preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
+                width: '400px' 
             },
 
              // cats
@@ -679,7 +679,7 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: true,
-                width:preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
+                width: '400px' 
             }
         ];
 
