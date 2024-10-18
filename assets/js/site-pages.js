@@ -592,7 +592,7 @@ sitePagesFn = {
                 title:'Title',
                 type: 'html-string',
                 searchable: true,
-                width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '150px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '100px'
             }, 
     
             // last update
@@ -613,7 +613,7 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: true,
-                width:'400px'
+                width:preFlight.envInfo.device.deviceType === 'desktop' ? '400px' : '200px'
             }, 
 
             // related
@@ -624,7 +624,7 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: false,
-                width:'300px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
             },
 
             // similar
@@ -635,7 +635,7 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: false,
-                width:'300px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
             },
             
             // excerpt
@@ -646,7 +646,7 @@ sitePagesFn = {
                 orderable: false,
                 searchable: true,
                 visible: false,
-                width:'400px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '400px' : '200px'
             },
 
             // auto summary
@@ -657,7 +657,7 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: false,
-                width:'400px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '400px' : '200px'
             },
 
             // tags
@@ -668,7 +668,7 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: true,
-                width:'300px'
+                width:preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
             },
 
              // cats
@@ -679,7 +679,7 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: true,
-                width:'300px'
+                width:preFlight.envInfo.device.deviceType === 'desktop' ? '300px' : '200px'
             }
         ];
 
