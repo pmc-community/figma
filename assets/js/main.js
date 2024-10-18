@@ -133,11 +133,13 @@ const handleTocOnMobile = () => {
         $(this).removeClass('show');
     });
 
+    // close when click outside toc contentcontainer (incl. toc header)
     $(document).on('click touchend', function (event) {
-        if (!$(event.target).closest('#mobile_toc_content').length) {
+        if (!$(event.target).closest('#mobile_toc_content').length && !$(event.target).closest('#mobile_toc_header').length) {
             $('#mobile_toc_content').removeClass('show');          
         }
-      });
+    });
+    
 
     removeObservers('#mobile_toc_content class=show getClass=true');
     setElementChangeClassObserver('#mobile_toc_content', 'show', true, () => {
