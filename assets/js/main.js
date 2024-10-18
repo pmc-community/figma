@@ -79,16 +79,6 @@ const adjustBodyHeight_mobile = () => {
     }
 }
 
-const adjustBodyHeight_desktop = () => {
-    if (preFlight.envInfo.device.deviceType === 'desktop') {
-        const bodyHeight = $('main').outerHeight(true);
-        const viewportHeight = $(window).height();
-        const pageFooterHeight = $('#pageFeedbackAndSupport').outerHeight(true)
-        if (bodyHeight < viewportHeight) $('main').css('min-height', viewportHeight - pageFooterHeight + 'px');
-        else $('main').css('min-height', 'auto');
-    }
-}
-
 const additionalSiteMenuButtonOnMobile = () => {
     if (preFlight.envInfo.device.deviceType === 'mobile') {
         const switchOffSiteMenu = 
@@ -142,6 +132,12 @@ const handleTocOnMobile = () => {
     $('#mobile_toc_content').off('click').on('click', function() {
         $(this).removeClass('show');
     });
+
+    $(document).on('click touchend', function (event) {
+        if (!$(event.target).closest('#mobile_toc_content').length) {
+            $('#mobile_toc_content').removeClass('show');          
+        }
+      });
 
     removeObservers('#mobile_toc_content class=show getClass=true');
     setElementChangeClassObserver('#mobile_toc_content', 'show', true, () => {
