@@ -755,9 +755,7 @@ const setDataTable = (
                          // apply corrections to search box group
                         $('.dt-search')
                             .addClass('d-flex justify-content-between align-items-center')
-                            .children().last().css('width', '50%')
-                            .children().first().addClass('order-2')
-                            .children().last().addClass('order-1');
+                            .find('input').css('width', '50%');
                         
                         $('.dt-search').find('label')
                                 .addClass('fs-6');
