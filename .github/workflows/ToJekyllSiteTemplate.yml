@@ -1,4 +1,4 @@
-name: Copy gh-pages Branch from figma repo to jekyll-site-template repository
+name: Copy gh-pages branch from figma repo to jekyll-site-template repo
 
 on:
     workflow_dispatch:
@@ -10,14 +10,14 @@ jobs:
       - name: Checkout source repository
         uses: actions/checkout@v4
         with:
-          repository: pmc-comunity/figma
+          repository: pmc-community/figma
           ref: gh-pages
 
       - name: Copy contents to destination repository
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git remote add destination https://github.com/pmc-comunity/jekyl-site-template.git
+          git remote add destination https://github.com/pmc-community/jekyll-site-template.git
           git fetch destination
           git checkout -b main destination/main || git checkout --orphan main
           git rm -rf .
@@ -26,7 +26,7 @@ jobs:
           cp -r . ../source-repo
           cd ../source-repo
           git add .
-          git commit -m "Update from gh-pages branch of pcm-comunity/figma repository"
+          git commit -m "Update from gh-pages branch of pmc-community/figma repository"
           git push -f destination main
 
       - name: Clean up
