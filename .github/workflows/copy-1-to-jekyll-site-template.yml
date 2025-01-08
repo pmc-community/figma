@@ -1,4 +1,4 @@
-name: Copy gh-pages Branch from figma repo to jekyll-site-template repo
+name: Copy gh-pages Branch from figma repo to jekyll-site-template repository
 
 on:
     workflow_dispatch:
