@@ -1,1 +1,1 @@
-Public repoitory containing Figma resources from PMC
+Public repository containing Figma resources from PMC
