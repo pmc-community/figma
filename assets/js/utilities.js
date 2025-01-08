@@ -761,7 +761,7 @@ const setDataTable = (
                                 .addClass('fs-6');
     
                         $('.dt-info').addClass('text-start fs-6');
-    
+                        
                     }
                 }
             }

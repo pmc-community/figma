@@ -13,7 +13,7 @@ module Jekyll
 
       def generate(site)
 
-        if (ENV["ALGOLIA_NETLIFY_ENABLED"] == "true" || ENV["ALGOLIA_CUSTOM_ENABLED"])
+        if (ENV["ALGOLIA_NETLIFY_ENABLED"] || ENV["ALGOLIA_CUSTOM_ENABLED"])
           Globals.putsColText(Globals::PURPLE,"Updating Algolia index ...")
 
           modified_files = FileUtilities.read_json_file("#{site.data['buildConfig']["rawContentFolder"]}/modified_files.json")["files"]

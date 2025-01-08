@@ -187,12 +187,12 @@
       "autoSummary": "lorem ipsum, lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 ...",
       "similarByContent": [
         {
-          "permalink": "/collection-2/y/y/",
-          "title": "Collection-2/Y"
-        },
-        {
           "permalink": "/intro/introChild/",
           "title": "Intro Child Page"
+        },
+        {
+          "permalink": "/collection-2/y/y/",
+          "title": "Collection-2/Y"
         }
       ],
       "readingTime": 6,
@@ -280,8 +280,8 @@
         "alfa"
       ],
       "excerpt": "file, lorem ipsum, site, markdown content, title, link, latin, cicero, malorum, sections",
-      "lastUpdate": "2024-09-29 17:28:46 +0300",
-      "lastUpdateUTC": 1727620126,
+      "lastUpdate": "2025-01-06 12:30:36 +0200",
+      "lastUpdateUTC": 1736159436,
       "createTime": "2024-08-22 12:39:46 +0300",
       "createTimeUTC": 1724319586,
       "relatedPages": [
@@ -290,12 +290,12 @@
           "permalink": "/intro/"
         },
         {
-          "title": "Collection-2/X",
-          "permalink": "collection-2/X/x/"
-        },
-        {
           "title": "Collection-2/Y",
           "permalink": "/collection-2/y/y/"
+        },
+        {
+          "title": "Collection-2/X",
+          "permalink": "collection-2/X/x/"
         }
       ],
       "autoSummary": "markdown content direct included in the page. heads up!!!links to other site docs must be given using the permalinks, not the ...",
@@ -378,9 +378,9 @@
       "tags": [
 
       ],
-      "excerpt": "content, services, lorem ipsum, innohub, registration, email, access, process, ihsutilities, latin",
-      "lastUpdate": "2024-08-22 12:39:46 +0300",
-      "lastUpdateUTC": 1724319586,
+      "excerpt": "content, lorem ipsum, services, innohub, registration, email, access, process, latin, ihsutilities",
+      "lastUpdate": "2025-01-04 13:46:47 +0200",
+      "lastUpdateUTC": 1735991207,
       "createTime": "2024-08-22 12:39:46 +0300",
       "createTimeUTC": 1724319586,
       "relatedPages": [
@@ -391,9 +391,13 @@
         {
           "title": "Terms",
           "permalink": "/terms/"
+        },
+        {
+          "title": "Introduction",
+          "permalink": "/intro/"
         }
       ],
-      "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. it has roots in a piece of classical ...",
+      "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ...",
       "similarByContent": [
 
       ],
@@ -441,9 +445,9 @@
       "tags": [
 
       ],
-      "excerpt": "lorem ipsum, latin, latin literature, line, extremes, evil, malorum, cicero, treatise, book",
-      "lastUpdate": "2024-08-22 12:39:46 +0300",
-      "lastUpdateUTC": 1724319586,
+      "excerpt": "lorem ipsum, latin, latin literature, line, file, extremes, evil, malorum, cicero, book",
+      "lastUpdate": "2025-01-06 11:59:44 +0200",
+      "lastUpdateUTC": 1736157584,
       "createTime": "2024-08-22 12:39:46 +0300",
       "createTimeUTC": 1724319586,
       "relatedPages": [
@@ -564,8 +568,8 @@
           "permalink": "/collection-1/g1/"
         },
         {
-          "title": "Collection-2/Y",
-          "permalink": "/collection-2/y/y/"
+          "title": "Intro Child Page",
+          "permalink": "/intro/introChild/"
         }
       ],
       "autoSummary": "goods or services made available on or through such third party sites or resources. either pmc or any third parties may provide links to other websites and/or ...",
@@ -594,7 +598,7 @@
         {
           "title": "Play with content",
           "permalink": "/pwc/",
-          "lastUpdate": "29-Sep-2024"
+          "lastUpdate": "06-Jan-2025"
         }
       ],
       "numPages": 1
@@ -644,7 +648,7 @@
         {
           "title": "Play with content",
           "permalink": "/pwc/",
-          "lastUpdate": "29-Sep-2024"
+          "lastUpdate": "06-Jan-2025"
         },
         {
           "title": "External content",
@@ -679,7 +683,7 @@
         {
           "title": "Play with content",
           "permalink": "/pwc/",
-          "lastUpdate": "29-Sep-2024"
+          "lastUpdate": "06-Jan-2025"
         },
         {
           "title": "External content",
@@ -733,7 +737,7 @@
         {
           "title": "Play with content",
           "permalink": "/pwc/",
-          "lastUpdate": "29-Sep-2024"
+          "lastUpdate": "06-Jan-2025"
         },
         {
           "title": "Collection-1/G11",
@@ -753,7 +757,7 @@
         {
           "title": "Play with content",
           "permalink": "/pwc/",
-          "lastUpdate": "29-Sep-2024"
+          "lastUpdate": "06-Jan-2025"
         },
         {
           "title": "Collection-1/G11",

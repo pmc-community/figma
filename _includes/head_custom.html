@@ -212,10 +212,13 @@
 {% endif %}
 
 <!-- algolia -->
+{% assign appID = "" %}
 {% assign algolia = site.data.algolia_integration | json_string_to_object %}
 {% if algolia.algoliaEnabled %}
 
     {% if algolia.algoliaDocSearchEnabled %}
+
+        {% assign appID = algolia.algoliaAppID %}
         <link rel="preload" 
             href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" 
             as="style" 
@@ -232,9 +235,10 @@
             as="script">
         <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
 
-    {% endif %}
 
-    {% if algolia.algoliaNetlifyEnabled %}
+    {% elsif algolia.algoliaNetlifyEnabled %}
+
+        {% assign appID = algolia.algoliaNetlifyAppID %}
 
         <link 
             rel="preload" 
@@ -255,7 +259,15 @@
             type="text/javascript" 
             src="https://cdn.jsdelivr.net/npm/@algolia/algoliasearch-netlify-frontend@1/dist/algoliasearchNetlify.js">
         </script>
+    
+    {% elsif algolia.algoliaNetlifyEnabled %}
 
+        {% assign appID = algolia.algoliaCustomAppID %}
+
+    {% endif %}
+
+    {% if appID != "" %}
+        <link rel="preconnect" href="https://{{appID}}-dsn.algolia.net" crossorigin />
     {% endif %}
 
     <link 
@@ -263,8 +275,6 @@
         rel="preload" 
         as="script">
     <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.24.0/dist/algoliasearch.umd.js"></script>
-
-    <link rel="preconnect" href="https://{{algolia.algoliaAppID}}-dsn.algolia.net" crossorigin />
     
 {% endif %}
     

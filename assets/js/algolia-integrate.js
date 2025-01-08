@@ -738,7 +738,7 @@ algolia = {
 
             const popoverText = 
                 `
-                    This ToC does not capture dynamic target document headings. ${dynamicContent}
+                    This ToC does not capture dynamic document headings. ${dynamicContent}
                 `
 
             const popoverTitle = 

@@ -1,8 +1,11 @@
+{% assign algolia = site.data.algolia_integration  | json_string_to_object %}
+  
 <nav aria-label="Auxiliary" class="aux-nav w-100">
   <ul class="aux-nav-list d-flex justify-content-between pr-0 pr-md-0">
-
-    <!-- set algolia docsearch container -->
-    <div id="docsearch" class="mr-1 mr-md-2"></div>
+    {% if algolia.algoliaEnabled == 'true' %}
+      <!-- set algolia docsearch container -->
+      <div id="docsearch" class="mr-1 mr-md-2"></div>
+    {% endif %}
 
     <!-- theme switcher -->
     <div 

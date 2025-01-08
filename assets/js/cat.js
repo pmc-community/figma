@@ -372,7 +372,9 @@ const showCatDetails = (cat) => {
     ];
 
     const commonAdditionalTableSettings = {
-        scrollX:true,
+        
+        scrollX: true,
+
         fixedColumns: {
             "left": 1
         },

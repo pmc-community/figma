@@ -105,7 +105,7 @@ module ContentUtilities
             end
             
             return file_info["markdown"] ? content : Kramdown::Document.new(content).to_html
-          else
+        else
             return "Error getting file: #{file_info["file_path"]}"
         end
     end
@@ -116,7 +116,7 @@ module ContentUtilities
             markdown_content = file_info["ignore_wp_shortcodes"] ?
                 Globals.removeFrontMatter(File.read(file)).gsub(/\[.*?\](?!\((https?:\/\/|\/).*?\))/, '') :
                 Globals.removeFrontMatter(File.read(file))            
-          else
+        else
             return "Error getting file: #{file_info["file_path"]}"
         end
 
@@ -145,7 +145,7 @@ module ContentUtilities
             match_data = content.match(regex)
             if match_data
                 return match_data[1]
-              else
+            else
                 return "Start and/or End markers are wrong! Cannot return anything."
             end
         end
