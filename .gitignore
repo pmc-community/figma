@@ -9,3 +9,7 @@ code.js
 
 .DS_Store
 unused
+
+_site
+.jekyll-cache
+.jekyll-metadata
