@@ -1,4 +1,4 @@
-name: Copy Last Commit of gh-pages Branch
+name: Copy (with Excludes) Last Commit of gh-pages Branch
 
 on:
   workflow_dispatch:
