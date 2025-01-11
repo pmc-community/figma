@@ -24,6 +24,7 @@ jobs:
       - name: Copy last commit content
         run: |
           # Use rsync to copy content with exclusions and inclusions
+          # Always use --include before --exclude, otherwise inclusions may be ignored
           rsync -av --delete \
             --include='.github/workflows/deploy-site.yml' \
             --include='doc-contents/general/' \
