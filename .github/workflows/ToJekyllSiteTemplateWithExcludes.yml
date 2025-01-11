@@ -29,7 +29,7 @@ jobs:
             --exclude='.git' \
             --exclude='doc-raw-contents/' \
             --exclude='doc-change-log/' \
-            --exclude='unused' \
+            --exclude='unused/' \
             --exclude='.github/workflows/*' \
             --include='.github/workflows/deploy-site.yml' \
             --exclude='doc-contents/*' \
