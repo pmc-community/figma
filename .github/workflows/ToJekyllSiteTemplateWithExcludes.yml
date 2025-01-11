@@ -35,6 +35,9 @@ jobs:
             --exclude='unused/' \
             --exclude='.github/workflows/*' \
             --exclude='doc-contents/*' \
+            --exclude='README.md' \
+            --exclude='CNAME' \
+            --exclude='favicon.png' \
             ./ ../destination-repo/
 
           # Navigate to the destination repository
