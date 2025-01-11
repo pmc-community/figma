@@ -25,15 +25,15 @@ jobs:
         run: |
           # Use rsync to copy content with exclusions and inclusions
           rsync -av --delete \
+            --include='.github/workflows/deploy-site.yml' \
+            --include='doc-contents/general/' \
+            --include='doc-contents/_tools/' \
             --exclude='.git' \
             --exclude='doc-raw-contents/' \
             --exclude='doc-change-log/' \
             --exclude='unused/' \
             --exclude='.github/workflows/*' \
-            --include='.github/workflows/deploy-site.yml' \
             --exclude='doc-contents/*' \
-            --include='doc-contents/general/' \
-            --include='doc-contents/_tools/' \
             ./ ../destination-repo/
 
           # Navigate to the destination repository
