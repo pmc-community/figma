@@ -30,6 +30,7 @@ jobs:
             --exclude='doc-raw-contents/' \
             --exclude='doc-change-log/' \
             --exclude='doc-contents/*' \
+            --include='.github/workflows/deploy-site.yml' \
             --include='doc-contents/general/' \
             --include='doc-contents/_tools/' \
           ./ ../destination-repo/
