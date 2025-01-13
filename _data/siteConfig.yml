@@ -114,3 +114,20 @@ user:
   userTokenCookie: "userToken"
 savedItems:
   autoSaveBeforeLoad: true
+multilang:
+  enabled: true
+  siteLanguage: 
+    lang: "alb"
+    name: "Albanian"
+  availableLang: 
+    - lang: "en"
+      name: "English"
+    - lang: "alb"
+      name: "Albanian"
+    - lang: "srb"
+      name: "Serbian"
+  fallbackLang: 0
+  needsTranslation: 
+    - "#pageFeedbackAndSupport"
+    - "div[sitefunction=\"homePageHeaderNavBtns\"]"
+    - "a[sitefunction=\"jumpToIntroDoc\"]"

@@ -61,6 +61,15 @@ window.customiseTheme = (pageObj = null) => {
         setAnonymousUserToken();
         if (gData.gtm.enabled) pushInfoToGTM(pageInfo);
 
+        // finally, translate what is needed to be translated
+        const translationCompleteEvent = new Event('translationComplete');
+        doTranslation().then(() => {
+            document.dispatchEvent(translationCompleteEvent);
+        });
+        
+    });
+
+    $(document).on('translationComplete', function() {
         setTimeout( () => {
             $('body').css('visibility','visible');
             $('#contentLoading').addClass('d-none');  
@@ -70,6 +79,50 @@ window.customiseTheme = (pageObj = null) => {
 }
 
 /* HERE ARE THE FUNCTIONS */
+const doTranslation = () => {
+    return new Promise((resolve, reject) => {
+        if (!settings.multilang.enabled) return;
+        const siteLanguage = settings.multilang.siteLanguage;
+        const fallbackLanguage = settings.multilang.availableLang[settings.multilang.fallbackLang]
+
+        i18next
+            .use(i18nextHttpBackend) // Use the backend plugin to load translations
+            .init(
+                {
+                    lng: siteLanguage.lang, // Default language
+                    fallbackLng: fallbackLanguage.lang, // Fallback language
+                    debug: false,
+                    backend: {
+                    loadPath: `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage.lang}.json`,
+                    },
+                },
+            function (err, t) {
+                if (err) {
+                    console.error('Error loading translations:', err);
+                    return;
+                }
+
+                // Bind i18next to jQuery
+                jqueryI18next.init(i18next, $);
+
+                // Translate the page
+                const needsTranslation = settings.multilang.needsTranslation;
+                needsTranslation.forEach( (section) => {
+                    $(section).localize();
+                } );
+            
+            }
+        );
+        
+        //resolve();
+
+        setTimeout(() => {
+            resolve();
+        }, 1000); 
+    });
+}
+
+
 const adjustBodyHeight_mobile = () => {
     if (preFlight.envInfo.device.deviceType === 'mobile') {
         const bodyHeight = $('body').outerHeight(true);

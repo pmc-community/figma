@@ -11,10 +11,10 @@
       "tag2"
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:58 +0300",
-    "lastUpdateUTC": 1723406578,
-    "createTime": "2024-08-11 23:02:58 +0300",
-    "createTimeUTC": 1723406578,
+    "lastUpdate": "2025-01-12 12:39:38 +0200",
+    "lastUpdateUTC": 1736678378,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -22,7 +22,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Intro Child Page",
@@ -34,10 +36,10 @@
 
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -45,7 +47,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": "Introduction"
   },
   {
     "title": "Intro Grand Child Page",
@@ -57,10 +61,10 @@
 
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -68,7 +72,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": "Intro Child Page"
   },
   {
     "title": "Play with content",
@@ -83,10 +89,10 @@
       "alfa"
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -94,7 +100,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "External content",
@@ -109,10 +117,10 @@
       "tag3"
     ],
     "excerpt": "a very nice excerpt for a dynamically created file, having the content imported from an external private GitHub repo",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -120,7 +128,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Terms",
@@ -132,10 +142,10 @@
       "legal"
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -143,7 +153,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-1/G1",
@@ -155,10 +167,10 @@
 
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -166,11 +178,13 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-1/G11",
-    "permalink": "/collection1/g11/",
+    "permalink": "/collection-1/g11/",
     "categories": [
       "general",
       "content"
@@ -181,10 +195,10 @@
       "exa"
     ],
     "excerpt": "this a sample excerpt for a file. this will be shown wherever exerpt is needed",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -192,7 +206,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-2/Y",
@@ -204,10 +220,10 @@
 
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-15 11:59:43 +0300",
-    "lastUpdateUTC": 1723712383,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -215,7 +231,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   },
   {
     "title": "Collection-2/Z",
@@ -228,10 +246,10 @@
 
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -239,7 +257,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": true,
+    "parent": "Collection-2/X"
   },
   {
     "title": "Collection-2/X",
@@ -251,10 +271,10 @@
       "tag1"
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -262,7 +282,9 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": true,
+    "parent": ""
   },
   {
     "title": "Subfolder/F1",
@@ -274,10 +296,10 @@
 
     ],
     "excerpt": "",
-    "lastUpdate": "2024-08-11 23:02:59 +0300",
-    "lastUpdateUTC": 1723406579,
-    "createTime": "2024-08-11 23:02:59 +0300",
-    "createTimeUTC": 1723406579,
+    "lastUpdate": "2025-01-11 18:48:00 +0200",
+    "lastUpdateUTC": 1736614080,
+    "createTime": "2025-01-11 18:48:00 +0200",
+    "createTimeUTC": 1736614080,
     "relatedPages": [
 
     ],
@@ -285,6 +307,8 @@
     "similarByContent": [
 
     ],
-    "readingTime": 0
+    "readingTime": 0,
+    "hasDynamicContent": false,
+    "parent": ""
   }
 ]

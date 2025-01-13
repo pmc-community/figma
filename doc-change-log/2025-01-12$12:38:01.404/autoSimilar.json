@@ -1,13 +1,9 @@
 [
     {
-        "permalink": "/devtest/",
-        "similarFiles": []
-    },
-    {
         "permalink": "/intro/",
         "similarFiles": [
-            "/collection-2/y/y/",
-            "/intro/introChild/"
+            "/intro/introChild/",
+            "/collection-2/y/y/"
         ]
     },
     {
@@ -38,7 +34,7 @@
         "similarFiles": []
     },
     {
-        "permalink": "/collection1/g11/",
+        "permalink": "/collection-1/g11/",
         "similarFiles": []
     },
     {
@@ -50,9 +46,7 @@
     },
     {
         "permalink": "/collection-2/Z/z/",
-        "similarFiles": [
-            "collection-2/X/x/"
-        ]
+        "similarFiles": []
     },
     {
         "permalink": "collection-2/X/x/",

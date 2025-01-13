@@ -69,6 +69,7 @@ algoliaSearch:
 JTDSearch:
   searchBoxWidth: "fit-content"
 changeLog:
+  enabled: false
   history: 5
 siteFooter:
   container: ".site-footer"

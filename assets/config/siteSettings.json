@@ -151,6 +151,33 @@
     "savedItems": {
       "autoSaveBeforeLoad": true
     },
+    "multilang": {
+      "enabled": true,
+      "siteLanguage": {
+        "lang": "alb",
+        "name": "Albanian"
+      },
+      "availableLang": [
+        {
+          "lang": "en",
+          "name": "English"
+        },
+        {
+          "lang": "alb",
+          "name": "Albanian"
+        },
+        {
+          "lang": "srb",
+          "name": "Serbian"
+        }
+      ],
+      "fallbackLang": 0,
+      "needsTranslation": [
+        "#pageFeedbackAndSupport",
+        "div[sitefunction=\"homePageHeaderNavBtns\"]",
+        "a[sitefunction=\"jumpToIntroDoc\"]"
+      ]
+    },
     "siteTitle": "Figma Resources"
   },
   "pageList": [
@@ -166,8 +193,8 @@
         "tag2"
       ],
       "excerpt": "lorem ipsum, latin, sections, cicero, finibus bonorum, malorum, standard chunk, rackham, translation, form",
-      "lastUpdate": "2025-01-11 19:39:02 +0200",
-      "lastUpdateUTC": 1736617142,
+      "lastUpdate": "2025-01-12 12:42:07 +0200",
+      "lastUpdateUTC": 1736678527,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
@@ -638,7 +665,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "11-Jan-2025"
+          "lastUpdate": "12-Jan-2025"
         }
       ],
       "numPages": 1
@@ -673,7 +700,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "11-Jan-2025"
+          "lastUpdate": "12-Jan-2025"
         }
       ],
       "numPages": 1
@@ -752,7 +779,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "11-Jan-2025"
+          "lastUpdate": "12-Jan-2025"
         },
         {
           "title": "Play with content",
@@ -777,7 +804,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "11-Jan-2025"
+          "lastUpdate": "12-Jan-2025"
         },
         {
           "title": "Collection-2/Z",
@@ -807,7 +834,6 @@
     "algoliaTextHighlightPostfixTag": "</mark>",
     "algoliaRaiseIssueLink": "https://github.com/pmc-community/figma/issues/new?title=",
     "algoliaDocSearchEnabled": true,
-    "algoliaNetlifyEnabled": false,
     "algoliaCustomEnabled": false
   },
   "pageSettings": {
