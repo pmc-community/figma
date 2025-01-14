@@ -22,9 +22,9 @@ module Jekyll
       if (site.data["siteConfig"]["hsIntegration"]["enabled"])
         Globals.putsColText(Globals::PURPLE,"Generating HubSpot client settings ...")
         hsSettings = {
-          "region" => ENV["HS_REGION"],
-          "portalID" => ENV["HS_PORTAL_ID"],
-          "feedbackFormID" => ENV["HS_FEDBACK_FORM_ID"]
+          "region" => site.data["buildConfig"]["hubspot"]["region"],
+          "portalID" => site.data["buildConfig"]["hubspot"]["portalID"],
+          "feedbackFormID" => site.data["buildConfig"]["hubspot"]["feedbackFormID"]
         }
         site.data['hs_integration'] = hsSettings.to_json
         Globals.moveUpOneLine
@@ -44,7 +44,7 @@ module Jekyll
 
     def generate(site)
       if (site.data["siteConfig"]["hsIntegration"]["enabled"])
-        portalID = ENV["HS_PORTAL_ID"]
+        portalID = site.data["buildConfig"]["hubspot"]["portalID"]
         site.data['hs_portal_id'] = portalID
       else
         portalID = ""

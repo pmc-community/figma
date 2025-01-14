@@ -1031,7 +1031,12 @@ const fedbackFormContainer__ASYNC = (formContainerSelector) => {
                         </div>
                         <div class="hsFormLink mt-2 text-primary">
                             <a href="${settings.links.privacyLink}" target=_blank>
-                                <i class="bi bi-shield-lock"></i> Privacy Policy
+                                <i class="bi bi-shield-lock"></i> 
+                                <span 
+                                    class="ghBtnLink text-primary" 
+                                    data-i18n="page_footer_help_us_improve_privacy_policy">
+                                    Privacy Policy
+                                </span>
                             </a>
                         </div>
                     </div>

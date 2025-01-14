@@ -5,6 +5,49 @@
     "home_page_intro_section_buttons_support": "Support",
     "home_page_intro_section_buttons_overview": "Overview",
 
+    "home_page_collections_section_start_here_btn": "Start here",
 
-    "page_footer_report_issue": "Report issue"
+    "home_page_recent_and_popular_section_most_recent_col_header": "Most recent",
+    "home_page_recent_and_popular_section_most_recent_col_go_to_docs_btn": "Documents",
+    "home_page_recent_and_popular_section_popular_cats_col_header": "Popular Categories",
+    "home_page_recent_and_popular_section_popular_cats_col_go_to_cats_btn": "Categories",
+    "home_page_recent_and_popular_section_popular_tags_col_header": "Popular Tags",
+    "home_page_recent_and_popular_section_popular_tags_col_go_to_tags_btn": "Tags",
+    
+    "home_page_stats_section_cats_col_title": "Categories",
+    "home_page_stats_section_cats_col_total_cats": "Total categories:",
+    "home_page_stats_section_cats_col_site_cats": "Site categories:",
+    "home_page_stats_section_cats_col_custom_cats": "Custom categories:",
+    "home_page_stats_section_cats_col_docs_with_custom_cats": "Docs with custom cats:",
+
+    "home_page_stats_section_tags_col_title": "Tags",
+    "home_page_stats_section_tags_col_total_tags": "Total tags:",
+    "home_page_stats_section_tags_col_site_tags": "Site tags:",
+    "home_page_stats_section_tags_col_custom_tags": "Custom tags:",
+    "home_page_stats_section_tags_col_docs_with_custom_tags": "Docs with custom tags:",
+
+    "home_page_stats_section_docs_col_title": "Documents",
+    "home_page_stats_section_docs_col_total_docs": "Total documents:",
+    "home_page_stats_section_docs_col_saved_docs": "Saved dosucuments",
+    "home_page_stats_section_docs_col_avg_read_time": "Avg. reading time:",
+    "home_page_stats_section_docs_col_max_read_time": "Max. reading time:",
+    "home_page_stats_section_docs_col_min_read_time": "Min. reading time:",
+
+    "page_footer_feedback_and_support_title": "Feedback and Support",
+    "page_footer_help_needed_col_title": "Need help?",
+    "page_footer_help_needed_contact_support": "Contact support",
+    "page_footer_help_needed_ask_community": "Ask community",
+    "page_footer_help_needed_report_issue": "Report issue",
+
+    "page_footer_download_text": "Get your own copy",
+    "page_footer_download": "Download",
+
+    "page_footer_get_involved_col_title": "Get involved!",
+    "page_footer_get_involved_follow_us": "Follow us",
+    "page_footer_get_involved_subscribe": "Subscribe",
+    "page_footer_get_involved_star": "Like us",
+    "page_footer_get_involved_contribute": "Contribute",
+
+    "page_footer_help_us_improve_col_title": "Help us improve!",
+    "page_footer_help_us_improve_privacy_policy": "Privacy policy"
 }

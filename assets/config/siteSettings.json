@@ -153,10 +153,7 @@
     },
     "multilang": {
       "enabled": true,
-      "siteLanguage": {
-        "lang": "alb",
-        "name": "Albanian"
-      },
+      "timeout": 1000,
       "availableLang": [
         {
           "lang": "en",
@@ -171,11 +168,10 @@
           "name": "Serbian"
         }
       ],
+      "siteLanguage": 1,
       "fallbackLang": 0,
       "needsTranslation": [
-        "#pageFeedbackAndSupport",
-        "div[sitefunction=\"homePageHeaderNavBtns\"]",
-        "a[sitefunction=\"jumpToIntroDoc\"]"
+        "body"
       ]
     },
     "siteTitle": "Figma Resources"

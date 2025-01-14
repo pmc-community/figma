@@ -82,7 +82,7 @@ window.customiseTheme = (pageObj = null) => {
 const doTranslation = () => {
     return new Promise((resolve, reject) => {
         if (!settings.multilang.enabled) return;
-        const siteLanguage = settings.multilang.siteLanguage;
+        const siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage];
         const fallbackLanguage = settings.multilang.availableLang[settings.multilang.fallbackLang]
 
         i18next
@@ -93,7 +93,7 @@ const doTranslation = () => {
                     fallbackLng: fallbackLanguage.lang, // Fallback language
                     debug: false,
                     backend: {
-                    loadPath: `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage.lang}.json`,
+                        loadPath: `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage.lang}.json`,
                     },
                 },
             function (err, t) {
@@ -114,11 +114,9 @@ const doTranslation = () => {
             }
         );
         
-        //resolve();
-
         setTimeout(() => {
             resolve();
-        }, 1000); 
+        }, settings.multilang.timeout); 
     });
 }
 

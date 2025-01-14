@@ -116,9 +116,7 @@ savedItems:
   autoSaveBeforeLoad: true
 multilang:
   enabled: true
-  siteLanguage: 
-    lang: "alb"
-    name: "Albanian"
+  timeout: 1000
   availableLang: 
     - lang: "en"
       name: "English"
@@ -126,8 +124,7 @@ multilang:
       name: "Albanian"
     - lang: "srb"
       name: "Serbian"
+  siteLanguage: 1
   fallbackLang: 0
-  needsTranslation: 
-    - "#pageFeedbackAndSupport"
-    - "div[sitefunction=\"homePageHeaderNavBtns\"]"
-    - "a[sitefunction=\"jumpToIntroDoc\"]"
+  needsTranslation:
+    - 'body'
