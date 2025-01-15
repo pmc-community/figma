@@ -2627,7 +2627,7 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
     return new Promise((resolve, reject) => {
         if (!settings.multilang.enabled) return;
         const siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage];
-        const fallbackLanguage = settings.multilang.availableLang[settings.multilang.fallbackLang]
+        const fallbackLanguage = settings.multilang.availableLang[settings.multilang.fallbackLang];
 
         i18next
             .use(i18nextHttpBackend) // Use the backend plugin to load translations

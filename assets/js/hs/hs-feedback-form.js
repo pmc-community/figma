@@ -27,9 +27,16 @@ hsFeedbackForm = {
     },
 
     addMarkersForTranslation: () => {
-        $(iframeDocument).find('input[type="submit"]').attr('data-i18n', '[value]hs_feedback_form_submit_btn_text');
-        $(iframeDocument).find('input[name="email"]').attr('data-i18n', '[placeholder]hs_feedback_form_email_placeholder_text');
+        //submit button text
+        $(iframeDocument).find('input[type="submit"]').attr('data-i18n', '[value]hs_feedback_form_submit_btn_text'); 
+
+        // email field placeholder
+        $(iframeDocument).find('input[name="email"]').attr('data-i18n', '[placeholder]hs_feedback_form_email_placeholder_text'); 
+
+        // message field placeholder
         $(iframeDocument).find('textarea[name="message"]').attr('data-i18n', '[placeholder]hs_feedback_form_message_placeholder_text');
+
+        // was_this_useful radio button field label
         $(iframeDocument)
             .find('div.hs-fieldtype-radio')
             .find('span.hsFieldLabel').first()
@@ -44,20 +51,33 @@ hsFeedbackForm = {
     },
 
     setWasThisUsefullFunction: () => {
-        const yourRating = (rating) => {
+        const yourRating =  (rating) => {
             const ratingTextClass = 
                 rating === $(iframeDocument).find('span[data-i18n="hs_feedback_form_yes_label"]').parent().parent().find('input').attr('value') 
                     ? 'text-success' 
                     : 'text-danger';
 
+            const i18ratingConfirmationText = 
+                rating === $(iframeDocument).find('span[data-i18n="hs_feedback_form_yes_label"]').parent().parent().find('input').attr('value') 
+                    ? 'hs_feedback_form_was_this_useful_confirmation_text_yes' 
+                    : 'hs_feedback_form_was_this_useful_confirmation_text_no';
+            
             return (
                 `
-                    <div siteFunction="hsFormChangeRatingContainer" class="d-none d-flex justify-content-between align-items-center mb-2">
+                    <div 
+                        siteFunction="hsFormChangeRatingContainer" 
+                        class="d-flex justify-content-between align-items-center mb-2"
+                        style="visibility:hidden">
                         <div class="hsFormRegularText text-secondary">
                             <span data-i18n="hs_feedback_form_was_this_useful_text">
                                 Was this useful: 
                             </span>
-                            <span class="${ratingTextClass}">${rating}</span>
+                            <span 
+                                siteFunction="hs_feedback_form_was_this_useful_confirmation_text" 
+                                class="${ratingTextClass}"
+                                data-i18n="${i18ratingConfirmationText}">
+                                ${rating}
+                            </span>
                         </div>
                         <button siteFunction="hsFormChangeRating" class="btn btn-danger text-light btn-sm hsFormRegularText me-2">
                             <i class="bi bi-arrow-clockwise"></i>
@@ -66,9 +86,10 @@ hsFeedbackForm = {
                 `
             );
         }
+
         $(iframeDocument).find('.hs-form-radio').click(function() {
             btnValue = $(this).find('label > span').first().text();
-            if (btnValue === hsSettings.feedbackForm.YesLabel) {
+            if (btnValue === $(iframeDocument).find('span[data-i18n="hs_feedback_form_yes_label"]').parent().parent().find('input').attr('value')) {
                 $(this).prop('checked', true);
             }
             else {
@@ -77,15 +98,17 @@ hsFeedbackForm = {
 
             if ($(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').length === 0){
                 $(iframeDocument).find('.hbspt-form').prepend(yourRating(btnValue));
-                setTimeout(()=>$(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').removeClass('d-none'), 100);
+                setTimeout(()=> {
+                    $(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').css('visibility', 'visible')
+                }, 100);
             }
+
+            hsFeedbackForm.translateForm();
 
             $(iframeDocument).find('.hs_was_this_useful_').addClass('d-none');
             $(iframeDocument).find('.hs-message').removeClass('d-none');
             $(iframeDocument).find('.hs-email').parent().removeClass('d-none');
             $(iframeDocument).find('.hs_submit').removeClass('d-none');
-
-            hsFeedbackForm.translateForm();
             
         })
     },

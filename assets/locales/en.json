@@ -1,4 +1,7 @@
 {
+    "yes": "Yes",
+    "no": "No",
+
     "home_page_intro_section_buttons_sections": "Sections",
     "home_page_intro_section_buttons_quickstart": "Quickstart",
     "home_page_intro_section_buttons_statistics": "Docs info",
@@ -57,5 +60,7 @@
     "hs_feedback_form_message_placeholder_text": "Can you tell us more about your rating? (optional)",
     "hs_feedback_form_yes_label": "Yes",
     "hs_feedback_form_no_label": "No",
-    "hs_feedback_form_message_was_this_useful_radio_btn_label": "Was this useful?"
+    "hs_feedback_form_message_was_this_useful_radio_btn_label": "Was this useful?",
+    "hs_feedback_form_was_this_useful_confirmation_text_yes": "Yes",
+    "hs_feedback_form_was_this_useful_confirmation_text_no": "No"
 }

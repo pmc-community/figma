@@ -34,7 +34,7 @@
     "home_page_stats_section_docs_col_min_read_time": "Timp de citire (MIN):",
 
     "page_footer_feedback_and_support_title": "Feedback si suport",
-    "page_footer_help_needed_col_title": "Asistenta",
+    "page_footer_help_needed_col_title": "Suport",
     "page_footer_help_needed_contact_support": "Contact suport",
     "page_footer_help_needed_ask_community": "Intreaba comunitatea",
     "page_footer_help_needed_report_issue": "Raporteaza problema",
@@ -57,5 +57,7 @@
     "hs_feedback_form_message_placeholder_text": "Poti sa ne dai mai multe detalii? (optional)",
     "hs_feedback_form_yes_label": "Da",
     "hs_feedback_form_no_label": "Nu",
-    "hs_feedback_form_message_was_this_useful_radio_btn_label": "Articol util?"
+    "hs_feedback_form_message_was_this_useful_radio_btn_label": "Articol util?",
+    "hs_feedback_form_was_this_useful_confirmation_text_yes": "Da",
+    "hs_feedback_form_was_this_useful_confirmation_text_no": "Nu"
 }
