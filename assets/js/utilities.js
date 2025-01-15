@@ -2141,6 +2141,7 @@ const iframe__utilities = () => {
         settings: settings,
         pageSettings: pageSettings,
         hsSettings: hsSettings,
+        anonymousUserToken: setAnonymousUserToken(),
         func: {
             showToast: showToast,
             doTranslation: doTranslation

@@ -89,5 +89,3 @@ hubspot:
   region: "na1"
   feedbackFormID: 
     ID: "e166804c-61ea-4b51-801d-f4299cb5c06c"
-    YesLabel: "Yes" #labels are to be set equal to the actual labels from HubSpot
-    NoLabel: "No" #in HubSpot, the form should be designed based on the siteLanguage (siteConfig.yml['multilang'])

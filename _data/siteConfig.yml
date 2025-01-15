@@ -93,6 +93,10 @@ hsIntegration:
     submisionSource: 
       propName: "source"
       propValue: "figmares_doc_site"
+    prefLang:
+      propName: "hs_language"
+    userToken:
+      propName: "subject"
 scripts:
   jQuery: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
   fontFamily: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
@@ -122,11 +126,11 @@ multilang:
     i18Backend: "https://cdn.jsdelivr.net/npm/i18next-http-backend@3.0.1/i18nextHttpBackend.min.js"
     i18JQuery: "https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"
   availableLang: 
-    - lang: "en"
+    - lang: "en" # ISO639 codes must be used / to be checked against hs_language Contact prop too if HS forms are used
       name: "English"
-    - lang: "alb"
+    - lang: "sq"
       name: "Albanian"
-    - lang: "srb"
+    - lang: "sr"
       name: "Serbian"
   siteLanguage: 1
   fallbackLang: 0

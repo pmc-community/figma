@@ -6,11 +6,15 @@ hsFeedbackForm = {
     doTheWork: () => {
         if (mainJQuery) {
             $(hsFeedbackForm.iframeDocument).ready(function() {
+                hsFeedbackForm.addMarkersForTranslation();
+
                 hsFeedbackForm.prettyRadioButtons();
                 hsFeedbackForm.fixMessageTextareaHeight(); // should be fixed to a certain height, otherwise has the tendency to grow
                 hsFeedbackForm.setWasThisUsefullFunction();
                 hsFeedbackForm.setChangeRatingFunction();
                 hsFeedbackForm.hideFormExtraControls();
+
+                hsFeedbackForm.translateForm();
             });
         } else {
             iframeDocument.body.innerHTML = '';
@@ -22,6 +26,16 @@ hsFeedbackForm = {
         }
     },
 
+    addMarkersForTranslation: () => {
+        $(iframeDocument).find('input[type="submit"]').attr('data-i18n', '[value]hs_feedback_form_submit_btn_text');
+        $(iframeDocument).find('input[name="email"]').attr('data-i18n', '[placeholder]hs_feedback_form_email_placeholder_text');
+        $(iframeDocument).find('textarea[name="message"]').attr('data-i18n', '[placeholder]hs_feedback_form_message_placeholder_text');
+        $(iframeDocument)
+            .find('div.hs-fieldtype-radio')
+            .find('span.hsFieldLabel').first()
+            .attr('data-i18n', 'hs_feedback_form_message_was_this_useful_radio_btn_label');
+    },
+
     hideFormExtraControls: () => {
         $(iframeDocument).find('.hs_submit').addClass('d-none');
         $(iframeDocument).find('.hs-message').addClass('d-none')
@@ -31,11 +45,14 @@ hsFeedbackForm = {
 
     setWasThisUsefullFunction: () => {
         const yourRating = (rating) => {
-            const ratingTextClass = rating === hsSettings.feedbackForm.YesLabel ? 'text-success' : 'text-danger';
+            const ratingTextClass = 
+                rating === $(iframeDocument).find('span[data-i18n="hs_feedback_form_yes_label"]').parent().parent().find('input').attr('value') 
+                    ? 'text-success' 
+                    : 'text-danger';
 
             return (
                 `
-                    <div siteFunction="hsFormChangeRatingContainer" class="d-flex justify-content-between align-items-center mb-2">
+                    <div siteFunction="hsFormChangeRatingContainer" class="d-none d-flex justify-content-between align-items-center mb-2">
                         <div class="hsFormRegularText text-secondary">
                             <span data-i18n="hs_feedback_form_was_this_useful_text">
                                 Was this useful: 
@@ -58,8 +75,10 @@ hsFeedbackForm = {
                 $(this).prop('checked', false);
             }
 
-            if ($(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').length === 0)
+            if ($(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').length === 0){
                 $(iframeDocument).find('.hbspt-form').prepend(yourRating(btnValue));
+                setTimeout(()=>$(iframeDocument).find('div[siteFunction="hsFormChangeRatingContainer"]').removeClass('d-none'), 100);
+            }
 
             $(iframeDocument).find('.hs_was_this_useful_').addClass('d-none');
             $(iframeDocument).find('.hs-message').removeClass('d-none');
@@ -99,7 +118,9 @@ hsFeedbackForm = {
                         class="fs-5 bi bi-hand-thumbs-up me-2" 
                         style="width: 20px; cursor: pointer;">
                     </i>
-                    ${hsSettings.feedbackForm.YesLabel}
+                    <span data-i18n="hs_feedback_form_yes_label">
+                        Yes
+                    </span>
                 </span>
             `
         );
@@ -112,7 +133,9 @@ hsFeedbackForm = {
                         class="fs-5 bi bi-hand-thumbs-down me-2" 
                         style="width: 20px; cursor: pointer;">
                     </i>
-                    ${hsSettings.feedbackForm.NoLabel}
+                    <span data-i18n="hs_feedback_form_no_label">
+                        No
+                    </span>
                 </span>
             `
         );
