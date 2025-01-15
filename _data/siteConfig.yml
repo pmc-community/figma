@@ -82,9 +82,9 @@ similarByContent:
   maxPages: 4
 hsIntegration:
   enabled: true
-  bootstrapCSS: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-  bootstrapJS: "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-  bootstrapIconsCSS: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  bootstrapCSS: "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+  bootstrapJS: "https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
+  bootstrapIconsCSS: "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
   forms:
     elements:
       fieldValidationErrorMessagesGroup: ".hs-error-msgs"
@@ -117,6 +117,10 @@ savedItems:
 multilang:
   enabled: true
   timeout: 1000
+  scripts:
+    i18: "https://cdn.jsdelivr.net/npm/i18next@24.2.1/i18next.min.js"
+    i18Backend: "https://cdn.jsdelivr.net/npm/i18next-http-backend@3.0.1/i18nextHttpBackend.min.js"
+    i18JQuery: "https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"
   availableLang: 
     - lang: "en"
       name: "English"
@@ -127,4 +131,4 @@ multilang:
   siteLanguage: 1
   fallbackLang: 0
   needsTranslation:
-    - 'body'
+    - "body"

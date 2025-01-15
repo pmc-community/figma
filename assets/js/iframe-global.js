@@ -4,7 +4,6 @@ const iframeDocument = iframeWindow.document;
 // make jQuery available in iFrame
 const mainJQuery = window.parent.mainJQuery;
 iframeWindow.$ = mainJQuery;
-iframeWindow.jQuery = mainJQuery;
 
 // make lodash available in iFrame
 const mainLodash = window.parent._;

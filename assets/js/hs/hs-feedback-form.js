@@ -1,15 +1,6 @@
-/*
-const iframeWindow = window;
-const iframeDocument = iframeWindow.document;
-const mainJQuery = window.parent.mainJQuery;
-iframeWindow.$ = mainJQuery;
-iframeWindow.jQuery = mainJQuery;
 
-const mainLodash = window.parent._;
-iframeWindow._ = mainLodash;
-*/
 const {settings, pageSettings, hsSettings} = window.parent.utilities;
-const { showToast } = window.parent.utilities.func;
+const { showToast, doTranslation } = window.parent.utilities.func;
 
 hsFeedbackForm = {
     doTheWork: () => {
@@ -22,8 +13,12 @@ hsFeedbackForm = {
                 hsFeedbackForm.hideFormExtraControls();
             });
         } else {
-            showToast(`Something went wrong, cannot execute functions!`, 'bg-danger', 'text-light');
-            console.error('jQuery is not available in this context, although it should be!')
+            iframeDocument.body.innerHTML = '';
+            setTimeout(() => {
+                hsFeedbackForm.notifyParentOnIFrameZeroHeight($(window.frameElement).attr('iframe-data-id'));
+                showToast(`Something went wrong, cannot execute functions! Details in console ...`, 'bg-danger', 'text-light');
+                console.error(`jQuery is not available in this context (or iframe), although it should be! Check <iframe iframe-data-id="${$(window.frameElement).attr('iframe-data-id')}" ... >`)
+            }, 200);
         }
     },
 
@@ -36,13 +31,15 @@ hsFeedbackForm = {
 
     setWasThisUsefullFunction: () => {
         const yourRating = (rating) => {
-            const ratingTextClass = rating === 'Yes' ? 'text-success' : 'text-danger';
+            const ratingTextClass = rating === hsSettings.feedbackForm.YesLabel ? 'text-success' : 'text-danger';
 
             return (
                 `
                     <div siteFunction="hsFormChangeRatingContainer" class="d-flex justify-content-between align-items-center mb-2">
                         <div class="hsFormRegularText text-secondary">
-                            <span>Was this useful: </span>
+                            <span data-i18n="hs_feedback_form_was_this_useful_text">
+                                Was this useful: 
+                            </span>
                             <span class="${ratingTextClass}">${rating}</span>
                         </div>
                         <button siteFunction="hsFormChangeRating" class="btn btn-danger text-light btn-sm hsFormRegularText me-2">
@@ -53,9 +50,8 @@ hsFeedbackForm = {
             );
         }
         $(iframeDocument).find('.hs-form-radio').click(function() {
-
             btnValue = $(this).find('label > span').first().text();
-            if (btnValue === 'Yes') {
+            if (btnValue === hsSettings.feedbackForm.YesLabel) {
                 $(this).prop('checked', true);
             }
             else {
@@ -70,6 +66,13 @@ hsFeedbackForm = {
             $(iframeDocument).find('.hs-email').parent().removeClass('d-none');
             $(iframeDocument).find('.hs_submit').removeClass('d-none');
 
+            hsFeedbackForm.translateForm();
+            
+        })
+    },
+
+    translateForm: () => {
+        doTranslation(true, iframeDocument.body).then(()=>{
             hsFeedbackForm.notifyParentOfContentChange();
         })
     },
@@ -96,7 +99,7 @@ hsFeedbackForm = {
                         class="fs-5 bi bi-hand-thumbs-up me-2" 
                         style="width: 20px; cursor: pointer;">
                     </i>
-                    Yes
+                    ${hsSettings.feedbackForm.YesLabel}
                 </span>
             `
         );
@@ -109,7 +112,7 @@ hsFeedbackForm = {
                         class="fs-5 bi bi-hand-thumbs-down me-2" 
                         style="width: 20px; cursor: pointer;">
                     </i>
-                    No
+                    ${hsSettings.feedbackForm.NoLabel}
                 </span>
             `
         );
@@ -133,8 +136,11 @@ hsFeedbackForm = {
 
     notifyParentOfContentChange: () => {
         parent.postMessage({ type: 'contentChanged' }, '*');
+    },
+
+    notifyParentOnIFrameZeroHeight: (iframeID) => {
+        parent.postMessage({ type: 'iFrameZeroHeight', iframeID: iframeID }, '*');
     }
-    
 };
 
 hsFeedbackForm.doTheWork();

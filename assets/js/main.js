@@ -56,12 +56,14 @@ window.customiseTheme = (pageObj = null) => {
             null;
 
         // set some utilities for iframes
-        window.utilities = iframe__utilities();
+        // shouldn't be moved to iframe-global.js
+        window['utilities'] = iframe__utilities();
 
         setAnonymousUserToken();
         if (gData.gtm.enabled) pushInfoToGTM(pageInfo);
 
         // finally, translate what is needed to be translated
+        // after translation add ids to iframes and show everything
         const translationCompleteEvent = new Event('translationComplete');
         doTranslation().then(() => {
             document.dispatchEvent(translationCompleteEvent);
@@ -71,6 +73,12 @@ window.customiseTheme = (pageObj = null) => {
 
     $(document).on('translationComplete', function() {
         setTimeout( () => {
+
+            $('iframe').each(function(index) {
+                $(this).attr('iframe-data-id', `iframe-${index}`);
+            });
+            
+            // body was hidden in _includes/head_custom.html
             $('body').css('visibility','visible');
             $('#contentLoading').addClass('d-none');  
         }, settings.colSchemaCorrections.hideBodyUntilLoadTimeout);
@@ -79,46 +87,6 @@ window.customiseTheme = (pageObj = null) => {
 }
 
 /* HERE ARE THE FUNCTIONS */
-const doTranslation = () => {
-    return new Promise((resolve, reject) => {
-        if (!settings.multilang.enabled) return;
-        const siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage];
-        const fallbackLanguage = settings.multilang.availableLang[settings.multilang.fallbackLang]
-
-        i18next
-            .use(i18nextHttpBackend) // Use the backend plugin to load translations
-            .init(
-                {
-                    lng: siteLanguage.lang, // Default language
-                    fallbackLng: fallbackLanguage.lang, // Fallback language
-                    debug: false,
-                    backend: {
-                        loadPath: `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage.lang}.json`,
-                    },
-                },
-            function (err, t) {
-                if (err) {
-                    console.error('Error loading translations:', err);
-                    return;
-                }
-
-                // Bind i18next to jQuery
-                jqueryI18next.init(i18next, $);
-
-                // Translate the page
-                const needsTranslation = settings.multilang.needsTranslation;
-                needsTranslation.forEach( (section) => {
-                    $(section).localize();
-                } );
-            
-            }
-        );
-        
-        setTimeout(() => {
-            resolve();
-        }, settings.multilang.timeout); 
-    });
-}
 
 
 const adjustBodyHeight_mobile = () => {

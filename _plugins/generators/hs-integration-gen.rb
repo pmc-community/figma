@@ -3,9 +3,6 @@ require_relative "../../tools/modules/file-utilities"
 require 'nokogiri'
 require 'tf-idf-similarity'
 require 'matrix'
-require 'dotenv'
-
-Dotenv.load
 
 module Jekyll
 
@@ -13,18 +10,14 @@ module Jekyll
     safe true
     priority :highest # actually can be anywhere, but the sooner, the better
 
-    # HEADS UP!!!
-    # THIS IS HOW TO GET ACCESS TO SITE CONFIG DATA FROM AN EXTERNAL FILE
-    # THE FILE IS buildConfig.yml AND IS LOCATED IN _data FOLDER
-    # content.index(site.data["siteConfig"]["marker404"])
-
     def generate(site)
       if (site.data["siteConfig"]["hsIntegration"]["enabled"])
         Globals.putsColText(Globals::PURPLE,"Generating HubSpot client settings ...")
         hsSettings = {
           "region" => site.data["buildConfig"]["hubspot"]["region"],
           "portalID" => site.data["buildConfig"]["hubspot"]["portalID"],
-          "feedbackFormID" => site.data["buildConfig"]["hubspot"]["feedbackFormID"]
+          "feedbackFormID" => site.data["buildConfig"]["hubspot"]["feedbackFormID"]["ID"],
+          "feedbackForm" => site.data["buildConfig"]["hubspot"]["feedbackFormID"]
         }
         site.data['hs_integration'] = hsSettings.to_json
         Globals.moveUpOneLine

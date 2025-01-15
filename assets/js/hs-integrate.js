@@ -97,7 +97,7 @@ hsIntegrate = {
                                 console.error(`An error occurred in onFormSubmitted for ${formIdentification.formID}:`, e);
                             }
                         },
-                        onBeforeFormInit: (ctx) => {
+                        onBeforeFormInit: (ctx) => {                            
                             callbackOnBeforeFormInit(ctx);
                         }
                     });
@@ -139,6 +139,7 @@ hsIntegrate = {
     },
 
     loadScriptsAndStyles: ($form, cssScripts, jsScripts) => {
+        //iframe__addI18ToIFrames($form);
         iframe__addBootstrapToIFrames($form);
         iframe__addCustomScriptsToIFrames($form, cssScripts, jsScripts);
     },
