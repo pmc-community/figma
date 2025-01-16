@@ -41,6 +41,7 @@ hsFeedbackForm = {
             .find('div.hs-fieldtype-radio')
             .find('span.hsFieldLabel').first()
             .attr('data-i18n', 'hs_feedback_form_message_was_this_useful_radio_btn_label');
+
     },
 
     hideFormExtraControls: () => {

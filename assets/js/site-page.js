@@ -1,5 +1,13 @@
 // FUNCTIONS FOR EACH PAGE
 // called from _includes/siteIncludes/partials/page-common/page-auto-summary.html
+
+// IMPORTANT!!!
+// FOR CLIENT GENERATED DYNAMIC CONTENT, TRANSLATIONS ARE IMPLEMENTED WITH i18next.t FUNCTION
+// WE DO NOT USE data-i18n ATTRIBUTE
+// THE REASON IS THAT WE NEED TO USE INTERPOLATION TO TRANSLATE SOME title ATTRIBUTES WHICH MEANS
+// THAT WE NEED TO CALL i18next.t AFTER BEING SURE THAT i18nexT IS INITIALIZED
+// AND THIS TRANSFORMS SOME FUNCTIONS IN async FUNCTIONS, THUS data-i18n MAY NOT WORK PROPERLY ANYMORE
+
 const page__getAutoSummary = () => {
 
     // defined as window.func because we want to hook actions on it
@@ -216,7 +224,21 @@ const page__getPageFeedbackForm = () => {
                         // onFormSubmitted callback
                         // can do some processing after the form is submitted with success
                         ($form, data) => {
-                            // ... do something after the form is submitted. $form element and submitted data are available
+                            // translating the message shown after submission
+                            const iframeDocument = $form[0].ownerDocument;
+                            $(iframeDocument)
+                                    .find('div.submitted-message')
+                                    .find('p').first()
+                                    .css('visibility', 'hidden');
+                            setTimeout(()=>{
+                                $(iframeDocument)
+                                    .find('div.submitted-message')
+                                    .find('p').first()
+                                    .attr('data-i18n', 'hs_feedback_form_message_after_submission')
+                                    .text(i18next.t('hs_feedback_form_message_after_submission'))
+                                    .css('visibility', 'visible');
+                            },0);
+
                         },
 
                         // onBeforeFormInit callback
@@ -254,10 +276,13 @@ const feedbackFormCSSCorrection = ($form) => {
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-info.html
-const page__getPageInfo = () => {
-
+const page__getPageInfo = async () => {
+    await new Promise((resolve) => i18next.on('initialized', resolve));
+    
     const pageSiteInfoBadges = (page) => {
         if (page.siteInfo === 'none') return '';
+
+        const translatedSiteTags = i18next.t('page_page_info_badge_has_site_tags_title', { title: page.siteInfo.title });
         let siteInfoBadges = '';
         
         if (page.siteInfo.tags.length > 0 ) 
@@ -265,9 +290,9 @@ const page__getPageInfo = () => {
                 `
                     <span
                         siteFunction="pageHasSiteTagsBadge"
-                        title = "Page ${page.siteInfo.title} has site tags" 
+                        title = "${translatedSiteTags}" 
                         class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer">
-                        Tags
+                        ${i18next.t('page_page_info_tags')}
                     </span>
                 `;
     

@@ -126,10 +126,10 @@ multilang:
     i18Backend: "https://cdn.jsdelivr.net/npm/i18next-http-backend@3.0.1/i18nextHttpBackend.min.js"
     i18JQuery: "https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"
   availableLang: 
-    - lang: "en" # ISO639 codes must be used / to be checked against hs_language Contact prop too if HS forms are used
+    - lang: "en" # ISO639-1 codes must be used / to be checked against Preferred Language(hs_language) Contact prop too if HS forms are used
       name: "English"
-    - lang: "sq"
-      name: "Albanian"
+    - lang: "ro"
+      name: "Romanian"
     - lang: "sr"
       name: "Serbian"
   siteLanguage: 1

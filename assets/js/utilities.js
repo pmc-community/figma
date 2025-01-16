@@ -2623,6 +2623,11 @@ const setSingleFileUploadDropArea = (dropAreaSelector, fileInputSelector, callba
     });
 }
 
+// IMPORTANT!!!
+// WHEN NEED TO TRANSLATE DYNAMIC STRINGS LIKE `this is a ${page_title} with tags`
+// THE i18next.t FUNCTIONS MUST BE USED INSTEAD OF THE REGULAR data-i18n ATTR
+// SEE site-page.js
+// MAY BE ALSO SAFER FOR DYNAMIC CLIENT GENERATED CONTENT
 const doTranslation = (isIFrame = null, iFrame = null) => {
     return new Promise((resolve, reject) => {
         if (!settings.multilang.enabled) return;
@@ -2632,6 +2637,7 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
         i18next
             .use(i18nextHttpBackend) // Use the backend plugin to load translations
             .init(
+                
                 {
                     lng: siteLanguage.lang, // Default language
                     fallbackLng: fallbackLanguage.lang, // Fallback language
@@ -2639,6 +2645,18 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
                     backend: {
                         loadPath: `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage.lang}.json`,
                     },
+                    interpolation: {
+                        escapeValue: false, // Required for using HTML or nested keys
+                        nestingPrefix: '{{', // Define the nesting syntax
+                        nestingSuffix: '}}',
+                        interpolate: function(value, format, options) {
+                            // Implement your own interpolation logic here
+                            // Recursively handle nested keys
+                            return value.replace(/\{\{(.*?)\}\}/g, function(match, key) {
+                              return options.resource[key] || ''; 
+                            });
+                      },
+                    }
                 },
                 function (err, t) {
                     if (err) {

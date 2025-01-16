@@ -123,7 +123,7 @@ hsIntegrate = {
                                 const iframeDocument = $form[0].ownerDocument;
                                 $(iframeDocument).find('#hsFormLoading').remove();
                                 $(iframeDocument).find('body').show();
-
+                                
                                 if(callbackOnFormSubmitted) callbackOnFormSubmitted($form, data);
                             }
                             catch (e) {
