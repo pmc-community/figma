@@ -456,9 +456,10 @@ const page__getPageInfo = () => {
                         sitefunction="pageFullInfoPageGeneralSimilarPages" 
                         class="mt-2 mb-4 d-md-flex">
                         <span 
+                            data-i18n="[title]page_info_similar_pages_title;page_info_similar_pages_text"
                             class="fw-medium align-self-center" 
-                            title="Similar pages based on content"> 
-                            Similar: 
+                            title="${i18next.t('page_info_similar_pages_title')}"> 
+                            <span data-i18n="page_info_similar_pages_text">${i18next.t('page_info_similar_pages_text')}</span>: 
                         </span>
                         <span 
                             sitefunction="pageFullInfoPageGeneralSimilarPagesText"

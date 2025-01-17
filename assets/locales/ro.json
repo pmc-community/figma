@@ -34,7 +34,6 @@
           }
     },
 
-
     "home_page_intro_section_buttons_sections": "Sectiuni",
     "home_page_intro_section_buttons_quickstart": "{{common.start}}",
     "home_page_intro_section_buttons_statistics": "Statistici",
@@ -115,6 +114,9 @@
     "page_page_info_support_btn": "Suport",
     "page_page_info_support_btn_title": "Mergi la sectiunea Feedback si Suport",
     "page_page_info_doc_info_btn_title": "Vezi informatii detaliate despre document",
+    "page_info_similar_pages_title": "Documente similare pe baza continutului",
+    "page_info_similar_pages_text": "Similare",
+    
     "page_toc_toc_title": "Cuprins",
     "page_tags_section_title": "{{common.tags}}",
     "page_notes_section_title": "Note",
