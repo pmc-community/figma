@@ -1,13 +1,6 @@
 // FUNCTIONS FOR EACH PAGE
 // called from _includes/siteIncludes/partials/page-common/page-auto-summary.html
 
-// IMPORTANT!!!
-// FOR CLIENT GENERATED DYNAMIC CONTENT, TRANSLATIONS ARE IMPLEMENTED WITH i18next.t FUNCTION
-// WE DO NOT USE data-i18n ATTRIBUTE
-// THE REASON IS THAT WE NEED TO USE INTERPOLATION TO TRANSLATE SOME title ATTRIBUTES WHICH MEANS
-// THAT WE NEED TO CALL i18next.t AFTER BEING SURE THAT i18nexT IS INITIALIZED
-// AND THIS TRANSFORMS SOME FUNCTIONS IN async FUNCTIONS, THUS data-i18n MAY NOT WORK PROPERLY ANYMORE
-
 const page__getAutoSummary = () => {
 
     // defined as window.func because we want to hook actions on it
@@ -81,7 +74,7 @@ const page__getRelatedPages = () => {
                     id="pageRelatedPages" 
                     siteFunction="pageRelatedPages">
                     <span class="fs-6 fw-medium">
-                        Related:
+                        <span data-i18n="page_related_section_title">${i18next.t('page_related_section_title')}</span>:
                     </span>
                     <div siteFunction="pageRelatedPagesContainer">
                         <div
@@ -113,10 +106,17 @@ const page__getPageNotes = () => {
                     <div 
                         class="align-top mb-2 border-0 border-bottom rounded-0 border-secondary border-opacity-25" 
                         style="width: fit-content">
-                        <span class="text-primary">${note.date}</span>
+                        <span 
+                            class="text-primary ${settings.multilang.dateFieldClass}"
+                            data-i18n="[text]formatted_date"
+                            data-original-date="${note.date}">
+                            ${note.date}
+                        </span>
                     </div>
                     <div class="align-top">
-                        <p class="text-secondary">${note.note}</p>
+                        <p class="text-secondary">
+                            ${note.note}
+                        </p>
                     </div>
                 </div>
             `
@@ -137,7 +137,7 @@ const page__getPageNotes = () => {
                     siteFunction="pageNotes" 
                     class="mb-4">
                     <span class="fs-6 fw-medium">
-                        Notes:
+                        <span data-i18n="page_notes_section_title">${i18next.t('page_notes_section_title')}</span>:
                     </span>
                     <div siteFunction="pageNotesContainer">
                         <div
@@ -276,13 +276,16 @@ const feedbackFormCSSCorrection = ($form) => {
 }
 
 // called from _includes/siteIncludes/partials/page-common/page-info.html
-const page__getPageInfo = async () => {
-    await new Promise((resolve) => i18next.on('initialized', resolve));
-    
+
+/*
+ * IMPORTANT!!!
+ * Both data-i18n attribute and i18next.t functions must be used inside page__getPageInfo function
+ * - data-i18n attribute will tranlsate first displaty when page loads bay calling doTranslation() from utilities.js
+ * - i18next.t will translate when closing ofcanvas and refreshing info
+*/ 
+const page__getPageInfo = () => {
     const pageSiteInfoBadges = (page) => {
         if (page.siteInfo === 'none') return '';
-
-        const translatedSiteTags = i18next.t('page_page_info_badge_has_site_tags_title', { title: page.siteInfo.title });
         let siteInfoBadges = '';
         
         if (page.siteInfo.tags.length > 0 ) 
@@ -290,31 +293,35 @@ const page__getPageInfo = async () => {
                 `
                     <span
                         siteFunction="pageHasSiteTagsBadge"
-                        title = "${translatedSiteTags}" 
-                        class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer">
+                        title = "${i18next.t('page_page_info_badge_has_site_tags_title')}" 
+                        class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer"
+                        data-i18n="[title]page_page_info_badge_has_site_tags_title;page_page_info_tags"
+                        data-i18n-options='{"title":"123"}'>
                         ${i18next.t('page_page_info_tags')}
                     </span>
                 `;
-    
+
         if (page.siteInfo.relatedPages.length > 0 ) 
             siteInfoBadges += 
                 `
                     <span
                         siteFunction="pageHasRelatedPagesBadge"
-                        title = "Page ${page.siteInfo.title} has related pages" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger alwaysCursorPointer">
-                        Related
+                        title = "${i18next.t('page_page_info_badge_has_related_title')}" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger alwaysCursorPointer"
+                        data-i18n="[title]page_page_info_badge_has_related_title;page_page_info_related">
+                        ${i18next.t('page_page_info_related')}
                     </span>
                 `;
         
-        if (page.siteInfo.autoSummary !== '' ) 
+        if (page.siteInfo.autoSummary !== '' )
             siteInfoBadges += 
                 `
                     <span
                         siteFunction="pageHasAutoSummaryBadge"
-                        title = "Page ${page.siteInfo.title} has auto generated summary" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark alwaysCursorPointer">
-                        Summary
+                        title = "${i18next.t('page_page_info_badge_has_summary_title')}"
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark alwaysCursorPointer"
+                        data-i18n="[title]page_page_info_badge_has_summary_title;page_page_info_summary">
+                        ${i18next.t('page_page_info_summary')}
                     </span>
                 `;
         
@@ -326,15 +333,16 @@ const page__getPageInfo = async () => {
     const pageSavedInfoBadges = (page) => {
         if (page.savedInfo === 'none') return '';
         let savedInfoBadges = '';
-    
-        if (page.savedInfo.customTags.length > 0 ) 
+        
+        if (page.savedInfo.customTags.length > 0 )
             savedInfoBadges += 
                 `
                     <span
                         siteFunction="pageHasCustomTagsBadge"
-                        title = "Page ${page.siteInfo.title} has custom tags" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success alwaysCursorPointer">
-                        Tags
+                        title = "${i18next.t('page_page_info_badge_has_custom_tags_title')}" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success alwaysCursorPointer"
+                        data-i18n="[title]page_page_info_badge_has_custom_tags_title;page_page_info_tags">
+                        ${i18next.t('page_page_info_tags')}
                     </span>
                 `;
         
@@ -343,9 +351,10 @@ const page__getPageInfo = async () => {
                 `
                     <span
                         siteFunction="pageHasCustomCategoriesBadge"
-                        title = "Page ${page.siteInfo.title} has custom categories" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success">
-                        Categories
+                        title="${i18next.t('page_page_info_badge_has_custom_cats_title')}" 
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
+                        data-i18n="[title]page_page_info_badge_has_custom_cats_title;page_page_info_cats">
+                        ${i18next.t('page_page_info_cats')}
                     </span>
                 `;
         
@@ -354,9 +363,10 @@ const page__getPageInfo = async () => {
                 `
                     <span
                         siteFunction="pageHasCustomNotesBadge"
-                        title = "Page ${page.siteInfo.title} has custom notes" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning alwaysCursorPointer">
-                        Notes
+                        title="${i18next.t('page_page_info_badge_has_custom_notes_title')}"
+                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning alwaysCursorPointer"
+                        data-i18n="[title]page_page_info_badge_has_custom_notes_title;page_page_info_notes">
+                        ${i18next.t('page_page_info_notes')}
                     </span>
                 `;
     
@@ -480,7 +490,12 @@ const page__getPageInfo = async () => {
                     <div class="d-md-flex align-items-center justify-content-between mb-2 mb-md-0">
                         <div class="fw-medium fs-2 mb-2 mt-2">${page.siteInfo.title}</div>
                         <div class="badge fs-6 fw-light text-secondary border border-secondary border-opacity-25 shadow-none">
-                            ${page.siteInfo.readingTime} min. read
+                            ${page.siteInfo.readingTime} 
+                            <span 
+                                class="fw-light text-secondary"
+                                data-i18n="page_page_info_read_time_text">
+                                ${i18next.t('page_page_info_read_time_text')}
+                            </span>    
                         </div>
                     </div>
                     <div class="mb-4">${page.siteInfo.excerpt}</div>
@@ -488,7 +503,17 @@ const page__getPageInfo = async () => {
                         <div>
                             <div class="d-md-flex align-items-center">
                                 <div class="badge rounded-pill text-bg-secondary px-3 py-2 fw-medium mb-2 mb-md-0">
-                                    Last update: ${formatDate(page.siteInfo.lastUpdate)}
+                                    <span
+                                        class="text-bg-secondary fw-medium"
+                                        data-i18n="page_page_info_last_update_badge_text">
+                                        ${i18next.t('page_page_info_last_update_badge_text')}
+                                    </span>: 
+                                    <span
+                                        class=" ${settings.multilang.dateFieldClass}"
+                                        data-i18n="[text]formatted_date"
+                                        data-original-date="${formatDate(page.siteInfo.lastUpdate)}">
+                                        ${formatDate(page.siteInfo.lastUpdate)}
+                                    </span>
                                 </div>
                                 <div class="d-md-flex">
                                     ${pageSavedInfoBadges(page)}
@@ -502,15 +527,17 @@ const page__getPageInfo = async () => {
                                 sitefunction="pageShowPageFullInfo" 
                                 type="button" 
                                 class="btn btn-sm btn-primary position-relative m-1" 
-                                title="Details for page ${page.siteInfo.title}">
-                                Doc info
+                                title="${i18next.t('page_page_info_doc_info_btn_title')}"
+                                data-i18n="[title]page_page_info_doc_info_btn_title;page_page_info_doc_info_btn">
+                                ${i18next.t('page_page_info_doc_info_btn')}
                             </button>
                             <button 
                                 sitefunction="pageNavigateToFeedbackAndSupport" 
                                 type="button" 
                                 class="btn btn-sm btn-success position-relative m-1" 
-                                title="Go to feedback and support section for page ${page.siteInfo.title}">
-                                Support
+                                title="${i18next.t('page_page_info_support_btn_title')}"
+                                data-i18n="[title]page_page_info_support_btn_title;page_page_info_support_btn">
+                                ${i18next.t('page_page_info_support_btn')}
                             </button>
                         </div>
                     </div>
@@ -524,7 +551,7 @@ const page__getPageInfo = async () => {
     $(document).ready(function() {
         
         if (pageInfo.siteInfo === 'none') return;
-        
+
         // adding pageInfo section 
         // and preventing document to scroll when #pageLastUpdateAndPageInfo is removed and replaced 
         prependFirstSectionWithNoScroll(
@@ -539,7 +566,6 @@ const page__getPageInfo = async () => {
                 showPageFullInfoCanvas(pageInfo);
             });
         setPageButtonsFunctions();
-
         // since this function is the first one executed on page
         // we take the opportunity to set some observers
         setTriggerReorderSectionsInFooter();
@@ -872,7 +898,7 @@ const page__showPageCustomTags = () => {
                     <span 
                         siteFunction="pageTagsContainer" 
                         class="mr-5 fs-6 fw-medium">
-                        Tags:
+                        <span data-i18n="page_tags_section_title">Tags</span>:
                     </span>
                 </div>
             `
@@ -937,7 +963,11 @@ const refreshPageDynamicInfo = () => {
         page__getPageNotes();
         page__getRelatedPages();
         page__getAutoSummary();
-        setTimeout(()=>$('div[siteFunction="pageFeedbackAndSupport"]').addClass('order'), 0); 
+        
+        setTimeout(()=>{
+            doTranslateDateFields();
+            $('div[siteFunction="pageFeedbackAndSupport"]').addClass('order');
+        }, 0); 
     });
 }
 

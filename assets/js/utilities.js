@@ -2089,10 +2089,12 @@ const iframe__addI18ToIFrames = ($elementInsideIFrame) => {
     const i18next = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18}"></script>`;
     const i18HttpBackend = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18Backend}"></script>`;
     const i18JQuery = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18JQuery}"></script>`;
+    const i18Jsprintf = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18Sprintf}"></script>`;
     $($iframeHead)
         .append(i18next)
         .append(i18HttpBackend)
-        .append(i18JQuery);
+        .append(i18JQuery)
+        .append(i18Jsprintf);
     
     const check = '<script>console.log(i18next)</script>'
     $($iframeBody).append(check)
@@ -2623,11 +2625,6 @@ const setSingleFileUploadDropArea = (dropAreaSelector, fileInputSelector, callba
     });
 }
 
-// IMPORTANT!!!
-// WHEN NEED TO TRANSLATE DYNAMIC STRINGS LIKE `this is a ${page_title} with tags`
-// THE i18next.t FUNCTIONS MUST BE USED INSTEAD OF THE REGULAR data-i18n ATTR
-// SEE site-page.js
-// MAY BE ALSO SAFER FOR DYNAMIC CLIENT GENERATED CONTENT
 const doTranslation = (isIFrame = null, iFrame = null) => {
     return new Promise((resolve, reject) => {
         if (!settings.multilang.enabled) return;
@@ -2636,6 +2633,7 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
 
         i18next
             .use(i18nextHttpBackend) // Use the backend plugin to load translations
+            .use(i18nextSprintfPostProcessor)
             .init(
                 
                 {
@@ -2649,13 +2647,6 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
                         escapeValue: false, // Required for using HTML or nested keys
                         nestingPrefix: '{{', // Define the nesting syntax
                         nestingSuffix: '}}',
-                        interpolate: function(value, format, options) {
-                            // Implement your own interpolation logic here
-                            // Recursively handle nested keys
-                            return value.replace(/\{\{(.*?)\}\}/g, function(match, key) {
-                              return options.resource[key] || ''; 
-                            });
-                      },
                     }
                 },
                 function (err, t) {
@@ -2677,12 +2668,26 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
                     else {
                         $(iFrame).localize();
                     }
+
+                    // translate date fields since is not straight forward and cannot use .localize()
+                    doTranslateDateFields();
             
-                }
+                },              
             );
         
         setTimeout(() => {
             resolve();
         }, settings.multilang.timeout); 
+    });
+}
+
+const doTranslateDateFields = () => {
+    $(`.${settings.multilang.dateFieldClass}`).each(function () {
+        const $this = $(this);
+        const originalDate = $this.data('original-date');          
+        const [day, month, year] = originalDate.split('-');
+        const translatedMonth = i18next.t(`common.months.${month}`, { defaultValue: month });           
+        const translatedDate = `${day}-${translatedMonth}-${year}`;
+        $this.text(translatedDate);
     });
 }

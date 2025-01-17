@@ -142,7 +142,9 @@ hsFeedbackForm = {
                         class="fs-5 bi bi-hand-thumbs-up me-2" 
                         style="width: 20px; cursor: pointer;">
                     </i>
-                    <span data-i18n="hs_feedback_form_yes_label">
+                    <span
+                        class="text-light" 
+                        data-i18n="hs_feedback_form_yes_label">
                         Yes
                     </span>
                 </span>
@@ -157,7 +159,9 @@ hsFeedbackForm = {
                         class="fs-5 bi bi-hand-thumbs-down me-2" 
                         style="width: 20px; cursor: pointer;">
                     </i>
-                    <span data-i18n="hs_feedback_form_no_label">
+                    <span
+                        class="text-light" 
+                        data-i18n="hs_feedback_form_no_label">
                         No
                     </span>
                 </span>

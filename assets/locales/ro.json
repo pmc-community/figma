@@ -1,8 +1,9 @@
 {
     "common" :{
-        "tags": "Taguri",
-        "tags_s": "taguri",
+        "tags": "Etichete",
+        "tags_s": "etichete",
         "cats": "Categorii",
+        "cats_s": "categorii",
         "yes": "Da",
         "no": "Nu",
         "start": "Start",
@@ -16,7 +17,21 @@
         "site_def": "Fixe",
         "site_def_s": "fixe",
         "popular": "populare",
-        "reading_s": "citire"
+        "reading_s": "citire",
+        "months": {
+            "Jan": "Ian",
+            "Feb": "Feb",
+            "Mar": "Mar",
+            "Apr": "Apr",
+            "May": "Mai",
+            "Jun": "Iun",
+            "Jul": "Iul",
+            "Aug": "Aug",
+            "Sep": "Sep",
+            "Oct": "Oct",
+            "Nov": "Noi",
+            "Dec": "Dec"
+          }
     },
 
 
@@ -84,6 +99,24 @@
     "hs_feedback_form_message_after_submission": "Multumim pentru feedback! 👍",
 
     "page_page_info_tags": "{{common.tags}}",
-    "page_page_info_badge_has_custom_tags_title": "Documentul {{title}} are {{common.tags_s}} {{common.custom_s}}",
-    "page_page_info_badge_has_site_tags_title": "Documentul {{title}} are {{common.tags_s}} {{common.site_def_s}}"
+    "page_page_info_badge_has_custom_tags_title": "Documentul are {{common.tags_s}} {{common.custom_s}}",
+    "page_page_info_badge_has_site_tags_title": "Documentul are {{common.tags_s}} {{common.site_def_s}}",
+    "page_page_info_badge_has_related_title": "Documentul are documente conexe",
+    "page_page_info_related": "Conexe",
+    "page_page_info_badge_has_summary_title": "Documentul are sumar generat automat",
+    "page_page_info_summary": "Sumar",
+    "page_page_info_badge_has_custom_cats_title":"Documentul are {{common.cats_s}} {{common.custom_s}}",
+    "page_page_info_cats": "Categorii",
+    "page_page_info_badge_has_custom_notes_title":"Documentul are note atasate",
+    "page_page_info_notes": "Note",
+    "page_page_info_read_time_text": "min.",
+    "page_page_info_last_update_badge_text": "Actualizat",
+    "page_page_info_doc_info_btn": "Detalii",
+    "page_page_info_support_btn": "Suport",
+    "page_page_info_support_btn_title": "Mergi la sectiunea Feedback si Suport",
+    "page_page_info_doc_info_btn_title": "Vezi informatii detaliate despre document",
+    "page_toc_toc_title": "Cuprins",
+    "page_tags_section_title": "{{common.tags}}",
+    "page_notes_section_title": "Note",
+    "page_related_section_title": "Conexe"
 }

@@ -1,7 +1,21 @@
 {
     "common" :{
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "months": {
+            "Jan": "Jan",
+            "Feb": "Feb",
+            "Mar": "Mar",
+            "Apr": "Apr",
+            "May": "May",
+            "Jun": "Jun",
+            "Jul": "Jul",
+            "Aug": "Aug",
+            "Sep": "Sep",
+            "Oct": "Oct",
+            "Nov": "Nov",
+            "Dec": "Dec"
+          }
     },
 
     "home_page_intro_section_buttons_sections": "Sections",
@@ -68,6 +82,24 @@
     "hs_feedback_form_message_after_submission": "Thanks for the feedback! 👍",
 
     "page_page_info_tags": "Tags",
-    "page_page_info_badge_has_custom_tags_title": "Document {{title}} has custom tags",
-    "page_page_info_badge_has_site_tags_title": "Document {{title}} has site tags"
+    "page_page_info_badge_has_custom_tags_title": "Document has custom tags",
+    "page_page_info_badge_has_site_tags_title": "Document {{title}}has site tags",
+    "page_page_info_badge_has_related_title": "Document has related documents",
+    "page_page_info_related": "Related",
+    "page_page_info_badge_has_summary_title": "Document has auto generated summary",
+    "page_page_info_summary": "Summary",
+    "page_page_info_badge_has_custom_cats_title":"Document has custom categories",
+    "page_page_info_cats": "Categories",
+    "page_page_info_badge_has_custom_notes_title":"Document has custom notes",
+    "page_page_info_notes": "Notes",
+    "page_page_info_read_time_text": "min. read",
+    "page_page_info_last_update_badge_text": "Last update",
+    "page_page_info_doc_info_btn": "Doc Info",
+    "page_page_info_support_btn": "Support",
+    "page_page_info_support_btn_title": "Go to Feedback&Support section for this document",
+    "page_page_info_doc_info_btn_title": "See document detailed information",
+    "page_toc_toc_title": "On this page",
+    "page_tags_section_title": "Tags",
+    "page_notes_section_title": "Notes",
+    "page_related_section_title": "Related"
 }

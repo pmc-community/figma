@@ -163,7 +163,8 @@
       "scripts": {
         "i18": "https://cdn.jsdelivr.net/npm/i18next@24.2.1/i18next.min.js",
         "i18Backend": "https://cdn.jsdelivr.net/npm/i18next-http-backend@3.0.1/i18nextHttpBackend.min.js",
-        "i18JQuery": "https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js"
+        "i18JQuery": "https://cdn.jsdelivr.net/npm/jquery-i18next@1.2.1/jquery-i18next.min.js",
+        "i18Sprintf": "https://cdn.jsdelivr.net/npm/i18next-sprintf-postprocessor@0.2.2/dist/umd/i18nextSprintfPostProcessor.min.js"
       },
       "availableLang": [
         {
@@ -172,7 +173,7 @@
         },
         {
           "lang": "ro",
-          "name": "Romanian"
+          "name": "Româna"
         },
         {
           "lang": "sr",
@@ -183,7 +184,8 @@
       "fallbackLang": 0,
       "needsTranslation": [
         "body"
-      ]
+      ],
+      "dateFieldClass": "DSTcustomDateField"
     },
     "siteTitle": "Figma Resources"
   },
