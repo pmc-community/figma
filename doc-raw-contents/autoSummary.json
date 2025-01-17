@@ -14,15 +14,15 @@
         },
         {
             "permalink": "/collection-1/g11/",
-            "summary": "g11 how it works the accordion uses internally to make it collapsible. click the accordions below to expand/collapse accord ..."
+            "summary": "g11 how it works the accordion uses (internally) to make it collapsible. click the accordions below to expand ..."
         },
         {
             "permalink": "/intro/",
-            "summary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bon ..."
+            "summary": "lorem ipsum is a piece of classical latin literature from 45 bc. it has roots in a piece of classical ..."
         },
         {
             "permalink": "collection-2/X/x/",
-            "summary": "own markdown content. this the content directly typed in collection-2/x. this is one good inline external link to https://pmc ..."
+            "summary": "ok good swedish fish nice. out of stock good and plenty nice. ok good zoute drop yumm ..."
         },
         {
             "permalink": "/ec/",
@@ -38,7 +38,7 @@
         },
         {
             "permalink": "/collection-1/g1/",
-            "summary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ..."
+            "summary": "lorem ipsum is a piece of classical latin literature from 45 bc. it has roots in a piece of classical literature ..."
         },
         {
             "permalink": "/collection-2/y/y/",
@@ -46,7 +46,7 @@
         },
         {
             "permalink": "/pwc/",
-            "summary": "markdown content direct included in the page. heads up!!!links to other site docs must be given using the permalinks, not the ..."
+            "summary": "markdown content direct included in the pagestableheads up!!!links to other site docs must be given using the permalinks. ..."
         }
     ]
 }

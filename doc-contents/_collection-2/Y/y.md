@@ -24,7 +24,9 @@ adding some img to the file ...
 - IF THE CONTENT OF THIS FILE MUST BE USED IN OTHER FILES AS EXTERNAL CONTENT, THE LINK TO IMAGES MUST BE THE FULL URL USING https:// ....
 - http:// ... IS NOT ALLOWED
 - THIS IS APPLICABLE EVEN WHEN IMAGES ARE TAKEN FROM THE CURRENT JEKYLL SITE, RELATIVE PATHS CANNOT BE USED
+- SOMETIMES THE MD PROCESSOR GETS ERRORS WHEN PARSING {:width="200px"}
 -->
 ![Some Img](https://figmares.innohub.space/assets/img/home-600.webp){:width="200px"}
 
 attibutes of the img tag are provided inside {...}
+
