@@ -18,7 +18,7 @@
         },
         {
             "permalink": "/intro/",
-            "summary": "lorem ipsum is a piece of classical latin literature from 45 bc. it has roots in a piece of classical ..."
+            "summary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of \u201cde finibus bon ..."
         },
         {
             "permalink": "collection-2/X/x/",
@@ -46,7 +46,7 @@
         },
         {
             "permalink": "/pwc/",
-            "summary": "markdown content direct included in the pagestableheads up!!!links to other site docs must be given using the permalinks. ..."
+            "summary": "intepretation for the following text:: markdown content direct included in the pagestableheads up!!!links to other site docs must be ..."
         }
     ]
 }

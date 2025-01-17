@@ -201,9 +201,9 @@
         "t a g 1",
         "tag2"
       ],
-      "excerpt": "lorem ipsum, latin, cicero, sections, malorum, finibus bonorum, latin literature, standard chunk, rackham, english",
-      "lastUpdate": "2025-01-17 22:56:05 +0200",
-      "lastUpdateUTC": 1737147365,
+      "excerpt": "lorem ipsum, latin, sections, cicero, finibus bonorum, malorum, standard chunk, rackham, translation, form",
+      "lastUpdate": "2025-01-17 23:23:45 +0200",
+      "lastUpdateUTC": 1737149025,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
@@ -220,7 +220,7 @@
           "permalink": "/collection-2/y/y/"
         }
       ],
-      "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. it has roots in a piece of classical ...",
+      "autoSummary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of “de finibus bon ...",
       "similarByContent": [
         {
           "permalink": "/intro/introChild/",
@@ -244,9 +244,9 @@
       "tags": [
 
       ],
-      "excerpt": "lorem ipsum, latin, latin literature, line, evil, extremes, malorum, cicero, book, treatise",
-      "lastUpdate": "2025-01-11 18:48:00 +0200",
-      "lastUpdateUTC": 1736614080,
+      "excerpt": "lorem ipsum, latin, latin literature, line, evil, extremes, malorum, cicero, treatise, book",
+      "lastUpdate": "2025-01-18 00:04:57 +0200",
+      "lastUpdateUTC": 1737151497,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
@@ -334,7 +334,7 @@
           "permalink": "/collection-2/y/y/"
         }
       ],
-      "autoSummary": "markdown content direct included in the pagestableheads up!!!links to other site docs must be given using the permalinks. ...",
+      "autoSummary": "intepretation for the following text:: markdown content direct included in the pagestableheads up!!!links to other site docs must be ...",
       "similarByContent": [
 
       ],
@@ -492,12 +492,12 @@
           "permalink": "/intro/introChild/"
         },
         {
-          "title": "Introduction",
-          "permalink": "/intro/"
-        },
-        {
           "title": "Play with content",
           "permalink": "/pwc/"
+        },
+        {
+          "title": "Introduction",
+          "permalink": "/intro/"
         }
       ],
       "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ...",

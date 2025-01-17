@@ -30,6 +30,8 @@ threadMultiplicator = get_key_value_from_yml(build_settings_path, 'pySimilarPage
 max_files_per_batch = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['files_batch']
 similarity_threshold = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['similarity_threshold']
 model_url = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['model_url']
+print(model_url)
+
 max_files_per_chunk = get_key_value_from_yml(build_settings_path, 'pySimilarPagesByContent')['chunk_size_in_files_batch']
 
 def load_text_files(files_to_be_processed, max_files_per_batch=max_files_per_batch): # files_batch
@@ -155,6 +157,7 @@ if __name__ == "__main__":
         
         # Convert the dictionary back to a list
         updated_data = list(existing_data_dict.values())
+        print(updated_data)
             
         with open(output_file_path, 'w') as f:
             json.dump(updated_data, f, indent=4)

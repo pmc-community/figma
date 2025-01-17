@@ -40,7 +40,7 @@ pySimilarPagesByContent:
   similarity_threshold: 0.75
   files_batch: 100
   chunk_size_in_files_batch: 100
-  threadMultiplicator: 4
+  threadMultiplicator: 1
   model_url: "https://tfhub.dev/google/universal-sentence-encoder/4"
 pageKeywords:
   enable: true
