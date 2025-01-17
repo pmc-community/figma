@@ -212,12 +212,12 @@
           "permalink": "/pwc/"
         },
         {
-          "title": "Intro Child Page",
-          "permalink": "/intro/introChild/"
-        },
-        {
           "title": "Collection-2/Y",
           "permalink": "/collection-2/y/y/"
+        },
+        {
+          "title": "Collection-1/G1",
+          "permalink": "/collection-1/g1/"
         }
       ],
       "autoSummary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of “de finibus bon ...",
@@ -244,23 +244,15 @@
       "tags": [
 
       ],
-      "excerpt": "lorem ipsum, latin, latin literature, line, evil, extremes, malorum, cicero, treatise, book",
-      "lastUpdate": "2025-01-18 00:04:57 +0200",
-      "lastUpdateUTC": 1737151497,
+      "excerpt": "lorem ipsum, text, model, latin, tasks, word, encoder model, variety, encoder, length",
+      "lastUpdate": "2025-01-18 00:08:06 +0200",
+      "lastUpdateUTC": 1737151686,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
           "title": "Collection-2/Y",
           "permalink": "/collection-2/y/y/"
-        },
-        {
-          "title": "Introduction",
-          "permalink": "/intro/"
-        },
-        {
-          "title": "Play with content",
-          "permalink": "/pwc/"
         }
       ],
       "autoSummary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of “de finibus bon ...",
@@ -274,7 +266,7 @@
           "title": "Introduction"
         }
       ],
-      "readingTime": 1,
+      "readingTime": 2,
       "hasDynamicContent": false,
       "parent": "Introduction"
     },
@@ -488,16 +480,16 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Intro Child Page",
-          "permalink": "/intro/introChild/"
-        },
-        {
           "title": "Play with content",
           "permalink": "/pwc/"
         },
         {
           "title": "Introduction",
           "permalink": "/intro/"
+        },
+        {
+          "title": "Intro Child Page",
+          "permalink": "/intro/introChild/"
         }
       ],
       "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ...",
