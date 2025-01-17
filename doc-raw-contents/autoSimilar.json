@@ -2,15 +2,20 @@
     {
         "permalink": "/intro/",
         "similarFiles": [
+            "/collection-2/y/y/",
+            "/pwc/",
+            "/collection-1/g1/",
             "/intro/introChild/",
-            "/collection-2/y/y/"
+            "/sf/f1/"
         ]
     },
     {
         "permalink": "/intro/introChild/",
         "similarFiles": [
             "/collection-2/y/y/",
-            "/intro/"
+            "/collection-1/g1/",
+            "/intro/",
+            "/pwc/"
         ]
     },
     {
@@ -19,7 +24,12 @@
     },
     {
         "permalink": "/pwc/",
-        "similarFiles": []
+        "similarFiles": [
+            "/collection-2/y/y/",
+            "/intro/",
+            "/collection-1/g1/",
+            "/intro/introChild/"
+        ]
     },
     {
         "permalink": "/ec/",
@@ -27,11 +37,19 @@
     },
     {
         "permalink": "/terms/",
-        "similarFiles": []
+        "similarFiles": [
+            "/sf/f1/"
+        ]
     },
     {
         "permalink": "/collection-1/g1/",
-        "similarFiles": []
+        "similarFiles": [
+            "/collection-2/y/y/",
+            "/sf/f1/",
+            "/intro/introChild/",
+            "/intro/",
+            "/pwc/"
+        ]
     },
     {
         "permalink": "/collection-1/g11/",
@@ -40,20 +58,32 @@
     {
         "permalink": "/collection-2/y/y/",
         "similarFiles": [
+            "/intro/",
             "/intro/introChild/",
-            "/intro/"
+            "/collection-1/g1/",
+            "/pwc/",
+            "/sf/f1/"
         ]
     },
     {
         "permalink": "/collection-2/Z/z/",
-        "similarFiles": []
+        "similarFiles": [
+            "collection-2/X/x/"
+        ]
     },
     {
         "permalink": "collection-2/X/x/",
-        "similarFiles": []
+        "similarFiles": [
+            "/collection-2/Z/z/"
+        ]
     },
     {
         "permalink": "/sf/f1/",
-        "similarFiles": []
+        "similarFiles": [
+            "/collection-1/g1/",
+            "/collection-2/y/y/",
+            "/terms/",
+            "/intro/"
+        ]
     }
 ]

@@ -1,17 +1,33 @@
 {
   "keywords": [
     {
-      "permalink": "/collection-2/Z/z/",
+      "permalink": "/intro/",
       "keywords": [
-        "file",
-        "file loads",
-        "inline",
-        "place",
-        "repo",
+        "lorem ipsum",
+        "latin",
+        "sections",
+        "cicero",
+        "finibus bonorum",
+        "malorum",
+        "standard chunk",
+        "rackham",
+        "translation",
+        "form"
+      ]
+    },
+    {
+      "permalink": "/terms/",
+      "keywords": [
+        "services",
+        "space services",
+        "software",
+        "innohub",
+        "terms",
+        "service",
+        "website",
         "content",
-        "link",
-        "collection",
-        "folder"
+        "user",
+        "property"
       ]
     },
     {
@@ -30,33 +46,17 @@
       ]
     },
     {
-      "permalink": "/collection-2/y/y/",
+      "permalink": "/collection-2/Z/z/",
       "keywords": [
-        "lorem ipsum",
-        "latin",
-        "latin literature",
-        "line",
         "file",
-        "extremes",
-        "evil",
-        "malorum",
-        "cicero",
-        "book"
-      ]
-    },
-    {
-      "permalink": "/intro/introChild/",
-      "keywords": [
-        "lorem ipsum",
-        "text",
-        "model",
-        "latin",
-        "tasks",
-        "word",
-        "encoder model",
-        "variety",
-        "encoder",
-        "length"
+        "file loads",
+        "inline",
+        "place",
+        "repo",
+        "content",
+        "link",
+        "collection",
+        "folder"
       ]
     },
     {
@@ -90,9 +90,18 @@
       ]
     },
     {
-      "permalink": "/intro/introChild/introGrandChild/",
+      "permalink": "/collection-2/y/y/",
       "keywords": [
-        "child page"
+        "lorem ipsum",
+        "latin",
+        "latin literature",
+        "line",
+        "file",
+        "extremes",
+        "evil",
+        "malorum",
+        "cicero",
+        "book"
       ]
     },
     {
@@ -111,33 +120,33 @@
       ]
     },
     {
-      "permalink": "/intro/",
+      "permalink": "/intro/introChild/",
       "keywords": [
         "lorem ipsum",
+        "text",
+        "model",
         "latin",
-        "sections",
-        "cicero",
-        "finibus bonorum",
-        "malorum",
-        "standard chunk",
-        "rackham",
-        "translation",
-        "form"
+        "encoder model",
+        "tasks",
+        "word",
+        "encoder",
+        "variety",
+        "length"
       ]
     },
     {
-      "permalink": "/terms/",
+      "permalink": "/intro/introChild/introGrandChild/",
       "keywords": [
-        "services",
-        "space services",
-        "software",
-        "innohub",
-        "terms",
-        "service",
-        "website",
-        "content",
-        "user",
-        "property"
+        "lorem ipsum",
+        "text",
+        "model",
+        "encoder model",
+        "encoder",
+        "latin",
+        "tasks",
+        "word",
+        "variety",
+        "length"
       ]
     }
   ]
