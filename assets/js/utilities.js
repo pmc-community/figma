@@ -667,7 +667,10 @@ const setDataTable = (
         );
     }; // should be defined here because is used in defaultSettings object (defaultSettings.language.searchPanes)
 
-    const siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage];
+    const siteLanguage = settings.multilang.enabled
+        ? settings.multilang.availableLang[settings.multilang.siteLanguage].lang
+        : 'en';
+
     const defaultSettings = {
         serverSide: false,
         paging: true,
@@ -700,7 +703,7 @@ const setDataTable = (
                 clearMessage: 'Clear All',
                 collapse: { 0: searchPanesBtnText(), _: searchPanesBtnText()},
             },
-            //url: `${window.location.protocol}//${window.location.host}/assets/locales/dt-${siteLanguage.lang}.json`
+            url: `${window.location.protocol}//${window.location.host}/assets/locales/dt-${siteLanguage}.json`
         },
         
     };
@@ -1059,9 +1062,26 @@ const setDataTable = (
 }
 
 const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnArray) => {
-    btnArray.forEach(btnConfig => {
-        table.button().add(null, btnConfig);
+    
+    const addButtons = (table, btnArray) => {
+        btnArray.forEach(btnConfig => {
+            table.button().add(null, btnConfig);
+        });
+    }
+
+    // buttons must be added on draw event
+    // otherwiswe the draw event when applying internationalization plugin will not add the custom buttons
+    // alternative is to use setTimeout(....) to give time for translation and then add the buttons
+    /*
+    setTimeout(()=>{
+        addButtons(table, btnArray);
+    },500)
+    */
+
+    table.one('draw.dt', function () {
+        addButtons(table, btnArray);
     });
+    
     applyColorSchemaCorrections();
 }
 
@@ -2629,8 +2649,10 @@ const setSingleFileUploadDropArea = (dropAreaSelector, fileInputSelector, callba
 
 const doTranslation = (isIFrame = null, iFrame = null) => {
     return new Promise((resolve, reject) => {
-        if (!settings.multilang.enabled) return;
-        const siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage];
+        let siteLanguage;
+        if (!settings.multilang.enabled) siteLanguage = 'en';
+        else siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage];
+
         const fallbackLanguage = settings.multilang.availableLang[settings.multilang.fallbackLang];
 
         i18next
@@ -2639,11 +2661,13 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
             .init(
                 
                 {
-                    lng: siteLanguage.lang, // Default language
+                    lng: siteLanguage === 'en' ? siteLanguage : siteLanguage.lang, // Default language
                     fallbackLng: fallbackLanguage.lang, // Fallback language
                     debug: false,
                     backend: {
-                        loadPath: `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage.lang}.json`,
+                        loadPath: siteLanguage === 'en' 
+                            ? `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage}.json` 
+                            : `${window.location.protocol}//${window.location.host}/assets/locales/${siteLanguage.lang}.json`,
                     },
                     interpolation: {
                         escapeValue: false, // Required for using HTML or nested keys

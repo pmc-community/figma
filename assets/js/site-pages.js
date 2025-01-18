@@ -932,7 +932,6 @@ sitePagesFn = {
 
     addAdditionalPagesTableButtons: (table) => {
         // post processing table: adding 2 buttons in the bottom2 zone
-
         goToTagBtn = {
            attr: {
                siteFunction: 'tableNavigateToTagsSP',

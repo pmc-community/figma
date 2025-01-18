@@ -196,7 +196,7 @@
         "countFiltered": "{shown} ({total})",
         "emptyPanes": "Fără panouri de căutare",
         "loadMessage": "Ăncarcă panouri de căutare",
-        "title": "Filtre Activ - %d",
+        "title": "Filtre Active - %d",
         "showMessage": "Arată toate",
         "collapseMessage": "Închide toate"
     },
