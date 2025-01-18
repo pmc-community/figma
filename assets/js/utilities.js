@@ -667,6 +667,7 @@ const setDataTable = (
         );
     }; // should be defined here because is used in defaultSettings object (defaultSettings.language.searchPanes)
 
+    const siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage];
     const defaultSettings = {
         serverSide: false,
         paging: true,
@@ -699,6 +700,7 @@ const setDataTable = (
                 clearMessage: 'Clear All',
                 collapse: { 0: searchPanesBtnText(), _: searchPanesBtnText()},
             },
+            //url: `${window.location.protocol}//${window.location.host}/assets/locales/dt-${siteLanguage.lang}.json`
         },
         
     };
