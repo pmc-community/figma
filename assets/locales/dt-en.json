@@ -4,7 +4,7 @@
     "infoEmpty": "Showing 0 to 0 of 0 entries",
     "infoFiltered": "(filtered from _MAX_ total entries)",
     "infoThousands": ",",
-    "lengthMenu": "Show _MENU_ entries",
+    "lengthMenu": "Show _MENU_ ",
     "loadingRecords": "Loading...",
     "processing": "Processing...",
     "search": "Search:",
@@ -120,8 +120,8 @@
     "searchPanes": {
         "clearMessage": "Clear All",
         "collapse": {
-            "0": "SearchPanes",
-            "_": "SearchPanes (%d)"
+            "0": "Filters",
+            "_": "Filters (%d)"
         },
         "count": "{total}",
         "countFiltered": "{shown} ({total})",

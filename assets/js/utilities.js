@@ -624,11 +624,11 @@ const setDataTable = (
             },
             {
                 extend: ['searchPanes'],
-                text: 'Filter', // this is actually set in defaultSettings object .language.searchPanes
                 attr: {
-                    title: 'Advanced filter',
+                    //title: 'Advanced filter',
                     siteFunction: `tableSearchPanes`,
-                    id: `tableSearchPanes_${tableUniqueID}`
+                    id: `tableSearchPanes_${tableUniqueID}`,
+                    "data-i18n": '[title]dt_search_panes_button_title'
                 },
                 className: 'btn-danger btn-sm text-light mb-2 btnSearchPanesFilter',
                 config: {
@@ -650,6 +650,8 @@ const setDataTable = (
             }
         ];
     
+    // not used with dt language plugins
+    /*
     const searchPanesBtnText = () => {
         return (
             `
@@ -660,12 +662,13 @@ const setDataTable = (
                         aria-hidden="true">
                     </span>
                     <span role="status">
-                        Filter
+                        ${i18next.t('')}
                     </span>
                 </div>
             `
         );
     }; // should be defined here because is used in defaultSettings object (defaultSettings.language.searchPanes)
+    */
 
     const siteLanguage = settings.multilang.enabled
         ? settings.multilang.availableLang[settings.multilang.siteLanguage].lang
@@ -700,8 +703,10 @@ const setDataTable = (
         columns: columnsConfig,
         language: {
             searchPanes: {
-                clearMessage: 'Clear All',
-                collapse: { 0: searchPanesBtnText(), _: searchPanesBtnText()},
+                // no need to set the labels since we use dt language plugins
+                // we keep these settings here for reference, just in case
+                //clearMessage: 'Clear All',
+                //collapse: { 0: searchPanesBtnText(), _: searchPanesBtnText()},
             },
             url: `${window.location.protocol}//${window.location.host}/assets/locales/dt-${siteLanguage}.json`
         },
@@ -762,25 +767,29 @@ const setDataTable = (
                     // since we don't use responsive = true for datatables
                     // we need to apply some css corrections because some things may look weird on mobile 
                     if (preFlight.envInfo.device.deviceType === 'mobile') {
-                        // apply corrections to entries per page group
-                        $('.dt-length')
-                            .addClass('d-flex justify-content-between align-items-center')
-                            .find('select').addClass('order-2 mr-0 mr-md-1')
-                            .find('label').addClass('order-1');
+                         // we do this on draw event because of the translation
+                        table.one('draw.dt', function () {
+                            // apply corrections to entries per page group
+                            $('.dt-length')
+                                .addClass('d-flex justify-content-between align-items-center')
+                                .find('select').addClass('order-2 mr-0 mr-md-1')
+                                .find('label').addClass('order-1');
+                            
+                            $('.dt-length').find('label').addClass('text-capitalize fs-6 w-100 d-flex justify-content-between ');
+                    
+                            // apply corrections to search box group
+                            $('.dt-search')
+                                .addClass('d-flex justify-content-between align-items-center')
+                                .find('input').css('width', '50%');
+                            
+                            $('.dt-search').find('label')
+                                    .addClass('fs-6');
+        
+                            $('.dt-info').addClass('text-start fs-6');   
+                        });
+
                         
-                        $('.dt-length').find('label').addClass('text-capitalize fs-6');
-                
-                         // apply corrections to search box group
-                        $('.dt-search')
-                            .addClass('d-flex justify-content-between align-items-center')
-                            .find('input').css('width', '50%');
-                        
-                        $('.dt-search').find('label')
-                                .addClass('fs-6');
-    
-                        $('.dt-info').addClass('text-start fs-6');
-                        
-                    }
+                    };
                 }
             }
 
@@ -2661,6 +2670,10 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
             .init(
                 
                 {
+                    // allow keys to be phrases having `:`, `.`
+                    nsSeparator: false,
+                    keySeparator: false,
+                    
                     lng: siteLanguage === 'en' ? siteLanguage : siteLanguage.lang, // Default language
                     fallbackLng: fallbackLanguage.lang, // Fallback language
                     debug: false,
@@ -2671,7 +2684,7 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
                     },
                     interpolation: {
                         escapeValue: false, // Required for using HTML or nested keys
-                        nestingPrefix: '{{', // Define the nesting syntax
+                        nestingPrefix: '{{', // Define interpolation markers 
                         nestingSuffix: '}}',
                     }
                 },

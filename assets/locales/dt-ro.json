@@ -1,11 +1,11 @@
 {
     "processing": "Procesează...",
-    "lengthMenu": "Afișează _MENU_ înregistrări pe pagină",
+    "lengthMenu": "Afișeaza: _MENU_ ",
     "zeroRecords": "Nu am găsit nimic - ne pare rău",
-    "info": "Afișate de la _START_ la _END_ din _TOTAL_ înregistrări",
+    "info": "Afișate _START_ - _END_ din _TOTAL_",
     "infoEmpty": "Afișate de la 0 la 0 din 0 înregistrări",
-    "infoFiltered": "(filtrate dintr-un total de _MAX_ înregistrări)",
-    "search": "Caută:",
+    "infoFiltered": "(filtrate din _MAX_)",
+    "search": "Cautare:",
     "aria": {
         "sortAscending": "Sortează ascendent",
         "sortDescending": "Sortează descendent"
@@ -189,8 +189,8 @@
     "searchPanes": {
         "clearMessage": "Șterge tot",
         "collapse": {
-            "0": "Panou căutare",
-            "_": "Panou căutare (%d)"
+            "0": "Filtre",
+            "_": "Filtre (%d)"
         },
         "count": "{total}",
         "countFiltered": "{shown} ({total})",

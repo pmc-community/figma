@@ -459,7 +459,7 @@ const page__getPageInfo = () => {
                             data-i18n="[title]page_info_similar_pages_title;page_info_similar_pages_text"
                             class="fw-medium align-self-center mr-md-2"" 
                             title="${i18next.t('page_info_similar_pages_title')}"> 
-                            <span data-i18n="page_info_similar_pages_text">${i18next.t('page_info_similar_pages_text')}</span>: 
+                            <span data-i18n="page_info_similar_pages_text">${i18next.t('page_info_similar_pages_text', { fallbackLng: true })}</span>: 
                         </span>
                         <span 
                             sitefunction="pageFullInfoPageGeneralSimilarPagesText"
