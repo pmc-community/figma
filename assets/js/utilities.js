@@ -2670,9 +2670,6 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
             .init(
                 
                 {
-                    // allow keys to be phrases having `:`, `.`
-                    nsSeparator: false,
-                    keySeparator: false,
                     
                     lng: siteLanguage === 'en' ? siteLanguage : siteLanguage.lang, // Default language
                     fallbackLng: fallbackLanguage.lang, // Fallback language
