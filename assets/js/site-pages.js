@@ -195,7 +195,15 @@ sitePagesFn = {
             $('#site_pages_details').removeClass('d-none');
             sitePagesFn.forceRedrawPagesTable();
             $('div[sitefunction="sitePagesDetails"]').fadeIn();
-        });            
+        }); 
+
+        // change the label of 'Clear' button of Active Filter box if was set to 'Apply' after potential return from offcanvas
+        $('button[sitefunction="sitePagesDetailsClearFilter"]').off('click').click(function() {
+            if($('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text() === 'Apply')
+                $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear');
+        });
+        
+           
     },
     
     // page offcanvas
@@ -219,6 +227,9 @@ sitePagesFn = {
         removeObservers('.offcanvas class=hiding getClass=true');
         setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
             sitePagesFn.bruteRebuildPagesTable();
+            // change the label of 'Clear' button of Active Filter box to 'Apply' after return from offcanvas
+            // since the first click on it after return from offcanvas will re-apply the filter instead of clearing it
+            $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
         });
     },
 
@@ -983,7 +994,7 @@ sitePagesFn = {
     forceRedrawPagesTable: () => {
         setTimeout(()=>{
             const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-            table.columns.adjust().draw(); 
+            table.columns.adjust().draw();
         },100);
     },
 
@@ -1154,7 +1165,7 @@ sitePagesFn = {
         let table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
 
         // SELECTION MUST BE CLEARED, OTHERWISE THE TABLE WILL BEHAVE WEIRD
-        // RETURNING FROM OFFCANVAS ON A FILTERED TABLE WILL LOSE ALL RECORDS EXCEPT THE FILTERED ONES
+        // RETURNING FROM OFFCANVAS ON A FILTERED TABLE WILL LOSE/REMOVE ALL RECORDS EXCEPT THE FILTERED ONES
         // AND THESE CANNOT BE SHOWN EVEN IF CLEARING THE FILTER, ONLY RELOADING PAGE WILL RESTORE ALL RECORDS 
         table.searchPanes.clearSelections();
 
