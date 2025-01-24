@@ -198,10 +198,12 @@ sitePagesFn = {
         }); 
 
         // change the label of 'Clear' button of Active Filter box if was set to 'Apply' after potential return from offcanvas
+        /*
         $('button[sitefunction="sitePagesDetailsClearFilter"]').off('click').click(function() {
             if($('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text() === 'Apply')
                 $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear');
         });
+        */
         
            
     },
@@ -229,7 +231,7 @@ sitePagesFn = {
             sitePagesFn.bruteRebuildPagesTable();
             // change the label of 'Clear' button of Active Filter box to 'Apply' after return from offcanvas
             // since the first click on it after return from offcanvas will re-apply the filter instead of clearing it
-            $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
+            //$('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
         });
     },
 
