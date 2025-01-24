@@ -1244,7 +1244,7 @@ const formatDate = (dateString) => {
     //const hh = String(today.getHours()).padStart(2, '0');
     //const mm = String(today.getMinutes()).padStart(2, '0');
     
-    const formattedDate = `${dd}-${mmm}-${yyyy}`;
+    const formattedDate = `${dd}${settings.multilang.dateFieldSeparator}${mmm}${settings.multilang.dateFieldSeparator}${yyyy}`;
     return formattedDate;
 }
 
@@ -1261,7 +1261,7 @@ const formatDateFull = (dateString) => {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
     const milliseconds = String(date.getMilliseconds()).padStart(3, '0'); // 3-digit ms
-    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}:${milliseconds}`;
+    return `${day}${settings.multilang.dateFieldSeparator}${month}${settings.multilang.dateFieldSeparator}${year} ${hours}:${minutes}:${seconds}:${milliseconds}`;
 }
 
 const keepTextInputLimits = (textInputSelector, maxWords, maxChars, wordCountSelector, charCountSelector) => {
@@ -2718,12 +2718,30 @@ const doTranslation = (isIFrame = null, iFrame = null) => {
 }
 
 const doTranslateDateFields = () => {
+
+    const createDateRegex = (separator, isLongMonthName) => {
+        const escapedSeparator = _.escapeRegExp(separator); // Escape special characters for regex
+        const regexString = !isLongMonthName
+            ? `^\\d{2}${escapedSeparator}(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)${escapedSeparator}\\d{4}$`
+            : `^\\d{2}${escapedSeparator}(January|February|March|April|May|June|July|August|September|October|November|December)${escapedSeparator}\\d{4}$`;
+        return new RegExp(regexString);
+    }
+
+    const dateRegex_ShortMonth = createDateRegex(settings.multilang.dateFieldSeparator, false);
+    const dateRegex_LongMonth = createDateRegex(settings.multilang.dateFieldSeparator, true);
+
     $(`.${settings.multilang.dateFieldClass}`).each(function () {
         const $this = $(this);
-        const originalDate = $this.data('original-date');          
-        const [day, month, year] = originalDate.split('-');
-        const translatedMonth = i18next.t(`common.months.${month}`, { defaultValue: month });           
-        const translatedDate = `${day}-${translatedMonth}-${year}`;
-        $this.text(translatedDate);
+        const originalDate = $this.data('original-date');
+        if (dateRegex_ShortMonth.test(originalDate) || dateRegex_LongMonth.test(originalDate) ) {
+            const monthName = $this.data('month-name');              
+            const [day, month, year] = originalDate.split(settings.multilang.dateFieldSeparator);
+            const translatedMonth = monthName === 'short' || !monthName || monthName === 'undefined'
+                ? i18next.t(`common.months.${month}`, { defaultValue: month })
+                : i18next.t(`common.months_l.${month}`, { defaultValue: month });
+            const translatedDate = 
+                `${day}${settings.multilang.dateFieldSeparator}${translatedMonth}${settings.multilang.dateFieldSeparator}${year}`;
+            $this.text(translatedDate);
+        }
     });
 }

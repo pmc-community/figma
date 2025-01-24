@@ -185,7 +185,8 @@
       "needsTranslation": [
         "body"
       ],
-      "dateFieldClass": "DSTcustomDateField"
+      "dateFieldClass": "DSTcustomDateField",
+      "dateFieldSeparator": "-"
     },
     "siteTitle": "Figma Resources"
   },

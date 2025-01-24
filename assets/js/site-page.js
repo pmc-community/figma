@@ -109,7 +109,8 @@ const page__getPageNotes = () => {
                         <span 
                             class="text-primary ${settings.multilang.dateFieldClass}"
                             data-i18n="[text]formatted_date"
-                            data-original-date="${note.date}">
+                            data-original-date="${note.date}"
+                            data-month-name="short">
                             ${note.date}
                         </span>
                     </div>
@@ -512,9 +513,10 @@ const page__getPageInfo = () => {
                                         ${i18next.t('page_page_info_last_update_badge_text')}
                                     </span>: 
                                     <span
-                                        class=" ${settings.multilang.dateFieldClass}"
+                                        class="${settings.multilang.dateFieldClass}"
                                         data-i18n="[text]formatted_date"
-                                        data-original-date="${formatDate(page.siteInfo.lastUpdate)}">
+                                        data-original-date="${formatDate(page.siteInfo.lastUpdate)}"
+                                        data-month-name="short">
                                         ${formatDate(page.siteInfo.lastUpdate)}
                                     </span>
                                 </div>

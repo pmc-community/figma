@@ -31,7 +31,21 @@
             "Oct": "Oct",
             "Nov": "Noi",
             "Dec": "Dec"
-          }
+          },
+        "months_l": {
+            "January": "Ianuarie",
+            "February": "Februarie",
+            "March": "Martie",
+            "April": "Aprilie",
+            "May": "Mai",
+            "June": "Iunie",
+            "July": "Iulie",
+            "August": "August",
+            "September": "Septembrie",
+            "October": "Octombrie",
+            "November": "Noiembrie",
+            "December": "Decembrie"
+        }
     },
 
     "home_page_intro_section_buttons_sections": "Sectiuni",
