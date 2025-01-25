@@ -620,7 +620,7 @@ const setDataTable = (
                     title: 'Show/Hide Columns',
                     siteFunction: 'tableColumnsVisibility'
                 },
-                className: 'btn-primary btn-sm text-light mb-2 rounded  border-0 DTCustomButton mr-2'
+                className: 'btn-primary btn-sm text-light mb-2 rounded border-0 DTCustomButton mr-2'
             },
             {
                 extend: ['searchPanes'],
@@ -646,7 +646,7 @@ const setDataTable = (
                     title: 'Show/Hide Columns',
                     siteFunction: 'tableColumnsVisibility'
                 },
-                className: 'btn-primary btn-sm text-light mb-2'
+                className: 'btn-primary btn-sm text-light mb-2 rounded border-0 DTCustomButton mr-2'
             }
         ];
     
@@ -1075,7 +1075,7 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
     const addButtons = (table, btnArray) => {
         btnArray.forEach(btnConfig => {
             siteFunctionAttr = btnConfig.attr.siteFunction;
-            btnConfig.className += ' mr-2 rounded DTCustomButton'
+            btnConfig.className += ' mr-2 ml-0 rounded DTCustomButton'
             // add the button only if doesn't exist already
             if( $(`button[siteFunction="${siteFunctionAttr}"]`).length === 0 ) table.button().add(null, btnConfig);
         });
