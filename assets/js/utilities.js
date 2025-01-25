@@ -620,7 +620,7 @@ const setDataTable = (
                     title: 'Show/Hide Columns',
                     siteFunction: 'tableColumnsVisibility'
                 },
-                className: 'btn-primary btn-sm text-light mb-2 rounded border-0 DTCustomButton mr-2'
+                className: 'btn-primary btn-sm text-light mb-2 rounded border-0 DTCustomButton mr-2 ml-0'
             },
             {
                 extend: ['searchPanes'],
@@ -630,7 +630,7 @@ const setDataTable = (
                     id: `tableSearchPanes_${tableUniqueID}`,
                     "data-i18n": '[title]dt_search_panes_button_title'
                 },
-                className: 'btn-danger btn-sm text-light mb-2 btnSearchPanesFilter mr-2 rounded DTCustomButton',
+                className: 'btn-danger btn-sm text-light mb-2 btnSearchPanesFilter mr-2 ml-0 rounded DTCustomButton',
                 config: {
                     cascadePanes: searchPanes.cascade
                 },
@@ -646,7 +646,7 @@ const setDataTable = (
                     title: 'Show/Hide Columns',
                     siteFunction: 'tableColumnsVisibility'
                 },
-                className: 'btn-primary btn-sm text-light mb-2 rounded border-0 DTCustomButton mr-2'
+                className: 'btn-primary btn-sm text-light mb-2 rounded border-0 DTCustomButton mr-2 ml-0'
             }
         ];
     
@@ -1086,13 +1086,13 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
     }
 
     // buttons must be added on draw event
-    // otherwiswe the draw event when applying internationalization plugin will not add the custom buttons
+    // otherwise the draw event when applying internationalization plugin will not add the custom buttons
     table.on('draw.dt', function() {
         addButtons(table, btnArray);
     });
     
     waitForI18Next().then(()=>{
-        table.draw(); // force draw.dt to add the buttons
+        setTimeout(()=>table.draw(), 200); // force draw.dt to add the buttons
     });
     
     applyColorSchemaCorrections();

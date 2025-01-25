@@ -232,7 +232,10 @@ sitePagesFn = {
             sitePagesFn.bruteRebuildPagesTable();
             // change the label of 'Clear' button of Active Filter box to 'Apply' after return from offcanvas
             // since the first click on it after return from offcanvas will re-apply the filter instead of clearing it
-            $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
+            if($('div[sitefunction="sitePagesDetailsLastFilter"]').hasClass('d-none'))
+                $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear');
+            else
+                $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
 
         });
     },
