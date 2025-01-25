@@ -1088,7 +1088,10 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
     */
 
     table.one('draw.dt', function () {
-        addButtons(table, btnArray);
+        //addButtons(table, btnArray);
+        setTimeout(()=>{
+            addButtons(table, btnArray);
+        },500)
     });
     
     applyColorSchemaCorrections();
