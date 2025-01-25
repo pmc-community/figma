@@ -37,12 +37,19 @@ $tableSearchPanesPaneFontColor: $c-black;
 $tableSearchPanesPaneSearchInputBackground: $c-white;
 $tableFilterProcessingLoaderBackground: $c-transparent;
 $tableOuterBorderBottomColor: $tableInnerBorderColor;
+
 $paginationButtonThemeLightBackground: $c-primary-theme-light;
 $paginationButtonThemeLightBorderColor: $paginationButtonThemeLightBackground;
 $paginationButtonThemeDarkBackground: $c-primary-theme-dark;
 $paginationButtonThemeDarkBorderColor:$paginationButtonThemeDarkBackground;
 $paginationActivePageTextColor: $c-white;
 $tableEntriesPerPageLabelVisibility_phone: $d-hidden;
+
+$paginationButtonLinkPaddingLeft_mobile: $p-0-75;
+$paginationButtonLinkPaddingRight_mobile: $paginationButtonLinkPaddingLeft_mobile;
+$paginationButtonLinkPaddingTop_mobile: $p-5px;
+$paginationButtonLinkPaddingBottom_mobile: $paginationButtonLinkPaddingTop_mobile;
+$paginationButtonLinkBorder_mobile: $b-none;
 
 $tableEntriesPerPageGroupDisplay_phone: $d-flex;
 $tableSearchInputGroupDisplay_phone: $d-flex;
