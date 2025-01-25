@@ -1088,7 +1088,8 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
     });
     
     waitForI18Next().then(()=>{
-        table.draw(); // force draw.dt to add the buttons
+        stetTimeout(()=>table.draw(),200); // force draw.dt to add the buttons
+        //table.trigger('draw.dt')
     });
     
     applyColorSchemaCorrections();
