@@ -1074,23 +1074,23 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
     
     const addButtons = (table, btnArray) => {
         btnArray.forEach(btnConfig => {
-            table.button().add(null, btnConfig);
+            setTimeout(() => table.button().add(null, btnConfig), 100);
         });
     }
 
     // buttons must be added on draw event
     // otherwiswe the draw event when applying internationalization plugin will not add the custom buttons
     // alternative is to use setTimeout(....) to give time for translation and then add the buttons
-    
+    /*
     setTimeout(()=>{
         addButtons(table, btnArray);
     },500)
+    */
     
-    /*
     table.one('draw.dt', function () {
         addButtons(table, btnArray);
     });
-    */
+    
     
     applyColorSchemaCorrections();
 }
