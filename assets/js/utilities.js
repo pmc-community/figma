@@ -1074,23 +1074,21 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
     
     const addButtons = (table, btnArray) => {
         btnArray.forEach(btnConfig => {
-            setTimeout(() => table.button().add(null, btnConfig), 100);
+            siteFunctionAttr = btnConfig.attr.siteFunction;
+            // add the button only if doesn't exist already
+            if( $(`button[siteFunction="${siteFunctionAttr}"]`).length === 0 ) table.button().add(null, btnConfig);
         });
     }
 
     // buttons must be added on draw event
     // otherwiswe the draw event when applying internationalization plugin will not add the custom buttons
-    // alternative is to use setTimeout(....) to give time for translation and then add the buttons
-    /*
-    setTimeout(()=>{
-        addButtons(table, btnArray);
-    },500)
-    */
-    
-    table.one('draw.dt', function () {
+    table.off('draw.dt').on('draw.dt', function () {
         addButtons(table, btnArray);
     });
     
+    waitForI18Next().then(()=>{
+        table.draw(); // force draw.dt to add the buttons
+    });
     
     applyColorSchemaCorrections();
 }
@@ -2178,7 +2176,8 @@ const iframe__utilities = () => {
         anonymousUserToken: setAnonymousUserToken(),
         func: {
             showToast: showToast,
-            doTranslation: doTranslation
+            doTranslation: doTranslation,
+            waitForI18Next: waitForI18Next
         }
     }
 }
@@ -2746,3 +2745,13 @@ const doTranslateDateFields = () => {
         }
     });
 }
+
+const waitForI18Next = () => {
+    return new Promise((resolve) => {
+      if (i18next.isInitialized) {
+        resolve();
+      } else {
+        i18next.on('initialized', resolve);
+      }
+    });
+  }
