@@ -1060,11 +1060,14 @@ const setDataTable = (
             })
             .then((table) => {
                 setTimeout(()=>table.fixedHeader.adjust(),100);
+                return table;
 
             })
-            .then(() => {    
+            .then((table) => {    
                 $('#dataTableLoading').remove(); // remove the table loader placeholder)
-                setTimeout(()=>$(tableSelector).show(), 100);
+                setTimeout(()=>{
+                    $(tableSelector).show();
+                }, 100);
             }); 
         ;
     });
@@ -1077,19 +1080,19 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
             siteFunctionAttr = btnConfig.attr.siteFunction;
             btnConfig.className += ' mr-2 ml-0 rounded DTCustomButton'
             // add the button only if doesn't exist already
-            if( $(`button[siteFunction="${siteFunctionAttr}"]`).length === 0 ) table.button().add(null, btnConfig);
+            const btnExists = $(`button[siteFunction="${siteFunctionAttr}"]`).length;
+            if( btnExists === 0 ) table.button().add(null, btnConfig);
         });
     }
 
     // buttons must be added on draw event
     // otherwiswe the draw event when applying internationalization plugin will not add the custom buttons
-    table.off('draw.dt').on('draw.dt', function () {
+    table.on('draw.dt', function() {
         addButtons(table, btnArray);
     });
     
     waitForI18Next().then(()=>{
-        setTimeout(()=>table.draw(),200); // force draw.dt to add the buttons
-        //table.trigger('draw.dt')
+        table.draw(); // force draw.dt to add the buttons
     });
     
     applyColorSchemaCorrections();

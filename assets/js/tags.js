@@ -974,7 +974,7 @@ const addAdditionalButtons = (table, tag) => {
      // post processing table: adding 2 buttons in the bottom2 zone
      gotToCatBtn = {
         attr: {
-            siteFunction: 'tableNavigateToCategories',
+            siteFunction: `tableNavigateToCategories_${tag}`,
             title: 'Go to categories'
         },
         className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
@@ -986,7 +986,7 @@ const addAdditionalButtons = (table, tag) => {
 
     gotToSavedItemsBtn = {
         attr: {
-            siteFunction: 'tableNavigateToSavedItems',
+            siteFunction: `tableNavigateToSavedItems_${tag}`,
             title: 'Go to saved items'
         },
         className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',

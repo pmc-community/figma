@@ -400,6 +400,7 @@ const showCatDetails = (cat) => {
         (rowData) => { processCatDetailsTableRowClick(rowData, `table[catReference="${cat}"]`, cat) }, // will execute when click on row
         additionalTableSettings // additional datatable settings for this table instance
     );
+
     if (_.map(globCustomCats, _.toLower).includes(cat.toLowerCase())) setCatInfoPageSearchList(cat);
     history.replaceState({}, document.title, window.location.pathname);
 }
@@ -518,7 +519,7 @@ const addAdditionalCatButtons = (table, cat) => {
     // post processing table: adding 2 buttons in the bottom2 zone
     gotToTagBtn = {
        attr: {
-           siteFunction: 'tableNavigateToTags',
+           siteFunction: `tableNavigateToTags_${cat}`,
            title: 'Go to tags'
        },
        className: 'btn-warning btn-sm text-light focus-ring focus-ring-warning mb-2',
@@ -530,7 +531,7 @@ const addAdditionalCatButtons = (table, cat) => {
 
    gotToSavedItemsBtn = {
        attr: {
-           siteFunction: 'tableNavigateToSavedItems',
+           siteFunction: `tableNavigateToSavedItems_${cat}`,
            title: 'Go to saved items'
        },
        className: 'btn-success btn-sm text-light focus-ring focus-ring-warning mb-2',
