@@ -575,6 +575,11 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
             padding-left: $tablePaginationPgNumbersPaddingLeft_phone !important;
         }
     }
+
+    #{map-get($tableElements, tableCustomButton)} {
+        width: $tableCustomButtonWidth !important;
+        max-width: $tableCustomButtonMaxWidth !important;
+    }
 }
 
 // cat search

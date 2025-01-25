@@ -54,6 +54,9 @@ $tableFooterButtonsFlexGrow_phone: $flex-no-spread;
 
 $tablePaginationPgNumbersPaddingLeft_phone: $p-0;
 
+$tableCustomButtonWidth: $sz-8rem;
+$tableCustomButtonMaxWidth: $tableCustomButtonWidth;
+
 $tableElements: (
     tableWrapper: '.table-wrapper',
     paginationButtonLink: '.page-link',
@@ -85,7 +88,8 @@ $tableElements: (
     tablePaginationLabel: '.dt-info',
     tablePagination: '.dt-paging',
     tablePaginationPgNumbers: '.pagination', // this is the ul element inside .dt-paging
-    tableFooterButtons: '.dt-buttons'
+    tableFooterButtons: '.dt-buttons',
+    tableCustomButton: '.DTCustomButton'
 );
 
 @import 'meta.scss';
