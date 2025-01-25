@@ -195,17 +195,7 @@ sitePagesFn = {
             $('#site_pages_details').removeClass('d-none');
             sitePagesFn.forceRedrawPagesTable();
             $('div[sitefunction="sitePagesDetails"]').fadeIn();
-        }); 
-
-        // change the label of 'Clear' button of Active Filter box if was set to 'Apply' after a return from offcanvas
-        $('button[sitefunction="sitePagesDetailsClearFilter"]').off('click').click(function() {
-            setTimeout(() => {
-                if($('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text() === 'Apply')
-                    $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear');
-            }, 200);
-            
-        });
-        
+        });         
     },
     
     // page offcanvas
@@ -229,7 +219,6 @@ sitePagesFn = {
         removeObservers('.offcanvas class=hiding getClass=true');
         setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
 
-            sitePagesFn.bruteRebuildPagesTable();
             // change the label of 'Clear' button of Active Filter box to 'Apply' after return from offcanvas
             // since the first click on it after return from offcanvas will re-apply the filter instead of clearing it
             if($('div[sitefunction="sitePagesDetailsLastFilter"]').hasClass('d-none'))
@@ -237,6 +226,15 @@ sitePagesFn = {
             else
                 $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
 
+            if (preFlight.envInfo.device.deviceType === 'mobile') {
+                // force a click to filter box to reset the show filter button and status
+                // if current filter is shown before open offcanvas, when returning, the filter is hidden but the button is red
+                // so we need to force a click to make it green and change the eye icon
+                if ($('button[siteFunction="sitePagesDetailsShowFilter"]').hasClass('show'))
+                    $('button[siteFunction="sitePagesDetailsShowFilter"]').click();
+            }
+
+            sitePagesFn.bruteRebuildPagesTable();
         });
     },
 
@@ -432,6 +430,16 @@ sitePagesFn = {
                 showToast(`Document ${title} is now saved!<br><strong>HEADS UP!!!</strong><br>Document will be removed automatically if you don't add some custom info (tags, categories, notes, comments)`, 'bg-warning', 'text-dark');
                 sitePagesFn.setPagesSavedStatus();
             });
+        
+        // change the label of 'Clear' button of Active Filter box if was set to 'Apply' after a return from offcanvas
+        $('button[sitefunction="sitePagesDetailsClearFilter"]').off('click').click(function() {
+            setTimeout(() => {
+                if($('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text() === 'Apply')
+                    $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear');
+            }, 200);
+            
+        });
+
 
         // HEADS UP!!!
         // HANDLERS FOR OPEN AND CLOSE ACTIVE FILTER ARE DEFINED IN postProcessPagesTable
