@@ -350,7 +350,6 @@ sitePagesFn = {
                     .css('border-radius', '0');
             }
 
-
             $('div[sitefunction="sitePagesDetailsLastFilter"]').removeClass('d-none');
         }
         else
@@ -439,7 +438,6 @@ sitePagesFn = {
             }, 200);
             
         });
-
 
         // HEADS UP!!!
         // HANDLERS FOR OPEN AND CLOSE ACTIVE FILTER ARE DEFINED IN postProcessPagesTable
@@ -918,6 +916,14 @@ sitePagesFn = {
 
     onSearchPanesClose: (tableSearchPanesSelection) => {
         sitePagesFn.refreshLastFilterInfo(tableSearchPanesSelection);
+
+        if (preFlight.envInfo.device.deviceType === 'mobile') {
+            // force a click to filter box to reset the show filter button and status
+            // if current filter is shown before open offcanvas, when returning, the filter is hidden but the button is red
+            // so we need to force a click to make it green and change the eye icon
+            if ($('button[siteFunction="sitePagesDetailsShowFilter"]').hasClass('show'))
+                $('button[siteFunction="sitePagesDetailsShowFilter"]').click();
+        }
     },
 
     onSearchPanesSelectionChange: (tableSearchPanesSelection) => {
