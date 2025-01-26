@@ -230,6 +230,7 @@ sitePagesFn = {
                 // force a click to filter box to reset the show filter button and status
                 // if current filter is shown before open offcanvas, when returning, the filter is hidden but the button is red
                 // so we need to force a click to make it green and change the eye icon
+                // the same is applied when closing searchPanes window on mobile, see onSearchPanesClose below
                 if ($('button[siteFunction="sitePagesDetailsShowFilter"]').hasClass('show'))
                     $('button[siteFunction="sitePagesDetailsShowFilter"]').click();
             }
@@ -965,36 +966,42 @@ sitePagesFn = {
     },
 
     addAdditionalPagesTableButtons: (table) => {
-        // post processing table: adding 2 buttons in the bottom2 zone
-        goToTagBtn = {
-           attr: {
-               siteFunction: 'tableNavigateToTagsSP',
-               title: i18next.t('dt_custom_buttons_go_to_tags_btn_title'),
-               "data-i18n": '[title]dt_custom_buttons_go_to_tags_btn_title;dt_custom_buttons_go_to_tags_btn_text'
-           },
-           className: 'btn-warning btn-sm text-dark mb-2',
-           text: i18next.t('dt_custom_buttons_go_to_tags_btn_text'),
-           action: () => {
-               window.location.href = '/tag-info'
-           }
-       }
-    
-       goToCatsBtn = {
-           attr: {
-               siteFunction: 'tableNavigateToCategoriesSP',
-               title: i18next.t('dt_custom_buttons_go_to_cats_btn_title'),
-               "data-i18n": '[title]dt_custom_buttons_go_to_cats_btn_title;dt_custom_buttons_go_to_cats_btn_text'
-           },
-           className: 'btn-success btn-sm text-light mb-2',
-           text: i18next.t('dt_custom_buttons_go_to_cats_btn_text'),
-           action: () => {
-               window.location.href = '/cat-info'
-           }
-       }
-       const btnArray = [];
-       btnArray.push(goToTagBtn);
-       btnArray.push(goToCatsBtn);
-       addAdditionalButtonsToTable(table, 'table[siteFunction="sitePagesDetailsPageTable"]', 'bottom2', btnArray);
+
+        // need to wait for i8next full init, otherwise data-i18n will not be translated when firs show the page
+        waitForI18Next().then(() => {
+            goToTagBtn = {
+                attr: {
+                    siteFunction: 'tableNavigateToTagsSP',
+                    title: i18next.t('dt_custom_buttons_go_to_tags_btn_title'),
+                    "data-i18n": '[title]dt_custom_buttons_go_to_tags_btn_title;dt_custom_buttons_go_to_tags_btn_text'
+                },
+                className: 'btn-warning btn-sm text-dark mb-2',
+                text: i18next.t('dt_custom_buttons_go_to_tags_btn_text'),
+                action: () => {
+                    window.location.href = '/tag-info'
+                }
+             }
+         
+            goToCatsBtn = {
+                 attr: {
+                     siteFunction: 'tableNavigateToCategoriesSP',
+                     title: i18next.t('dt_custom_buttons_go_to_cats_btn_title'),
+                     "data-i18n": '[title]dt_custom_buttons_go_to_cats_btn_title;dt_custom_buttons_go_to_cats_btn_text'
+                 },
+                 className: 'btn-success btn-sm text-light mb-2',
+                 text: i18next.t('dt_custom_buttons_go_to_cats_btn_text'),
+                 action: () => {
+                     window.location.href = '/cat-info'
+                 }
+             }
+             
+            // post processing table: adding 2 buttons in the bottom2 zone
+            const btnArray = [];
+            btnArray.push(goToTagBtn);
+            btnArray.push(goToCatsBtn);
+            addAdditionalButtonsToTable(table, 'table[siteFunction="sitePagesDetailsPageTable"]', 'bottom2', btnArray);
+
+        });
     },
 
     redrawPagesTable: () => {

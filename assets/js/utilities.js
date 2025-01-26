@@ -1087,20 +1087,12 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
 
     // buttons must be added on draw event
     // otherwise the draw event when applying internationalization plugin will not add the custom buttons
-    table.off('timeToAddCustomButtons').on('timeToAddCustomButtons', function() {
-        console.log('here')
+    table.off('draw.dt').on('draw.dt', function() {
         addButtons(table, btnArray);
+        applyColorSchemaCorrections();
     });
     
-    setTimeout(()=>{
-        waitForI18Next().then(()=>{
-            //table.draw(); // force draw.dt to add the buttons
-            table.trigger('timeToAddCustomButtons');
-        });
-    },500);
-   
-    
-    applyColorSchemaCorrections();
+    table.draw(); // to force adding custom buttons
 }
 
 const handleBtnClose = () => {
@@ -2759,9 +2751,15 @@ const doTranslateDateFields = () => {
 const waitForI18Next = () => {
     return new Promise((resolve) => {
       if (i18next.isInitialized) {
-        resolve();
+        resolve(); // i18next is already initialized
       } else {
-        i18next.on('initialized', resolve);
+        // Listen for the 'initialized' event
+        const onInitialized = () => {
+          resolve();
+          i18next.off('initialized', onInitialized); // Clean up listener
+        };
+        i18next.on('initialized', onInitialized);
       }
     });
-  }
+};
+  
