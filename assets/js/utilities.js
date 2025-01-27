@@ -1038,7 +1038,7 @@ const setDataTable = async (
                         tableSelector: tableSelector
                     }
                 )
-            }, 0);
+            }, 1000);
         });
     }
 
@@ -1055,12 +1055,11 @@ const setDataTable = async (
             searchPanes
         )
             .then((result) => {
-                console.log(result.table)
                
                 if (result.table.helpers && result.table.helpers !== 'undefined') 
                     result.table.helpers.applyTableStylesOnMobile(result.table);
                 
-                if ( !(result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
+                if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
                     result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
                 }
 
