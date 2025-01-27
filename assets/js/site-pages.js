@@ -219,6 +219,7 @@ sitePagesFn = {
         removeObservers('.offcanvas class=hiding getClass=true');
         setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
 
+            // NOT USED - ACTIVE FILTER LOGIC (see also other places in the code)
             // change the label of 'Clear' button of Active Filter box to 'Apply' after return from offcanvas
             // since the first click on it after return from offcanvas will re-apply the filter instead of clearing it
             /*
@@ -227,7 +228,7 @@ sitePagesFn = {
             else
                 $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
             */
-           
+
             if (preFlight.envInfo.device.deviceType === 'mobile') {
                 // force a click to filter box to reset the show filter button and status
                 // if current filter is shown before open offcanvas, when returning, the filter is hidden but the button is red
@@ -433,6 +434,7 @@ sitePagesFn = {
                 sitePagesFn.setPagesSavedStatus();
             });
         
+        // NOT USED - ACTIVE FILTER LOGIC (see also other places in the code)        
         // change the label of 'Clear' button of Active Filter box if was set to 'Apply' after a return from offcanvas
         $('button[sitefunction="sitePagesDetailsClearFilter"]').off('click').click(function() {
             setTimeout(() => {
@@ -1306,6 +1308,12 @@ sitePagesFn = {
             sitePagesFn.setLastFilterInfo('Active filter');
             sitePagesFn.handleDropdownClassOverlap();
 
+            $('html, body').animate({
+                // bookmark is on top of page, so better to be sure that will not go under header
+                scrollTop: $('#site_pages_details').offset().top - 100 
+            }, 100); 
+
+            // NOT USED - ACTIVE FILTER LOGIC (see also other places in the code)   
             // force filter to be applied on table
             //$('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Wait');
             //$('button[sitefunction="sitePagesDetailsClearFilter"]').click();
@@ -1349,6 +1357,12 @@ sitePagesFn = {
             sitePagesFn.setLastFilterInfo('Active filter');
             sitePagesFn.handleDropdownClassOverlap();
 
+            $('html, body').animate({
+                // bookmark is on top of page, so better to be sure that will not go under header
+                scrollTop: $('#site_pages_details').offset().top - 100 
+            }, 100); 
+
+            // NOT USED - ACTIVE FILTER LOGIC (see also other places in the code)   
             // force filter to be applied on table 
             //$('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Wait');
             //$('button[sitefunction="sitePagesDetailsClearFilter"]').click();
