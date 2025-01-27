@@ -678,7 +678,9 @@ const initCustomNotesTable = (pageInfo) => {
             ],
             data: getPageNotes(pageInfo),
             autoWidth: false
-        }
+        },
+        null,
+        preFlight.envInfo
     );
 }
 

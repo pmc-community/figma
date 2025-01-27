@@ -1038,38 +1038,40 @@ const setDataTable = async (
                         tableSelector: tableSelector
                     }
                 )
-            }, 1000);
+            }, 0);
         });
     }
 
-    // first: create the table, second: apply active searchPanes selection if available, third: remove loader placeholder
-    waitForI18Next().then(() => {
-        
-        createTable_ASYNC(
-            tableSelector,
-            tableUniqueID, 
-            columnsConfig, 
-            callback, 
-            callbackClickRow, 
-            allSettings, 
-            searchPanes
-        )
-            .then((result) => {
-               
-                if (result.table.helpers && result.table.helpers !== 'undefined') 
-                    result.table.helpers.applyTableStylesOnMobile(result.table);
-                
-                if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
-                    result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
-                }
+    $(document).ready(function() {
+        // first: create the table, second: apply active searchPanes selection if available, third: remove loader placeholder
+        waitForI18Next().then(() => {
+            
+            createTable_ASYNC(
+                tableSelector,
+                tableUniqueID, 
+                columnsConfig, 
+                callback, 
+                callbackClickRow, 
+                allSettings, 
+                searchPanes
+            )
+                .then((result) => {
+                    if (result.table.helpers && result.table.helpers !== 'undefined') 
+                        result.table.helpers.applyTableStylesOnMobile(result.table);
+                    
+                    if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
+                        result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                    }
 
-                $('#dataTableLoading').remove();
+                    $('#dataTableLoading').remove();
+                    
+                    setTimeout(()=>{    
+                        $(result.tableSelector).show();
+                        result.table.draw();
+                    }, 100);
 
-                setTimeout(()=>{    
-                    $(result.tableSelector).show();
-                }, 500);
-
-            })
+                })
+        });
     });
     
 }
