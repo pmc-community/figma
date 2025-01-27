@@ -1021,7 +1021,22 @@ const setDataTable = async (
             
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
+            $(tableSelector).trigger('timeToBuildTheTable');
 
+            $(tableSelector).on('timeToBuildTheTable', function() {
+                setTimeout(()=> {
+                    resolve(
+                        {
+                            table: table,
+                            selection: tableSearchPanesSelection,
+                            tableUniqueID: tableUniqueID,
+                            tableSelector: tableSelector
+                        }
+                    )
+                }, 0);
+            })
+
+            /* resolving the promise inside a longer setTimeout
             setTimeout(()=> {
                 resolve(
                     {
@@ -1032,6 +1047,7 @@ const setDataTable = async (
                     }
                 )
             }, 1000);
+            */
         });
     }
 
@@ -1051,7 +1067,6 @@ const setDataTable = async (
                 searchPanes
             )
                 .then((result) => {
-                    
                     if (result.table.helpers && result.table.helpers !== 'undefined') 
                         result.table.helpers.applyTableStylesOnMobile(result.table);
                     
