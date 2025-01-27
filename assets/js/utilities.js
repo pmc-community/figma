@@ -582,19 +582,10 @@ const setDataTable = async (
     callbackClickRow, // will be executed when click on row
     additionalSettings = {}, // any other settings besides the default ones (i.e. columnDefs to define individual search panes)
     searchPanes = null, // search panes configuration and callbacks
-    envInfo = null
-        /*
-        {
-            enable: true,
-            // page load may become very slow. better to use viewCount=false when cascade=false because viewCount doesn't update dynamicaly
-            cascade: false,
-            searchPanesOpenCallback: () => {} || null,
-            searchPanesCloseCallback: (tableSearchPanesSelection) => {} || null,
-            searchPanesSelectionChangeCallback: (tableSearchPanesSelection) => {} || null,
-            searchPanesCurrentSelection: <current selection in the form of [{column:..., rows:[...]}]> || []
-        } || null
-        */
+    envInfo = null,
+    initCompleteCallback = null // callback to be executed after init complete, besides the default one
 ) => {
+    
     $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
     const $loading = $(
         `
@@ -678,6 +669,11 @@ const setDataTable = async (
         : 'en';
 
     const defaultSettings = {
+        initComplete: function(settings) {
+            $('#dataTableLoading').remove();
+            $(tableSelector).show();
+            if (initCompleteCallback) initCompleteCallback(settings);  
+        },  
         serverSide: false,
         paging: true,
         pageLength: 5,
@@ -771,7 +767,6 @@ const setDataTable = async (
                     // since we don't use responsive = true for datatables
                     // we need to apply some css corrections because some things may look weird on mobile 
                     if (preFlight.envInfo.device.deviceType === 'mobile') {
-                         // we do this on draw event because of the translation
                         table.one('draw.dt', function () {
                             // apply corrections to entries per page group
                             $('.dt-length')
@@ -790,9 +785,7 @@ const setDataTable = async (
                                     .addClass('fs-6');
         
                             $('.dt-info').addClass('text-start fs-6');   
-                        });
-
-                        
+                        }); 
                     };
                 }
             }
@@ -1043,7 +1036,9 @@ const setDataTable = async (
     }
 
     $(document).ready(function() {
-        // first: create the table, second: apply active searchPanes selection if available, third: remove loader placeholder
+        // first wait for i18next 
+        // then create the table, 
+        // then apply active searchPanes selection if available and some styles on mobile
         waitForI18Next().then(() => {
             
             createTable_ASYNC(
@@ -1056,21 +1051,16 @@ const setDataTable = async (
                 searchPanes
             )
                 .then((result) => {
+                    
                     if (result.table.helpers && result.table.helpers !== 'undefined') 
                         result.table.helpers.applyTableStylesOnMobile(result.table);
                     
-                    if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
+                    if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
                         result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
-                    }
 
-                    $('#dataTableLoading').remove();
-                    
-                    setTimeout(()=>{    
-                        $(result.tableSelector).show();
-                        result.table.draw();
-                    }, 100);
-
-                })
+                    // That is all
+                    // after table init, the initComplete (see default table settings) function will remove the loader and show the table
+                });
         });
     });
     

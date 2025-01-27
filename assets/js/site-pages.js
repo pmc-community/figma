@@ -725,11 +725,7 @@ sitePagesFn = {
             },
 
             scrollCollapse: false, // stay at fixed scrollY height and avoid the bottom of table to bounce up and down
-            scrollY: '30vh', 
-
-            initComplete: function(settings, json) {
-                sitePagesFn.forceRedrawPagesTable();    
-            },    
+            scrollY: '30vh',   
 
             // columnDefs object IS USED ONLY FOR SEARCH PANES
             // WITH THE PURPOSE OF HAVING A CLEANER CODE
@@ -917,7 +913,11 @@ sitePagesFn = {
                 },
                 searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection || []
             },
-            preFlight.envInfo
+            preFlight.envInfo,
+            (settings, json) => {
+                sitePagesFn.forceRedrawPagesTable();
+                console.log(settings);
+            }
         );
     },
 
