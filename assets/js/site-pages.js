@@ -436,6 +436,7 @@ sitePagesFn = {
         
         // NOT USED - ACTIVE FILTER LOGIC (see also other places in the code)        
         // change the label of 'Clear' button of Active Filter box if was set to 'Apply' after a return from offcanvas
+        /*
         $('button[sitefunction="sitePagesDetailsClearFilter"]').off('click').click(function() {
             setTimeout(() => {
                 if($('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text() === 'Apply')
@@ -443,6 +444,7 @@ sitePagesFn = {
             }, 200);
             
         });
+        */
 
         // HEADS UP!!!
         // HANDLERS FOR OPEN AND CLOSE ACTIVE FILTER ARE DEFINED IN postProcessPagesTable
@@ -1155,20 +1157,32 @@ sitePagesFn = {
                 const savedInfo = getPageSavedInfo(page.permalink, page.title);
                 savedInfoItems = checkSavedItemForValidValues(savedInfo, ['permalink', 'title']);     
             }
-  
-            btnColor = status ? 
-                savedInfoItems === 0 ? 'text-warning' : 'text-primary' :
-                'text-primary';
-
+            
             btnSiteFunction = status ? 'pagesRemovePageFromSavedItems' : 'pagesSavePageToSavedItems';
+
+            btnColor = status 
+                ? savedInfoItems === 0 
+                    ? 'text-warning' 
+                    : btnSiteFunction === 'pagesRemovePageFromSavedItems'
+                        ? 'text-danger'
+                        : 'text-success'
+                : 'text-success';
+                
             btnIcon = status ? 'bi-bookmark-x' : 'bi-bookmark-plus';
-            btnTitle = status ? 'Remove document form saved items' : 'Save document to saved items';
+            i18Attr = status 
+                ? 'dt_pages_col_actions_remove_from_local_btn_title' 
+                : 'dt_pages_col_actions_save_to_local_btn_title';
+            btnTitle = status 
+                ? i18next.t('dt_pages_col_actions_remove_from_local_btn_title') 
+                : i18next.t('dt_pages_col_actions_save_to_local_btn_title');
+
             return (
                 `
                     <button
                         siteFunction = "${btnSiteFunction}"
                         class = "btn btn-sm btn-outline border-0 shadow-none ${btnColor} p-0"
                         title = "${btnTitle}"
+                        data-i18n = "[title]${i18Attr}"
                         pagePermalinkReference="${page.permalink}"
                         pageTitleReference="${page.title}">
                         <i class="bi ${btnIcon}" style="font-size:1.2rem"></i>
@@ -1309,7 +1323,7 @@ sitePagesFn = {
             sitePagesFn.handleDropdownClassOverlap();
 
             $('html, body').animate({
-                // bookmark is on top of page, so better to be sure that will not go under header
+                // bookmark is close to top of page, so better to be sure that will not go under header
                 scrollTop: $('#site_pages_details').offset().top - 100 
             }, 100); 
 
@@ -1358,7 +1372,7 @@ sitePagesFn = {
             sitePagesFn.handleDropdownClassOverlap();
 
             $('html, body').animate({
-                // bookmark is on top of page, so better to be sure that will not go under header
+                // bookmark is close to top of page, so better to be sure that will not go under header
                 scrollTop: $('#site_pages_details').offset().top - 100 
             }, 100); 
 

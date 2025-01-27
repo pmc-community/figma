@@ -144,6 +144,10 @@
     "dt_search_panes_button_title": "Filtrare avansata",
     "dt_custom_buttons_go_to_docs_btn_title": "Informatii documente",
     "dt_custom_buttons_go_to_docs_btn_text": "Documente",
-    "dt_colvis_button_title": "Afisare/Ascundere coloane"
+    "dt_colvis_button_title": "Afisare/Ascundere coloane",
+
+    "dt_pages_col_actions_save_to_local_btn_title": "Salveaza local",
+    "dt_pages_col_actions_remove_from_local_btn_title": "Sterge datele locale",
+    "dt_pages_col_actions_read_doc_btn_title": "Deschide documentul"
 
 }

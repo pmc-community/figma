@@ -128,6 +128,10 @@
     "dt_search_panes_button_title": "Advanced filers",
     "dt_custom_buttons_go_to_docs_btn_title": "Go to documents",
     "dt_custom_buttons_go_to_docs_btn_text": "Documents",
-    "dt_colvis_button_title": "Show/Hide columns"
+    "dt_colvis_button_title": "Show/Hide columns",
+
+    "dt_pages_col_actions_save_to_local_btn_title": "Save document to saved items",
+    "dt_pages_col_actions_remove_from_local_btn_title": "Remove document form saved items",
+    "dt_pages_col_actions_read_doc_btn_title": "Read document"
 
 }

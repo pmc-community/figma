@@ -881,11 +881,11 @@ const setDataTable = async (
             // SINCE WE ONLY USE BUTTON ACTIVATED searchPanes
             // AND THE CLASSES ARE ALWAYS THE SAME
 
-            let tableSearchPanesSelection = !searchPanes ?
-                [] :
-                !searchPanes.searchPanesCurrentSelection ?
-                [] :
-                searchPanes.searchPanesCurrentSelection;
+            let tableSearchPanesSelection = !searchPanes 
+                ? [] 
+                : !searchPanes.searchPanesCurrentSelection 
+                    ? [] 
+                    : searchPanes.searchPanesCurrentSelection;
 
             if (searchPanes && searchPanes.enable) {
         
@@ -1068,15 +1068,24 @@ const setDataTable = async (
                     }       
                 })
                 .then((table) => {
-                    setTimeout(()=>table.fixedHeader.adjust(),100);
+                    //setTimeout(()=>table.fixedHeader.adjust(),100);
+                    table.fixedHeader.adjust()
                     return table;
     
                 })
                 .then((table) => {    
-                    $('#dataTableLoading').remove(); // remove the table loader placeholder)
+                    //$('#dataTableLoading').remove(); // remove the table loader placeholder)
                     setTimeout(()=>{
+                        $('#dataTableLoading').remove();
+                        //$(tableSelector).show();
+                    }, 1000);
+                })
+                .then(()=>{
+                    setTimeout(()=>{
+                        //$('#dataTableLoading').remove();
                         $(tableSelector).show();
-                    }, 100);
+                    }, 1000);
+                    //$(tableSelector).show();
                 }); 
         });
         
