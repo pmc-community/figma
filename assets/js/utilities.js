@@ -595,9 +595,7 @@ const setDataTable = async (
         } || null
         */
 ) => {
-
-    await waitForI18Next(); // normally, at this time i18next init should have been completed, but let's be on the safe side
-
+    $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
     const $loading = $(
         `
             <div id="dataTableLoading" class="d-flex justify-content-center align-items-center">
@@ -608,8 +606,9 @@ const setDataTable = async (
         `
     );
     $(tableSelector).parent().prepend($loading);
-    $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
     
+    await waitForI18Next(); // normally, at this time i18next init should have been completed, but let's be on the safe side
+
     // ONLY searchPanes TRIGGERED BY BUTTON IS AVALILABLE
     // OTHERWISE THE searchPanes LOGIC WILL FAIL AND WILL RAISE ERRORS
     const bottom2Buttons = searchPanes ?
@@ -727,6 +726,7 @@ const setDataTable = async (
         allSettings, 
         searchPanes
     ) => {
+
         return new Promise ( (resolve, reject) => {
 
             $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
@@ -767,7 +767,7 @@ const setDataTable = async (
                     $(`button[id="tableSearchPanes_${tableUniqueID}"]`).click();
                 },
 
-                applyTableStylesOnMobile: () => {
+                applyTableStylesOnMobile: (table) => {
                     // since we don't use responsive = true for datatables
                     // we need to apply some css corrections because some things may look weird on mobile 
                     if (preFlight.envInfo.device.deviceType === 'mobile') {
@@ -1025,71 +1025,54 @@ const setDataTable = async (
                 });
     
             }
-
-            table.trigger('timeToResolveThePrimise');
             
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
 
-            setTimeout(()=>resolve(
-                {
-                    table: table,
-                    selection: tableSearchPanesSelection,
-                    tableUniqueID: tableUniqueID
-                }
-            ), 1000);
-            
+            setTimeout(()=> {
+                resolve(
+                    {
+                        table: table,
+                        selection: tableSearchPanesSelection,
+                        tableUniqueID: tableUniqueID,
+                        tableSelector: tableSelector
+                    }
+                )
+            }, 0);
         });
     }
 
     // first: create the table, second: apply active searchPanes selection if available, third: remove loader placeholder
-    $(document).ready(function() {
-        waitForI18Next().then(() => {
-            createTable_ASYNC(
-                tableSelector,
-                tableUniqueID, 
-                columnsConfig, 
-                callback, 
-                callbackClickRow, 
-                allSettings, 
-                searchPanes
-            )
-                .then((result) => {
-    
-                    result.table.helpers.applyTableStylesOnMobile();
-                    
-                    if ( result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) {
-                        return result.table;
-                    }
-                    else {
-                        //setTimeout(()=>result.table.helpers.autoApplyActiveFilter(result.tableUniqueID), 1000);
-                        result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
-                        return result.table;
-                    }       
-                })
-                .then((table) => {
-                    //setTimeout(()=>table.fixedHeader.adjust(),100);
-                    table.fixedHeader.adjust()
-                    return table;
-    
-                })
-                .then((table) => {    
-                    //$('#dataTableLoading').remove(); // remove the table loader placeholder)
-                    setTimeout(()=>{
-                        $('#dataTableLoading').remove();
-                        //$(tableSelector).show();
-                    }, 1000);
-                })
-                .then(()=>{
-                    setTimeout(()=>{
-                        //$('#dataTableLoading').remove();
-                        $(tableSelector).show();
-                    }, 1000);
-                    //$(tableSelector).show();
-                }); 
-        });
+    waitForI18Next().then(() => {
         
+        createTable_ASYNC(
+            tableSelector,
+            tableUniqueID, 
+            columnsConfig, 
+            callback, 
+            callbackClickRow, 
+            allSettings, 
+            searchPanes
+        )
+            .then((result) => {
+                console.log(result.table)
+               
+                if (result.table.helpers && result.table.helpers !== 'undefined') 
+                    result.table.helpers.applyTableStylesOnMobile(result.table);
+                
+                if ( !(result.selection.length === 0 ||  _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
+                    result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                }
+
+                $('#dataTableLoading').remove();
+
+                setTimeout(()=>{    
+                    $(result.tableSelector).show();
+                }, 500);
+
+            })
     });
+    
 }
 
 const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnArray) => {

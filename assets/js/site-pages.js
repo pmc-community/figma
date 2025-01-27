@@ -1031,7 +1031,7 @@ sitePagesFn = {
         setTimeout(()=>{
             const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
             table.columns.adjust().draw();
-        },100);
+        },0);
     },
 
     setPagesTags: () => {
