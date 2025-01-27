@@ -890,8 +890,8 @@ sitePagesFn = {
             tableSelector,
             `SitePages`,     
             colDefinition,
-            (table) => {sitePagesFn.postProcessPagesTable(table, `SitePages`)},
-            (rowData) => {}, 
+            (table) => {sitePagesFn.postProcessPagesTable(table, `SitePages`)}, // post process table
+            (rowData) => {}, // do nothing on row click
             additionalTableSettings,
             
             // searchPanes general settings
@@ -914,10 +914,7 @@ sitePagesFn = {
                 searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection || []
             },
             preFlight.envInfo,
-            (settings, json) => {
-                sitePagesFn.forceRedrawPagesTable();
-                console.log(settings);
-            }
+            (settings) => {sitePagesFn.forceRedrawPagesTable()} // do something on initComplete; settings.api is the table object
         );
     },
 
@@ -1030,7 +1027,7 @@ sitePagesFn = {
     forceRedrawPagesTable: () => {
         setTimeout(()=>{
             const table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
-            table.columns.adjust().draw();
+            table.columns.adjust();
         },0);
     },
 

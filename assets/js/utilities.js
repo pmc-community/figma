@@ -671,8 +671,8 @@ const setDataTable = async (
     const defaultSettings = {
         initComplete: function(settings) {
             $('#dataTableLoading').remove();
+            if (initCompleteCallback) initCompleteCallback(settings);
             $(tableSelector).show();
-            if (initCompleteCallback) initCompleteCallback(settings);  
         },  
         serverSide: false,
         paging: true,
@@ -1031,7 +1031,7 @@ const setDataTable = async (
                         tableSelector: tableSelector
                     }
                 )
-            }, 0);
+            }, 1000);
         });
     }
 
