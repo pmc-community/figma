@@ -1025,16 +1025,19 @@ const setDataTable = async (
                 });
     
             }
+
+            table.trigger('timeToResolveThePrimise');
             
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
-            resolve(
+
+            setTimeout(()=>resolve(
                 {
                     table: table,
                     selection: tableSearchPanesSelection,
                     tableUniqueID: tableUniqueID
                 }
-            );
+            ), 1000);
             
         });
     }
@@ -1059,6 +1062,7 @@ const setDataTable = async (
                         return result.table;
                     }
                     else {
+                        //setTimeout(()=>result.table.helpers.autoApplyActiveFilter(result.tableUniqueID), 1000);
                         result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
                         return result.table;
                     }       

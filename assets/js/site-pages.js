@@ -221,11 +221,13 @@ sitePagesFn = {
 
             // change the label of 'Clear' button of Active Filter box to 'Apply' after return from offcanvas
             // since the first click on it after return from offcanvas will re-apply the filter instead of clearing it
+            /*
             if($('div[sitefunction="sitePagesDetailsLastFilter"]').hasClass('d-none'))
                 $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear');
             else
                 $('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Apply');
-
+            */
+           
             if (preFlight.envInfo.device.deviceType === 'mobile') {
                 // force a click to filter box to reset the show filter button and status
                 // if current filter is shown before open offcanvas, when returning, the filter is hidden but the button is red
@@ -1303,6 +1305,11 @@ sitePagesFn = {
             sitePagesFn.rebuildPagesTableSearchPanes();
             sitePagesFn.setLastFilterInfo('Active filter');
             sitePagesFn.handleDropdownClassOverlap();
+
+            // force filter to be applied on table
+            //$('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Wait');
+            //$('button[sitefunction="sitePagesDetailsClearFilter"]').click();
+            //setTimeout(()=>$('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear'), 200);
         });
 
         // show not saved pages
@@ -1341,6 +1348,11 @@ sitePagesFn = {
             sitePagesFn.rebuildPagesTableSearchPanes();
             sitePagesFn.setLastFilterInfo('Active filter');
             sitePagesFn.handleDropdownClassOverlap();
+
+            // force filter to be applied on table 
+            //$('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Wait');
+            //$('button[sitefunction="sitePagesDetailsClearFilter"]').click();
+            //setTimeout(()=>$('button[sitefunction="sitePagesDetailsClearFilter"]').find('div').find('span').last().text('Clear'), 200);
         });
 
         // save the saved items to a local file
