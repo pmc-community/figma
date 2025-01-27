@@ -1021,8 +1021,10 @@ const setDataTable = async (
             
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
+            
+            /* resolving the promise inside a custom message handler */
+            /*
             $(tableSelector).trigger('timeToBuildTheTable');
-
             $(tableSelector).on('timeToBuildTheTable', function() {
                 setTimeout(()=> {
                     resolve(
@@ -1035,8 +1037,9 @@ const setDataTable = async (
                     )
                 }, 0);
             })
+            */
 
-            /* resolving the promise inside a longer setTimeout
+            /* resolving the promise inside a longer setTimeout */
             setTimeout(()=> {
                 resolve(
                     {
@@ -1046,8 +1049,7 @@ const setDataTable = async (
                         tableSelector: tableSelector
                     }
                 )
-            }, 1000);
-            */
+            }, 2000);
         });
     }
 
@@ -1066,12 +1068,12 @@ const setDataTable = async (
                 allSettings, 
                 searchPanes
             )
-                .then((result) => {
+                .then(async (result) => {
                     if (result.table.helpers && result.table.helpers !== 'undefined') 
                         result.table.helpers.applyTableStylesOnMobile(result.table);
                     
                     if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
-                        result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                        await result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
 
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table
