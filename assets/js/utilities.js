@@ -743,20 +743,19 @@ const setDataTable = async (
 
             // define some helpers
             const helpers = {
-                autoApplyActiveFilter: async () => {
-                    await $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
-                    await $('.dropdown-menu').hide(); // hide search panes
-                    await $('.dtb-popover-close').click(); // force search panes to close
-                    setTimeout(()=>$('body').click(), 500); // force sitePagesDetailsLastFilter to lose focus
+                autoApplyActiveFilter:  () => {
+                     $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
+                     $('.dropdown-menu').hide(); // hide search panes
+                     $('.dtb-popover-close').click(); // force search panes to close
+                    //setTimeout(()=>$('body').click(), 200); // force sitePagesDetailsLastFilter to lose focus
                 },
 
-                clearActiveFilter: async (tableUniqueID) => {
-                    await $(`#tableSearchPanes_${tableUniqueID}`).click();
-                    await $('.dropdown-menu[id!="category-menu-more-list"]').hide();
-                    await $('.dtsp-clearAll').click();
-                    await $('.dtb-popover-close').click();
-                    
-                    setTimeout(()=>$('body').click(), 500);   
+                clearActiveFilter: (tableUniqueID) => {
+                    $(`#tableSearchPanes_${tableUniqueID}`).click();
+                    $('.dropdown-menu[id!="category-menu-more-list"]').hide();
+                    $('.dtsp-clearAll').click();
+                    $('.dtb-popover-close').click(); 
+                    //setTimeout(()=>$('body').click(), 200);   
                 },
 
                 triggerApplyActiveFilter: (tableUniqueID) => {
@@ -1021,25 +1020,23 @@ const setDataTable = async (
             
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
-            
             /* resolving the promise inside a custom message handler */
-            /*
-            $(tableSelector).trigger('timeToBuildTheTable');
+            setTimeout(()=>{
+                $(tableSelector).trigger('timeToBuildTheTable')
+            }, 0);
             $(tableSelector).on('timeToBuildTheTable', function() {
-                setTimeout(()=> {
-                    resolve(
-                        {
-                            table: table,
-                            selection: tableSearchPanesSelection,
-                            tableUniqueID: tableUniqueID,
-                            tableSelector: tableSelector
-                        }
-                    )
-                }, 0);
+                resolve(
+                    {
+                        table: table,
+                        selection: tableSearchPanesSelection,
+                        tableUniqueID: tableUniqueID,
+                        tableSelector: tableSelector
+                    }
+                )
             })
-            */
 
             /* resolving the promise inside a longer setTimeout */
+            /*
             setTimeout(()=> {
                 resolve(
                     {
@@ -1049,7 +1046,9 @@ const setDataTable = async (
                         tableSelector: tableSelector
                     }
                 )
-            }, 2000);
+            }, 0);
+            */
+
         });
     }
 
@@ -1068,13 +1067,13 @@ const setDataTable = async (
                 allSettings, 
                 searchPanes
             )
-                .then(async (result) => {
+                .then( (result) => {
+
                     if (result.table.helpers && result.table.helpers !== 'undefined') 
                         result.table.helpers.applyTableStylesOnMobile(result.table);
                     
                     if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
-                        await result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
-
+                        result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table
                 });

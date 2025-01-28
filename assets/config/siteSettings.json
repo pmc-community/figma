@@ -600,14 +600,7 @@
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
-        {
-          "title": "Collection-2/X",
-          "permalink": "collection-2/X/x/"
-        },
-        {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        }
+
       ],
       "autoSummary": "this is a file from a collection. this file loads some external content from another repo and place it inline. link to file in different folder",
       "similarByContent": [
