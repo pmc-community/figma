@@ -670,9 +670,19 @@ const setDataTable = async (
 
     const defaultSettings = {
         initComplete: function(settings) {
-            $('#dataTableLoading').remove();
             if (initCompleteCallback) initCompleteCallback(settings);
-            $(tableSelector).show();
+            let tableSearchPanesSelection = !searchPanes 
+                ? [] 
+                : !searchPanes.searchPanesCurrentSelection 
+                    ? [] 
+                    : searchPanes.searchPanesCurrentSelection;
+            
+            // show the table if no filter to be applied
+            // otherwise, the table will be shown after applying the filters (see createTable_ASYNC.helpers.autoApplyActiveFilter below)
+            if ( tableSearchPanesSelection.length === 0 || _.sumBy(tableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0 ) {
+                $('#dataTableLoading').remove();
+                $(tableSelector).show();
+            }   
         },  
         serverSide: false,
         paging: true,
@@ -743,11 +753,16 @@ const setDataTable = async (
 
             // define some helpers
             const helpers = {
-                autoApplyActiveFilter:  async () => {
-                     await $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
+                autoApplyActiveFilter: async (tableSelector) => {
+                    // execute Filter button click to open search panes and apply selection
+                     await $(`#tableSearchPanes_${tableUniqueID}`).click(); 
                      await $('.dropdown-menu').hide(); // hide search panes
                      await $('.dtb-popover-close').click(); // force search panes to close
-                    //setTimeout(()=>$('body').click(), 200); // force sitePagesDetailsLastFilter to lose focus
+                    setTimeout(()=>{
+                        $('body').click();
+                        $('#dataTableLoading').remove();
+                        $(tableSelector).show();
+                    }, 200); // force sitePagesDetailsLastFilter to lose focus
                 },
 
                 clearActiveFilter: async (tableUniqueID) => {
@@ -755,18 +770,19 @@ const setDataTable = async (
                     await $('.dropdown-menu[id!="category-menu-more-list"]').hide();
                     await $('.dtsp-clearAll').click();
                     await $('.dtb-popover-close').click(); 
-                    //setTimeout(()=>$('body').click(), 200);   
+                    setTimeout(()=>$('body').click(), 200);   
                 },
 
                 triggerApplyActiveFilter: (tableUniqueID) => {
                     $(`button[id="tableSearchPanes_${tableUniqueID}"]`).click();
                 },
 
-                applyTableStylesOnMobile: async (table) => {
+                applyTableStylesOnMobile: (table) => {
                     // since we don't use responsive = true for datatables
                     // we need to apply some css corrections because some things may look weird on mobile 
                     if (preFlight.envInfo.device.deviceType === 'mobile') {
-                        table.one('draw.dt', function () {
+                        table.on('draw.dt', function () {
+                        
                             // apply corrections to entries per page group
                             $('.dt-length')
                                 .addClass('d-flex justify-content-between align-items-center')
@@ -783,7 +799,13 @@ const setDataTable = async (
                             $('.dt-search').find('label')
                                     .addClass('fs-6');
         
-                            $('.dt-info').addClass('text-start fs-6');   
+                            $('.dt-info').addClass('text-start fs-6');
+
+                            setTimeout(() => {
+                                $('.dt-length').parent().show();
+                                $('.dt-search').parent().show();   
+                            }, 0);
+                            
                         }); 
                     };
                 }
@@ -1024,7 +1046,10 @@ const setDataTable = async (
             setTimeout(()=>{
                 $(tableSelector).trigger('timeToBuildTheTable')
             }, 0);
+
             $(tableSelector).on('timeToBuildTheTable', function() {
+                $('.dt-length').parent().hide();
+                $('.dt-search').parent().hide();
                 resolve(
                     {
                         table: table,
@@ -1074,7 +1099,7 @@ const setDataTable = async (
                             result.table.helpers.applyTableStylesOnMobile(result.table);
                         
                         if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
-                            result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                            result.table.helpers.autoApplyActiveFilter(result.tableSelector);
                     }, 0);
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table
