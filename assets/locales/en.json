@@ -132,6 +132,36 @@
 
     "dt_pages_col_actions_save_to_local_btn_title": "Save document to saved items",
     "dt_pages_col_actions_remove_from_local_btn_title": "Remove document form saved items",
-    "dt_pages_col_actions_read_doc_btn_title": "Read document"
+    "dt_pages_col_actions_read_doc_btn_title": "Read document",
+    "dt_pages_col_title_title": "Detailed information about the document",
+    "dt_pages_col_related_title": "Click on document title for detailed information.\nClick on link symbol to open the document.",
+    "dt_pages_col_similar_title": "Click on document title for detailed information.\nClick on link symbol to open the document.",
+    "dt_pages_col_tags_title": "Details for tag %s",
+    "dt_pages_col_tags_title_static": "Details for the tag",
+    "dt_pages_col_cats_title_static": "Details for the category",
+    "dt_pages_col_title_text": "Title",
+    "dt_pages_col_last_update_text": "Last update",
+    "dt_pages_col_cats_text": "Categories",
+    "dt_pages_col_tags_text": "Tags",
+    "dt_pages_col_summary_text": "Summary",
+    "dt_pages_col_excerpt_text": "Excerpt",
+    "dt_pages_col_similar_text": "Similar",
+    "dt_pages_col_related_text": "Related",
+    "dt_pages_col_details_text": "Details",
+    "dt_pages_col_details_custom_tags_badge_text": "Tags",
+    "dt_pages_col_details_custom_tags_badge_title": "The document has custom tags",
+    "dt_pages_col_details_custom_cats_badge_text": "Categories",
+    "dt_pages_col_details_custom_cats_badge_title": "The document has custom categories",
+    "dt_pages_col_details_notes_badge_text": "Notes",
+    "dt_pages_col_details_notes_badge_title": "The document has custom notes",
+    "dt_pages_col_details_site_tags_badge_text": "Tags",
+    "dt_pages_col_details_site_tags_badge_title": "The document has site tags",
+    "dt_pages_col_details_site_cats_badge_text": "Categories",
+    "dt_pages_col_details_site_cats_badge_title": "The document has site categories",
+    "dt_pages_col_details_summary_badge_text": "Summary",
+    "dt_pages_col_details_summary_badge_title": "The document has auto-generated summary",
+    "dt_pages_col_details_excerpt_badge_text": "Excerpt",
+    "dt_pages_col_details_excerpt_badge_title": "The document has auto-generated or manually-generated excerpt"
+
 
 }

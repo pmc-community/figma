@@ -464,11 +464,12 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasSiteTagsBadge"
-                            title = "Page ${page.siteInfo.title} has site tags" 
+                            title = "dt_pages_col_details_site_tags_badge_title" 
                             class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary"
                             pageTitleReference="${page.siteInfo.title}"
-                            pagePermaLinkReference="${page.siteInfo.permalink}">
-                            Tags
+                            pagePermaLinkReference="${page.siteInfo.permalink}"
+                            data-i18n="[title]dt_pages_col_details_site_tags_badge_title;dt_pages_col_details_site_tags_badge_text">
+                            ${i18next.t('dt_pages_col_details_site_tags_badge_text')}
                         </span>
                     `;
                 flags.push('Has Site Tags');
@@ -480,11 +481,12 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasSiteCategoryBadge"
-                            title = "Page ${page.siteInfo.title} has site categories" 
+                            title = "dt_pages_col_details_site_cats_badge_title" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger"
                             pageTitleReference="${page.siteInfo.title}"
-                            pagePermaLinkReference="${page.siteInfo.permalink}">
-                            Categories
+                            pagePermaLinkReference="${page.siteInfo.permalink}"
+                            data-i18n="[title]dt_pages_col_details_site_cats_badge_title;dt_pages_col_details_site_cats_badge_text">
+                            ${i18next.t('dt_pages_col_details_site_cats_badge_text')}
                         </span>
                     `;
                 flags.push('Has Site Categories');
@@ -496,11 +498,12 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasAutoSummaryBadge"
-                            title = "Page ${page.siteInfo.title} has auto generated summary" 
+                            title = "dt_pages_col_details_summary_badge_title" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark"
                             pageTitleReference="${page.siteInfo.title}"
-                            pagePermaLinkReference="${page.siteInfo.permalink}">
-                            Summary
+                            pagePermaLinkReference="${page.siteInfo.permalink}"
+                            data-i18n="[title]dt_pages_col_details_summary_badge_title;dt_pages_col_details_summary_badge_text">
+                            ${i18next.t('dt_pages_col_details_summary_badge_text')}
                         </span>
                     `;
                 flags.push('Has Auto Summary');
@@ -512,11 +515,12 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasExcerptBadge"
-                            title = "Page ${page.siteInfo.title} has excerpt" 
+                            title = "dt_pages_col_details_excerpt_badge_title" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-secondary"
                             pageTitleReference="${page.siteInfo.title}"
-                            pagePermaLinkReference="${page.siteInfo.permalink}">
-                            Excerpt
+                            pagePermaLinkReference="${page.siteInfo.permalink}"
+                            data-i18n="[title]dt_pages_col_details_excerpt_badge_title;dt_pages_col_details_excerpt_badge_text">
+                            ${i18next.t('dt_pages_col_details_excerpt_badge_text')}
                         </span>
                     `;
                 flags.push('Has Excerpt');
@@ -536,11 +540,12 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomTagsBadge"
-                            title = "Page ${page.siteInfo.title} has custom tags" 
+                            title = "dt_pages_col_details_custom_tags_badge_title" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
                             pageTitleReference="${page.savedInfo.title}"
-                            pagePermaLinkReference="${page.savedInfo.permalink}">
-                            Tags
+                            pagePermaLinkReference="${page.savedInfo.permalink}"
+                            data-i18n="[title]dt_pages_col_details_custom_tags_badge_title;dt_pages_col_details_custom_tags_badge_text">
+                            ${i18next.t('dt_pages_col_details_custom_tags_badge_text')}
                         </span>
                     `;
                 flags.push('Has Custom Tags');
@@ -552,11 +557,12 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomCategoriesBadge"
-                            title = "Page ${page.siteInfo.title} has custom categories" 
+                            title = "dt_pages_col_details_custom_cats_badge_title" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
                             pageTitleReference="${page.savedInfo.title}"
-                            pagePermaLinkReference="${page.savedInfo.permalink}">
-                            Categories
+                            pagePermaLinkReference="${page.savedInfo.permalink}"
+                            data-i18n="[title]dt_pages_col_details_custom_cats_badge_title;dt_pages_col_details_custom_cats_badge_text">
+                            ${i18next.t('dt_pages_col_details_custom_cats_badge_text')}
                         </span>
                     `;
                 flags.push('Has Custom Categories');
@@ -568,11 +574,12 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomNotesBadge"
-                            title = "Page ${page.siteInfo.title} has custom notes" 
+                            title = "dt_pages_col_details_notes_badge_title" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning"
                             pageTitleReference="${page.savedInfo.title}"
-                            pagePermaLinkReference="${page.savedInfo.permalink}">
-                            Notes
+                            pagePermaLinkReference="${page.savedInfo.permalink}"
+                            data-i18n="[title]dt_pages_col_details_notes_badge_title;dt_pages_col_details_notes_badge_text">
+                            ${i18next.t('dt_pages_col_details_notes_badge_text')}
                         </span>
                     `;
                 flags.push('Has Custom Notes');
@@ -622,7 +629,7 @@ sitePagesFn = {
             // page name
             {
                 className: 'alwaysCursorPointer',
-                title:'Title',
+                title: i18next.t('dt_pages_col_title_text'),
                 type: 'html-string',
                 searchable: true,
                 width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '100px',
@@ -634,7 +641,7 @@ sitePagesFn = {
     
             // last update
             {
-                title:'Last Update',
+                title: i18next.t('dt_pages_col_last_update_text'),
                 type: 'date-dd-mmm-yyyy', 
                 className: 'dt-left', 
                 exceptWhenRowSelect: true,
@@ -647,7 +654,7 @@ sitePagesFn = {
     
             // details
             { 
-                title:'Details',
+                title: i18next.t('dt_pages_col_details_text'),
                 type: 'string',
                 searchable: true, 
                 orderable: false, 
@@ -662,7 +669,7 @@ sitePagesFn = {
 
             // related
             { 
-                title:'Related Pages',
+                title: i18next.t('dt_pages_col_related_text'),
                 type: 'string',
                 searchable: true, 
                 orderable: false, 
@@ -677,7 +684,7 @@ sitePagesFn = {
 
             // similar
             { 
-                title:'Similar Pages',
+                title: i18next.t('dt_pages_col_similar_text'),
                 type: 'string',
                 searchable: true, 
                 orderable: false, 
@@ -693,7 +700,7 @@ sitePagesFn = {
             // excerpt
             {
                 type: 'string',
-                title:'Excerpt',
+                title: i18next.t('dt_pages_col_excerpt_text'),
                 exceptWhenRowSelect: true,
                 orderable: false,
                 searchable: true,
@@ -707,7 +714,7 @@ sitePagesFn = {
             // auto summary
             {
                 type: 'string',
-                title:'Summary',
+                title: i18next.t('dt_pages_col_summary_text'),
                 exceptWhenRowSelect: true,
                 searchable: true,
                 orderable: false,
@@ -721,7 +728,7 @@ sitePagesFn = {
             // tags
             {
                 type: 'string',
-                title:'Tags',
+                title: i18next.t('dt_pages_col_tags_text'),
                 exceptWhenRowSelect: true,
                 searchable: true,
                 orderable: false,
@@ -736,7 +743,7 @@ sitePagesFn = {
              // cats
              {
                 type: 'string',
-                title:'Categories',
+                title: i18next.t('dt_pages_col_cats_text'),
                 exceptWhenRowSelect: true,
                 searchable: true,
                 orderable: false,
@@ -1068,6 +1075,7 @@ sitePagesFn = {
 
         const tagElement = (page, allTags, tag, isSiteTag) => {
             const tagBtnColor = isSiteTag ? 'btn-primary' : 'btn-success';
+            const tagBtnTitle = i18next.t('dt_pages_col_tags_title', { postProcess: 'sprintf', sprintf: [tag] });
             return ( 
                 `
                     <a 
@@ -1078,7 +1086,8 @@ sitePagesFn = {
                         id="${tag}" 
                         type="button" 
                         class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${tagBtnColor} position-relative"
-                        title = "Details for tag ${tag}"
+                        title="${tagBtnTitle}"
+                        data-i18n="[title]dt_pages_col_tags_title_static"
                         href="tag-info?tag=${tag}"
                         data-raw="${JSON.stringify(allTags).replace(/"/g, '&quot;')}">
                         ${tag}
@@ -1136,6 +1145,7 @@ sitePagesFn = {
                         type="button" 
                         class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${catBtnColor} position-relative border-0 shadow-none"
                         title = "Details for category ${cat}"
+                        data-i18n="[title]dt_pages_col_cats_title_static"
                         href="cat-info?cat=${cat}"
                         data-raw="${JSON.stringify(allCats).replace(/"/g, '&quot;')}">
                         ${cat}
