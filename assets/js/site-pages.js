@@ -625,7 +625,11 @@ sitePagesFn = {
                 title:'Title',
                 type: 'html-string',
                 searchable: true,
-                width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '100px'
+                width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '100px',
+                createdCell: function (td, cellData) {
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                },
+                
             }, 
     
             // last update
@@ -635,7 +639,10 @@ sitePagesFn = {
                 className: 'dt-left', 
                 exceptWhenRowSelect: true,
                 searchable: true,
-                width:'100px'
+                width:'100px',
+                createdCell: function (td, cellData) {
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                },
             }, 
     
             // details
@@ -646,7 +653,11 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: true,
-                width: '400px' 
+                width: '400px',
+                createdCell: function (td, cellData) {
+                    $(td).find('span').addClass('d-flex');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                },
             }, 
 
             // related
@@ -657,7 +668,11 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: false,
-                width: '400px' 
+                width: '400px',
+                createdCell: function (td, cellData) {
+                    //$(td).addClass('d-flex');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                },
             },
 
             // similar
@@ -668,7 +683,11 @@ sitePagesFn = {
                 orderable: false, 
                 exceptWhenRowSelect: true,
                 visible: false,
-                width: '400px' 
+                width: '400px',
+                createdCell: function (td, cellData) {
+                    //$(td).addClass('d-flex');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                },
             },
             
             // excerpt
@@ -679,7 +698,10 @@ sitePagesFn = {
                 orderable: false,
                 searchable: true,
                 visible: false,
-                width: '400px' 
+                width: '400px',
+                createdCell: function (td, cellData) {
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                }, 
             },
 
             // auto summary
@@ -690,7 +712,10 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: false,
-                width: '400px' 
+                width: '400px',
+                createdCell: function (td, cellData) {
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                }, 
             },
 
             // tags
@@ -701,7 +726,11 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: true,
-                width: '400px' 
+                width: '400px',
+                createdCell: function (td, cellData) {
+                    $(td).find('span').addClass('d-flex');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                },
             },
 
              // cats
@@ -712,7 +741,11 @@ sitePagesFn = {
                 searchable: true,
                 orderable: false,
                 visible: true,
-                width: '400px' 
+                width: '400px',
+                createdCell: function (td, cellData) {
+                    $(td).find('span').addClass('d-flex');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                },
             }
         ];
 
