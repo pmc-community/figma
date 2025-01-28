@@ -288,15 +288,14 @@ sitePagesFn = {
         }
 
         const setFilterDisplayValue = (selector, selector_container, value) => {
+            console.log(selector_container)
             if (value) {
-                $(selector).text(value);
-                $(selector_container).show();
+                $(selector).text(value);      
+                $(selector_container).removeClass('d-none');
+            } else {
+                $(selector).text('');
+                $(selector_container).addClass('d-none');
             }
-            else 
-                {
-                    $(selector).text('');
-                    $(selector_container).hide();
-                }
         }
         
         checkFilterItems();
@@ -309,6 +308,7 @@ sitePagesFn = {
 
             sitePagesFn.pageTableSearchPanesSelection.forEach(selectionPane => {
                 if (selectionPane.name) {
+                    
                     setFilterDisplayValue (
                         `span[sitefunction="sitePagesDetailsLastFilterDetailsPage${selectionPane.name.replace(/\s+/g, '')}"]`,
                         `div[sitefunction="sitePagesDetailsLastFilterDetailsPage${selectionPane.name.replace(/\s+/g, '')}_container"]`,

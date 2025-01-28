@@ -1,7 +1,7 @@
 {
     "processing": "",
     "lengthMenu": "Afișeaza: _MENU_ ",
-    "zeroRecords": "Nu am găsit nimic - ne pare rău",
+    "zeroRecords": "Nu am găsit nimic ...",
     "info": "Afișate _START_ - _END_ din _TOTAL_",
     "infoEmpty": "Afișate 0 - 0 din 0",
     "infoFiltered": "(filtrate din _MAX_)",

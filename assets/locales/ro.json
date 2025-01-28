@@ -45,6 +45,9 @@
             "October": "Octombrie",
             "November": "Noiembrie",
             "December": "Decembrie"
+        },
+        "active_filter": {
+            "label_prefix": "sitePagesDetailsLastFilterDetailsPage"
         }
     },
 
@@ -177,6 +180,16 @@
     "dt_pages_col_details_summary_badge_text": "Sumar",
     "dt_pages_col_details_summary_badge_title": "Documentul are sumar generat automat",
     "dt_pages_col_details_excerpt_badge_text": "Extras",
-    "dt_pages_col_details_excerpt_badge_title": "Documentul are extras generat automat sau introdus manual"
+    "dt_pages_col_details_excerpt_badge_title": "Documentul are extras generat automat sau introdus manual",
+    "dt_pages_active_filter_details_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_details_text}}_container",
+    "dt_pages_active_filter_details_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_details_text}}",
+    "dt_pages_active_filter_related_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_related_text}}_container",
+    "dt_pages_active_filter_related_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_related_text}}","dt_pages_active_filter_similar_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_similar_text}}_container",
+    "dt_pages_active_filter_similar_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_similar_text}}",
+    "dt_pages_active_filter_tags_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}_container",
+    "dt_pages_active_filter_tags_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}",
+    "dt_pages_active_filter_cats_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}_container",
+    "dt_pages_active_filter_cats_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}"
+    
 
 }
