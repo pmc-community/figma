@@ -60,7 +60,7 @@ const sitePages__pageSearch = () => {
                    get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
-            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_active_filter'));
             sitePagesFn.handleDropdownClassOverlap();
             history.replaceState({}, document.title, window.location.pathname);
             return;
@@ -246,7 +246,7 @@ sitePagesFn = {
         sitePagesFn.updateInfoAfterOffCanvasClose(pageInfo.page);
         $(`table[siteFunction="sitePagesDetailsPageTable"] td`).removeClass('table-active'); // remove any previous selection
         sitePagesFn.rebuildPagesTableSearchPanes();
-        sitePagesFn.setLastFilterInfo('Last filter');
+        sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_last_filter'));
         sitePagesFn.handleDropdownClassOverlap();
         setTimeout(()=>{
             sitePagesFn.forceRedrawPagesTable(); 
@@ -255,13 +255,38 @@ sitePagesFn = {
 
     // pages details section
     setLastFilterInfo: (lastFilterLabel) => {
+       
         const getFilterValue = (colIndex) => {
+            
+            const getKey = (object, value) => {
+                
+                return  _.findKey(object, val => val === value);
+            }
 
-            return sitePagesFn.pageTableSearchPanesSelection.length === 0 ?
+            const getDefaultValues = (object, key) => {
+                return object[key];
+            }
+
+            const value = sitePagesFn.pageTableSearchPanesSelection.length === 0 ?
                 null : 
                 getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection) === 'none' ?
                     null:
-                    getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection).rows.join('; ')
+                    getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection).rows.join('; ');
+            
+            if (colIndex !== 2) return value;
+            else {
+                let siteLanguage;
+                if (!settings.multilang.enabled) siteLanguage = 'en';
+                else siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage].lang;
+
+                const langResource = i18next.services.resourceStore.data[siteLanguage];
+                const siteLang = langResource.translation.common.active_filter;
+                const valueArray = value.split(';').map(item => item.trim());
+                const valueKeys = valueArray.map(value => getKey(siteLang, value));
+                const defaultLang = engLanguage.common.active_filter;
+                const defaultValues = valueKeys.map(key => getDefaultValues(defaultLang, key));
+                return defaultValues.join('; ');
+            }
         }
 
         const checkFilterItems = () => {
@@ -287,15 +312,36 @@ sitePagesFn = {
     
         }
 
-        const setFilterDisplayValue = (selector, selector_container, value) => {
-            console.log(selector_container)
+        const setFilterDisplayValue = (selector, selector_container, value, colIndex) => {
+            const getTheKey = (text) => {
+                return _.snakeCase(text);
+            }
+
+            const getTheValue = (key) => {
+                return i18next.t(`common.active_filter.${key}`);
+            }
+
             if (value) {
-                $(selector).text(value);      
-                $(selector_container).removeClass('d-none');
+                // need to do some translations for colIndex === 2, the document details
+                if (colIndex === 2) {
+                    const valueArray = value.split(";").map(item => item.trim());
+                    const keys = valueArray.map(getTheKey);
+                    const values = keys.map(getTheValue);
+                    $(selector).text(values.join('; '));      
+                    $(selector_container).removeClass('d-none');
+                }
+
+                // no tranlsations needed for the other filter columns
+                else {
+                    $(selector).text(value);
+                    $(selector_container).removeClass('d-none');
+                }
+
             } else {
                 $(selector).text('');
                 $(selector_container).addClass('d-none');
             }
+            
         }
         
         checkFilterItems();
@@ -308,11 +354,11 @@ sitePagesFn = {
 
             sitePagesFn.pageTableSearchPanesSelection.forEach(selectionPane => {
                 if (selectionPane.name) {
-                    
                     setFilterDisplayValue (
                         `span[sitefunction="sitePagesDetailsLastFilterDetailsPage${selectionPane.name.replace(/\s+/g, '')}"]`,
                         `div[sitefunction="sitePagesDetailsLastFilterDetailsPage${selectionPane.name.replace(/\s+/g, '')}_container"]`,
-                        getFilterValue(selectionPane.column)
+                        getFilterValue(selectionPane.column),
+                        selectionPane.column
                     );
                 }
             });
@@ -452,7 +498,8 @@ sitePagesFn = {
 
     },
 
-    setPagesTablePageBadges: () => {
+    setPagesTablePageBadges: async () => {
+        await waitForI18Next();
         const pageSiteInfoBadges = (page) => {
             if (page.siteInfo === 'none') return ['',[]];
             let siteInfoBadges = '';
@@ -472,7 +519,8 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_site_tags_badge_text')}
                         </span>
                     `;
-                flags.push('Has Site Tags');
+                //flags.push('Has Site Tags');
+                flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Site Tags')}`));
             }
 
             if (page.siteInfo.categories.length > 0 ) {
@@ -489,7 +537,8 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_site_cats_badge_text')}
                         </span>
                     `;
-                flags.push('Has Site Categories');
+                //flags.push('Has Site Categories');
+                flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Site Categories')}`));
             }
 
             if (page.siteInfo.autoSummary !== '' ) {
@@ -506,7 +555,8 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_summary_badge_text')}
                         </span>
                     `;
-                flags.push('Has Auto Summary');
+                //flags.push('Has Auto Summary');
+                flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Auto Summary')}`));
             }
 
             if (page.siteInfo.excerpt !== '' ) {
@@ -523,7 +573,8 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_excerpt_badge_text')}
                         </span>
                     `;
-                flags.push('Has Excerpt');
+                //flags.push('Has Excerpt');
+                flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Excerpt')}`));
             }
             
             return [siteInfoBadges, flags];
@@ -548,7 +599,8 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_custom_tags_badge_text')}
                         </span>
                     `;
-                flags.push('Has Custom Tags');
+                //flags.push('Has Custom Tags');
+                flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Custom Tags')}`));
             }
             
             if (page.savedInfo.customCategories.length > 0 ) {
@@ -565,7 +617,8 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_custom_cats_badge_text')}
                         </span>
                     `;
-                flags.push('Has Custom Categories');
+                //flags.push('Has Custom Categories');
+                flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Custom Categories')}`));
             }
             
             if (page.savedInfo.customNotes.length > 0 ) {
@@ -582,10 +635,12 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_notes_badge_text')}
                         </span>
                     `;
-                flags.push('Has Custom Notes');
+                //flags.push('Has Custom Notes');
+                flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Custom Notes')}`));
             }
             
-            if (flags.length > 0) flags.unshift('Is Saved');
+            //if (flags.length > 0) flags.unshift('Is Saved');
+            if (flags.length > 0) flags.unshift(i18next.t(`common.active_filter.${_.snakeCase('Is Saved')}`));
             return [savedInfoBadges, flags];
     
         }
@@ -617,7 +672,8 @@ sitePagesFn = {
 
     pageTableSearchPanesSelection: [], // object to keep the current pagesTable searchPanes current filter
 
-    setPagesDataTable: () => {
+    setPagesDataTable: async () => {
+        await waitForI18Next();
         const tableSelector = 'table[siteFunction="sitePagesDetailsPageTable"]';
 
         if( $.fn.DataTable.isDataTable(tableSelector) ) {
@@ -781,15 +837,15 @@ sitePagesFn = {
                             2, 
                             ()=>{
                                 return new Set([
-                                    'Has Auto Summary',
-                                    'Has Custom Categories',
-                                    'Has Custom Notes',
-                                    'Has Custom Tags',
-                                    'Has Excerpt',
-                                    'Has Site Categories',
-                                    'Has Site Tags',
-                                    'Is Saved',
-                                    'Is Not Saved'
+                                    i18next.t(`common.active_filter.${_.snakeCase('Has Auto Summary')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Has Custom Categories')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Has Custom Notes')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Has Custom Tags')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Has Excerpt')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Has Site Categories')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Has Site Tags')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Is Saved')}`),
+                                    i18next.t(`common.active_filter.${_.snakeCase('Is Not Saved')}`)
                                 ]);
                             },
                             (row, value) => {
@@ -976,7 +1032,7 @@ sitePagesFn = {
 
     refreshLastFilterInfo: (tableSearchPanesSelection) => {
         sitePagesFn.pageTableSearchPanesSelection = tableSearchPanesSelection;
-        sitePagesFn.setLastFilterInfo('Active filter');
+        sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_active_filter'));
     },
 
     postProcessPagesTable: (table, tableUniqueID) => {
@@ -1359,7 +1415,7 @@ sitePagesFn = {
                 }
             ];
             sitePagesFn.rebuildPagesTableSearchPanes();
-            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_active_filter'));
             sitePagesFn.handleDropdownClassOverlap();
 
             $('html, body').animate({
@@ -1408,7 +1464,7 @@ sitePagesFn = {
                 }
             ];
             sitePagesFn.rebuildPagesTableSearchPanes();
-            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_active_filter'));
             sitePagesFn.handleDropdownClassOverlap();
 
             $('html, body').animate({

@@ -47,7 +47,17 @@
             "December": "Decembrie"
         },
         "active_filter": {
-            "label_prefix": "sitePagesDetailsLastFilterDetailsPage"
+            "label_prefix": "sitePagesDetailsLastFilterDetailsPage",
+            "has_auto_summary": "Are sumar",
+            "has_custom_categories": "Are categorii flexibile",
+            "has_custom_notes": "Are note atasate",
+            "has_custom_tags": "Are etichete flexibile",
+            "has_excerpt": "Are extras",
+            "has_site_categories": "Are categorii fixe",
+            "has_site_tags": "Are etichete fixe",
+            "is_saved": "Este salvat",
+            "is_not_saved": "Nu este salvat"
+
         }
     },
 
@@ -189,7 +199,11 @@
     "dt_pages_active_filter_tags_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}_container",
     "dt_pages_active_filter_tags_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}",
     "dt_pages_active_filter_cats_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}_container",
-    "dt_pages_active_filter_cats_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}"
+    "dt_pages_active_filter_cats_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}",
+    "dt_pages_active_filter_box_title_last_filter": "Ultimels filtre active",
+    "dt_pages_active_filter_box_title_active_filter": "Filtre active",
+    "dt_pages_active_filter_box_open_filter_btn_text": "Deschide",
+    "dt_pages_active_filter_box_clear_filter_btn_text": "Sterge"
     
 
 }
