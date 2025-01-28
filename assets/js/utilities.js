@@ -743,18 +743,18 @@ const setDataTable = async (
 
             // define some helpers
             const helpers = {
-                autoApplyActiveFilter:  () => {
-                     $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
-                     $('.dropdown-menu').hide(); // hide search panes
-                     $('.dtb-popover-close').click(); // force search panes to close
+                autoApplyActiveFilter:  async () => {
+                     await $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
+                     await $('.dropdown-menu').hide(); // hide search panes
+                     await $('.dtb-popover-close').click(); // force search panes to close
                     //setTimeout(()=>$('body').click(), 200); // force sitePagesDetailsLastFilter to lose focus
                 },
 
-                clearActiveFilter: (tableUniqueID) => {
-                    $(`#tableSearchPanes_${tableUniqueID}`).click();
-                    $('.dropdown-menu[id!="category-menu-more-list"]').hide();
-                    $('.dtsp-clearAll').click();
-                    $('.dtb-popover-close').click(); 
+                clearActiveFilter: async (tableUniqueID) => {
+                    await $(`#tableSearchPanes_${tableUniqueID}`).click();
+                    await $('.dropdown-menu[id!="category-menu-more-list"]').hide();
+                    await $('.dtsp-clearAll').click();
+                    await $('.dtb-popover-close').click(); 
                     //setTimeout(()=>$('body').click(), 200);   
                 },
 
@@ -762,7 +762,7 @@ const setDataTable = async (
                     $(`button[id="tableSearchPanes_${tableUniqueID}"]`).click();
                 },
 
-                applyTableStylesOnMobile: (table) => {
+                applyTableStylesOnMobile: async (table) => {
                     // since we don't use responsive = true for datatables
                     // we need to apply some css corrections because some things may look weird on mobile 
                     if (preFlight.envInfo.device.deviceType === 'mobile') {
@@ -1069,11 +1069,13 @@ const setDataTable = async (
             )
                 .then( (result) => {
 
-                    if (result.table.helpers && result.table.helpers !== 'undefined') 
-                        result.table.helpers.applyTableStylesOnMobile(result.table);
-                    
-                    if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
-                        result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                    setTimeout(() => {
+                        if (result.table.helpers && result.table.helpers !== 'undefined') 
+                            result.table.helpers.applyTableStylesOnMobile(result.table);
+                        
+                        if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
+                            result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                    }, 0);
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table
                 });
