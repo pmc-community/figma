@@ -723,7 +723,7 @@ const setDataTable = async (
         searchPanes
     ) => {
 
-        return new Promise ( (resolve, reject) => {
+        //return new Promise ( (resolve, reject) => {
 
             $(`${tableSelector} tr`).removeClass('table-active'); // just to be sure that nothing is marked as selected
             table = $(tableSelector).DataTable(allSettings);
@@ -743,7 +743,7 @@ const setDataTable = async (
 
             // define some helpers
             const helpers = {
-                autoApplyActiveFilter:  () => {
+                autoApplyActiveFilter: () => {
                      $(`#tableSearchPanes_${tableUniqueID}`).click(); // execute Filter button click to open search panes and apply selection
                      $('.dropdown-menu').hide(); // hide search panes
                      $('.dtb-popover-close').click(); // force search panes to close
@@ -1017,10 +1017,16 @@ const setDataTable = async (
                 });
     
             }
+
+            if ( !(tableSearchPanesSelection.length === 0 || _.sumBy(tableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0) )
+                helpers.autoApplyActiveFilter(tableUniqueID);
+            
+            helpers.applyTableStylesOnMobile(table);
             
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
             /* resolving the promise inside a custom message handler */
+            /*
             setTimeout(()=>{
                 $(tableSelector).trigger('timeToBuildTheTable')
             }, 0);
@@ -1034,6 +1040,7 @@ const setDataTable = async (
                     }
                 )
             })
+            */
 
             /* resolving the promise inside a longer setTimeout */
             /*
@@ -1049,7 +1056,7 @@ const setDataTable = async (
             }, 0);
             */
 
-        });
+        //});
     }
 
     $(document).ready(function() {
@@ -1067,16 +1074,18 @@ const setDataTable = async (
                 allSettings, 
                 searchPanes
             )
-                .then( (result) => {
+                /*
+            .then( (result) => {
 
-                    if (result.table.helpers && result.table.helpers !== 'undefined') 
-                        result.table.helpers.applyTableStylesOnMobile(result.table);
+                    //if (result.table.helpers && result.table.helpers !== 'undefined') 
+                    //    result.table.helpers.applyTableStylesOnMobile(result.table);
                     
-                    if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
-                        result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
+                    //if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
+                    //    result.table.helpers.autoApplyActiveFilter(result.tableUniqueID);
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table
                 });
+                */
         });
     });
     
