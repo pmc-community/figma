@@ -804,11 +804,6 @@ const setDataTable = async (
                                     .addClass('fs-6');
         
                             $('.dt-info').addClass('text-start fs-6');
-
-                            setTimeout(() => {
-                                $('.dt-length').parent().show();
-                                $('.dt-search').parent().show();   
-                            }, 0);
                             
                         }); 
                     };
@@ -1052,8 +1047,6 @@ const setDataTable = async (
             }, 0);
 
             $(tableSelector).on('timeToBuildTheTable', function() {
-                $('.dt-length').parent().hide();
-                $('.dt-search').parent().hide();
                 resolve(
                     {
                         table: table,
