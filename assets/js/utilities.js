@@ -681,6 +681,10 @@ const setDataTable = async (
             // otherwise, the table will be shown after applying the filters (see createTable_ASYNC.helpers.autoApplyActiveFilter below)
             if ( tableSearchPanesSelection.length === 0 || _.sumBy(tableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0 ) {
                 $('#dataTableLoading').remove();
+                setTimeout(() => {
+                    $('.dt-length').parent().show();
+                    $('.dt-search').parent().show();   
+                }, 0);
                 $(tableSelector).show();
             }   
         },  
