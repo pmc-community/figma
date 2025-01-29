@@ -346,12 +346,12 @@
           "permalink": "/intro/"
         },
         {
-          "title": "Collection-2/X",
-          "permalink": "collection-2/X/x/"
+          "title": "Subfolder/F1",
+          "permalink": "/sf/f1/"
         },
         {
-          "title": "Collection-2/Y",
-          "permalink": "/collection-2/y/y/"
+          "title": "Collection-2/X",
+          "permalink": "collection-2/X/x/"
         }
       ],
       "autoSummary": "intepretation for the following text:: markdown content direct included in the pagestableheads up!!!links to other site docs must be ...",
@@ -553,8 +553,8 @@
           "permalink": "/intro/"
         },
         {
-          "title": "Intro Child Page",
-          "permalink": "/intro/introChild/"
+          "title": "Subfolder/F1",
+          "permalink": "/sf/f1/"
         }
       ],
       "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ...",
@@ -664,23 +664,23 @@
       "tags": [
 
       ],
-      "excerpt": "services, lorem ipsum, products, latin, user, user content, content, sites, website, updates",
+      "excerpt": "services, content, lorem ipsum, file, site, products, latin, user, title, link",
       "lastUpdate": "2025-01-11 18:48:00 +0200",
       "lastUpdateUTC": 1736614080,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Terms",
-          "permalink": "/terms/"
+          "title": "Play with content",
+          "permalink": "/pwc/"
         },
         {
           "title": "Collection-1/G1",
           "permalink": "/collection-1/g1/"
         },
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
+          "title": "Terms",
+          "permalink": "/terms/"
         }
       ],
       "autoSummary": "goods or services made available on or through such third party sites or resources. either pmc or any third parties may provide links to other websites and/or ...",
