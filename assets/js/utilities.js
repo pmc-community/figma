@@ -800,8 +800,7 @@ const setDataTable = async (
                                 .addClass('d-flex justify-content-between align-items-center')
                                 .find('input').css('width', '50%');
                             
-                            $('.dt-search').find('label')
-                                    .addClass('fs-6');
+                            $('.dt-search').find('label').addClass('fs-6');
         
                             $('.dt-info').addClass('text-start fs-6');
                             
@@ -1038,7 +1037,7 @@ const setDataTable = async (
                 });
     
             }
-            
+
             // everything set, now we need to resolve the promise 
             // we pass the table and its current search panes selection to the next steps
             /* resolving the promise inside a custom message handler */
@@ -1097,6 +1096,7 @@ const setDataTable = async (
                         
                         if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
                             result.table.helpers.autoApplyActiveFilter(result.tableSelector);
+
                     }, 0);
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table

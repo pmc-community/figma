@@ -273,13 +273,18 @@ sitePagesFn = {
                     null:
                     getObjectFromArray({column: colIndex}, sitePagesFn.pageTableSearchPanesSelection).rows.join('; ');
             
-            if (colIndex !== 2) return value;
+            // values from other searcPanes columns except for colIndex=2 does not need to be further passed in default English translation
+            if (colIndex !== 2) return value; 
             else {
+                // values for colIndex = 2 needs to be further passed in default English translation
+                // for each element in value array we get its translation key from common.active_filter keys group
+                // we get the English translation by reading the key from common.active_filter keys group from engLanguage global
+                // which is passed at build time end extracted in preflight.js, 
+                // because i18next may not load en language at init so we may not be able to use it
                 let siteLanguage;
                 if (!settings.multilang.enabled) siteLanguage = 'en';
                 else siteLanguage = settings.multilang.availableLang[settings.multilang.siteLanguage].lang;
-
-                const langResource = i18next.services.resourceStore.data[siteLanguage];
+                const langResource = i18next.services.resourceStore.data[siteLanguage]; // siteLanguage loaded by i18next at init
                 const siteLang = langResource.translation.common.active_filter;
                 const valueArray = value.split(';').map(item => item.trim());
                 const valueKeys = valueArray.map(value => getKey(siteLang, value));
@@ -499,7 +504,7 @@ sitePagesFn = {
     },
 
     setPagesTablePageBadges: async () => {
-        await waitForI18Next();
+        await waitForI18Next(); // need to ensure that translation is available
         const pageSiteInfoBadges = (page) => {
             if (page.siteInfo === 'none') return ['',[]];
             let siteInfoBadges = '';
@@ -519,7 +524,6 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_site_tags_badge_text')}
                         </span>
                     `;
-                //flags.push('Has Site Tags');
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Site Tags')}`));
             }
 
@@ -537,7 +541,6 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_site_cats_badge_text')}
                         </span>
                     `;
-                //flags.push('Has Site Categories');
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Site Categories')}`));
             }
 
@@ -555,7 +558,6 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_summary_badge_text')}
                         </span>
                     `;
-                //flags.push('Has Auto Summary');
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Auto Summary')}`));
             }
 
@@ -573,7 +575,6 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_excerpt_badge_text')}
                         </span>
                     `;
-                //flags.push('Has Excerpt');
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Excerpt')}`));
             }
             
@@ -581,7 +582,7 @@ sitePagesFn = {
         }
 
         const pageSavedInfoBadges = (page) => {
-            if (page.savedInfo === 'none') return ['',['Is Not Saved']];
+            if (page.savedInfo === 'none') return ['',[i18next.t(`common.active_filter.${_.snakeCase('Is Not Saved')}`)]];
             let savedInfoBadges = '';
             let flags = [];
     
@@ -599,7 +600,6 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_custom_tags_badge_text')}
                         </span>
                     `;
-                //flags.push('Has Custom Tags');
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Custom Tags')}`));
             }
             
@@ -617,7 +617,6 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_custom_cats_badge_text')}
                         </span>
                     `;
-                //flags.push('Has Custom Categories');
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Custom Categories')}`));
             }
             
@@ -635,11 +634,9 @@ sitePagesFn = {
                             ${i18next.t('dt_pages_col_details_notes_badge_text')}
                         </span>
                     `;
-                //flags.push('Has Custom Notes');
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Custom Notes')}`));
             }
             
-            //if (flags.length > 0) flags.unshift('Is Saved');
             if (flags.length > 0) flags.unshift(i18next.t(`common.active_filter.${_.snakeCase('Is Saved')}`));
             return [savedInfoBadges, flags];
     
@@ -682,7 +679,7 @@ sitePagesFn = {
         }
 
         const colDefinition = [
-            // page name
+            // page title
             {
                 className: 'alwaysCursorPointer',
                 title: i18next.t('dt_pages_col_title_text'),
@@ -690,7 +687,7 @@ sitePagesFn = {
                 searchable: true,
                 width: preFlight.envInfo.device.deviceType === 'desktop' ? '200px' : '100px',
                 createdCell: function (td, cellData) {
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 },
                 
             }, 
@@ -704,7 +701,7 @@ sitePagesFn = {
                 searchable: true,
                 width:'100px',
                 createdCell: function (td, cellData) {
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 },
             }, 
     
@@ -719,7 +716,7 @@ sitePagesFn = {
                 width: '400px',
                 createdCell: function (td, cellData) {
                     $(td).find('span').addClass('d-flex');
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 },
             }, 
 
@@ -733,8 +730,7 @@ sitePagesFn = {
                 visible: false,
                 width: '400px',
                 createdCell: function (td, cellData) {
-                    //$(td).addClass('d-flex');
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 },
             },
 
@@ -748,8 +744,7 @@ sitePagesFn = {
                 visible: false,
                 width: '400px',
                 createdCell: function (td, cellData) {
-                    //$(td).addClass('d-flex');
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 },
             },
             
@@ -763,7 +758,7 @@ sitePagesFn = {
                 visible: false,
                 width: '400px',
                 createdCell: function (td, cellData) {
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 }, 
             },
 
@@ -777,7 +772,7 @@ sitePagesFn = {
                 visible: false,
                 width: '400px',
                 createdCell: function (td, cellData) {
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 }, 
             },
 
@@ -792,7 +787,7 @@ sitePagesFn = {
                 width: '400px',
                 createdCell: function (td, cellData) {
                     $(td).find('span').addClass('d-flex');
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 },
             },
 
@@ -807,7 +802,7 @@ sitePagesFn = {
                 width: '400px',
                 createdCell: function (td, cellData) {
                     $(td).find('span').addClass('d-flex');
-                    $(td).addClass('border-bottom border-secondary border-opacity-25 ');
+                    $(td).addClass('border-bottom border-secondary border-opacity-25');
                 },
             }
         ];
@@ -1389,7 +1384,7 @@ sitePagesFn = {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Is Saved'],
+                    rows:[i18next.t('common.active_filter.is_saved')],
                     get name() { return sitePagesFn.getColName(table,this.column) }
                     
                 },
@@ -1438,7 +1433,7 @@ sitePagesFn = {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Is Not Saved'],
+                    rows:[i18next.t('common.active_filter.is_not_saved')],
                     get name() { return sitePagesFn.getColName(table,this.column) }
                     
                 },
