@@ -62,16 +62,16 @@
     {
       "permalink": "/pwc/",
       "keywords": [
-        "file",
         "lorem ipsum",
-        "content",
-        "site",
-        "title",
-        "link",
+        "text",
+        "model",
         "latin",
-        "cicero",
-        "malorum",
-        "sections"
+        "encoder model",
+        "tasks",
+        "word",
+        "encoder",
+        "variety",
+        "length"
       ]
     },
     {
@@ -108,15 +108,15 @@
       "permalink": "/sf/f1/",
       "keywords": [
         "services",
-        "content",
         "lorem ipsum",
-        "file",
-        "site",
         "products",
         "latin",
         "user",
-        "title",
-        "link"
+        "user content",
+        "content",
+        "sites",
+        "website",
+        "updates"
       ]
     },
     {
@@ -126,11 +126,11 @@
         "text",
         "model",
         "latin",
-        "encoder model",
         "tasks",
         "word",
-        "encoder",
+        "encoder model",
         "variety",
+        "encoder",
         "length"
       ]
     },

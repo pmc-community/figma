@@ -94,7 +94,7 @@ if (pagePermalink !== '/') {
 
     // CONVERSION FUNCTIONS FOR DATATABLES SORTING PURPOSES
     // type dd-mmm-yyyy to Unix Timestamp
-
+    // used to sort date fields based on unix timestamp and not based on date string
     $.fn.dataTable.ext.type.order['date-dd-mmm-yyyy-pre'] = function(d) {
         const months = {
             "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3,
@@ -115,9 +115,9 @@ if (pagePermalink !== '/') {
     };
 
     // Extend DataTables with custom search function
-    $.fn.dataTable.ext.type.search['raw-data'] = function(data) {
+    $.fn.dataTable.ext.type.search['data-raw'] = function(data) {
         try {
-            var parsedData = JSON.parse(data);
+            const parsedData = JSON.parse(data);
             if (Array.isArray(parsedData)) {
                 if (typeof parsedData[0] === 'object' && parsedData[0] !== null) {
                     // Extract titles from array of objects
@@ -136,10 +136,14 @@ if (pagePermalink !== '/') {
 
 /* SOME GENERAL PURPOSE UTILITIES */
 
-// global function execution interceptor for pre and post hooks
-// the interceptor use a list of functions that are set to be intrercepted
-// the list must be available prior to the definition of this interceptor
-// SEE MORE DETAILS FOR USAGE IN pre-hooks.js and post-hooks.js
+const waitUntilCompleteOrTimeout = (task, timeoutMs) => {
+    return Promise.race([
+      task(),  // The task to wait for
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout expired')), timeoutMs)
+      )
+    ]);
+}
 
 const removeChildrenExceptFirst = (nodeSelector) => {
     var $node = $(nodeSelector);
@@ -583,7 +587,8 @@ const setDataTable = async (
     additionalSettings = {}, // any other settings besides the default ones (i.e. columnDefs to define individual search panes)
     searchPanes = null, // search panes configuration and callbacks
     envInfo = null,
-    initCompleteCallback = null // callback to be executed after init complete, besides the default one
+    initCompleteCallback = null, // callback to be executed after init complete, besides the default one
+    afterSearchPanesCallback = null // to be executed after autoApplyActiveFilter
 ) => {
     
     $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
@@ -686,7 +691,11 @@ const setDataTable = async (
                     $('.dt-search').parent().show();   
                 }, 0);
                 $(tableSelector).show();
-            }   
+            }
+            
+            // callback to be personalised for each table
+            // for post processing the table (i.e. adding buttons based on context)
+            if (callback) callback(table);
         },  
         serverSide: false,
         paging: true,
@@ -734,7 +743,8 @@ const setDataTable = async (
         callback, 
         callbackClickRow, 
         allSettings, 
-        searchPanes
+        searchPanes,
+        afterSearchPanesCallback
     ) => {
 
         return new Promise ( (resolve, reject) => {
@@ -755,18 +765,34 @@ const setDataTable = async (
                 });
             }
 
-            // define some helpers
+            // define some helpers 
             const helpers = {
-                autoApplyActiveFilter: async (tableSelector) => {
-                    // execute Filter button click to open search panes and apply selection
-                     await $(`#tableSearchPanes_${tableUniqueID}`).click(); 
-                     await $('.dropdown-menu').hide(); // hide search panes
-                     await $('.dtb-popover-close').click(); // force search panes to close
-                    setTimeout(()=>{
-                        $('body').click();
-                        $('#dataTableLoading').remove();
-                        $(tableSelector).show();
-                    }, 200); // force sitePagesDetailsLastFilter to lose focus
+                autoApplyActiveFilter: (tableSelector) => {
+                    return new Promise( async (resolve) => {
+
+                        simulateSearchPanes = async () => {
+                                // Execute Filter button click to open search panes and apply selection
+                                await $(`#tableSearchPanes_${tableUniqueID}`).click();
+                                await $('.dropdown-menu').hide(); // Hide search panes
+                                await $('.dtb-popover-close').click(); // Force search panes to close
+                        }  
+                        await simulateSearchPanes();
+                        setTimeout(() => {
+                            $('#dataTableLoading').remove();
+                            $('body').click();
+                            filteredRows = table.rows({ search: 'applied' }).nodes().length;
+                            removedRows = table.rows( {search:'removed'} ).nodes().length;
+                            totalRows = table.rows().count();
+                            $(tableSelector).show();
+                            resolve(
+                                {
+                                    filteredRows: filteredRows,
+                                    removedRows: removedRows,
+                                    totalRows: totalRows
+                                });
+                        }, 500);
+                      
+                    });
                 },
 
                 clearActiveFilter: async (tableUniqueID) => {
@@ -810,10 +836,6 @@ const setDataTable = async (
             }
 
             table.helpers = helpers;
-
-            // callback to be personalised for each table
-            // for post processing the table (i.e. adding buttons based on context)
-            callback(table);
 
             // set the columns which are active when click on row
             // HEADS UP!!! THIS WORKS ONLY WHEN THE callbackClickRow IS USED
@@ -1046,12 +1068,13 @@ const setDataTable = async (
             }, 0);
 
             $(tableSelector).on('timeToBuildTheTable', function() {
+                
                 resolve(
                     {
                         table: table,
                         selection: tableSearchPanesSelection,
                         tableUniqueID: tableUniqueID,
-                        tableSelector: tableSelector
+                        tableSelector: tableSelector,
                     }
                 )
             })
@@ -1077,6 +1100,8 @@ const setDataTable = async (
         // first wait for i18next 
         // then create the table, 
         // then apply active searchPanes selection if available and some styles on mobile
+
+
         waitForI18Next().then(() => {
             
             createTable_ASYNC(
@@ -1086,18 +1111,66 @@ const setDataTable = async (
                 callback, 
                 callbackClickRow, 
                 allSettings, 
-                searchPanes
+                searchPanes,
+                afterSearchPanesCallback
             )
                 .then( (result) => {
-
+                    const timeout = 5000;
                     setTimeout(() => {
                         if (result.table.helpers && result.table.helpers !== 'undefined') 
-                            result.table.helpers.applyTableStylesOnMobile(result.table);
-                        
-                        if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
-                            result.table.helpers.autoApplyActiveFilter(result.tableSelector);
-
+                            result.table.helpers.applyTableStylesOnMobile(result.table);        
                     }, 0);
+
+                    const doTask = () => new Promise((resolve) => {
+                        let res;
+                        if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
+                            
+                            result.table.helpers.autoApplyActiveFilter(result.tableSelector)
+                                .then((rowsCount) => {
+                                    // if provided, this callback can help to do something after autoApplyActiveFilter
+                                    // sometimes is possible that the table to be rendered without the active filter
+                                    // so the callback provides the place to do corrections such as enforcing aplying the active filter
+                                    res = {
+                                        table: result.table, 
+                                        tableSelector: result.tableSelector,
+                                        hasFilter: true,
+                                        filteredRows: rowsCount.filteredRows,
+                                        removedRows:rowsCount.removedRows,
+                                        totalRows: rowsCount.totalRows
+                                    };
+                                });
+                        }
+                        else {
+                            res = {
+                                table: result.table, 
+                                tableSelector: result.tableSelector,
+                                hasFilter: false,
+                                filteredRows: 0,
+                                removedRows:0,
+                                totalRows: result.table.rows().count()
+                            };
+                        }
+
+                        setTimeout(() => resolve(res), timeout);
+                    });
+
+                    /* use Promise.race */
+                    /*
+                    waitUntilCompleteOrTimeout(doTask, timeout)
+                        .then((res) => {
+                            if (afterSearchPanesCallback) afterSearchPanesCallback(res);
+                        })
+                        .catch(error => console.error(error.message));
+                    */
+                    
+                    /* or setTimeout */
+                    setTimeout( () => {
+                        doTask()
+                            .then((res) => {
+                                if (afterSearchPanesCallback) afterSearchPanesCallback(res);
+                            });
+                    }, 500);
+
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table
                 });
@@ -2028,6 +2101,7 @@ const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=
         // WE CANNOT ACCES CELLS USING datatable OBJECT SINCE DATATABLE DOES NOT EXIST YET
         let table = $(tableSelector);
         const rows = table.find('tbody tr');
+
         
         // Iterate over all rows to collect unique values from the specified column
         rows.each(function() {
@@ -2063,8 +2137,7 @@ const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=
     // THIS IS AFTER DATATABLE INIT, 
     // WE CANNOT ACCESS THE CELLS USING JQERY SINCE SOME COLUMNS MAY BE NOT VISIBLE = NOT IN THE DOM
     // WE CAN ACCESS CELLS USING datatable OBJECT IF WE NEED TO DO SO
-
-    return Array.from(values).map(value => ({
+    const options = Array.from(values).map(value => ({
         label: `${value}`,
         value: function(row) {
             const cell = $(row[columnIndex]);
@@ -2083,12 +2156,13 @@ const getSearchPaneOptionsFromArray = (tableSelector, columnIndex, initCallback=
             // if callback is provided, we send back some info, maybe is needed for extra custom processing
             if (callback) callback(row, value);
             
-            // Check if cellData is an array or a single value
-            if (Array.isArray(cellData)) return cellData.includes(value);
-            else return cellData === value;
+            const match = Array.isArray(cellData) ? cellData.includes(value) : cellData === value;
+
+            return match;
         },
         viewCount: 0
     }));
+    return options;
 }
 
 const allPagesTitles = (data, key) => {

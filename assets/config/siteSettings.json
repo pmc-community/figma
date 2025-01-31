@@ -209,12 +209,12 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        },
-        {
           "title": "Collection-2/Y",
           "permalink": "/collection-2/y/y/"
+        },
+        {
+          "title": "Play with content",
+          "permalink": "/pwc/"
         },
         {
           "title": "Collection-1/G1",
@@ -238,10 +238,6 @@
         {
           "permalink": "/intro/introChild/",
           "title": "Intro Child Page"
-        },
-        {
-          "permalink": "/sf/f1/",
-          "title": "Subfolder/F1"
         }
       ],
       "readingTime": 6,
@@ -257,12 +253,16 @@
       "tags": [
 
       ],
-      "excerpt": "lorem ipsum, text, model, latin, encoder model, tasks, word, encoder, variety, length",
-      "lastUpdate": "2025-01-18 00:58:45 +0200",
-      "lastUpdateUTC": 1737154725,
+      "excerpt": "lorem ipsum, text, model, latin, tasks, word, encoder model, variety, encoder, length",
+      "lastUpdate": "2025-01-29 13:26:04 +0200",
+      "lastUpdateUTC": 1738149964,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
+        {
+          "title": "Play with content",
+          "permalink": "/pwc/"
+        },
         {
           "title": "Intro Grand Child Page",
           "permalink": "/intro/introChild/introGrandChild/"
@@ -285,10 +285,6 @@
         {
           "permalink": "/intro/",
           "title": "Introduction"
-        },
-        {
-          "permalink": "/pwc/",
-          "title": "Play with content"
         }
       ],
       "readingTime": 2,
@@ -310,6 +306,10 @@
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
+        {
+          "title": "Play with content",
+          "permalink": "/pwc/"
+        },
         {
           "title": "Intro Child Page",
           "permalink": "/intro/introChild/"
@@ -335,23 +335,23 @@
         "tag3",
         "alfa"
       ],
-      "excerpt": "file, lorem ipsum, content, site, title, link, latin, cicero, malorum, sections",
+      "excerpt": "lorem ipsum, text, model, latin, encoder model, tasks, word, encoder, variety, length",
       "lastUpdate": "2025-01-11 18:48:00 +0200",
       "lastUpdateUTC": 1736614080,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
+          "title": "Intro Child Page",
+          "permalink": "/intro/introChild/"
+        },
+        {
+          "title": "Intro Grand Child Page",
+          "permalink": "/intro/introChild/introGrandChild/"
+        },
+        {
           "title": "Introduction",
           "permalink": "/intro/"
-        },
-        {
-          "title": "Subfolder/F1",
-          "permalink": "/sf/f1/"
-        },
-        {
-          "title": "Collection-2/X",
-          "permalink": "collection-2/X/x/"
         }
       ],
       "autoSummary": "intepretation for the following text:: markdown content direct included in the pagestableheads up!!!links to other site docs must be ...",
@@ -367,10 +367,6 @@
         {
           "permalink": "/collection-1/g1/",
           "title": "Collection-1/G1"
-        },
-        {
-          "permalink": "/intro/introChild/",
-          "title": "Intro Child Page"
         }
       ],
       "readingTime": 2,
@@ -463,12 +459,12 @@
           "permalink": "/sf/f1/"
         },
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        },
-        {
           "title": "Terms",
           "permalink": "/terms/"
+        },
+        {
+          "title": "Introduction",
+          "permalink": "/intro/"
         }
       ],
       "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. it has roots in a piece of classical literature ...",
@@ -476,10 +472,6 @@
         {
           "permalink": "/collection-2/y/y/",
           "title": "Collection-2/Y"
-        },
-        {
-          "permalink": "/sf/f1/",
-          "title": "Subfolder/F1"
         },
         {
           "permalink": "/intro/introChild/",
@@ -545,16 +537,16 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        },
-        {
           "title": "Introduction",
           "permalink": "/intro/"
         },
         {
-          "title": "Subfolder/F1",
-          "permalink": "/sf/f1/"
+          "title": "Intro Child Page",
+          "permalink": "/intro/introChild/"
+        },
+        {
+          "title": "Play with content",
+          "permalink": "/pwc/"
         }
       ],
       "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ...",
@@ -574,10 +566,6 @@
         {
           "permalink": "/pwc/",
           "title": "Play with content"
-        },
-        {
-          "permalink": "/sf/f1/",
-          "title": "Subfolder/F1"
         }
       ],
       "readingTime": 1,
@@ -603,10 +591,6 @@
         {
           "title": "Collection-2/X",
           "permalink": "collection-2/X/x/"
-        },
-        {
-          "title": "Play with content",
-          "permalink": "/pwc/"
         }
       ],
       "autoSummary": "this is a file from a collection. this file loads some external content from another repo and place it inline. link to file in different folder",
@@ -636,12 +620,12 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        },
-        {
           "title": "Collection-2/Z",
           "permalink": "/collection-2/Z/z/"
+        },
+        {
+          "title": "Play with content",
+          "permalink": "/pwc/"
         }
       ],
       "autoSummary": "ok good swedish fish nice. out of stock good and plenty nice. ok good zoute drop yumm ...",
@@ -664,23 +648,23 @@
       "tags": [
 
       ],
-      "excerpt": "services, content, lorem ipsum, file, site, products, latin, user, title, link",
+      "excerpt": "services, lorem ipsum, products, latin, user, user content, content, sites, website, updates",
       "lastUpdate": "2025-01-11 18:48:00 +0200",
       "lastUpdateUTC": 1736614080,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
+          "title": "Terms",
+          "permalink": "/terms/"
         },
         {
           "title": "Collection-1/G1",
           "permalink": "/collection-1/g1/"
         },
         {
-          "title": "Terms",
-          "permalink": "/terms/"
+          "title": "Collection-2/Y",
+          "permalink": "/collection-2/y/y/"
         }
       ],
       "autoSummary": "goods or services made available on or through such third party sites or resources. either pmc or any third parties may provide links to other websites and/or ...",

@@ -2,8 +2,10 @@
 
 // called from siteIncludes/partials/site-pages/pageSearch.html
 const sitePages__pageSearch = () => {
+
     let table; // define table here, otherwise the getters below will not have access to it and will raise errors
-    $(document).ready(function() {
+    $(document).ready(async function() {
+        await waitForI18Next();
 
         sitePagesFn.handleOffCanvasClose();
         sitePagesFn.setPageSearchButtonsFunctions();
@@ -23,12 +25,12 @@ const sitePages__pageSearch = () => {
         showSaved = readQueryString('showSaved');
         showCustomCats = readQueryString('showCustomCats');
         showCustomTags = readQueryString('showCustomTags');
-
+  
         if (showPages === '1') {
             $('#site_pages_details').removeClass('d-none');
             if (isOnlyShowPages()) {
                 history.replaceState({}, document.title, window.location.pathname);
-                return;
+                setTimeout(()=> {return}, 0);
             }       
         }
         
@@ -36,7 +38,7 @@ const sitePages__pageSearch = () => {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Is Saved'],
+                    rows:[i18next.t('common.active_filter.is_saved')],
                     get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
@@ -57,20 +59,20 @@ const sitePages__pageSearch = () => {
                 {
                     column:8,
                     rows:[],
-                   get name() { return sitePagesFn.getColName(table,this.column) }
+                    get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
             sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_active_filter'));
             sitePagesFn.handleDropdownClassOverlap();
             history.replaceState({}, document.title, window.location.pathname);
-            return;
+            setTimeout(()=> {return}, 0);
         }
 
         if (showCustomCats === '1')  {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Has Custom Categories'],
+                    rows:[i18next.t('common.active_filter.has_custom_categories')],
                     get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
@@ -94,17 +96,17 @@ const sitePages__pageSearch = () => {
                     get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
-            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_active_filter'));
             sitePagesFn.handleDropdownClassOverlap();
             history.replaceState({}, document.title, window.location.pathname);
-            return;
+            setTimeout(()=> {return}, 0);
         }
 
         if (showCustomTags === '1')  {
             sitePagesFn.pageTableSearchPanesSelection = [
                 {
                     column:2,
-                    rows:['Has Custom Tags'],
+                    rows:[i18next.t('common.active_filter.has_custom_tags')],
                     get name() { return sitePagesFn.getColName(table,this.column) }
                 },
                 {
@@ -128,19 +130,21 @@ const sitePages__pageSearch = () => {
                     get name() { return sitePagesFn.getColName(table,this.column) }
                 }
             ];
-            sitePagesFn.setLastFilterInfo('Active filter');
+            sitePagesFn.setLastFilterInfo(i18next.t('dt_pages_active_filter_box_title_active_filter'));
             sitePagesFn.handleDropdownClassOverlap();
             history.replaceState({}, document.title, window.location.pathname);
-            return;
-        }
+            setTimeout(()=> {return}, 0);
+        }   
 
     });
 }
 
 // called from siteIncludes/partials/site-pages/pages.html
 const sitePages__pages = () => {
+   
     $(document).ready(function() {
-        sitePagesFn.setPagesDataTable(); // always datatable init to be first to ensure rendering of all rows
+       
+        sitePagesFn.setPagesDataTable()
         sitePagesFn.setPagesTableButtonsFunctions();
         sitePagesFn.setPagesSavedStatus();
         sitePagesFn.setPagesTags();
@@ -255,9 +259,9 @@ sitePagesFn = {
 
     // pages details section
     setLastFilterInfo: (lastFilterLabel) => {
-       
+        
         const getFilterValue = (colIndex) => {
-            
+                
             const getKey = (object, value) => {
                 
                 return  _.findKey(object, val => val === value);
@@ -516,7 +520,7 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasSiteTagsBadge"
-                            title = "dt_pages_col_details_site_tags_badge_title" 
+                            title = "${i18next.t('dt_pages_col_details_site_tags_badge_title')}" 
                             class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
@@ -533,7 +537,7 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasSiteCategoryBadge"
-                            title = "dt_pages_col_details_site_cats_badge_title" 
+                            title = "${i18next.t('dt_pages_col_details_site_cats_badge_title')}" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
@@ -550,7 +554,7 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasAutoSummaryBadge"
-                            title = "dt_pages_col_details_summary_badge_title" 
+                            title = "${i18next.t('dt_pages_col_details_summary_badge_title')}" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
@@ -567,7 +571,7 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasExcerptBadge"
-                            title = "dt_pages_col_details_excerpt_badge_title" 
+                            title = "${i18next.t('dt_pages_col_details_excerpt_badge_title')}" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-secondary"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
@@ -592,7 +596,7 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomTagsBadge"
-                            title = "dt_pages_col_details_custom_tags_badge_title" 
+                            title = "${i18next.t('dt_pages_col_details_custom_tags_badge_title')}" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
                             pageTitleReference="${page.savedInfo.title}"
                             pagePermaLinkReference="${page.savedInfo.permalink}"
@@ -609,7 +613,7 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomCategoriesBadge"
-                            title = "dt_pages_col_details_custom_cats_badge_title" 
+                            title = "${i18next.t('dt_pages_col_details_custom_cats_badge_title')}" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
                             pageTitleReference="${page.savedInfo.title}"
                             pagePermaLinkReference="${page.savedInfo.permalink}"
@@ -626,7 +630,7 @@ sitePagesFn = {
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomNotesBadge"
-                            title = "dt_pages_col_details_notes_badge_title" 
+                            title = "${i18next.t('dt_pages_col_details_notes_badge_title')}" 
                             class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning"
                             pageTitleReference="${page.savedInfo.title}"
                             pagePermaLinkReference="${page.savedInfo.permalink}"
@@ -977,7 +981,7 @@ sitePagesFn = {
 
         const additionalTableSettings = commonAdditionalTableSettings;
 
-        setDataTable(
+       await setDataTable(
             tableSelector,
             `SitePages`,     
             colDefinition,
@@ -1005,8 +1009,14 @@ sitePagesFn = {
                 searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection || []
             },
             preFlight.envInfo,
-            (settings) => {sitePagesFn.forceRedrawPagesTable()} // do something on initComplete; settings.api is the table object
+            (settings) => {sitePagesFn.forceRedrawPagesTable()}, // do something on initComplete; settings.api is the table object
+            (afterActiveFilter) => {sitePagesFn.afterActiveFilterProcessing(afterActiveFilter)} // do something after autoApplyActiveFilter
         );
+    },
+
+    afterActiveFilterProcessing: (afterActiveFilter) => {
+        console.log(`hasFilter: ${afterActiveFilter.hasFilter}\nfilteredRows: ${afterActiveFilter.filteredRows}\nremovedRows:${afterActiveFilter.removedRows}\ntotalRows:${afterActiveFilter.totalRows}`);
+        //$('button[sitefunction="sitePagesDetailsClearFilter"]').click();
     },
 
     onSearchPanesClose: (tableSearchPanesSelection) => {
@@ -1072,7 +1082,7 @@ sitePagesFn = {
                 className: 'btn-warning btn-sm text-dark mb-2',
                 text: i18next.t('dt_custom_buttons_go_to_tags_btn_text'),
                 action: () => {
-                    window.location.href = '/tag-info'
+                    window.location.href = `/tag-info`
                 }
              }
          
@@ -1085,7 +1095,7 @@ sitePagesFn = {
                  className: 'btn-success btn-sm text-light mb-2',
                  text: i18next.t('dt_custom_buttons_go_to_cats_btn_text'),
                  action: () => {
-                     window.location.href = '/cat-info'
+                     window.location.href = `/cat-info`
                  }
              }
              

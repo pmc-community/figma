@@ -80,7 +80,7 @@
     "home_page_stats_section_cats_col_total_cats": "{{common.total}}:",
     "home_page_stats_section_cats_col_site_cats": "{{common.site_def}}:",
     "home_page_stats_section_cats_col_custom_cats": "{{common.custom}}:",
-    "home_page_stats_section_cats_col_docs_with_custom_cats": "Doc cu cat {{common.custom_s}}:",
+    "home_page_stats_section_cats_col_docs_with_custom_cats": "Doc cu categorii {{common.custom_s}}:",
 
     "home_page_stats_section_tags_col_title": "{{common.tags}}",
     "home_page_stats_section_tags_col_total_tags": "{{common.total}}:",
@@ -200,7 +200,7 @@
     "dt_pages_active_filter_tags_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}",
     "dt_pages_active_filter_cats_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}_container",
     "dt_pages_active_filter_cats_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}",
-    "dt_pages_active_filter_box_title_last_filter": "Ultimels filtre active",
+    "dt_pages_active_filter_box_title_last_filter": "Ultimele filtre",
     "dt_pages_active_filter_box_title_active_filter": "Filtre active",
     "dt_pages_active_filter_box_open_filter_btn_text": "Deschide",
     "dt_pages_active_filter_box_clear_filter_btn_text": "Sterge"

@@ -5,8 +5,7 @@
             "/collection-2/y/y/",
             "/pwc/",
             "/collection-1/g1/",
-            "/intro/introChild/",
-            "/sf/f1/"
+            "/intro/introChild/"
         ]
     },
     {
@@ -14,8 +13,7 @@
         "similarFiles": [
             "/collection-2/y/y/",
             "/collection-1/g1/",
-            "/intro/",
-            "/pwc/"
+            "/intro/"
         ]
     },
     {
@@ -27,8 +25,7 @@
         "similarFiles": [
             "/collection-2/y/y/",
             "/intro/",
-            "/collection-1/g1/",
-            "/intro/introChild/"
+            "/collection-1/g1/"
         ]
     },
     {
@@ -45,7 +42,6 @@
         "permalink": "/collection-1/g1/",
         "similarFiles": [
             "/collection-2/y/y/",
-            "/sf/f1/",
             "/intro/introChild/",
             "/intro/",
             "/pwc/"
@@ -61,8 +57,7 @@
             "/intro/",
             "/intro/introChild/",
             "/collection-1/g1/",
-            "/pwc/",
-            "/sf/f1/"
+            "/pwc/"
         ]
     },
     {
