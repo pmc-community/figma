@@ -316,14 +316,7 @@
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
-        {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        },
-        {
-          "title": "Intro Child Page",
-          "permalink": "/intro/introChild/"
-        }
+
       ],
       "autoSummary": "grand child page",
       "similarByContent": [
@@ -518,10 +511,7 @@
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
-        {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        }
+
       ],
       "autoSummary": "g11 how it works the accordion uses (internally) to make it collapsible. click the accordions below to expand ...",
       "similarByContent": [

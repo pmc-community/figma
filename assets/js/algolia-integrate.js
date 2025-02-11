@@ -1,3 +1,4 @@
+
 // removing additional docSearch features when click on clear query button
 // since is not wise to try to overwrite the clear query button handler, we use a DOM event to handle this
 removeObservers('.DocSearch-Reset receive attribute=hidden');
