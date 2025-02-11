@@ -705,7 +705,7 @@ sitePagesFn = {
                 searchable: true,
                 width:'100px',
                 createdCell: function (td, cellData) {
-                    $(td).addClass('border-bottom border-secondary border-opacity-25');
+                    $(td).addClass(`border-bottom border-secondary border-opacity-25 ${settings.multilang.dateFieldClass}`);
                 },
             }, 
     
@@ -1003,19 +1003,24 @@ sitePagesFn = {
                 searchPanesCloseCallback: (tableSearchPanesSelection) => {
                     sitePagesFn.onSearchPanesClose(tableSearchPanesSelection);
                 },
-                searchPanesSelectionChangeCallback: (tableSearchPanesSelection) => {
-                    sitePagesFn.onSearchPanesSelectionChange(tableSearchPanesSelection);
+                searchPanesSelectionChangeCallback: (tableSearchPanesSelection, filterInfo) => {
+                    sitePagesFn.onSearchPanesSelectionChange(tableSearchPanesSelection, filterInfo);
                 },
                 searchPanesCurrentSelection: sitePagesFn.pageTableSearchPanesSelection || []
             },
             preFlight.envInfo,
             (settings) => {sitePagesFn.forceRedrawPagesTable()}, // do something on initComplete; settings.api is the table object
-            (afterActiveFilter) => {sitePagesFn.afterActiveFilterProcessing(afterActiveFilter)} // do something after autoApplyActiveFilter
+            (afterActiveFilter) => {sitePagesFn.afterActiveFilterProcessing(afterActiveFilter)}, // do something after autoApplyActiveFilter
+            (afterSearchApplied) => {sitePagesFn.afterSearchApplied(afterSearchApplied)}
         );
     },
 
+    afterSearchApplied: (afterSearchApplied) => {
+        console.log(afterSearchApplied);
+    },
+
     afterActiveFilterProcessing: (afterActiveFilter) => {
-        console.log(`hasFilter: ${afterActiveFilter.hasFilter}\nfilteredRows: ${afterActiveFilter.filteredRows}\nremovedRows:${afterActiveFilter.removedRows}\ntotalRows:${afterActiveFilter.totalRows}`);
+        //console.log(`hasFilter: ${afterActiveFilter.hasFilter}\nfilteredRows: ${afterActiveFilter.filteredRows}\nremovedRows:${afterActiveFilter.removedRows}\ntotalRows:${afterActiveFilter.totalRows}`);
         //$('button[sitefunction="sitePagesDetailsClearFilter"]').click();
     },
 
@@ -1031,8 +1036,9 @@ sitePagesFn = {
         }
     },
 
-    onSearchPanesSelectionChange: (tableSearchPanesSelection) => {
+    onSearchPanesSelectionChange: (tableSearchPanesSelection, filterInfo) => {
         sitePagesFn.refreshLastFilterInfo(tableSearchPanesSelection);
+        //console.log(`hasFilter: ${filterInfo.hasFilter}\nfilteredRows: ${filterInfo.filteredRows}\nremovedRows:${filterInfo.removedRows}\ntotalRows:${filterInfo.totalRows}`);
     },
 
     refreshLastFilterInfo: (tableSearchPanesSelection) => {
@@ -1310,6 +1316,7 @@ sitePagesFn = {
     },
 
     rebuildPagesTableSearchPanes: () => {
+        $(`table[siteFunction="sitePagesDetailsPageTable"]`).hide();
 
         getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
         let table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
@@ -1320,8 +1327,14 @@ sitePagesFn = {
         table.searchPanes.clearSelections();
 
         // re-build all to capture all page modifications in table and in searchPanes as well
-        table.destroy();
-        sitePagesFn.setPagesDataTable();
+
+        // first, destroy datatable
+        // delay a bit the table destroy to allow full restore of table rows after searchPanes clean
+        setTimeout(()=>table.destroy(), settings.dataTables.TO_rebuildTableAfterUIInteration);
+
+        // delay a bit the table rebuilding to allow full cleanning after destroy
+        // and to avoid potential duplication of the table when rebuilding it
+        setTimeout(()=> sitePagesFn.setPagesDataTable(), settings.dataTables.TO_rebuildTableAfterUIInteration);
 
     },
 

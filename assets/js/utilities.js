@@ -80,6 +80,8 @@ $.fn.sizeChanged = function (handleFunction) {
     return element;
 };
 
+// add also some datatables enhancements if not home page
+// such as ordering by datetime cols
 if (pagePermalink !== '/') {
 
     // init page toc
@@ -96,11 +98,37 @@ if (pagePermalink !== '/') {
     // type dd-mmm-yyyy to Unix Timestamp
     // used to sort date fields based on unix timestamp and not based on date string
     $.fn.dataTable.ext.type.order['date-dd-mmm-yyyy-pre'] = function(d) {
-        const months = {
-            "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3,
-            "May": 4, "Jun": 5, "Jul": 6, "Aug": 7,
-            "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
-        };
+        let months = {};
+
+        if (!settings.multilang.enabled)
+            months = {
+            "Jan": 0, 
+            "Feb": 1, 
+            "Mar": 2, 
+            "Apr": 3,
+            "May": 4, 
+            "Jun": 5, 
+            "Jul": 6, 
+            "Aug": 7,
+            "Sep": 8, 
+            "Oct": 9, 
+            "Nov": 10, 
+            "Dec": 11
+            };
+        else {
+            _.set(months, i18next.t('common.months.Jan'), 0);
+            _.set(months, i18next.t('common.months.Feb'), 1);
+            _.set(months, i18next.t('common.months.Mar'), 2);
+            _.set(months, i18next.t('common.months.Apr'), 3);
+            _.set(months, i18next.t('common.months.May'), 4);
+            _.set(months, i18next.t('common.months.Jun'), 5);
+            _.set(months, i18next.t('common.months.Jul'), 6);
+            _.set(months, i18next.t('common.months.Aug'), 7);
+            _.set(months, i18next.t('common.months.Sep'), 8);
+            _.set(months, i18next.t('common.months.Oct'), 9);
+            _.set(months, i18next.t('common.months.Nov'), 10);
+            _.set(months, i18next.t('common.months.Dec'), 11);
+        }
         const dateParts = stripHtml(d).split('-');
         const day = parseInt(dateParts[0], 10);
         const month = months[dateParts[1]];
@@ -110,6 +138,7 @@ if (pagePermalink !== '/') {
     };
 
     // type html-string to html stripped text
+    // used to order by text only in HTML cols
     $.fn.dataTable.ext.type.order['html-string-pre'] = function(s) {
         return stripHtml(s);
     };
@@ -588,7 +617,8 @@ const setDataTable = async (
     searchPanes = null, // search panes configuration and callbacks
     envInfo = null,
     initCompleteCallback = null, // callback to be executed after init complete, besides the default one
-    afterSearchPanesCallback = null // to be executed after autoApplyActiveFilter
+    afterSearchPanesCallback = null, // to be executed after autoApplyActiveFilter
+    afterSearchApplied = null, // to be executed after search crieria is applied (searchPanes or search box)
 ) => {
     
     $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
@@ -688,8 +718,8 @@ const setDataTable = async (
                 $('#dataTableLoading').remove();
                 setTimeout(() => {
                     $('.dt-length').parent().show();
-                    $('.dt-search').parent().show();   
-                }, 0);
+                    $('.dt-search').parent().show();
+                }, dtSettings.TO_doStuffAfterInitComplete); // need to use dtSettings global (see preFlight-check.js) because settings is reserved here (is argument of initComplete) and cannot use settings.dataTables.TO_doStuffAfterInitComplete (will get undefined)
                 $(tableSelector).show();
             }
             
@@ -734,6 +764,7 @@ const setDataTable = async (
         },
         
     };
+
     const allSettings = {...defaultSettings, ...additionalSettings};
     
     const createTable_ASYNC = (
@@ -744,7 +775,8 @@ const setDataTable = async (
         callbackClickRow, 
         allSettings, 
         searchPanes,
-        afterSearchPanesCallback
+        afterSearchPanesCallback,
+        afterSearchApplied
     ) => {
 
         return new Promise ( (resolve, reject) => {
@@ -767,11 +799,14 @@ const setDataTable = async (
 
             // define some helpers 
             const helpers = {
-                autoApplyActiveFilter: (tableSelector) => {
+                autoApplyActiveFilter: (table,tableSelector) => {
                     return new Promise( async (resolve) => {
 
                         simulateSearchPanes = async () => {
                                 // Execute Filter button click to open search panes and apply selection
+                                // we use #tableSearchPanes_${tableUniqueID} to select the right table in case if there are many tables on page
+                                // we can use .dropdown-menu and .dtb-popover-close
+                                // because there can be only one search pane open regardless of how many tables are on page
                                 await $(`#tableSearchPanes_${tableUniqueID}`).click();
                                 await $('.dropdown-menu').hide(); // Hide search panes
                                 await $('.dtb-popover-close').click(); // Force search panes to close
@@ -780,17 +815,9 @@ const setDataTable = async (
                         setTimeout(() => {
                             $('#dataTableLoading').remove();
                             $('body').click();
-                            filteredRows = table.rows({ search: 'applied' }).nodes().length;
-                            removedRows = table.rows( {search:'removed'} ).nodes().length;
-                            totalRows = table.rows().count();
                             $(tableSelector).show();
-                            resolve(
-                                {
-                                    filteredRows: filteredRows,
-                                    removedRows: removedRows,
-                                    totalRows: totalRows
-                                });
-                        }, 500);
+                            resolve();
+                        }, settings.dataTables.TO_resolveAutoApplySearchPanesCurrentFilter);
                       
                     });
                 },
@@ -800,7 +827,7 @@ const setDataTable = async (
                     await $('.dropdown-menu[id!="category-menu-more-list"]').hide();
                     await $('.dtsp-clearAll').click();
                     await $('.dtb-popover-close').click(); 
-                    setTimeout(()=>$('body').click(), 200);   
+                    setTimeout(()=>$('body').click(), settings.dataTables.TO_forceSearchPanesToLoseFocus);   
                 },
 
                 triggerApplyActiveFilter: (tableUniqueID) => {
@@ -832,6 +859,28 @@ const setDataTable = async (
                             
                         }); 
                     };
+                },
+
+                getFilterInfo: (table, tableSearchPanesSelection) => {
+                    //console.log(tableSearchPanesSelection)
+                    const hasFilter =  
+                        (
+                            _.sumBy(tableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0
+                        )
+                            ? false
+                            : true;
+                    const filteredRows = table.rows({ search: 'applied' }).nodes().length;
+                    const removedRows = table.rows( {search:'removed'} ).nodes().length;
+                    const totalRows = table.rows().count();
+
+                    return (
+                        {
+                            hasFilter: hasFilter,
+                            filteredRows: filteredRows,
+                            removedRows: removedRows,
+                            totalRows: totalRows
+                        }
+                    );
                 }
             }
 
@@ -971,6 +1020,28 @@ const setDataTable = async (
                     });
                 }
 
+                let i = 0;
+                table.on('search.dt', function() {
+                    //i++;
+                    //console.log(i);
+
+                    //if (afterSearchApplied) afterSearchApplied('1234');
+
+                    /*
+                    const filteredRows = table.rows({ search: 'applied' }).nodes().length;
+                    const removedRows = table.rows( {search:'removed'} ).nodes().length;
+                    const totalRows = table.rows().count();
+
+                    console.log (
+                        {
+                            filteredRows: filteredRows,
+                            removedRows: removedRows,
+                            totalRows: totalRows
+                        }
+                    );
+                    */
+                })
+
                 // SETTING SEARCH PANES OBSERVERS
                 // PROCESSING WHEN SEARCH PANES CONTAINER IS OPEN
                 removeObservers('body (class=dropdown-menu dt-button-collection dtb-collection-closeable)');
@@ -1031,7 +1102,7 @@ const setDataTable = async (
                         
                         if (searchPanes.searchPanesOpenCallback) searchPanes.searchPanesOpenCallback();
             
-                    }, 100);
+                    }, settings.dataTables.TO_doStuffAfterSearchPanesContainerOpen);
                 });
 
                 // PROCESSING WHEN SEARCH PANES CONTAINER IS CLOSED
@@ -1039,7 +1110,7 @@ const setDataTable = async (
                 setElementRemovalByClassObserver('dropdown-menu dt-button-collection dtb-collection-closeable', () => {
                     setTimeout(() => {
                         if (searchPanes.searchPanesCloseCallback) searchPanes.searchPanesCloseCallback(tableSearchPanesSelection);
-                    }, 100);
+                    }, settings.dataTables.TO_doStuffAfterSearchPanesContainerClosed);
                     
                 });
 
@@ -1048,14 +1119,22 @@ const setDataTable = async (
                 removeObservers('div.dtsp-searchPane table tr class=selected getClass=true');
                 setElementChangeClassObserver('div.dtsp-searchPane table tr', 'selected', true, () => {
                     getSearchPanesSelection();
-                    if (searchPanes.searchPanesSelectionChangeCallback) searchPanes.searchPanesSelectionChangeCallback(tableSearchPanesSelection);
+                    if (searchPanes.searchPanesSelectionChangeCallback)
+                        searchPanes.searchPanesSelectionChangeCallback(
+                            tableSearchPanesSelection, 
+                            table.helpers.getFilterInfo(table, tableSearchPanesSelection)
+                        );
                 });
 
                 // unselect option
                 removeObservers('div.dtsp-searchPane table tr class=selected getClass=false');
                 setElementChangeClassObserver('div.dtsp-searchPane table tr', 'selected', false, () => {
                     getSearchPanesSelection();
-                    if (searchPanes.searchPanesSelectionChangeCallback) searchPanes.searchPanesSelectionChangeCallback(tableSearchPanesSelection);
+                    if (searchPanes.searchPanesSelectionChangeCallback) 
+                        searchPanes.searchPanesSelectionChangeCallback(
+                            tableSearchPanesSelection, 
+                            table.helpers.getFilterInfo(table, tableSearchPanesSelection)
+                        );
                 });
     
             }
@@ -1065,7 +1144,7 @@ const setDataTable = async (
             /* resolving the promise inside a custom message handler */
             setTimeout(()=>{
                 $(tableSelector).trigger('timeToBuildTheTable')
-            }, 0);
+            }, settings.dataTables.TO_resolvePromiseIncreateTable_ASYNC);
 
             $(tableSelector).on('timeToBuildTheTable', function() {
                 
@@ -1101,7 +1180,6 @@ const setDataTable = async (
         // then create the table, 
         // then apply active searchPanes selection if available and some styles on mobile
 
-
         waitForI18Next().then(() => {
             
             createTable_ASYNC(
@@ -1115,41 +1193,22 @@ const setDataTable = async (
                 afterSearchPanesCallback
             )
                 .then( (result) => {
-                    const timeout = 5000;
+                    const timeout = settings.dataTables.TO_afterAutoApplySearchPanesCurrentFilter;
                     setTimeout(() => {
                         if (result.table.helpers && result.table.helpers !== 'undefined') 
                             result.table.helpers.applyTableStylesOnMobile(result.table);        
                     }, 0);
 
                     const doTask = () => new Promise((resolve) => {
-                        let res;
-                        if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) ) {
-                            
-                            result.table.helpers.autoApplyActiveFilter(result.tableSelector)
-                                .then((rowsCount) => {
-                                    // if provided, this callback can help to do something after autoApplyActiveFilter
-                                    // sometimes is possible that the table to be rendered without the active filter
-                                    // so the callback provides the place to do corrections such as enforcing aplying the active filter
-                                    res = {
-                                        table: result.table, 
-                                        tableSelector: result.tableSelector,
-                                        hasFilter: true,
-                                        filteredRows: rowsCount.filteredRows,
-                                        removedRows:rowsCount.removedRows,
-                                        totalRows: rowsCount.totalRows
-                                    };
-                                });
-                        }
-                        else {
-                            res = {
-                                table: result.table, 
-                                tableSelector: result.tableSelector,
-                                hasFilter: false,
-                                filteredRows: 0,
-                                removedRows:0,
-                                totalRows: result.table.rows().count()
-                            };
-                        }
+                        let res = {
+                            table: result.table, 
+                            tableSelector: result.tableSelector,
+                            hasFilter: false,
+                        };
+
+                        if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
+                            result.table.helpers.autoApplyActiveFilter(result.table, result.tableSelector).then(() => res.hasFilter = true);
+                        else res.hasFilter = false;
 
                         setTimeout(() => resolve(res), timeout);
                     });
@@ -1169,8 +1228,8 @@ const setDataTable = async (
                             .then((res) => {
                                 if (afterSearchPanesCallback) afterSearchPanesCallback(res);
                             });
-                    }, 500);
-
+                    }, timeout);
+                    
                     // That is all
                     // after table init, the initComplete (see default table settings) function will remove the loader and show the table
                 });

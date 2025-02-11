@@ -188,6 +188,16 @@
       "dateFieldClass": "DSTcustomDateField",
       "dateFieldSeparator": "-"
     },
+    "dataTables": {
+      "TO_rebuildTableAfterUIInteration": 200,
+      "TO_afterAutoApplySearchPanesCurrentFilter": 500,
+      "TO_resolveAutoApplySearchPanesCurrentFilter": 500,
+      "TO_doStuffAfterInitComplete": 100,
+      "TO_forceSearchPanesToLoseFocus": 200,
+      "TO_doStuffAfterSearchPanesContainerOpen": 100,
+      "TO_doStuffAfterSearchPanesContainerClosed": 100,
+      "TO_resolvePromiseIncreateTable_ASYNC": 0
+    },
     "siteTitle": "Figma Resources"
   },
   "pageList": [
