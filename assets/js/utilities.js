@@ -2,6 +2,12 @@
 // take care of fixed header when scrolling to target, if the case
 // this has to be here, orherwise the hash will be removed before handling the fixed header
 
+// Override the default alert function to not show ugly message boxes
+window.alert = function(message) {
+    showToast('Something did not work as expected (details in console)! You may refresh page and try again. If the problem persists, contact support.', 'bg-warning', 'text-dark');
+    console.error(message);
+};
+
 $(window).on('scroll', () => {
 
     // handle fixed header scroll
@@ -719,7 +725,7 @@ const setDataTable = async (
             // otherwise, the table will be shown after applying the filters (see createTable_ASYNC.helpers.autoApplyActiveFilter below)
             if ( tableSearchPanesSelection.length === 0 || _.sumBy(tableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0 ) {
                 $('#dataTableLoading').remove();
-                $('.table-wrapper').height('auto');
+                dtSettings.possibleDataTableParents.forEach( selector => $(selector).height('auto'));
                 $(tableSelector).show();
             }
             
@@ -813,7 +819,7 @@ const setDataTable = async (
                         }  
                         await simulateSearchPanes();
                         setTimeout(() => {
-                            $('.table-wrapper').height('auto');
+                            settings.dataTables.possibleDataTableParents.forEach( selector => $(selector).height('auto'));
                             $('#dataTableLoading').remove();
                             $('body').click();
                             $(tableSelector).show();                            
@@ -899,7 +905,14 @@ const setDataTable = async (
                 // try to read the columns defs from the table settings
                 // because it may not be always diectly available in all contexts
                 // i.e. when returning from page info offcanvas, columnsConfig may not be available anymore for direct access
-                cD = table.settings().init().columns; // read cols definitions directly from table object
+                
+                try {
+                    cD = table.settings().init().columns; // read cols definitions directly from table object
+                } catch (error) {
+                    showToast('Something went wrong when building the table! You may refresh page and try again. If the problem persists, contact support.', 'bg-danger', 'text-light');
+                    console.error('Docs table error:', error);
+                }
+
                 colDef = cD && cD !== 'undefined' 
                     ? cD 
                     : columnsConfig && columnsConfig !== 'undefined'
@@ -2626,6 +2639,97 @@ const getPermalinksFromURLArray = (urlArray) => {
     });
     return permalinks;
 }
+
+const getTextNodeInRect = (rect) => {
+    let treeWalker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT, // Only process text nodes
+        null,
+        false
+    );
+
+    let bestMatch = null;
+    let bestMatchArea = 0;
+
+    while (treeWalker.nextNode()) {
+        let node = treeWalker.currentNode;
+        let $parent = $(node.parentElement);
+        if (!$parent.length) continue; // Skip orphaned nodes
+
+        let range = document.createRange();
+        range.selectNode(node);
+        let nodeRect = range.getBoundingClientRect();
+
+        // Check if text node overlaps with the selection rectangle
+        let overlapX = Math.max(0, Math.min(rect.right, nodeRect.right) - Math.max(rect.left, nodeRect.left));
+        let overlapY = Math.max(0, Math.min(rect.bottom, nodeRect.bottom) - Math.max(rect.top, nodeRect.top));
+        let overlapArea = overlapX * overlapY;
+
+        // Prioritize the text node with the most overlap
+        if (overlapArea > bestMatchArea) {
+            bestMatch = node;
+            bestMatchArea = overlapArea;
+        }
+    }
+
+    return bestMatch;
+};
+
+const getOffsetInTextNode = (node, rect) => {
+    let range = document.createRange();
+    let text = node.textContent;
+
+    for (let i = 0; i < text.length; i++) {
+        range.setStart(node, i);
+        range.setEnd(node, i + 1);
+        let charRect = range.getBoundingClientRect();
+
+        if (
+            charRect.left >= rect.left &&
+            charRect.right <= rect.right &&
+            charRect.top >= rect.top &&
+            charRect.bottom <= rect.bottom
+        ) {
+            return i;
+        }
+    }
+
+    return 0; // Default to start of text node if not found
+}
+
+const highlightSavedSelection = (selection) => {
+    let treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+
+    while (treeWalker.nextNode()) {
+        let node = treeWalker.currentNode;
+        let text = node.textContent;
+
+        let index = text.indexOf(selection.anchor);
+        if (index !== -1 && index === selection.offset) {
+            let $parent = $(node.parentElement);
+
+            // Check if the parent is already a highlighted span with the same text
+            if ($parent.is("span.customSelectionMarkup") && $parent.text() === selection.anchor) {
+                return; // Skip re-highlighting
+            }
+
+            let range = document.createRange();
+            range.setStart(node, index);
+            range.setEnd(node, index + selection.anchor.length);
+
+            let $wrapper = $("<span>", {
+                id: `customSelection_${selection.uuid}`,
+                class: "customSelectionMarkup rounded border border-secondary border-opacity-25 shadow-none bg-secondary px-1 bg-opacity-25",
+                text: selection.anchor
+            });
+
+            range.deleteContents();
+            range.insertNode($wrapper[0]); // Insert the jQuery element
+
+            break;
+        }
+    }
+};
 
 // some utilities for pages
 const orderSectionsInContainer = (order, containerSelector) => {

@@ -108,8 +108,8 @@ selectedTextContextMenu:
   minWords: 1
   maxWords: 10
   comments:
-    enabled: false
-    maxChar: 250
+    enabled: true
+    maxChars: 250
     maxWords: 50
   tags:
     maxWords: 3
@@ -150,3 +150,4 @@ dataTables:
   TO_resolvePromiseIncreateTable_ASYNC: 0 # used in utilities.js, createTable_ASYNC to resolve the promise returned by createTable_ASYNC
   TO_showLengthSearchInfoPagination: 0 # not used
   tableContainerFixedHeightWhenLoading: "200px"
+  possibleDataTableParents: [".table-wrapper", ".card-body"] # used in utilities.js, setDataTable/defaultSettings/initComplete

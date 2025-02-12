@@ -1,6 +1,18 @@
 // HEADS UP!!!
 // pageInfo is a global
 
+// DISABLE INTERACTIONS UNTIL OFFCANVAS IS FULLY LOADED
+// TO PREVENT CLOSING OFFCANVAS TOO FAST WHICH MAY LEAD TO DATATABLES INIT WARNINGS IN MAIN PAGE
+$(document).on('show.bs.offcanvas', '#offcanvasPageFullInformation', function () {
+    // Disable clicks on the entire page
+    $('body').css('pointer-events', 'none');
+});
+
+$(document).on('shown.bs.offcanvas', '#offcanvasPageFullInformation', function () {
+    // Re-enable clicks after fully opened, with a small delay, just in case!
+    setTimeout(()=>$('body').css('pointer-events', 'auto'), 100);
+});
+
 /* FUNCTION WRAPPERS
  * HEADS UP!!!
  * because of the many async operations, events and callbacks used by datatables or CKEditor, sometimes

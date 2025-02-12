@@ -219,6 +219,45 @@ const updateNote = (noteId, note, pageInfo) => {
     return true;
 }
 
+const addComment = (comment, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast(`Can\'t add comment! There is nothing in saved items...`, 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast(`Can\'t add comment! Page ${page.title} not found in saved items...`, 'bg-danger', 'text-light');
+        return false;
+    }
+
+    if (comment.comm.trim() === '') {
+        return false;
+    }
+    
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomComments = savedPage.customComments || [];
+
+    const commentObj = {
+        date: getCurrentDateTime(),
+        anchor: DOMPurify.sanitize(comment.anchor.trim()).replace(/<[^>]*>/g, ''),
+        comment: DOMPurify.sanitize(comment.comm.trim()).replace(/<[^>]*>/g, ''),
+        id: comment.uuid,
+        offset: comment.offset
+    }
+    savedPageCustomComments.push(commentObj);
+    savedPage.customComments = savedPageCustomComments;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
+
+}
+
 const getPageNotes = (pageInfo) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,

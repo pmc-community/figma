@@ -580,10 +580,12 @@ const page__getPageInfo = () => {
 
 const page__setSelectedTextContextMenu = () =>{
 
-    $(document).ready(function() {
+    $(document).ready(async function() {
         if (!settings.selectedTextContextMenu.enabled) return;
         if (pageInfo.siteInfo === 'none') return;
         if (preFlight.envInfo.device.deviceType === 'mobile') return; // not consistent behaviour on mobile
+
+        await waitForI18Next();
 
         const permalink = $('main').attr('pagePermalinkRef') || '';
         const title = $('main').attr('pageTitleRef') || '';
@@ -619,11 +621,18 @@ const page__setSelectedTextContextMenu = () =>{
             if (
                 _.words(selectedText).length > settings.selectedTextContextMenu.tags.maxWords || 
                 selectedText.length > settings.selectedTextContextMenu.tags.maxChars) {
-                    showToast(
-                        `Tags are limited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
-                        'bg-danger', 
-                        'text-light'
+                    const toastMessage = i18next.t(
+                        'page_content_context_menu_tag_limitation_toast_message',
+                        {
+                            postProcess: 'sprintf', 
+                            sprintf: 
+                                [
+                                    settings.selectedTextContextMenu.tags.maxWords, 
+                                    settings.selectedTextContextMenu.tags.maxChars
+                                ]
+                        }
                     );
+                    showToast(toastMessage, 'bg-danger', 'text-light');
                     return;
                 }
             const tag = DOMPurify.sanitize(selectedText);
@@ -642,11 +651,16 @@ const page__setSelectedTextContextMenu = () =>{
                 }
                 $('div[siteFunction="pageCustomTagButton"]').remove();
                 refreshPageDynamicInfo();
-                showToast(
-                    `Tag <span class="badge mx-1 text-bg-primary fw-normal">${tag}</span> was applied to the document!`, 
-                    'bg-success', 
-                    'text-light'
+                const formattedTag = `<span class="badge mx-1 text-bg-primary fw-normal">${tag}</span>`;
+                const toastMessage = i18next.t(
+                    'page_content_context_menu_tag_to_document_toast_message',
+                    {
+                        postProcess: 'sprintf', 
+                        sprintf: [formattedTag]
+                    }
                 );
+
+                showToast(toastMessage, 'bg-success', 'text-light');
             }
 
             $('#selected-text-context-menu').hide();
@@ -659,11 +673,18 @@ const page__setSelectedTextContextMenu = () =>{
             if (
                 _.words(selectedText).length > settings.selectedTextContextMenu.tags.maxWords || 
                 selectedText.length > settings.selectedTextContextMenu.tags.maxChars) {
-                    showToast(
-                        `Tags are limited to ${settings.selectedTextContextMenu.tags.maxWords} words and ${settings.selectedTextContextMenu.tags.maxChars} characters`, 
-                        'bg-danger', 
-                        'text-light'
+                    const toastMessage = i18next.t(
+                        'page_content_context_menu_tag_limitation_toast_message',
+                        {
+                            postProcess: 'sprintf', 
+                            sprintf: 
+                                [
+                                    settings.selectedTextContextMenu.tags.maxWords, 
+                                    settings.selectedTextContextMenu.tags.maxChars
+                                ]
+                        }
                     );
+                    showToast(toastMessage, 'bg-danger', 'text-light');
                     return;
                 }
             const crtPage = page;
@@ -713,43 +734,50 @@ const page__setSelectedTextContextMenu = () =>{
                     $('div[siteFunction="pageCustomTagButton"]').remove();
                     refreshPageDynamicInfo();
 
-                    const crtPageInfo = getPageSavedInfo(crtPage.siteInfo.permalink, crtPage.siteInfo.title) ==='none' ?
-                        'This document was not found in saved items, so the tag was not applied to it.' :
-                        '';
+                    const crtPageInfo = getPageSavedInfo(crtPage.siteInfo.permalink, crtPage.siteInfo.title) ==='none' 
+                        ? i18next.t('page_content_context_menu_tag_to_all_documents_toast_crtPageInfo_message_part')
+                        : '';
 
                     if (numPages > 0) {
 
                         const numPagesDiff = numPages === cleanMatchingPages.length ? 
                         '' : 
-                        `(out of ${cleanMatchingPages.length})`;
+                        `(${i18next.t('page_content_context_menu_tag_to_all_documents_toast_outOf_message_part')} ${cleanMatchingPages.length})`;
 
                         const toastEnd = numPages === cleanMatchingPages.length ? 
                         '' : 
-                        `${cleanMatchingPages.length - numPages} document(s) not found in saved items. `;
+                        `${cleanMatchingPages.length - numPages} ${i18next.t('page_content_context_menu_tag_to_all_documents_toast_docs_not_in_saved_items_message_part')} `;
 
-                        showToast(
-                            `
-                                Tag 
-                                <span class="badge mx-1 text-bg-primary fw-normal">
-                                ${tag}
-                                </span> 
-                                was applied to 
-                                ${numPages} ${numPagesDiff} 
-                                document(s)!
-                                ${toastEnd}
-                                ${crtPageInfo}
-                            `, 
-                            'bg-success',
-                            'text-light'
+                        const formattedTag = `<span class="badge mx-1 text-bg-primary fw-normal">${tag}</span>`;
+                        const toastMessage = i18next.t(
+                            'page_content_context_menu_tag_to_all_documents_toast_message',
+                            {
+                                postProcess: 'sprintf', 
+                                sprintf: 
+                                    [
+                                        formattedTag, 
+                                        numPages,
+                                        numPagesDiff,
+                                        toastEnd,
+                                        crtPageInfo
+                                    ]
+                            }
                         );
+
+                        showToast(toastMessage, 'bg-success', 'text-light');
                     }
                 }
-                else
-                    showToast(
-                        `All documents should be tagged with tag <span class="badge mx-1 text-bg-primary fw-normal">${tag}</span> and this doesn't make sense! We skip ... You can manually apply the tag on the docs you want.`, 
-                        'bg-warning', 
-                        'text-dark'
+                else{
+                    const formattedTag = `<span class="badge mx-1 text-bg-primary fw-normal">${tag}</span>`;
+                    const toastMessage = i18next.t(
+                        'page_content_context_menu_tag_to_all_documents_noSense_toast_message',
+                        {
+                            postProcess: 'sprintf', 
+                            sprintf: [formattedTag]
+                        }
                     );
+                    showToast(toastMessage, 'bg-warning', 'text-dark');
+                }
             });
             
             $('#selected-text-context-menu').hide();
@@ -770,27 +798,31 @@ const page__setSelectedTextContextMenu = () =>{
         {
             menu:[
                 {
-                    label: '<div class="text-danger pb-2 border-bottom border-secondary border-opacity-25">See selected</div>',
+                    label: `<div class="text-danger pb-2 border-bottom border-secondary border-opacity-25" data-i18n="page_content_context_menu_option_see_selected">${i18next.t('page_content_context_menu_option_see_selected')}</div>`,
                     // no handler here, is just for moving the focus to selected text because it may be lost when activating the textarea
                     handler: '' 
                 },
                 {
-                    label: settings.selectedTextContextMenu.comments.enabled ? 'Add comment' : '',
+                    label: settings.selectedTextContextMenu.comments.enabled ? i18next.t('page_content_context_menu_option_add_comment') : '',
                     handler: addCommentToSelectedText
                 },
                 {
-                    label: algoliaSettings.algoliaEnabled ? 'Search in site' : '',
+                    label: algoliaSettings.algoliaEnabled ? i18next.t('page_content_context_menu_option_search_in_site') : '',
                     handler: searchInSite, // works only with algolia
                 },
                 {
-                    label: 'Tag document',
+                    label: i18next.t('page_content_context_menu_option_tag_document'),
                     handler: tagDocWithSelectedText,
                 },
                 {
-                    label: algoliaSettings.algoliaEnabled ? 'Tag all documents' : '',
+                    label: algoliaSettings.algoliaEnabled ? i18next.t('page_content_context_menu_option_tag_all_documents') : '',
                     handler: tagAllDocsWithSelectedText,
                 }
             ],
+
+            // OPS IS USEFUL TO ADD A CUSTOM FOOTER TO THE CONTEXT MENU
+            // BELOW IS A FOOTER TO ADD COMMENTS TO A SELECTED TEXT, BUT IS NOT ACTIVE,
+            // ACTIVATE FROM siteConfig.selectedTextContextMenu.comments.enabled
             ops: 
                 `
                     <div 
@@ -815,8 +847,9 @@ const page__setSelectedTextContextMenu = () =>{
                                 sitefunction="pageAddCommentToSelectedText_btn" 
                                 id="pageAddCommentToSelectedText_btn" 
                                 type="button" 
-                                class="focus-ring focus-ring-warning btn btn-sm btn-success mt-2 position-relative pageExcerptInListItems">
-                                Add comment     
+                                class="focus-ring focus-ring-warning btn btn-sm btn-success mt-2 position-relative pageExcerptInListItems"
+                                data-i18n="page_content_context_menu_option_add_comment_button">
+                                ${i18next.t('page_content_context_menu_option_add_comment_button')}     
                             </button>
                             <div class="d-flex justify-content-end align-items-center mt-2"> 
                                 <span 
@@ -853,8 +886,8 @@ const page__setSelectedTextContextMenu = () =>{
         const onBeforeInitCallback = (selectedText, selectedTextHtml, rectangle) => {
             keepTextInputLimits(
                 'textarea[sitefunction="pageAddCommentToSelectedText_comment"]',
-                5,
-                50,
+                settings.selectedTextContextMenu.comments.maxWords,
+                settings.selectedTextContextMenu.comments.maxChars,
                 'span[sitefunction="addCommentSelectedTextContextMenuWords"]',
                 'span[sitefunction="addCommentSelectedTextContextMenuChars"]'
             );
@@ -863,11 +896,32 @@ const page__setSelectedTextContextMenu = () =>{
                 .on('click', 'button[sitefunction="pageAddCommentToSelectedText_btn"]', handleAddCommentToSelectedText.bind(null, page, selectedText, selectedTextHtml, rectangle));
         }
 
-        // HANDLERS
+        // HANDLERS FOR OPS CONTAINER ELEMENTS
         const handleAddCommentToSelectedText = (page, selectedText, selectedTextHtml, rectangle) => {
-            console.log(page);
-            console.log(selectedText);
-            console.log(rectangle);
+            //console.log(page);
+            //console.log(selectedText);
+            //console.log(rectangle);
+            const pageInfo =  {
+                siteInfo: {
+                    title: page.title,
+                    permalink: page.permalink
+                }
+            };
+
+            
+            const textNode = getTextNodeInRect(rectangle);
+            //console.log(textNode)
+            //console.log(getOffsetInTextNode(textNode, rectangle))
+
+            const comment = {
+                anchor: selectedText.trim(),
+                comm: $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').val(),
+                offset: getOffsetInTextNode(textNode, rectangle),
+                uuid: uuid()
+            };
+
+            if (addComment(comment, pageInfo)) highlightSavedSelection(comment);
+            
             highlightTextInRectangle (selectedText, rectangle);
 
             initAddCommentContainer();
@@ -875,7 +929,7 @@ const page__setSelectedTextContextMenu = () =>{
             $('body').css('overflow', '');    
         }
 
-        // set the menu
+        // finally, set the menu
         setSelectedTextContextMenu(
             'main',
             contextMenuContent,
