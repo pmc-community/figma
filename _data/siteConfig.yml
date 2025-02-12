@@ -148,3 +148,5 @@ dataTables:
   TO_doStuffAfterSearchPanesContainerOpen: 100 # used in utilities.js, createTable_ASYNC, PROCESSING WHEN SEARCH PANES CONTAINER IS OPEN
   TO_doStuffAfterSearchPanesContainerClosed: 100 # used in utilities.js, createTable_ASYNC, PROCESSING WHEN SEARCH PANES CONTAINER IS CLOSED
   TO_resolvePromiseIncreateTable_ASYNC: 0 # used in utilities.js, createTable_ASYNC to resolve the promise returned by createTable_ASYNC
+  TO_showLengthSearchInfoPagination: 0 # not used
+  tableContainerFixedHeightWhenLoading: "200px"

@@ -622,9 +622,10 @@ const setDataTable = async (
 ) => {
     
     $(tableSelector).hide(); // hide table here to minimise weird display while creating the table
+    let bodyBgColor = $('body').css('background-color');
     const $loading = $(
         `
-            <div id="dataTableLoading" class="d-flex justify-content-center align-items-center">
+            <div id="dataTableLoading" class="d-flex justify-content-center align-items-center" style="position:absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;  background-color: ${bodyBgColor}">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
@@ -632,6 +633,8 @@ const setDataTable = async (
         `
     );
     $(tableSelector).parent().prepend($loading);
+    $(tableSelector).parent().height(settings.dataTables.tableContainerFixedHeightWhenLoading);
+
     
     await waitForI18Next(); // normally, at this time i18next init should have been completed, but let's be on the safe side
 
@@ -716,10 +719,7 @@ const setDataTable = async (
             // otherwise, the table will be shown after applying the filters (see createTable_ASYNC.helpers.autoApplyActiveFilter below)
             if ( tableSearchPanesSelection.length === 0 || _.sumBy(tableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0 ) {
                 $('#dataTableLoading').remove();
-                setTimeout(() => {
-                    $('.dt-length').parent().show();
-                    $('.dt-search').parent().show();
-                }, dtSettings.TO_doStuffAfterInitComplete); // need to use dtSettings global (see preFlight-check.js) because settings is reserved here (is argument of initComplete) and cannot use settings.dataTables.TO_doStuffAfterInitComplete (will get undefined)
+                $('.table-wrapper').height('auto');
                 $(tableSelector).show();
             }
             
@@ -813,11 +813,14 @@ const setDataTable = async (
                         }  
                         await simulateSearchPanes();
                         setTimeout(() => {
+                            $('.table-wrapper').height('auto');
                             $('#dataTableLoading').remove();
                             $('body').click();
-                            $(tableSelector).show();
+                            $(tableSelector).show();                            
                             resolve();
                         }, settings.dataTables.TO_resolveAutoApplySearchPanesCurrentFilter);
+
+                       
                       
                     });
                 },
@@ -865,6 +868,7 @@ const setDataTable = async (
                     //console.log(tableSearchPanesSelection)
                     const hasFilter =  
                         (
+                            tableSearchPanesSelection.length === 0 || 
                             _.sumBy(tableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) === 0
                         )
                             ? false
@@ -878,7 +882,10 @@ const setDataTable = async (
                             hasFilter: hasFilter,
                             filteredRows: filteredRows,
                             removedRows: removedRows,
-                            totalRows: totalRows
+                            totalRows: totalRows,
+                            table: table,
+                            tableSelector: tableSelector,
+                            tableSearchPanesSelection: tableSearchPanesSelection
                         }
                     );
                 }
@@ -889,10 +896,15 @@ const setDataTable = async (
             // set the columns which are active when click on row
             // HEADS UP!!! THIS WORKS ONLY WHEN THE callbackClickRow IS USED
             const composeRowClickColumnsSelector = () => {
-                // safer to read the columns defs from the table settings
+                // try to read the columns defs from the table settings
                 // because it may not be always diectly available in all contexts
-                // i.e. when returning from page info offcanvas, columnsConfig is not available anymore for direct access
-                colDef = tableConfiguration = table.settings().init().columns;
+                // i.e. when returning from page info offcanvas, columnsConfig may not be available anymore for direct access
+                cD = table.settings().init().columns; // read cols definitions directly from table object
+                colDef = cD && cD !== 'undefined' 
+                    ? cD 
+                    : columnsConfig && columnsConfig !== 'undefined'
+                        ? columnsConfig // if not available from table object, assign it from columnsConfig
+                        : []; // if something goes wrong and columnsConfig is not available, assign [] to avoid error in next forEach(...)
                 colDefIndex = 0;
                 colVisIndex = 0;
                 disabledForClick = [];
@@ -951,11 +963,19 @@ const setDataTable = async (
             // if switch theme and increase no of rows/page, new rows will have the previous scheme background
             //applyColorSchemaCorrections();
             // also on draw event to cover all potential cases
-            table.on('draw', function () { applyColorSchemaCorrections(); });
+            table.one('draw.dt', function () {              
+                applyColorSchemaCorrections();
+            });
 
             // when display hidden table columns in dark mode, the column backgroud may be light, so corrections should be applied
             $(document).off('click','.buttons-columnVisibility').on('click', '.buttons-columnVisibility', function() {
                 applyColorSchemaCorrections();            
+            });
+
+
+            // EXECUTE CUSTOM CALLBACK AFTER SEARCH IS APPLIED (INCL. SEARCH PANES AND SEARCH BOX)
+            table.off('search.dt').on('search.dt', function() {
+                if (afterSearchApplied) afterSearchApplied( table.helpers.getFilterInfo(table, tableSearchPanesSelection));
             });
 
             // searchPanes logic
@@ -1019,28 +1039,6 @@ const setDataTable = async (
             
                     });
                 }
-
-                let i = 0;
-                table.on('search.dt', function() {
-                    //i++;
-                    //console.log(i);
-
-                    //if (afterSearchApplied) afterSearchApplied('1234');
-
-                    /*
-                    const filteredRows = table.rows({ search: 'applied' }).nodes().length;
-                    const removedRows = table.rows( {search:'removed'} ).nodes().length;
-                    const totalRows = table.rows().count();
-
-                    console.log (
-                        {
-                            filteredRows: filteredRows,
-                            removedRows: removedRows,
-                            totalRows: totalRows
-                        }
-                    );
-                    */
-                })
 
                 // SETTING SEARCH PANES OBSERVERS
                 // PROCESSING WHEN SEARCH PANES CONTAINER IS OPEN
@@ -1120,10 +1118,7 @@ const setDataTable = async (
                 setElementChangeClassObserver('div.dtsp-searchPane table tr', 'selected', true, () => {
                     getSearchPanesSelection();
                     if (searchPanes.searchPanesSelectionChangeCallback)
-                        searchPanes.searchPanesSelectionChangeCallback(
-                            tableSearchPanesSelection, 
-                            table.helpers.getFilterInfo(table, tableSearchPanesSelection)
-                        );
+                        searchPanes.searchPanesSelectionChangeCallback(tableSearchPanesSelection);
                 });
 
                 // unselect option
@@ -1131,12 +1126,8 @@ const setDataTable = async (
                 setElementChangeClassObserver('div.dtsp-searchPane table tr', 'selected', false, () => {
                     getSearchPanesSelection();
                     if (searchPanes.searchPanesSelectionChangeCallback) 
-                        searchPanes.searchPanesSelectionChangeCallback(
-                            tableSearchPanesSelection, 
-                            table.helpers.getFilterInfo(table, tableSearchPanesSelection)
-                        );
+                        searchPanes.searchPanesSelectionChangeCallback(tableSearchPanesSelection);
                 });
-    
             }
 
             // everything set, now we need to resolve the promise 
@@ -1147,7 +1138,6 @@ const setDataTable = async (
             }, settings.dataTables.TO_resolvePromiseIncreateTable_ASYNC);
 
             $(tableSelector).on('timeToBuildTheTable', function() {
-                
                 resolve(
                     {
                         table: table,
@@ -1190,25 +1180,27 @@ const setDataTable = async (
                 callbackClickRow, 
                 allSettings, 
                 searchPanes,
-                afterSearchPanesCallback
+                afterSearchPanesCallback,
+                afterSearchApplied
             )
                 .then( (result) => {
+                    
                     const timeout = settings.dataTables.TO_afterAutoApplySearchPanesCurrentFilter;
                     setTimeout(() => {
                         if (result.table.helpers && result.table.helpers !== 'undefined') 
-                            result.table.helpers.applyTableStylesOnMobile(result.table);        
+                            result.table.helpers.applyTableStylesOnMobile(result.table);       
                     }, 0);
 
                     const doTask = () => new Promise((resolve) => {
                         let res = {
                             table: result.table, 
                             tableSelector: result.tableSelector,
-                            hasFilter: false,
+                            tableSearchPanesSelection: result.selection
                         };
 
                         if ( !(result.selection.length === 0 || _.sumBy(result.selection, obj => _.get(obj, 'rows.length', 0)) === 0) )
                             result.table.helpers.autoApplyActiveFilter(result.table, result.tableSelector).then(() => res.hasFilter = true);
-                        else res.hasFilter = false;
+                        else res.hasFilter = false; 
 
                         setTimeout(() => resolve(res), timeout);
                     });
@@ -1251,13 +1243,15 @@ const addAdditionalButtonsToTable = (table, tableSelector=null, zone=null, btnAr
     }
 
     // buttons must be added on draw event
-    // otherwise the draw event when applying internationalization plugin will not add the custom buttons
-    table.off('draw.dt').on('draw.dt', function() {
-        addButtons(table, btnArray);
-        applyColorSchemaCorrections();
-    });
+    table
+        .off('draw.dt')
+        .on('draw.dt', function() {
+            addButtons(table, btnArray);
+            applyColorSchemaCorrections();
+        });
     
-    table.draw(); // to force adding custom buttons
+    table.draw();
+    //table.trigger('timeToRenderTableAdditionalButtons');
 }
 
 const handleBtnClose = () => {
@@ -1277,7 +1271,8 @@ const applyColorSchemaCorrections = (theme=null) => {
     // jtd forgets to change some colors when switching from light to dark and back
     if (!theme) {
         let themeCookie = Cookies.get(settings.themeSwitch.cookie);
-        if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: true, sameSite: 'strict' });
+        const isSecure = location.protocol === 'https:'; // just to be sure that the cookie is set also in dev env which can be http
+        if (typeof themeCookie === 'undefined') Cookies.set(settings.themeSwitch.cookie,0, { expires:365 , secure: isSecure, sameSite: 'strict' });
         themeCookie = Cookies.get(settings.themeSwitch.cookie);
         if (Cookies.get(settings.themeSwitch.cookie) === '0' ) theme = 'light';
         else  theme = 'dark';
@@ -2754,7 +2749,8 @@ const getPageTitleFromUrl = (url) => {
 // anonymous user token
 const setAnonymousUserToken = () => {
     let userTokenCookie = Cookies.get(settings.user.userTokenCookie);
-    if (typeof userTokenCookie === 'undefined') Cookies.set(settings.user.userTokenCookie,`userToken_${uuid()}`, { expires:365 , secure: true, sameSite: 'strict' });
+    const isSecure = location.protocol === 'https:'; // just to be sure that the cookie is set also in dev env which can be http
+    if (typeof userTokenCookie === 'undefined') Cookies.set(settings.user.userTokenCookie,`userToken_${uuid()}`, { expires:365 , secure: isSecure, sameSite: 'strict' });
     const userToken = Cookies.get(settings.user.userTokenCookie);
     return userToken;
 }

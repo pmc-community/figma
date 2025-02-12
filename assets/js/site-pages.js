@@ -679,7 +679,6 @@ sitePagesFn = {
 
         if( $.fn.DataTable.isDataTable(tableSelector) ) {
             $(tableSelector).DataTable().destroy();
-            $(tableSelector).removeAttr('id').removeAttr('aria-describedby');
         }
 
         const colDefinition = [
@@ -814,7 +813,7 @@ sitePagesFn = {
         const commonAdditionalTableSettings = {
 
             scrollX: true,
-
+           
             fixedColumns: {
                 leftColumns: 1
             },
@@ -981,7 +980,7 @@ sitePagesFn = {
 
         const additionalTableSettings = commonAdditionalTableSettings;
 
-       await setDataTable(
+        setDataTable(
             tableSelector,
             `SitePages`,     
             colDefinition,
@@ -1011,16 +1010,16 @@ sitePagesFn = {
             preFlight.envInfo,
             (settings) => {sitePagesFn.forceRedrawPagesTable()}, // do something on initComplete; settings.api is the table object
             (afterActiveFilter) => {sitePagesFn.afterActiveFilterProcessing(afterActiveFilter)}, // do something after autoApplyActiveFilter
-            (afterSearchApplied) => {sitePagesFn.afterSearchApplied(afterSearchApplied)}
+            (afterSearchApplied) => {sitePagesFn.afterSearchApplied(afterSearchApplied)} // do something after search applied (incl. search panes and seaech box)
         );
     },
 
     afterSearchApplied: (afterSearchApplied) => {
-        console.log(afterSearchApplied);
+        //console.log(afterSearchApplied);
     },
 
     afterActiveFilterProcessing: (afterActiveFilter) => {
-        //console.log(`hasFilter: ${afterActiveFilter.hasFilter}\nfilteredRows: ${afterActiveFilter.filteredRows}\nremovedRows:${afterActiveFilter.removedRows}\ntotalRows:${afterActiveFilter.totalRows}`);
+        //console.log(afterActiveFilter);
         //$('button[sitefunction="sitePagesDetailsClearFilter"]').click();
     },
 
@@ -1036,9 +1035,8 @@ sitePagesFn = {
         }
     },
 
-    onSearchPanesSelectionChange: (tableSearchPanesSelection, filterInfo) => {
+    onSearchPanesSelectionChange: (tableSearchPanesSelection) => {
         sitePagesFn.refreshLastFilterInfo(tableSearchPanesSelection);
-        //console.log(`hasFilter: ${filterInfo.hasFilter}\nfilteredRows: ${filterInfo.filteredRows}\nremovedRows:${filterInfo.removedRows}\ntotalRows:${filterInfo.totalRows}`);
     },
 
     refreshLastFilterInfo: (tableSearchPanesSelection) => {
@@ -1123,7 +1121,7 @@ sitePagesFn = {
          })};
 
         hide__ASYNC()
-            .then((table) => table.columns.adjust().draw())
+            //.then((table) => table.columns.adjust().draw())
             .then(() => $(`table[siteFunction="sitePagesDetailsPageTable"]`).show());
         
     },
