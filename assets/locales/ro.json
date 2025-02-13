@@ -126,7 +126,10 @@
     "page_content_context_menu_tag_to_all_documents_toast_docs_not_in_saved_items_message_part": "document(e) nu sunt salvate local.",
     "page_content_context_menu_tag_to_all_documents_toast_message": "Eticheta %s a fost aplicata pe %d %s document(e)! %s %s",
     "page_content_context_menu_tag_to_all_documents_noSense_toast_message": "Totate documentele ar trebui etichetate cu eticheta %s si asta nu are sens! Eticheta poate fi aplicata manual pe orice document.",
-
+    "page_content_custom_comment_anchor_offcanvas_title": "Comentarii",
+    "page_content_custom_comment_anchor_offcanvas_doc_title_text": "Titlu",
+    "page_content_custom_comment_anchor_offcanvas_anchor_text": "Referinta",
+    "page_content_context_menu_comment_in_comment_toast_message": "Nu este permis comentariu in interiorul altui comentariu!",
 
     "hs_feedback_form_was_this_useful_text": "{{common.doc}} util:",
     "hs_feedback_form_submit_btn_text": "Trimite!",

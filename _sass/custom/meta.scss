@@ -776,6 +776,14 @@ $sidebarLogo, $sideBarFooter, $sideBarHeader, $sideBarDocLink,$sideBarCategoryBt
     #{map-get($contextMenuElements, customSelectionMarkup)} {
         cursor: $customSelectionMarkupCursor !important;
     }
+
+    #{map-get($contextMenuElements, customCommentsOffCanvas)} {
+        width: $customCommentsOffCanvasWidth_desktop !important;
+
+        @include phone {
+            width: $customCommentsOffCanvasWidth_phone !important
+        }
+    }
 }
 
 // page search

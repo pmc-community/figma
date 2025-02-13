@@ -12,6 +12,8 @@ $contextMenuListStyle: $ls-none;
 $contextMenuPageTagFooterBtnWidth: $sz-6rem;
 $tagAndCatContextMenuFontSize: $fs-0-90;
 $customSelectionMarkupCursor: $cr-pointer;
+$customCommentsOffCanvasWidth_desktop: $sz-20p;
+$customCommentsOffCanvasWidth_phone: $sz-full;
 
 $contextMenuElements: (
     container: '.context-menu',
@@ -20,7 +22,8 @@ $contextMenuElements: (
     menuItemList: '.context-menu-list',
     pageTagContextMenuFooterButton: '.pageTagContextMenuFooterBtn',
     tagAndCatContextMenu: '.tagAndCatContextMenu',
-    customSelectionMarkup: '.customSelectionMarkup'
+    customSelectionMarkup: '.customSelectionMarkup',
+    customCommentsOffCanvas: '#offcanvasPageComments'
 );
 
 @import 'meta.scss';

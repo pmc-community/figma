@@ -2773,6 +2773,23 @@ const highlightSavedSelection = (selectionData, uniqueID, referenceText) => {
     });
 }
 
+const hasSelection = ($element) => {
+    const selection = window.getSelection();
+    return selection.rangeCount > 0 &&
+           $element[0].contains(selection.anchorNode) &&
+           selection.toString().trim().length > 0; // Ensure there's actual text selected
+}
+
+const isSelectionInsideCustomSelectionMarkup = () => {
+    const selection = window.getSelection();
+    
+    if (selection.rangeCount > 0) {
+        const selectedElement = selection.anchorNode?.parentElement; // Get the parent of the selected text
+        return selectedElement && $(selectedElement).closest('.customSelectionMarkup').length > 0;
+    }
+    return false;
+}
+
 // some utilities for pages
 const orderSectionsInContainer = (order, containerSelector) => {
     // order should be an array containing the desired order

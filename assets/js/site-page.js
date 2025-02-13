@@ -1,3 +1,15 @@
+// disable interactions while offcanvas is in transition
+// enable interation once offcanvas is fully loaded
+$(document).on('show.bs.offcanvas', '#offcanvasPageComments', function () {
+    // Disable clicks on the entire page
+    $('body').css('pointer-events', 'none');
+});
+
+$(document).on('shown.bs.offcanvas', '#offcanvasPageComments', function () {
+    // Re-enable clicks after fully opened, with a small delay, just in case!
+    setTimeout(()=>$('body').css('pointer-events', 'auto'), 100);
+});
+
 // FUNCTIONS FOR EACH PAGE
 // called from _includes/siteIncludes/partials/page-common/page-auto-summary.html
 
@@ -513,7 +525,7 @@ const page__getPageInfo = () => {
                                         ${i18next.t('page_page_info_last_update_badge_text')}
                                     </span>: 
                                     <span
-                                        class="${settings.multilang.dateFieldClass}"
+                                        class="${settings.multilang.dateFieldClass} text-light"
                                         data-i18n="[text]formatted_date"
                                         data-original-date="${formatDate(page.siteInfo.lastUpdate)}"
                                         data-month-name="short">
@@ -554,6 +566,7 @@ const page__getPageInfo = () => {
     }
 
     const markCustomComments = (pageInfo) => {
+        if (pageInfo.savedInfo.customComments.length === 0) return;
         pageComments = pageInfo.savedInfo.customComments;
         pageComments.forEach( comment => {
             highlightSavedSelection(comment.matches, comment.id, comment.anchor);
@@ -584,8 +597,7 @@ const page__getPageInfo = () => {
         refreshPageAfterOffCanvasClose();
 
         // mark the custom comments, if any
-        if (!settings.selectedTextContextMenu.comments.enabled) return;
-        if (pageInfo.savedInfo.customComments.length === 0) return; 
+        if (!settings.selectedTextContextMenu.comments.enabled) return; 
         markCustomComments(pageInfo);
     })
 }
@@ -615,10 +627,14 @@ const page__setSelectedTextContextMenu = () =>{
             4. the rectangle on the screen where the selected text is located
         */
         const addCommentToSelectedText = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
-            $('div[sitefunction="pageAddCommentToSelectedText_text"]').text(selectedText);
-            $('div[siteFunction="pageAddCommentToSelectedText_container"]').removeClass('d-none');
-            $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]')[0].setSelectionRange(0, 0);
-            $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').focus();
+            if(isSelectionInsideCustomSelectionMarkup()) {
+                showToast(i18next.t('page_content_context_menu_comment_in_comment_toast_message'), 'bg-warning', 'text-dark');
+            } else {
+                $('div[sitefunction="pageAddCommentToSelectedText_text"]').text(selectedText);
+                $('div[siteFunction="pageAddCommentToSelectedText_container"]').removeClass('d-none');
+                $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]')[0].setSelectionRange(0, 0);
+                $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').focus();
+            }
         }
 
         const searchInSite = (page = null, itemText = null, selectedText, selectedTextHtml, rectangle=null) => {
@@ -815,7 +831,9 @@ const page__setSelectedTextContextMenu = () =>{
                     handler: '' 
                 },
                 {
-                    label: settings.selectedTextContextMenu.comments.enabled ? i18next.t('page_content_context_menu_option_add_comment') : '',
+                    label: settings.selectedTextContextMenu.comments.enabled 
+                        ? i18next.t('page_content_context_menu_option_add_comment') 
+                        : '',
                     handler: addCommentToSelectedText
                 },
                 {
@@ -910,9 +928,7 @@ const page__setSelectedTextContextMenu = () =>{
 
         // HANDLERS FOR OPS CONTAINER ELEMENTS
         const handleAddCommentToSelectedText = (page, selectedText, selectedTextHtml, rectangle) => {
-            //console.log(page);
-            //console.log(selectedText);
-            //console.log(rectangle);
+
             const pageInfo =  {
                 siteInfo: {
                     title: page.title,
@@ -1029,6 +1045,22 @@ const page__showPageCustomTags = () => {
 };
 
 // INTERNAL FUNCTIONS, NOT CALLED FROM HTML TEMPLATES
+
+const showPageCommentsCanvas = (pageInfo, anchor, commentId) => {
+    if (pageInfo) {
+        initPageCommentsCanvasBeforeShow(pageInfo, anchor, commentId);
+        $('#offcanvasPageComments').offcanvas('show');
+        //initPageCommentsCanvasAfterShow(pageInfo, anchor, commentId);
+        //initPageCommentsCanvasAfterDocReady(pageInfo, anchor, commentId);
+    }
+}
+
+const initPageCommentsCanvasBeforeShow = (pageInfo, anchor, commentId) => {
+    $('#offcanvasPageCommentsBody_pageLink').text(pageInfo.siteInfo.title);
+    $('#offcanvasPageCommentsBody_pageLink').attr('href', pageInfo.siteInfo.permalink);
+    $('#offcanvasPageCommentsBody_anchor').text(anchor);
+}
+
 const refreshPageDynamicInfo = () => {
     keepScrollFixed(() => {
         page__showPageCustomTags();
@@ -1127,6 +1159,18 @@ window.setPageButtonsFunctions = () => {
                 // bookmark is on top of page, so better to be sure that will not go under header
                 scrollTop: $('#pageLastUpdateAndPageInfo').offset().top - 100
             }, 100);
+        });
+
+    // click on highlighted comment anchor
+    $(document)
+        .off('mouseup keyup', 'span[id^="customSelection_"]')
+        .on('mouseup keyup', 'span[id^="customSelection_"]', function() {
+            // skip if there is a selection, to allow the context menu to open and get focus
+            // otherwise the offcanvas will not allow the interactions with the context menu
+            if (hasSelection($(this))) return; 
+            const commentID = $(this).attr('id').replace(/^customSelection_/, '').trim();
+            const anchor = $(this).text().trim();
+            showPageCommentsCanvas(pageInfo, anchor, commentID);
         });
 
 }
