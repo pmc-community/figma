@@ -521,7 +521,7 @@ sitePagesFn = {
                             cellFunction="siteBadge"
                             siteFunction="pageHasSiteTagsBadge"
                             title = "${i18next.t('dt_pages_col_details_site_tags_badge_title')}" 
-                            class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary"
+                            class="text-nowrap btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
                             data-i18n="[title]dt_pages_col_details_site_tags_badge_title;dt_pages_col_details_site_tags_badge_text">
@@ -538,7 +538,7 @@ sitePagesFn = {
                             cellFunction="siteBadge"
                             siteFunction="pageHasSiteCategoryBadge"
                             title = "${i18next.t('dt_pages_col_details_site_cats_badge_title')}" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger"
+                            class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
                             data-i18n="[title]dt_pages_col_details_site_cats_badge_title;dt_pages_col_details_site_cats_badge_text">
@@ -555,7 +555,7 @@ sitePagesFn = {
                             cellFunction="siteBadge"
                             siteFunction="pageHasAutoSummaryBadge"
                             title = "${i18next.t('dt_pages_col_details_summary_badge_title')}" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark"
+                            class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
                             data-i18n="[title]dt_pages_col_details_summary_badge_title;dt_pages_col_details_summary_badge_text">
@@ -572,7 +572,7 @@ sitePagesFn = {
                             cellFunction="siteBadge"
                             siteFunction="pageHasExcerptBadge"
                             title = "${i18next.t('dt_pages_col_details_excerpt_badge_title')}" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-secondary"
+                            class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-secondary"
                             pageTitleReference="${page.siteInfo.title}"
                             pagePermaLinkReference="${page.siteInfo.permalink}"
                             data-i18n="[title]dt_pages_col_details_excerpt_badge_title;dt_pages_col_details_excerpt_badge_text">
@@ -597,7 +597,7 @@ sitePagesFn = {
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomTagsBadge"
                             title = "${i18next.t('dt_pages_col_details_custom_tags_badge_title')}" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
+                            class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
                             pageTitleReference="${page.savedInfo.title}"
                             pagePermaLinkReference="${page.savedInfo.permalink}"
                             data-i18n="[title]dt_pages_col_details_custom_tags_badge_title;dt_pages_col_details_custom_tags_badge_text">
@@ -614,7 +614,7 @@ sitePagesFn = {
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomCategoriesBadge"
                             title = "${i18next.t('dt_pages_col_details_custom_cats_badge_title')}" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
+                            class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success"
                             pageTitleReference="${page.savedInfo.title}"
                             pagePermaLinkReference="${page.savedInfo.permalink}"
                             data-i18n="[title]dt_pages_col_details_custom_cats_badge_title;dt_pages_col_details_custom_cats_badge_text">
@@ -624,14 +624,14 @@ sitePagesFn = {
                 flags.push(i18next.t(`common.active_filter.${_.snakeCase('Has Custom Categories')}`));
             }
             
-            if (page.savedInfo.customNotes.length > 0 ) {
+            if (page.savedInfo.customNotes.length > 0) {
                 savedInfoBadges += 
                     `
                         <span
                             cellFunction="siteBadge"
                             siteFunction="pageHasCustomNotesBadge"
                             title = "${i18next.t('dt_pages_col_details_notes_badge_title')}" 
-                            class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning"
+                            class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning"
                             pageTitleReference="${page.savedInfo.title}"
                             pagePermaLinkReference="${page.savedInfo.permalink}"
                             data-i18n="[title]dt_pages_col_details_notes_badge_title;dt_pages_col_details_notes_badge_text">
@@ -1150,7 +1150,7 @@ sitePagesFn = {
                         tagType="${isSiteTag ? 'siteTag' : 'customTag'}"
                         id="${tag}" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${tagBtnColor} position-relative"
+                        class="text-nowrap focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${tagBtnColor} position-relative"
                         title="${tagBtnTitle}"
                         data-i18n="[title]dt_pages_col_tags_title_static"
                         href="tag-info?tag=${tag}"
@@ -1208,7 +1208,7 @@ sitePagesFn = {
                         catType="${isSiteCat ? 'siteCat' : 'customCat'}"
                         id="${cat}" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${catBtnColor} position-relative border-0 shadow-none"
+                        class="text-nowrap focus-ring focus-ring-warning px-3 mr-5 my-2 btn btn-sm ${catBtnColor} position-relative border-0 shadow-none"
                         title = "Details for category ${cat}"
                         data-i18n="[title]dt_pages_col_cats_title_static"
                         href="cat-info?cat=${cat}"
@@ -1319,11 +1319,16 @@ sitePagesFn = {
         getOrphanDataTables('').forEach( table => { localStorage.removeItem(table); });
         let table = $(`table[siteFunction="sitePagesDetailsPageTable"]`).DataTable();
 
-        // SELECTION MUST BE CLEARED, OTHERWISE THE TABLE WILL BEHAVE WEIRD
+        // SELECTION MUST BE CLEARED (IF THERE IS AN ACTIVE SEARCH PANES SELECTION), OTHERWISE THE TABLE WILL BEHAVE WEIRD
         // RETURNING FROM OFFCANVAS ON A FILTERED TABLE WILL LOSE/REMOVE ALL RECORDS EXCEPT THE FILTERED ONES
-        // AND THESE CANNOT BE SHOWN EVEN IF CLEARING THE FILTER, ONLY RELOADING PAGE WILL RESTORE ALL RECORDS 
-        table.searchPanes.clearSelections();
-
+        // AND THESE CANNOT BE SHOWN EVEN IF CLEARING THE FILTER, ONLY RELOADING PAGE WILL RESTORE ALL RECORDS
+        if ( 
+            sitePagesFn.pageTableSearchPanesSelection.length > 0 && 
+            _.sumBy(sitePagesFn.pageTableSearchPanesSelection, obj => _.get(obj, 'rows.length', 0)) > 0
+            ) {
+                table.searchPanes.clearSelections();
+            }
+        
         // re-build all to capture all page modifications in table and in searchPanes as well
 
         // first, destroy datatable
@@ -1346,7 +1351,19 @@ sitePagesFn = {
           "note": "string",
           "id": "string"
         }],
-        "customComments": "emptyArray"  // Empty array
+        "customComments": [{
+            "date": "date",
+            "anchor": "string",
+            "id": "string",
+            "comment": "string",
+            "matches": [{
+                "node": "object",
+                "offsets": "array",
+                "parent": "object",
+                "parentSelector": "string",
+                "text": "string"
+            }]
+        }]  // Empty array
     },
 
     loadSavedItemsFromJsonFileHandler: (files) => {

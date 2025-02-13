@@ -248,7 +248,7 @@ const addComment = (comment, pageInfo) => {
         anchor: DOMPurify.sanitize(comment.anchor.trim()).replace(/<[^>]*>/g, ''),
         comment: DOMPurify.sanitize(comment.comm.trim()).replace(/<[^>]*>/g, ''),
         id: comment.uuid,
-        offset: comment.offset
+        matches: comment.matches
     }
     savedPageCustomComments.push(commentObj);
     savedPage.customComments = savedPageCustomComments;

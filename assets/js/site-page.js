@@ -295,7 +295,7 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasSiteTagsBadge"
                         title = "${i18next.t('page_page_info_badge_has_site_tags_title')}" 
-                        class="btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer"
+                        class="text-nowrap btn-primary shadow-none m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-primary alwaysCursorPointer"
                         data-i18n="[title]page_page_info_badge_has_site_tags_title;page_page_info_tags"
                         data-i18n-options='{"title":"123"}'>
                         ${i18next.t('page_page_info_tags')}
@@ -308,7 +308,7 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasRelatedPagesBadge"
                         title = "${i18next.t('page_page_info_badge_has_related_title')}" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger alwaysCursorPointer"
+                        class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-danger alwaysCursorPointer"
                         data-i18n="[title]page_page_info_badge_has_related_title;page_page_info_related">
                         ${i18next.t('page_page_info_related')}
                     </span>
@@ -320,7 +320,7 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasAutoSummaryBadge"
                         title = "${i18next.t('page_page_info_badge_has_summary_title')}"
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark alwaysCursorPointer"
+                        class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-dark alwaysCursorPointer"
                         data-i18n="[title]page_page_info_badge_has_summary_title;page_page_info_summary">
                         ${i18next.t('page_page_info_summary')}
                     </span>
@@ -341,7 +341,7 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasCustomTagsBadge"
                         title = "${i18next.t('page_page_info_badge_has_custom_tags_title')}" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success alwaysCursorPointer"
+                        class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success alwaysCursorPointer"
                         data-i18n="[title]page_page_info_badge_has_custom_tags_title;page_page_info_tags">
                         ${i18next.t('page_page_info_tags')}
                     </span>
@@ -353,19 +353,19 @@ const page__getPageInfo = () => {
                     <span
                         siteFunction="pageHasCustomCategoriesBadge"
                         title="${i18next.t('page_page_info_badge_has_custom_cats_title')}" 
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success alwaysCursorPointer"
+                        class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-success alwaysCursorPointer"
                         data-i18n="[title]page_page_info_badge_has_custom_cats_title;page_page_info_cats">
                         ${i18next.t('page_page_info_cats')}
                     </span>
                 `;
         
-        if (page.savedInfo.customNotes.length > 0 ) 
+        if (page.savedInfo.customNotes.length > 0) 
             savedInfoBadges += 
                 `
                     <span
                         siteFunction="pageHasCustomNotesBadge"
                         title="${i18next.t('page_page_info_badge_has_custom_notes_title')}"
-                        class="m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning alwaysCursorPointer"
+                        class="text-nowrap m-1 px-3 py-2 fw-medium badge rounded-pill text-bg-warning alwaysCursorPointer"
                         data-i18n="[title]page_page_info_badge_has_custom_notes_title;page_page_info_notes">
                         ${i18next.t('page_page_info_notes')}
                     </span>
@@ -396,7 +396,7 @@ const page__getPageInfo = () => {
                     <div >
                         <a
                             href="/cat-info?cat=${cat}"
-                            class="${catColor} fw-medium btn btn-sm border-0 shadow-none px-0 my-1 mr-3"
+                            class="${catColor} fw-medium btn btn-sm border-0 shadow-none px-0 my-1 mr-3 text-nowrap"
                             title="Click for details for category ${cat}\nPages in category: ${numPages}">
                             ${cat}
                             <span 
@@ -553,6 +553,13 @@ const page__getPageInfo = () => {
         );
     }
 
+    const markCustomComments = (pageInfo) => {
+        pageComments = pageInfo.savedInfo.customComments;
+        pageComments.forEach( comment => {
+            highlightSavedSelection(comment.matches, comment.id, comment.anchor);
+        });
+    }
+
     $(document).ready(function() {
         
         if (pageInfo.siteInfo === 'none') return;
@@ -575,6 +582,11 @@ const page__getPageInfo = () => {
         // we take the opportunity to set some observers
         setTriggerReorderSectionsInFooter();
         refreshPageAfterOffCanvasClose();
+
+        // mark the custom comments, if any
+        if (!settings.selectedTextContextMenu.comments.enabled) return;
+        if (pageInfo.savedInfo.customComments.length === 0) return; 
+        markCustomComments(pageInfo);
     })
 }
 
@@ -909,20 +921,20 @@ const page__setSelectedTextContextMenu = () =>{
             };
 
             
-            const textNode = getTextNodeInRect(rectangle);
-            //console.log(textNode)
-            //console.log(getOffsetInTextNode(textNode, rectangle))
-
-            const comment = {
-                anchor: selectedText.trim(),
-                comm: $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').val(),
-                offset: getOffsetInTextNode(textNode, rectangle),
-                uuid: uuid()
-            };
-
-            if (addComment(comment, pageInfo)) highlightSavedSelection(comment);
+            const matches = getTextNodeInRect(rectangle);
             
-            highlightTextInRectangle (selectedText, rectangle);
+            if (matches) {
+                const comment = {
+                    anchor: selectedText.trim(),
+                    comm: $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').val(),
+                    matches: matches,
+                    uuid: uuid()
+                };
+
+                if (addComment(comment, pageInfo)) highlightSavedSelection(comment.matches, comment.uuid, comment.anchor);
+                
+                //highlightTextInRectangle (selectedText, rectangle);
+            }
 
             initAddCommentContainer();
             $('#selected-text-context-menu').hide();
@@ -974,7 +986,7 @@ const page__showPageCustomTags = () => {
                         href="/tag-info?tag=${tag}" 
                         sitefunction="pageTagButton" 
                         type="button" 
-                        class="focus-ring focus-ring-warning px-3 my-2 mr-md-5 btn btn-sm btn-success position-relative">
+                        class="text-nowrap focus-ring focus-ring-warning px-3 my-2 mr-md-5 btn btn-sm btn-success position-relative">
                         ${tag}
                     </a> 
                     <span 

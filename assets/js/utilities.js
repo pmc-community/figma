@@ -2648,8 +2648,8 @@ const getTextNodeInRect = (rect) => {
         false
     );
 
-    let bestMatch = null;
-    let bestMatchArea = 0;
+    let matches = [];
+    let exactMatchNodes = []; // Store exact matching nodes
 
     while (treeWalker.nextNode()) {
         let node = treeWalker.currentNode;
@@ -2665,71 +2665,113 @@ const getTextNodeInRect = (rect) => {
         let overlapY = Math.max(0, Math.min(rect.bottom, nodeRect.bottom) - Math.max(rect.top, nodeRect.top));
         let overlapArea = overlapX * overlapY;
 
-        // Prioritize the text node with the most overlap
-        if (overlapArea > bestMatchArea) {
-            bestMatch = node;
-            bestMatchArea = overlapArea;
-        }
-    }
+        if (overlapArea > 0) {
+            let text = node.textContent;
+            let offsets = [];
 
-    return bestMatch;
-};
+            // Find exact character offsets inside the selection rectangle
+            for (let i = 0; i < text.length; i++) {
+                range.setStart(node, i);
+                range.setEnd(node, i + 1);
+                let charRect = range.getBoundingClientRect();
 
-const getOffsetInTextNode = (node, rect) => {
-    let range = document.createRange();
-    let text = node.textContent;
-
-    for (let i = 0; i < text.length; i++) {
-        range.setStart(node, i);
-        range.setEnd(node, i + 1);
-        let charRect = range.getBoundingClientRect();
-
-        if (
-            charRect.left >= rect.left &&
-            charRect.right <= rect.right &&
-            charRect.top >= rect.top &&
-            charRect.bottom <= rect.bottom
-        ) {
-            return i;
-        }
-    }
-
-    return 0; // Default to start of text node if not found
-}
-
-const highlightSavedSelection = (selection) => {
-    let treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-
-    while (treeWalker.nextNode()) {
-        let node = treeWalker.currentNode;
-        let text = node.textContent;
-
-        let index = text.indexOf(selection.anchor);
-        if (index !== -1 && index === selection.offset) {
-            let $parent = $(node.parentElement);
-
-            // Check if the parent is already a highlighted span with the same text
-            if ($parent.is("span.customSelectionMarkup") && $parent.text() === selection.anchor) {
-                return; // Skip re-highlighting
+                if (
+                    charRect.left >= rect.left &&
+                    charRect.right <= rect.right &&
+                    charRect.top >= rect.top &&
+                    charRect.bottom <= rect.bottom
+                ) {
+                    offsets.push(i);
+                }
             }
 
-            let range = document.createRange();
-            range.setStart(node, index);
-            range.setEnd(node, index + selection.anchor.length);
+            if (offsets.length > 0) {
+                let matchData = {
+                    node,
+                    text,
+                    offsets, // Exact character offsets in the text node
+                    parent: node.parentElement,
+                    parentSelector: getUniqueSelector(node.parentElement),
+                };
 
-            let $wrapper = $("<span>", {
-                id: `customSelection_${selection.uuid}`,
-                class: "customSelectionMarkup rounded border border-secondary border-opacity-25 shadow-none bg-secondary px-1 bg-opacity-25",
-                text: selection.anchor
-            });
+                matches.push(matchData);
 
-            range.deleteContents();
-            range.insertNode($wrapper[0]); // Insert the jQuery element
-
-            break;
+                // If this node fully contains the selection, prioritize it
+                if (offsets.length === text.length) {
+                    exactMatchNodes.push(matchData);
+                }
+            }
         }
     }
+
+    // If we have exact matches, return them instead of partial matches
+    return exactMatchNodes.length ? exactMatchNodes : matches.length ? matches : null;
 };
+
+// Helper function to generate a unique selector for an element
+const getUniqueSelector = (element) => {
+    if (!element) return null;
+    let $el = $(element);
+    if ($el.attr("id")) return `#${$el.attr("id")}`;
+    if ($el.attr("class")) return `${element.tagName.toLowerCase()}.${$el.attr("class").trim().replace(/\s+/g, '.')}`;
+    return element.tagName.toLowerCase();
+};
+
+const highlightSavedSelection = (selectionData, uniqueID, referenceText) => {
+    if (!selectionData || !selectionData.length || !referenceText) return;
+
+    $.each(selectionData, function (index, { parentSelector, offsets }) {
+        let $parent = $(parentSelector);
+        if (parentSelector !== selectionData[index].parentSelector) return;
+        if (!$parent.length) return;
+
+        let textNodes = $parent.contents().filter(function () {
+            return this.nodeType === Node.TEXT_NODE && this.textContent.trim().length > 0;
+        });
+
+        let remainingText = referenceText; // Track remaining text to match
+        let offsetIndex = 0; // Track which offset belongs to which text node
+        let highlightCompleted = false; // Stop when the full selection is found
+
+        textNodes.each(function () {
+            if (highlightCompleted) return; // Stop if already highlighted
+
+            let node = this;
+            let nodeText = stripHtml(node.textContent);
+            let nodeLength = nodeText.length;
+
+            //console.log(nodeText)
+            if (nodeText !== selectionData[index].text) return;
+            // Skip if this text node is already inside a highlight span
+            if ($(node).parent().hasClass("customSelectionMarkup")) return;
+
+            let nodeOffsets = [];
+
+            // Collect offsets belonging to this node
+            while (offsetIndex < offsets.length && offsets[offsetIndex] < nodeLength) {
+                nodeOffsets.push(offsets[offsetIndex]);
+                offsetIndex++;
+            }
+
+            if (!nodeOffsets.length) return; // Skip if no valid offsets exist
+
+            let startIndex = nodeText.indexOf(remainingText);
+            if (startIndex !== -1) {
+                let range = document.createRange();
+                range.setStart(node, startIndex);
+                range.setEnd(node, startIndex + remainingText.length);
+
+                let highlightSpan = $("<span>")
+                    .addClass('customSelectionMarkup rounded border border-secondary border-opacity-25 shadow-none bg-secondary px-1 bg-opacity-25')
+                    .attr("id", `customSelection_${uniqueID}`) // Unique ID for each highlight
+                    .get(0);
+
+                range.surroundContents(highlightSpan);
+                highlightCompleted = true; // Stop further processing
+            }
+        });
+    });
+}
 
 // some utilities for pages
 const orderSectionsInContainer = (order, containerSelector) => {
