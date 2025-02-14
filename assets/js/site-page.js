@@ -566,8 +566,10 @@ const page__getPageInfo = () => {
     }
 
     const markCustomComments = (pageInfo) => {
-        if (pageInfo.savedInfo.customComments.length === 0) return;
-        pageComments = pageInfo.savedInfo.customComments;
+        if (!pageInfo.savedInfo || pageInfo.savedInfo === 'undefined') return;
+        if (!pageInfo.savedInfo.customComments || pageInfo.savedInfo.customComments === 'undefined') return;
+        pageComments = pageInfo.savedInfo.customComments || [];
+        if (pageComments.length === 0) return;
         pageComments.forEach( comment => {
             highlightSavedSelection(comment.matches, comment.id, comment.anchor);
         });
@@ -595,7 +597,9 @@ const page__getPageInfo = () => {
         // we take the opportunity to set some observers
         setTriggerReorderSectionsInFooter();
         refreshPageAfterOffCanvasClose();
-
+        
+        // page comments related stuff
+        refreshPageAfterCommentsOffCanvasClose();
         // mark the custom comments, if any
         if (!settings.selectedTextContextMenu.comments.enabled) return; 
         markCustomComments(pageInfo);
@@ -944,10 +948,20 @@ const page__setSelectedTextContextMenu = () =>{
                     anchor: selectedText.trim(),
                     comm: $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').val(),
                     matches: matches,
-                    uuid: uuid()
+                    uuid: uuid(),
+                    get refUuid() {return this.uuid}
                 };
 
-                if (addComment(comment, pageInfo)) highlightSavedSelection(comment.matches, comment.uuid, comment.anchor);
+                if (addComment(comment, pageInfo)) {
+                    highlightSavedSelection(comment.matches, comment.uuid, comment.anchor);
+                    initPageCommentsCanvasBeforeShow(
+                        {
+                            savedInfo: getPageSavedInfo(pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+                        }, 
+                        comment.anchor, 
+                        comment.uuid
+                    );
+                }
                 
                 //highlightTextInRectangle (selectedText, rectangle);
             }
@@ -1050,15 +1064,65 @@ const showPageCommentsCanvas = (pageInfo, anchor, commentId) => {
     if (pageInfo) {
         initPageCommentsCanvasBeforeShow(pageInfo, anchor, commentId);
         $('#offcanvasPageComments').offcanvas('show');
-        //initPageCommentsCanvasAfterShow(pageInfo, anchor, commentId);
-        //initPageCommentsCanvasAfterDocReady(pageInfo, anchor, commentId);
     }
 }
 
 const initPageCommentsCanvasBeforeShow = (pageInfo, anchor, commentId) => {
-    $('#offcanvasPageCommentsBody_pageLink').text(pageInfo.siteInfo.title);
-    $('#offcanvasPageCommentsBody_pageLink').attr('href', pageInfo.siteInfo.permalink);
+
+    const commentItem = (comment) => {
+        return (
+            `
+                <div 
+                    class="card mt-4 bg-secondary bg-opacity-10 border-0 border-secondary border-opacity-10 shadow-none offcanvasPageComments_comment" 
+                    id="offcanvasPageComments_comment_${comment.id}">
+                    <div 
+                        class="card-body alwaysCursorPointer offcanvasPageComments_comment_body" 
+                        id="offcanvasPageComments_comment_body_${comment.id}">
+                        <div class="mb-2">
+                            <span 
+                                id="offcanvasPageCommentsBody_comment_date_${comment.id}"
+                                class="text-primary"
+                                data-i18n="[text]formatted_date"
+                                data-original-date="${comment.date}"
+                                data-month-name="short">
+                                ${comment.date}
+                            </span>
+                        </div>
+
+                        <div>
+                            <span
+                                class="text-secondary"
+                                id="offcanvasPageCommentsBody_comment_comment_${comment.id}">
+                                ${comment.comment}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `
+        )
+    }
+
+    // general info
+    $('#offcanvasPageCommentsBody_pageLink').text(pageInfo.savedInfo.title);
+    $('#offcanvasPageCommentsBody_pageLink').attr('href', pageInfo.savedInfo.permalink);
     $('#offcanvasPageCommentsBody_anchor').text(anchor);
+
+    // comments
+    const filteredComments = _.chain(pageComments)
+        .filter({ anchor: anchor }) // Filter by anchor
+        .orderBy(item => new Date(item.date).getTime(), 'desc') // Order by Unix timestamp of date descending
+        .groupBy('refId') // Group by refId
+        .flatMap(group => group) // Flatten the grouped result into an array
+        .value();
+    
+    let commentsHTML = '';
+    filteredComments.forEach( com => {
+        //console.log(`${com.anchor} / ${com.date} / ${com.comment}`);
+        commentsHTML += commentItem(com);
+    });
+
+    $('#offcanvasPageComments_comments_list').html(commentsHTML);
+ 
 }
 
 const refreshPageDynamicInfo = () => {
@@ -1170,9 +1234,55 @@ window.setPageButtonsFunctions = () => {
             if (hasSelection($(this))) return; 
             const commentID = $(this).attr('id').replace(/^customSelection_/, '').trim();
             const anchor = $(this).text().trim();
+            $('span[id^="customSelection_"]').removeClass('bg-danger').removeClass('bg-success').addClass('bg-secondary');
+            $('span[id^="customSelection_"]').each(function() {
+                if ($(this).text() === anchor) $(this).removeClass('bg-secondary').addClass('bg-danger');
+            })
+            
             showPageCommentsCanvas(pageInfo, anchor, commentID);
         });
+    
+    // click on comment card body
+    $(document)
+        .off('click', 'div[id^="offcanvasPageComments_comment_body_"]')
+        .on('click', 'div[id^="offcanvasPageComments_comment_body_"]', function() {
 
+            $('.offcanvasPageComments_comment').removeClass('bg-success').addClass('bg-secondary');
+            $(this).parent().removeClass('bg-secondary').addClass('bg-success');
+
+            const pageComments = pageInfo.savedInfo.customComments || [];
+            const commentID = $(this).attr('id').replace(/^offcanvasPageComments_comment_body_/, '').trim();
+            comment = getObjectFromArray ({id: commentID}, pageComments);
+            
+            // we use refId prop to navigate because we may want to group comments based on the anchor position in document
+            target = `#customSelection_${comment.refId}`;
+            $('html, body').animate({
+                scrollTop: $(target).offset().top - $(settings.layouts.leftSideBar.header).outerHeight() - 40
+            }, 100);
+
+            $('span[id^="customSelection_"]').each(function() {
+                if ($(this).text() !== comment.anchor) $(this).removeClass('bg-success').addClass('bg-secondary');
+                else $(this).removeClass('bg-success').addClass('bg-danger');
+            });
+            $(target).removeClass('bg-danger').addClass('bg-success');
+
+            if (preFlight.envInfo.device.deviceType !== 'desktop') {
+                $('button[sitefunction="offcanvasPageCommentsClose"]').click();
+            }
+        });
+
+     // hover comment card body
+     $(document)
+        .off('mouseenter', 'div[id^="offcanvasPageComments_comment_body_"]')
+        .on('mouseenter', 'div[id^="offcanvasPageComments_comment_body_"]', function() {
+            if ($(this).parent().hasClass('bg-secondary'))
+                $(this).parent().removeClass('bg-opacity-10').addClass('bg-opacity-25');
+        })
+        .off('mouseleave', 'div[id^="offcanvasPageComments_comment_body_"]')
+        .on('mouseleave', 'div[id^="offcanvasPageComments_comment_body_"]', function() {
+            if ($(this).parent().hasClass('bg-secondary'))
+                $(this).parent().removeClass('bg-opacity-25').addClass('bg-opacity-10');
+        })
 }
 
 const refreshPageAfterOffCanvasClose = () => {
@@ -1180,6 +1290,15 @@ const refreshPageAfterOffCanvasClose = () => {
     setElementChangeClassObserver('.offcanvas', 'hiding', true, () => {
         $('div[siteFunction="pageCustomTagButton"]').remove();
         refreshPageDynamicInfo();
+    });
+}
+
+const refreshPageAfterCommentsOffCanvasClose = () => {
+    $('#offcanvasPageComments').on('hidden.bs.offcanvas', function () {
+        $('span[id^="customSelection_"]')
+            .removeClass('bg-danger')
+            .removeClass('bg-success')
+            .addClass('bg-secondary');
     });
 }
 

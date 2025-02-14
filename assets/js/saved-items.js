@@ -219,7 +219,7 @@ const updateNote = (noteId, note, pageInfo) => {
     return true;
 }
 
-const addComment = (comment, pageInfo) => {
+const addComment = (comment, pageInfo, commentRefId = null) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
         title: pageInfo.siteInfo.title
@@ -248,6 +248,7 @@ const addComment = (comment, pageInfo) => {
         anchor: DOMPurify.sanitize(comment.anchor.trim()).replace(/<[^>]*>/g, ''),
         comment: DOMPurify.sanitize(comment.comm.trim()).replace(/<[^>]*>/g, ''),
         id: comment.uuid,
+        refId: !commentRefId ? comment.refUuid : commentRefId, // if is parent comment, comment.id = comment.refId
         matches: comment.matches
     }
     savedPageCustomComments.push(commentObj);

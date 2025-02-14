@@ -1,3 +1,4 @@
+
 /* SOME IMPORTANT STUFF THAT MUST BE OUTSIDE ANY FUNCTION */
 // take care of fixed header when scrolling to target, if the case
 // this has to be here, orherwise the hash will be removed before handling the fixed header
@@ -274,10 +275,7 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
 
             },
             error: async (xhr, status, error) => {
-                toast = new bootstrap.Toast($('.toast'));
-                $('.toast').addClass('bg-danger');
-                $('.toast-body').html('Error loading external content. Details in console ...');
-                toast.show();
+                showToast(`Error loading external content! Details in console ...`, 'bg-danger', 'text-light');
                 const placeholder = position === 'before' || position === 'after' ? 'N/A for this position' : whereID;
                 console.error(`Error fetching file: ${file}\nStatus: ${status} / ${xhr.responseText}\nPosition: ${position}\nPlaceholder: ${placeholder}\nOrigin: ${whoCalled}`,error);
             }
@@ -1395,7 +1393,7 @@ const applyColorSchemaCorrectionsOnTD = () => {
     }
 }
 
-const showToast = (message, type, textType) => {
+window.showToast = (message, type, textType) => {
     toast = new bootstrap.Toast($('.toast'));
     $('.toast').removeClass('bg-warning').removeClass('bg-danger').removeClass('bg-success').removeClass('bg-info');
     $('.toast').addClass(type);
@@ -1403,6 +1401,7 @@ const showToast = (message, type, textType) => {
     $('.toast .toast-body').addClass(textType);
     $('.toast-body').html(message);
     toast.show();
+    return $('.toast-body').text(); // used for New Relic logging
 }
 
 const getCurrentDateTime = () => {
@@ -2718,6 +2717,7 @@ const getUniqueSelector = (element) => {
 };
 
 const highlightSavedSelection = (selectionData, uniqueID, referenceText) => {
+    
     if (!selectionData || !selectionData.length || !referenceText) return;
 
     $.each(selectionData, function (index, { parentSelector, offsets }) {
@@ -2738,10 +2738,13 @@ const highlightSavedSelection = (selectionData, uniqueID, referenceText) => {
 
             let node = this;
             let nodeText = stripHtml(node.textContent);
+            if (!nodeText.includes(referenceText)) return; // skip if the node does not contain the text to be highlighted
+            
             let nodeLength = nodeText.length;
 
-            //console.log(nodeText)
-            if (nodeText !== selectionData[index].text) return;
+            // skip if the parent content changed and does not match anymore with the content at the time when the comment was created
+            if (nodeText !== selectionData[index].text) return; 
+
             // Skip if this text node is already inside a highlight span
             if ($(node).parent().hasClass("customSelectionMarkup")) return;
 
