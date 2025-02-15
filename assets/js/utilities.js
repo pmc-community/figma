@@ -1906,6 +1906,7 @@ const transformEditorTextToArray = (htmlString) => {
     return uniqueArray;
 }
 
+// global lists
 const createGlobalLists = () => {
     globCustomCats = _.uniq(getCustomCats());
     globCustomTags = _.uniq(getCustomTags());
@@ -1923,6 +1924,8 @@ const createGlobalLists = () => {
 
 }
 
+// get tables with state saved in local storage but not existing anymore
+// we do this to clean the local storage from time to time
 const getOrphanDataTables = (what) => {
     
     let substring = '';
@@ -1971,6 +1974,8 @@ const getOrphanDataTables = (what) => {
     return matchingKeys;
 }
 
+// CONTEXT MENU (different than selected text context menu)
+// we use this (for example) for custom tags and custom categories
 // elementTriggerCloseWhenScroll is the element which triggers the closure of the context menu when scrolled vertically. 
 // usually is the window element but can be the parent of the element on which the context menu is applied 
 // (to be used when the context menu is applied on an element which is on a modal or offcanvas that blocks the window scroll when active)
@@ -2390,7 +2395,7 @@ const textContainsHtmlTags = (text) => {
     return htmlTagPattern.test(text);
 };
 
-// selected text context menu
+// selected text context menu for selected text in document content
 const setSelectedTextContextMenu = (
     hotZoneSelector, // the area inside the context menu is active; cannot be document or window
     contextMenuContent, // the content object to be rendered inside the context menu
@@ -2709,7 +2714,6 @@ const getTextNodeInRect = (rect) => {
     return exactMatchNodes.length ? exactMatchNodes : matches.length ? matches : null;
 };
 
-// Helper function to generate a unique selector for an element
 const getUniqueSelector = (element) => {
     if (!element) return null;
     let $el = $(element);
@@ -3102,4 +3106,131 @@ const waitForI18Next = () => {
       }
     });
 };
-  
+
+
+/* FUNCTION WRAPPERS
+ * HEADS UP!!!
+ * because of the many async operations, events and callbacks used by datatables or CKEditor, sometimes
+ * pageInfo global may fall behind when passing from one function to another (a subsequent function may use an older version of pageInfo), 
+ * so is safer to refresh it whenever is needed, before or after a function execution or even before and after. we use the wrappers for this. 
+ * - don't forget to wrap the function after its definition
+ * - each function that needs updated pageInfo should be wrapped with BEFORE
+ * - each function that modifies pageInfo shoud be wrapped with AFTER
+*/
+
+// refresh pageInfo global, after the function execution
+const REFRESH_PAGE_INFO_AFTER = (func) => {
+    return function(...args) {
+        const result = func(...args);
+
+        const oldPageInfo = pageInfo;
+
+        const permalink = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+            ? pageInfo.savedInfo.permalink 
+            : pageInfo.siteInfo.permalink;
+
+        const title = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+            ? pageInfo.savedInfo.title 
+            : pageInfo.siteInfo.title;
+
+        pageInfo = {
+            siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
+            savedInfo: getPageSavedInfo (permalink, title),
+            tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+            cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+            page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
+        };
+
+        return result;
+    };
+}
+
+// refresh the pageInfo global, before the function execution
+const REFRESH_PAGE_INFO_BEFORE = (func) => {
+    return function(...args) {
+        return new Promise((resolve) => {
+
+            const oldPageInfo = pageInfo;
+
+            const permalink = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+                ? pageInfo.savedInfo.permalink 
+                : pageInfo.siteInfo.permalink;
+
+            const title = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+                ? pageInfo.savedInfo.title 
+                : pageInfo.siteInfo.title;
+
+            pageInfo = {
+                siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
+                savedInfo: getPageSavedInfo (permalink, title),
+                tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+                cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+                page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
+
+            };
+
+            resolve(pageInfo);
+        })
+        .then((updatedPageInfo) => {
+            const pageInfoArgIndex = func.toString().match(/\((.*?)\)/)[1].split(',').findIndex(arg => arg.includes('pageInfo'));
+            if (pageInfoArgIndex !== -1) {
+                args[pageInfoArgIndex] = updatedPageInfo; // Replace instead of inserting
+            }
+            return func.apply(this, args);
+        });
+    };
+}
+
+// refresh the pageInfo global, before and after the function execution
+const REFRESH_PAGE_INFO_BEFORE_AND_AFTER = (func) => {
+    return function(...args) {
+        return new Promise((resolve) => {
+
+            const oldPageInfo = pageInfo;
+
+            const permalink = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+            ? pageInfo.savedInfo.permalink 
+            : pageInfo.siteInfo.permalink;
+
+            const title = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+                ? pageInfo.savedInfo.title 
+                : pageInfo.siteInfo.title;
+
+            pageInfo = {
+                siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
+                savedInfo: getPageSavedInfo (permalink, title),
+                tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+                cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+                page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
+            };
+
+            resolve(pageInfo);
+        })
+        .then((updatedPageInfo) => {
+            const pageInfoArgIndex = func.toString().match(/\((.*?)\)/)[1].split(',').findIndex(arg => arg.includes('pageInfo'));
+            if (pageInfoArgIndex !== -1) {
+                args[pageInfoArgIndex] = updatedPageInfo; // Replace instead of inserting
+            }
+            return func.apply(this, args);
+        })
+        .then (() => {
+            const oldPageInfo = pageInfo;
+
+            const permalink = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+            ? pageInfo.savedInfo.permalink 
+            : pageInfo.siteInfo.permalink;
+
+            const title = !pageInfo.siteInfo || pageInfo.siteInfo === 'undefined' 
+                ? pageInfo.savedInfo.title 
+                : pageInfo.siteInfo.title;
+
+            pageInfo = {
+                siteInfo: getObjectFromArray ({permalink: permalink, title: title}, pageList),
+                savedInfo: getPageSavedInfo (permalink, title),
+                tag: oldPageInfo.tag, // used when pageFullInfo is called from tag-info page
+                cat: oldPageInfo.cat, // used when pageFullInfo is called from cat-info page
+                page: oldPageInfo.page // used when pageFullInfo is called from site-pages page
+            };
+        });
+    };
+}

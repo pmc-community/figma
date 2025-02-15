@@ -936,20 +936,28 @@ const page__setSelectedTextContextMenu = () =>{
             if (matches) {
                 const comment = {
                     anchor: selectedText.trim(),
-                    comm: $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').val(),
+                    comm: $('textarea[sitefunction="pageAddCommentToSelectedText_comment"]').val().trim(),
                     matches: matches,
                     uuid: uuid(),
+                    // here we add a comment as parent comment to the anchor; comment.id = comment.refId
+                    // see addComment(..) from savedItems.js
                     get refUuid() {return this.uuid}
                 };
 
                 if (addComment(comment, pageInfo)) {
                     highlightSavedSelection(comment.matches, comment.uuid, comment.anchor);
+                   
+                    markCustomComments(
+                        {
+                            savedInfo: getPageSavedInfo(pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+                        }
+                    );
+                    
                     initPageCommentsCanvasBeforeShow(
                         {
                             savedInfo: getPageSavedInfo(pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
                         }, 
-                        comment.anchor, 
-                        comment.uuid
+                        comment.anchor
                     );
                 }
                 
@@ -1050,14 +1058,23 @@ const page__showPageCustomTags = () => {
 
 // INTERNAL FUNCTIONS, NOT CALLED FROM HTML TEMPLATES
 
-const showPageCommentsCanvas = (pageInfo, anchor, commentId) => {
+const showPageCommentsCanvas = (pageInfo, anchor, commentId = null) => {
     if (pageInfo) {
-        initPageCommentsCanvasBeforeShow(pageInfo, anchor, commentId);
+        REFRESH_PAGE_INFO_BEFORE__initPageCommentsCanvasBeforeShow(pageInfo, anchor, commentId);
         $('#offcanvasPageComments').offcanvas('show');
     }
 }
 
-const initPageCommentsCanvasBeforeShow = (pageInfo, anchor, commentId) => {
+const initPageCommentsCanvasBeforeShow = (pageInfo, anchor, commentId = null) => {
+
+    // first, we need to refresh the pageInfo global
+    // NOT USED WHEN USING REFRESH_PAGE_INFO_BEFORE__ wrapper
+    /*
+    pageInfo = {
+        siteInfo: getObjectFromArray ({permalink: pageInfo.savedInfo.permalink, title: pageInfo.savedInfo.title}, pageList),
+        savedInfo: getPageSavedInfo (pageInfo.savedInfo.permalink, pageInfo.savedInfo.title),
+    };
+    */
 
     const commentItem = (comment) => {
         return (
@@ -1098,6 +1115,7 @@ const initPageCommentsCanvasBeforeShow = (pageInfo, anchor, commentId) => {
     $('#offcanvasPageCommentsBody_anchor').text(anchor);
 
     // comments
+    const pageComments = pageInfo.savedInfo.customComments || []; 
     const filteredComments = _.chain(pageComments)
         .filter({ anchor: anchor }) // Filter by anchor
         .orderBy(item => new Date(item.date).getTime(), 'desc') // Order by Unix timestamp of date descending
@@ -1107,13 +1125,14 @@ const initPageCommentsCanvasBeforeShow = (pageInfo, anchor, commentId) => {
     
     let commentsHTML = '';
     filteredComments.forEach( com => {
-        //console.log(`${com.anchor} / ${com.date} / ${com.comment}`);
         commentsHTML += commentItem(com);
     });
 
     $('#offcanvasPageComments_comments_list').html(commentsHTML);
  
 }
+const REFRESH_PAGE_INFO_BEFORE__initPageCommentsCanvasBeforeShow = REFRESH_PAGE_INFO_BEFORE(initPageCommentsCanvasBeforeShow);
+
 
 const refreshPageDynamicInfo = () => {
     keepScrollFixed(() => {
@@ -1222,6 +1241,7 @@ window.setPageButtonsFunctions = () => {
             // skip if there is a selection, to allow the context menu to open and get focus
             // otherwise the offcanvas will not allow the interactions with the context menu
             if (hasSelection($(this))) return; 
+
             const commentID = $(this).attr('id').replace(/^customSelection_/, '').trim();
             const anchor = $(this).text().trim();
             $('span[id^="customSelection_"]').removeClass('bg-danger').removeClass('bg-success').addClass('bg-secondary');
@@ -1236,6 +1256,12 @@ window.setPageButtonsFunctions = () => {
     $(document)
         .off('click', 'div[id^="offcanvasPageComments_comment_body_"]')
         .on('click', 'div[id^="offcanvasPageComments_comment_body_"]', function() {
+
+            // first, we need to refresh the pageInfo global because we cannot use the REFRESH_PAGE_INFO_BEFORE__ wrapper here
+            pageInfo = {
+                siteInfo: getObjectFromArray ({permalink: pageInfo.savedInfo.permalink, title: pageInfo.savedInfo.title}, pageList),
+                savedInfo: getPageSavedInfo (pageInfo.savedInfo.permalink, pageInfo.savedInfo.title),
+            };
 
             $('.offcanvasPageComments_comment').removeClass('bg-success').addClass('bg-secondary');
             $(this).parent().removeClass('bg-secondary').addClass('bg-success');
