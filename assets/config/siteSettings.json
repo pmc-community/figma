@@ -225,12 +225,12 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Collection-2/Y",
-          "permalink": "/collection-2/y/y/"
-        },
-        {
           "title": "Play with content",
           "permalink": "/pwc/"
+        },
+        {
+          "title": "Collection-2/Y",
+          "permalink": "/collection-2/y/y/"
         },
         {
           "title": "Collection-1/G1",
@@ -276,10 +276,6 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        },
-        {
           "title": "Intro Grand Child Page",
           "permalink": "/intro/introChild/introGrandChild/"
         },
@@ -323,10 +319,6 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Play with content",
-          "permalink": "/pwc/"
-        },
-        {
           "title": "Intro Child Page",
           "permalink": "/intro/introChild/"
         }
@@ -351,26 +343,26 @@
         "tag3",
         "alfa"
       ],
-      "excerpt": "lorem ipsum, text, model, latin, encoder model, tasks, word, encoder, variety, length",
+      "excerpt": "file, lorem ipsum, site, markdown content, title, link, latin, cicero, malorum, sections",
       "lastUpdate": "2025-01-11 18:48:00 +0200",
       "lastUpdateUTC": 1736614080,
       "createTime": "2025-01-11 18:48:00 +0200",
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Intro Child Page",
-          "permalink": "/intro/introChild/"
-        },
-        {
-          "title": "Intro Grand Child Page",
-          "permalink": "/intro/introChild/introGrandChild/"
-        },
-        {
           "title": "Introduction",
           "permalink": "/intro/"
+        },
+        {
+          "title": "Collection-2/Y",
+          "permalink": "/collection-2/y/y/"
+        },
+        {
+          "title": "Collection-2/X",
+          "permalink": "collection-2/X/x/"
         }
       ],
-      "autoSummary": "intepretation for the following text:: markdown content direct included in the pagestableheads up!!!links to other site docs must be ...",
+      "autoSummary": "markdown content direct included in the page. heads up!!!links to other site docs must be given using the permalinks, not the ...",
       "similarByContent": [
         {
           "permalink": "/collection-2/y/y/",
@@ -383,6 +375,10 @@
         {
           "permalink": "/collection-1/g1/",
           "title": "Collection-1/G1"
+        },
+        {
+          "permalink": "collection-2/X/x/",
+          "title": "Collection-2/X"
         }
       ],
       "readingTime": 2,
@@ -464,7 +460,7 @@
       "tags": [
 
       ],
-      "excerpt": "content, services, lorem ipsum, innohub, email, access, process, registration, latin, ihsutilities",
+      "excerpt": "content, services, lorem ipsum, innohub, registration, email, access, process, latin, ihsutilities",
       "lastUpdate": "2025-01-11 18:48:00 +0200",
       "lastUpdateUTC": 1736614080,
       "createTime": "2025-01-11 18:48:00 +0200",
@@ -483,7 +479,7 @@
           "permalink": "/intro/"
         }
       ],
-      "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. it has roots in a piece of classical literature ...",
+      "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ...",
       "similarByContent": [
         {
           "permalink": "/collection-2/y/y/",
@@ -529,7 +525,7 @@
           "permalink": "/pwc/"
         }
       ],
-      "autoSummary": "g11 how it works the accordion uses (internally) to make it collapsible. click the accordions below to expand ...",
+      "autoSummary": "g11 how it works the accordion uses internally to make it collapsible. click the accordions below to expand/collapse accord ...",
       "similarByContent": [
 
       ],
@@ -553,16 +549,16 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
+          "title": "Play with content",
+          "permalink": "/pwc/"
+        },
+        {
           "title": "Introduction",
           "permalink": "/intro/"
         },
         {
           "title": "Intro Child Page",
           "permalink": "/intro/introChild/"
-        },
-        {
-          "title": "Play with content",
-          "permalink": "/pwc/"
         }
       ],
       "autoSummary": "lorem ipsum is a piece of classical latin literature from 45 bc. lorem ipsum comes from sections ...",
@@ -607,6 +603,10 @@
         {
           "title": "Collection-2/X",
           "permalink": "collection-2/X/x/"
+        },
+        {
+          "title": "Play with content",
+          "permalink": "/pwc/"
         }
       ],
       "autoSummary": "this is a file from a collection. this file loads some external content from another repo and place it inline. link to file in different folder",
@@ -636,16 +636,20 @@
       "createTimeUTC": 1736614080,
       "relatedPages": [
         {
-          "title": "Collection-2/Z",
-          "permalink": "/collection-2/Z/z/"
-        },
-        {
           "title": "Play with content",
           "permalink": "/pwc/"
+        },
+        {
+          "title": "Collection-2/Z",
+          "permalink": "/collection-2/Z/z/"
         }
       ],
-      "autoSummary": "ok good swedish fish nice. out of stock good and plenty nice. ok good zoute drop yumm ...",
+      "autoSummary": "own markdown content. this the content directly typed in collection-2/x. this is one good inline external link to https://pmc ...",
       "similarByContent": [
+        {
+          "permalink": "/pwc/",
+          "title": "Play with content"
+        },
         {
           "permalink": "/collection-2/Z/z/",
           "title": "Collection-2/Z"

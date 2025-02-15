@@ -565,16 +565,6 @@ const page__getPageInfo = () => {
         );
     }
 
-    const markCustomComments = (pageInfo) => {
-        if (!pageInfo.savedInfo || pageInfo.savedInfo === 'undefined') return;
-        if (!pageInfo.savedInfo.customComments || pageInfo.savedInfo.customComments === 'undefined') return;
-        pageComments = pageInfo.savedInfo.customComments || [];
-        if (pageComments.length === 0) return;
-        pageComments.forEach( comment => {
-            highlightSavedSelection(comment.matches, comment.id, comment.anchor);
-        });
-    }
-
     $(document).ready(function() {
         
         if (pageInfo.siteInfo === 'none') return;

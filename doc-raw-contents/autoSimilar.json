@@ -25,7 +25,8 @@
         "similarFiles": [
             "/collection-2/y/y/",
             "/intro/",
-            "/collection-1/g1/"
+            "/collection-1/g1/",
+            "collection-2/X/x/"
         ]
     },
     {
@@ -69,6 +70,7 @@
     {
         "permalink": "collection-2/X/x/",
         "similarFiles": [
+            "/pwc/",
             "/collection-2/Z/z/"
         ]
     },

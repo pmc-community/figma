@@ -273,6 +273,8 @@ const getExternalContent = async (file, position, startMarker , endMarker, heade
                     addTopOfPage();
                 }
 
+                markCustomComments(pageInfo);
+
             },
             error: async (xhr, status, error) => {
                 showToast(`Error loading external content! Details in console ...`, 'bg-danger', 'text-light');
@@ -2739,7 +2741,7 @@ const highlightSavedSelection = (selectionData, uniqueID, referenceText) => {
             let node = this;
             let nodeText = stripHtml(node.textContent);
             if (!nodeText.includes(referenceText)) return; // skip if the node does not contain the text to be highlighted
-            
+
             let nodeLength = nodeText.length;
 
             // skip if the parent content changed and does not match anymore with the content at the time when the comment was created
@@ -2773,6 +2775,16 @@ const highlightSavedSelection = (selectionData, uniqueID, referenceText) => {
                 highlightCompleted = true; // Stop further processing
             }
         });
+    });
+}
+
+const markCustomComments = (pageInfo) => {
+    if (!pageInfo.savedInfo || pageInfo.savedInfo === 'undefined') return;
+    if (!pageInfo.savedInfo.customComments || pageInfo.savedInfo.customComments === 'undefined') return;
+    pageComments = pageInfo.savedInfo.customComments || [];
+    if (pageComments.length === 0) return;
+    pageComments.forEach( comment => {
+        highlightSavedSelection(comment.matches, comment.id, comment.anchor);
     });
 }
 
