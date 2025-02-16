@@ -119,6 +119,7 @@
     "page_content_context_menu_option_see_selected": "Vezi selectia",
     "page_content_context_menu_option_add_comment": "Adauga comentariu",
     "page_content_context_menu_option_add_comment_button": "Adauga",
+    "page_content_context_menu_option_cancel_comment_button": "Renunta",
     "page_content_context_menu_tag_limitation_toast_message": "Etichetele sunt limitate la %d cuvinte si %d caractere",
     "page_content_context_menu_tag_to_document_toast_message": "Eticheta %s a fost aplicata documentului",
     "page_content_context_menu_tag_to_all_documents_toast_crtPageInfo_message_part": "Documentul nu este salvat local, eticheta nu poate fi aplicata acestui document",

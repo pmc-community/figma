@@ -103,6 +103,7 @@
     "page_content_context_menu_option_see_selected": "See selected",
     "page_content_context_menu_option_add_comment": "Add comment",
     "page_content_context_menu_option_add_comment_button": "Add",
+    "page_content_context_menu_option_cancel_comment_button": "Cancel",
     "page_content_context_menu_tag_limitation_toast_message": "Tags are limited to %d words and %d characters",
     "page_content_context_menu_tag_to_document_toast_message": "Tag %s was applied to document",
     "page_content_context_menu_tag_to_all_documents_toast_crtPageInfo_message_part": "This document was not found in saved items, so the tag was not applied to it.",
