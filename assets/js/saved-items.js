@@ -155,7 +155,7 @@ window.addNote = (note, pageInfo) => {
 // if we need to intercept this function with the global interceptor (see utilities.js)
 // and we don't want to define it in the global scope like window.func = (...) => {}
 // we cannot use arrow function syntax and we need to stick to the classical function definition
-function deleteNote(noteId, pageInfo)  {
+const deleteNote = (noteId, pageInfo) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
         title: pageInfo.siteInfo.title
@@ -257,6 +257,72 @@ const addComment = (comment, pageInfo) => {
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
     return true;
 
+}
+
+const deleteComment = (commentId, pageInfo) => {
+    const page = {
+        permalink: pageInfo.siteInfo.permalink,
+        title: pageInfo.siteInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) {
+        showToast('Can\'t delete comment! There is nothing in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) {
+        showToast('Can\'t delete comment! Page not found in saved items...', 'bg-danger', 'text-light');
+        return false;
+    }
+
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomComments = savedPage.customComments || [];
+
+    const commentIndex = objectIndexInArray({id: commentId}, savedPageCustomComments);
+
+    if (commentIndex === -1) {
+        showToast('Can\'t delete comment! Comment not found...', 'bg-danger', 'text-light');
+        return false;
+    }
+    
+    // check if is a parent comment
+    const commentToDelete = savedPageCustomComments[commentIndex];
+    
+    if (commentToDelete.id === commentToDelete.refId) {
+        // parent comment
+        // need to find the comment that is linked to this and to make it parent
+        const linkedCommentIndex = objectIndexInArray({refId: commentToDelete.id}, savedPageCustomComments);
+        if (linkedCommentIndex !== -1 ) {
+            // comment.id = comment.refId menas that the comment is a parent comment
+            savedPageCustomComments[linkedCommentIndex].refId = savedPageCustomComments[linkedCommentIndex].id
+        }
+
+    } else {
+        // not parent comment
+        
+        // get his parent
+        const hisParentIndex = objectIndexInArray({id: commentToDelete.refId}, savedPageCustomComments);
+        const hisParentId = savedPageCustomComments[hisParentIndex].id;
+
+        // get his child (if any)
+        const hisChildIndex = objectIndexInArray({refId: commentToDelete.id}, savedPageCustomComments);
+
+        // linking his parent with his child
+        if(hisChildIndex !== -1) {
+            savedPageCustomComments[hisChildIndex].refId = hisParentId;
+        }
+    }
+
+    // removing the comment after re-linking remaining comments
+    _.pullAt(savedPageCustomComments, commentIndex);
+
+
+    savedPage.customComments = savedPageCustomComments;
+    savedItems[pageIndex] = savedPage;
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+    return true;
 }
 
 const getPageNotes = (pageInfo) => {

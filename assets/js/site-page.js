@@ -1157,10 +1157,10 @@ const initPageCommentsCanvasBeforeShow = async (pageInfo, anchor, commentId = nu
                             class="col-10 d-flex pl-4 card-body alwaysCursorPointer offcanvasPageComments_comment_body align-items-center" 
                             id="offcanvasPageComments_comment_body_${comment.id}">
                             <div>
-                                <div class="mb-2">
+                                <div class="mb-2 text-start">
                                     <span 
                                         id="offcanvasPageCommentsBody_comment_date_${comment.id}"
-                                        class="text-primary"
+                                        class="text-primary text-start"
                                         data-i18n="[text]formatted_date"
                                         data-original-date="${comment.date}"
                                         data-month-name="short">
@@ -1170,7 +1170,7 @@ const initPageCommentsCanvasBeforeShow = async (pageInfo, anchor, commentId = nu
 
                                 <div class="text-start">
                                     <span
-                                        class="text-secondary"
+                                        class="text-secondary text-start"
                                         id="offcanvasPageCommentsBody_comment_comment_${comment.id}">
                                         ${comment.comment}
                                     </span>
@@ -1204,12 +1204,8 @@ const initPageCommentsCanvasBeforeShow = async (pageInfo, anchor, commentId = nu
 
     // comments
     const pageComments = pageInfo.savedInfo.customComments || []; 
-    const flatFilteredComments = _.chain(pageComments)
-        .filter({ anchor: anchor }) // Filter by anchor
-        .orderBy(item => new Date(item.date).getTime(), 'desc') // Order by Unix timestamp of date descending
-        .groupBy('refId') // Group by refId
-        .flatMap(group => group) // Flatten the grouped result into an array
-        .value();
+
+    const flatFilteredComments = pageComments.filter(item => item.anchor === anchor); // Filter by anchor
 
     /* NOT USED
     flatFilteredComments.forEach( com => {
@@ -1217,14 +1213,7 @@ const initPageCommentsCanvasBeforeShow = async (pageInfo, anchor, commentId = nu
     });
     */
 
-    const parentComments = _.filter(flatFilteredComments, obj => obj.id === obj.refId);
-    //const distinctIds = _.uniq(_.map(parentComments, 'id'));
-
-    const filteredCommentsGrouped = _.chain(pageComments)
-        .filter({ anchor: anchor }) // Filter by anchor
-        .orderBy(item => new Date(item.date).getTime(), 'desc') // Order by Unix timestamp of date descending
-        .groupBy('refId') // Group by refId
-        .value();
+    filteredCommentsGrouped = buildHierarchy(flatFilteredComments, 'refId', 'id', 'date', 'desc', 'id').hierarchy;
 
     let commentsHTML = '';
     Object.keys(filteredCommentsGrouped).forEach( (group, index) => {
@@ -1380,9 +1369,12 @@ window.setPageButtonsFunctions = () => {
             
             // we use refId prop to navigate because we may want to group comments based on the anchor position in document
             target = `#customSelection_${comment.refId}`;
-            $('html, body').animate({
-                scrollTop: $(target).offset().top - $(settings.layouts.leftSideBar.header).outerHeight() - 40
-            }, 100);
+            
+            if ($(target).length) {
+                $('html, body').animate({
+                    scrollTop: $(target).offset().top - $(settings.layouts.leftSideBar.header).outerHeight() - 40
+                }, 100);
+            }
 
             $('span[id^="customSelection_"]').each(function() {
                 if ($(this).text() !== comment.anchor) $(this).removeClass('bg-success').addClass('bg-secondary');
@@ -1414,6 +1406,14 @@ window.setPageButtonsFunctions = () => {
         .on('click', 'button[siteFunction^="pageCommentsOffCanvas_commentCard_showAddCommentBox_"]', function() {
             REFRESH_PAGE_INFO_BEFORE_AND_AFTER__showAddCommentFromCommentsOffCanvas($(this));
         });
+
+    // click on comments offcanvas delete comment (minus sign) on comments off canvas
+    // which, actually, removes the comment, so the add comment box will be removed by default
+    $(document)
+        .off('click', 'button[siteFunction^="pageCommentsOffCanvas_commentCard_hideAddCommentBox_"]')
+        .on('click', 'button[siteFunction^="pageCommentsOffCanvas_commentCard_hideAddCommentBox_"]', function() {
+            REFRESH_PAGE_INFO_BEFORE_AND_AFTER__deleteCommentFromCommentsOffCanvas($(this));
+        });
     
     // click on cancel in comments offcanvas add comment box
     $(document)
@@ -1430,6 +1430,31 @@ window.setPageButtonsFunctions = () => {
             REFRESH_PAGE_INFO_BEFORE_AND_AFTER__addCommentFromCommentsOffCanvas($(this));
         });
 }
+
+const deleteCommentFromCommentsOffCanvas = ($btnClicked) => {
+    const commentId = $btnClicked.attr('id').replace(/^pageCommentsOffCanvas_commentCard_hideAddCommentBox_/, '');
+    const pageComments = pageInfo.savedInfo.customComments || [];
+    const comment = getObjectFromArray ({id: commentId}, pageComments) 
+
+    if (deleteComment(commentId, pageInfo)) {
+
+        highlightSavedSelection(comment.matches, null, comment.anchor);
+                   
+        markCustomComments(
+            {
+                savedInfo: getPageSavedInfo(pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+            }
+        );
+        
+        initPageCommentsCanvasBeforeShow(
+            {
+                savedInfo: getPageSavedInfo(pageInfo.siteInfo.permalink, pageInfo.siteInfo.title)
+            }, 
+            comment.anchor
+        );
+    }
+}
+const REFRESH_PAGE_INFO_BEFORE_AND_AFTER__deleteCommentFromCommentsOffCanvas = REFRESH_PAGE_INFO_BEFORE_AND_AFTER(deleteCommentFromCommentsOffCanvas);
 
 const addCommentFromCommentsOffCanvas = ($btnClicked) => {
 
@@ -1449,7 +1474,6 @@ const addCommentFromCommentsOffCanvas = ($btnClicked) => {
         refUuid: commentId
     };
 
-    // we pass current commentId as argument to addComment(..) to force refId
     if (addComment(comment, pageInfo)) {
         highlightSavedSelection(comment.matches, comment.uuid, comment.anchor);
                    

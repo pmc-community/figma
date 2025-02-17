@@ -172,6 +172,56 @@ if (pagePermalink !== '/') {
 
 /* SOME GENERAL PURPOSE UTILITIES */
 
+// items = an array of objects having the same structure
+// the function groups items by groupByProp and returns an object having
+// the keys as disting values of groupByProp and the values as 
+// array of objects ordered by orderByInResultProp ASC/DESC (orderInResult)
+// the resulted arrays contains unique objects based on the pkInResultProp primary key
+// HEADS UP!!!
+// THE BEST USE CASE IS WHEN THE ORIGINAL ARRAY (items) CONTAINES LINKED LISTS OF OBJECTS
+// childObject.groupByProp = parentObject.linkProp 
+const buildHierarchy = (items, groupByProp, linkProp, orderByInResultProp, orderInResult, pkInResultProp) => {
+    // Group items by groupByProp
+    const groupedByRef = _.groupBy(items, groupByProp);
+
+    // Find root node for a given item, avoiding infinite loops
+    const findRoot = (item, visited = new Set()) => {
+        let current = item;
+        while (current && current[linkProp] !== current[groupByProp] && !visited.has(current[linkProp])) {
+            visited.add(current[linkProp]);
+            current = items.find(i => i[linkProp] === current[groupByProp]);
+        }
+        return current;
+    };
+
+    // Build hierarchy recursively with date sorting
+    const buildTree = (parentId, visitedIds = new Set()) => {
+        // Avoid infinite loops by ensuring we don't process the same item again
+        if (visitedIds.has(parentId)) return [];
+        visitedIds.add(parentId);
+
+        return _(groupedByRef[parentId] || [])
+            .orderBy([orderByInResultProp], [orderInResult])
+            .map(item => ({
+                ...item,
+                root: findRoot(item, visitedIds),
+                children: buildTree(item[linkProp], visitedIds) // Pass visitedIds to avoid infinite loops
+            }))
+            .value();
+    };
+
+    // Construct result object, ensuring root nodes without children are included
+    const hierarchy = {};
+    items.forEach(item => {
+        if (!hierarchy[item[linkProp]]) {
+            // Ensure uniqueness by using uniqBy to remove duplicates based on pkInResultProp
+            hierarchy[item[linkProp]] = _.uniqBy([item, ...buildTree(item[linkProp])], pkInResultProp);
+        }
+    });
+
+    return { hierarchy };
+};
+
 const waitUntilCompleteOrTimeout = (task, timeoutMs) => {
     return Promise.race([
       task(),  // The task to wait for
@@ -2769,6 +2819,8 @@ const highlightSavedSelection = (selectionData, uniqueID, referenceText) => {
                 let range = document.createRange();
                 range.setStart(node, startIndex);
                 range.setEnd(node, startIndex + remainingText.length);
+
+                if (!uniqueID) return; // skip if the comment id was not provided, meaning that, probably, the comment was removed
 
                 let highlightSpan = $("<span>")
                     .addClass('customSelectionMarkup rounded border border-secondary border-opacity-25 shadow-none bg-secondary px-1 bg-opacity-25')
