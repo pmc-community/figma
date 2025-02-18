@@ -317,16 +317,27 @@ const deleteComment = (commentId, pageInfo) => {
     
     if (commentToDelete.id === commentToDelete.refId) {
         // parent comment
-        // need to find the comment that is linked to this and to make it parent
-        const linkedCommentIndex = objectIndexInArray({refId: commentToDelete.id}, savedPageCustomComments);
-        if (linkedCommentIndex !== -1 ) {
-            // comment.id = comment.refId means that the comment is a parent comment
-            savedPageCustomComments[linkedCommentIndex].refId = savedPageCustomComments[linkedCommentIndex].id
+        // need to find the comment that is linked to it and to make it parent
+        const commentToBecomeParent = getObjectsFromArray({refId: commentToDelete.id}, savedPageCustomComments);
+
+        if (commentToBecomeParent.length > 1) { 
+            let i = 0;
+            commentToBecomeParent.forEach(comment => {
+                if (comment.id === commentToDelete.id) {
+                    _.pullAt(commentToBecomeParent, i);
+                }
+                i++;
+            });
+
+            const linkedCommentIndex = objectIndexInArray({refId: commentToDelete.id, id:commentToBecomeParent[0].id}, savedPageCustomComments);
+            if (linkedCommentIndex !== -1 ) {
+                // comment.id = comment.refId means that the comment is a parent comment
+                savedPageCustomComments[linkedCommentIndex].refId = savedPageCustomComments[linkedCommentIndex].id
+            }
         }
 
     } else {
-        // not parent comment
-        
+        // not parent comment 
         // get his parent
         let hisParentId;
         const hisParentIndex = objectIndexInArray({id: commentToDelete.refId}, savedPageCustomComments);
@@ -346,6 +357,10 @@ const deleteComment = (commentId, pageInfo) => {
     // removing the comment after re-linking remaining comments
     _.pullAt(savedPageCustomComments, commentIndex);
 
+    // handle the case when there is only one comment left and is not the parent
+    if (savedPageCustomComments.length === 1) {
+        savedPageCustomComments[0].refId = savedPageCustomComments[0].id;
+    }
 
     savedPage.customComments = savedPageCustomComments;
     savedItems[pageIndex] = savedPage;

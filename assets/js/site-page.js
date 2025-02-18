@@ -1,5 +1,5 @@
 // disable interactions while offcanvas is in transition
-// enable interation once offcanvas is fully loaded
+// enable interactions once offcanvas is fully loaded
 $(document).on('show.bs.offcanvas', '#offcanvasPageComments', function () {
     // Disable clicks on the entire page
     $('body').css('pointer-events', 'none');
@@ -1117,7 +1117,21 @@ const initPageCommentsCanvasBeforeShow = async (pageInfo, anchor, commentId = nu
         const commentActions = (comment) => {
 
             //console.log(`${comment.comment}:  ${commentHasChildren(comment, pageInfo)}`)
-            if (commentHasChildren(comment, pageInfo)) return '';
+            if (commentHasChildren(comment, pageInfo)) return (
+                `
+                <div class="d-flex flex-column h-100">
+                    <div class="mt-auto">
+                        <button
+                            siteFunction="${`pageCommentsOffCanvas_commentCard_hideAddCommentBox_${comment.id}`}"
+                            id="${`pageCommentsOffCanvas_commentCard_hideAddCommentBox_${comment.id}`}" 
+                            class="mx-1 my-2 btn btn-sm rounded-circle text-light btn-danger">
+                            <i class="bi bi-dash-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                `
+            );
             return (
                 `
                     <div class="d-flex flex-column h-100">
@@ -1236,7 +1250,6 @@ const initPageCommentsCanvasBeforeShow = async (pageInfo, anchor, commentId = nu
  
 }
 const REFRESH_PAGE_INFO_BEFORE__initPageCommentsCanvasBeforeShow = REFRESH_PAGE_INFO_BEFORE(initPageCommentsCanvasBeforeShow);
-
 
 const refreshPageDynamicInfo = () => {
     keepScrollFixed(() => {

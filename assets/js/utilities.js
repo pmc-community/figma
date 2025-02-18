@@ -2910,9 +2910,23 @@ const markCustomComments = (pageInfo) => {
     if (!pageInfo.savedInfo || pageInfo.savedInfo === 'undefined') return;
     if (!pageInfo.savedInfo.customComments || pageInfo.savedInfo.customComments === 'undefined') return;
     pageComments = pageInfo.savedInfo.customComments || [];
+    unMarkCustomComments();
     if (pageComments.length === 0) return;
     pageComments.forEach( comment => {
         highlightSavedSelection(comment.matches, comment.id, comment.anchor);
+    });
+}
+
+const unMarkCustomComments = () => {
+    
+    $('.customSelectionMarkup').each(function() {
+        const nodeHtml = $(this).parent().prop('outerHTML');
+        const anchor = $(this).text();
+        const $nodeHtml = $(nodeHtml);
+        const $markerHtml = $nodeHtml.find('.customSelectionMarkup');
+        const markerHtml = $markerHtml.prop('outerHTML');
+        const newHtml = nodeHtml.replace(markerHtml, anchor);
+        $(this).parent().replaceWith($(newHtml));
     });
 }
 
