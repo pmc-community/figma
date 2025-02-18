@@ -1102,130 +1102,137 @@ const showPageCommentsCanvas = async (pageInfo, anchor, commentId = null) => {
     await waitForI18Next();
 
     if (pageInfo) {
-        REFRESH_PAGE_INFO_BEFORE__initPageCommentsCanvasBeforeShow(pageInfo, anchor, commentId);
-        $('#offcanvasPageComments').offcanvas('show');
+        if (pageInfo.savedInfo.customComments.length > 0) {
+            REFRESH_PAGE_INFO_BEFORE__initPageCommentsCanvasBeforeShow(pageInfo, anchor, commentId);
+            $('#offcanvasPageComments').offcanvas('show');
+        }
     }
 }
+REFRESH_PAGE_INFO_BEFORE__showPageCommentsCanvas = REFRESH_PAGE_INFO_BEFORE(showPageCommentsCanvas);
 
 const initPageCommentsCanvasBeforeShow = async (pageInfo, anchor, commentId = null) => {
-    await waitForI18Next();
+    if (pageInfo.savedInfo.customComments.length > 0 ) {
+        await waitForI18Next();
 
-    // first, we need to refresh the pageInfo global
-    // NOT USED WHEN USING REFRESH_PAGE_INFO_BEFORE__ wrapper
-    /*
-    pageInfo = {
-        siteInfo: getObjectFromArray ({permalink: pageInfo.savedInfo.permalink, title: pageInfo.savedInfo.title}, pageList),
-        savedInfo: getPageSavedInfo (pageInfo.savedInfo.permalink, pageInfo.savedInfo.title),
-    };
-    */
+        const commentActions = (comment) => {
 
-    const commentActions = (comment) => {
-        return (
-
-            `
-                <div class="d-flex flex-column h-100">
-                    <div class="my-2">
-                        <button
-                            siteFunction="${`pageCommentsOffCanvas_commentCard_showAddCommentBox_${comment.id}`}"
-                            id="${`pageCommentsOffCanvas_commentCard_showAddCommentBox_${comment.id}`}"
-                            class="mx-1 mt-2 btn btn-sm rounded-circle text-light btn-success">
-                            <i class="bi bi-plus-lg"></i>
-                        </button>
+            //console.log(`${comment.comment}:  ${commentHasChildren(comment, pageInfo)}`)
+            if (commentHasChildren(comment, pageInfo)) return '';
+            return (
+                `
+                    <div class="d-flex flex-column h-100">
+                        <div class="my-2">
+                            <button
+                                siteFunction="${`pageCommentsOffCanvas_commentCard_showAddCommentBox_${comment.id}`}"
+                                id="${`pageCommentsOffCanvas_commentCard_showAddCommentBox_${comment.id}`}"
+                                class="mx-1 mt-2 btn btn-sm rounded-circle text-light btn-success">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                        <div class="mt-auto">
+                            <button
+                                siteFunction="${`pageCommentsOffCanvas_commentCard_hideAddCommentBox_${comment.id}`}"
+                                id="${`pageCommentsOffCanvas_commentCard_hideAddCommentBox_${comment.id}`}" 
+                                class="mx-1 my-2 btn btn-sm rounded-circle text-light btn-danger">
+                                <i class="bi bi-dash-lg"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="mt-auto">
-                        <button
-                            siteFunction="${`pageCommentsOffCanvas_commentCard_hideAddCommentBox_${comment.id}`}"
-                            id="${`pageCommentsOffCanvas_commentCard_hideAddCommentBox_${comment.id}`}" 
-                            class="mx-1 my-2 btn btn-sm rounded-circle text-light btn-danger">
-                            <i class="bi bi-dash-lg"></i>
-                        </button>
-                    </div>
-                </div>
-            `
-        );
-    }
+                `
+            );
+        }
 
-    const commentItem = (comment) => {
-        return (
-            `
-                <div 
-                    class="container p-2 rounded mt-2 bg-secondary bg-opacity-10 border-0 border-secondary border-opacity-10 shadow-none offcanvasPageComments_comment" 
-                    id="offcanvasPageComments_comment_${comment.id}">
+        const commentItem = (comment) => {
+            return (
+                `
+                    <div 
+                        class="container p-2 rounded mt-2 bg-secondary bg-opacity-10 border-0 border-secondary border-opacity-10 shadow-none offcanvasPageComments_comment" 
+                        id="offcanvasPageComments_comment_${comment.id}">
 
-                    <div class="row">
-                        <div 
-                            class="col-10 d-flex pl-4 card-body alwaysCursorPointer offcanvasPageComments_comment_body align-items-center" 
-                            id="offcanvasPageComments_comment_body_${comment.id}">
-                            <div>
-                                <div class="mb-2 text-start">
-                                    <span 
-                                        id="offcanvasPageCommentsBody_comment_date_${comment.id}"
-                                        class="text-primary text-start"
-                                        data-i18n="[text]formatted_date"
-                                        data-original-date="${comment.date}"
-                                        data-month-name="short">
-                                        ${comment.date}
-                                    </span>
+                        <div class="row">
+                            <div 
+                                class="col-10 d-flex pl-4 card-body alwaysCursorPointer offcanvasPageComments_comment_body align-items-center" 
+                                id="offcanvasPageComments_comment_body_${comment.id}">
+                                <div>
+                                    <div class="mb-2 text-start">
+                                        <span 
+                                            id="offcanvasPageCommentsBody_comment_date_${comment.id}"
+                                            class="text-primary text-start"
+                                            data-i18n="[text]formatted_date"
+                                            data-original-date="${comment.date}"
+                                            data-month-name="short">
+                                            ${comment.date}
+                                        </span>
+                                    </div>
+
+                                    <div class="text-start">
+                                        <span
+                                            class="text-secondary text-start"
+                                            id="offcanvasPageCommentsBody_comment_comment_${comment.id}">
+                                            ${comment.comment}
+                                        </span>
+                                    </div>
+
                                 </div>
-
-                                <div class="text-start">
-                                    <span
-                                        class="text-secondary text-start"
-                                        id="offcanvasPageCommentsBody_comment_comment_${comment.id}">
-                                        ${comment.comment}
-                                    </span>
-                                </div>
-
                             </div>
+
+                            <div class="col-2 d-flex align-items-center justify-content-center">
+                                ${commentActions(comment)}
+                            </div>
+        
                         </div>
 
-                        <div class="col-2 d-flex align-items-center justify-content-center">
-                            ${commentActions(comment)}
-                        </div>
-     
+                        <div class="row"
+                            <div class="col-12 p-2">
+                                ${pageComments_AddCommentContainer('comOffCanvas',comment)}
+                            </div>
+                            </div>
+                        
                     </div>
 
-                    <div class="row"
-                        <div class="col-12 p-2">
-                            ${pageComments_AddCommentContainer('comOffCanvas',comment)}
-                        </div>
-                        </div>
-                    
-                </div>
+                `
+            )
+        }
 
-            `
-        )
-    }
+        // general info
+        $('#offcanvasPageCommentsBody_pageLink').text(pageInfo.savedInfo.title);
+        $('#offcanvasPageCommentsBody_pageLink').attr('href', pageInfo.savedInfo.permalink);
+        $('#offcanvasPageCommentsBody_anchor').text(anchor);
 
-    // general info
-    $('#offcanvasPageCommentsBody_pageLink').text(pageInfo.savedInfo.title);
-    $('#offcanvasPageCommentsBody_pageLink').attr('href', pageInfo.savedInfo.permalink);
-    $('#offcanvasPageCommentsBody_anchor').text(anchor);
+        // comments
+        const pageComments = pageInfo.savedInfo.customComments || []; 
+        const flatFilteredComments = pageComments.filter(item => item.anchor === anchor); // Filter by anchor
+        const commentsGroupByParents = groupByRootNodes(flatFilteredComments, 'id', 'refId', 'date', 'asc');
 
-    // comments
-    const pageComments = pageInfo.savedInfo.customComments || []; 
-
-    const flatFilteredComments = pageComments.filter(item => item.anchor === anchor); // Filter by anchor
-
-    /* NOT USED
-    flatFilteredComments.forEach( com => {
-        commentsHTML += commentItem(com);
-    });
-    */
-
-    filteredCommentsGrouped = buildHierarchy(flatFilteredComments, 'refId', 'id', 'date', 'desc', 'id').hierarchy;
-
-    let commentsHTML = '';
-    Object.keys(filteredCommentsGrouped).forEach( (group, index) => {
-        let comments = filteredCommentsGrouped[group];
-        comments.forEach( com => {
-            commentsHTML += commentItem(com);
+        let commentsHTML = '';
+        Object.keys(commentsGroupByParents).forEach( (group, index) => {
+            let comments = _.uniqBy(commentsGroupByParents[group], 'id');
+            comments.forEach( com => {
+                commentsHTML += commentItem(com);
+            });
+            if (Object.keys(commentsGroupByParents).length > 1 && index !== Object.keys(commentsGroupByParents).length - 1)
+                commentsHTML += '<hr class="bg-primary" siteFunction="offCanvasPageCommentsSeparator">';
         });
-        if (Object.keys(filteredCommentsGrouped).length > 1 && index !== Object.keys(filteredCommentsGrouped).length - 1)
-            commentsHTML += '<hr class="bg-primary" siteFunction="offCanvasPageCommentsSeparator">';
-    });
 
-    $('#offcanvasPageComments_comments_list').html(commentsHTML);
+        $('#offcanvasPageComments_comments_list').html(commentsHTML);
+    }
+    else {
+        // there is no comment to be shown, so we close the comments offCanvas and remove markers from the anchor
+
+        $('.customSelectionMarkup').each(function() {
+            if ($(this).text() === anchor) {
+                const nodeHtml = $(this).parent().prop('outerHTML');
+                const $nodeHtml = $(nodeHtml);
+                const $markerHtml = $nodeHtml.find('.customSelectionMarkup');
+                const markerHtml = $markerHtml.prop('outerHTML');
+                const newHtml = nodeHtml.replace(markerHtml, anchor);
+                $(this).parent().replaceWith($(newHtml));
+            }
+        });
+
+        $('button[sitefunction="offcanvasPageCommentsClose"]').click();
+
+    }
  
 }
 const REFRESH_PAGE_INFO_BEFORE__initPageCommentsCanvasBeforeShow = REFRESH_PAGE_INFO_BEFORE(initPageCommentsCanvasBeforeShow);
@@ -1346,7 +1353,7 @@ window.setPageButtonsFunctions = () => {
                 if ($(this).text() === anchor) $(this).removeClass('bg-secondary').addClass('bg-danger');
             })
             
-            showPageCommentsCanvas(pageInfo, anchor, commentID);
+            REFRESH_PAGE_INFO_BEFORE__showPageCommentsCanvas(pageInfo, anchor, commentID);
         });
     
     // click on comment card body

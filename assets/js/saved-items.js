@@ -259,6 +259,31 @@ const addComment = (comment, pageInfo) => {
 
 }
 
+const commentHasChildren = (comment, pageInfo) => {
+    const page = {
+        permalink: pageInfo.savedInfo.permalink,
+        title: pageInfo.savedInfo.title
+    };
+
+    const savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
+    if (savedItems.length === 0 ) return false;
+
+    const pageIndex = objectIndexInArray(page, savedItems);
+    if ( pageIndex === -1 ) return false;
+
+    const savedPage = savedItems[pageIndex];
+    const savedPageCustomComments = savedPage.customComments || [];
+
+    if (savedPageCustomComments.length === 0 ) return false;
+
+    const children = getObjectsFromArray({refId: comment.id}, savedPageCustomComments);
+    const selfIndex = objectIndexInArray({id: comment.id}, children);
+    _.pullAt(children, selfIndex); // removing itself from the list of its children
+    if (children.length === 0) return false;
+        
+    return true;
+}
+
 const deleteComment = (commentId, pageInfo) => {
     const page = {
         permalink: pageInfo.siteInfo.permalink,
@@ -295,7 +320,7 @@ const deleteComment = (commentId, pageInfo) => {
         // need to find the comment that is linked to this and to make it parent
         const linkedCommentIndex = objectIndexInArray({refId: commentToDelete.id}, savedPageCustomComments);
         if (linkedCommentIndex !== -1 ) {
-            // comment.id = comment.refId menas that the comment is a parent comment
+            // comment.id = comment.refId means that the comment is a parent comment
             savedPageCustomComments[linkedCommentIndex].refId = savedPageCustomComments[linkedCommentIndex].id
         }
 
@@ -303,8 +328,11 @@ const deleteComment = (commentId, pageInfo) => {
         // not parent comment
         
         // get his parent
+        let hisParentId;
         const hisParentIndex = objectIndexInArray({id: commentToDelete.refId}, savedPageCustomComments);
-        const hisParentId = savedPageCustomComments[hisParentIndex].id;
+        if (hisParentIndex !== -1) {
+            hisParentId = savedPageCustomComments[hisParentIndex].id;
+        }
 
         // get his child (if any)
         const hisChildIndex = objectIndexInArray({refId: commentToDelete.id}, savedPageCustomComments);

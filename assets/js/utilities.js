@@ -174,12 +174,14 @@ if (pagePermalink !== '/') {
 
 // items = an array of objects having the same structure
 // the function groups items by groupByProp and returns an object having
-// the keys as disting values of groupByProp and the values as 
+// the keys as distinct values of groupByProp and the values as 
 // array of objects ordered by orderByInResultProp ASC/DESC (orderInResult)
 // the resulted arrays contains unique objects based on the pkInResultProp primary key
 // HEADS UP!!!
 // THE BEST USE CASE IS WHEN THE ORIGINAL ARRAY (items) CONTAINES LINKED LISTS OF OBJECTS
 // childObject.groupByProp = parentObject.linkProp 
+
+// buildHierarchy returns each list
 const buildHierarchy = (items, groupByProp, linkProp, orderByInResultProp, orderInResult, pkInResultProp) => {
     // Group items by groupByProp
     const groupedByRef = _.groupBy(items, groupByProp);
@@ -220,6 +222,69 @@ const buildHierarchy = (items, groupByProp, linkProp, orderByInResultProp, order
     });
 
     return { hierarchy };
+};
+
+// groupByRootNodes consolidates the lists under each root node
+// rodt node has pkProp = linkedProp; any other node has linkedProp = parent.pkProp 
+const groupByRootNodes = (data, pkProp, linkedProp, orderProp, sortOrder) => {
+    // Map elements by id for quick lookup
+    const elementsById = _.keyBy(data, pkProp, orderProp);
+    
+    // Function to gather all linked elements
+    function collectChain(node) {
+        const chain = [];
+        while (node) {
+            chain.push(node);
+            node = elementsById[node[linkedProp]] !== node ? elementsById[node[linkedProp]] : null;
+        }
+        return chain;
+    }
+    
+    // Build the result object for all nodes
+    return _.reduce(data, (result, node) => {
+        const chain = collectChain(node);
+        
+        if (sortOrder.toLowerCase() === 'asc') {
+            // Convert 'date' to UNIX timestamp and sort the chain by the timestamp in ascending order
+            chain.sort((a, b) => {
+                const timestampA = Date.parse(a[orderProp]);  // Convert 'date' to UNIX timestamp
+                const timestampB = Date.parse(b[orderProp]);  // Convert 'date' to UNIX timestamp
+                return timestampA - timestampB;         // Sort in ascending order
+            });
+        } else {
+             // Convert 'date' to UNIX timestamp and sort the chain by the timestamp in descending order
+            chain.sort((a, b) => {
+                const timestampA = Date.parse(a.date);  // Convert 'date' to UNIX timestamp
+                const timestampB = Date.parse(b.date);  // Convert 'date' to UNIX timestamp
+                return timestampB - timestampA;         // Sort in descending order
+            });
+        }
+
+        
+        // Find the root node (node where id === refId)
+        const rootNode = chain.find(n => n[pkProp] === n[linkedProp]);
+        
+        // Use the root node's id as the key in the result
+        if (rootNode) {
+            result[rootNode[pkProp]] = chain;
+        }
+        
+        return result;
+    }, {});
+}
+
+// clean an object having the structure like the one created by buildHierarchy(..)
+// ensuring that each object from the original array is present in the result only one time
+// and removing key:value pairs form the data object where a found duplicate is the single element in the value array
+// px is the primary key that identifies an object in the original array 
+const cleanObject = (data, pk) => {
+    // Get all unique IDs from the entire object
+    let allIds = new Set(_.flatMap(data, arr => arr.map(item => item[pk])));
+
+    // Remove entries where the array has only one element, and its ID exists elsewhere
+    return _.omitBy(data, (arr, key) => arr.length === 1 && allIds.has(key) && 
+        _.some(data, (otherArr, otherKey) => otherKey !== key && _.some(otherArr, o => o[pk] === key))
+    );
 };
 
 const waitUntilCompleteOrTimeout = (task, timeoutMs) => {
@@ -348,6 +413,13 @@ const getObjectFromArray = (searchCriteria, objectArray) => {
     const found = _.find(objectArray, searchCriteria);
     return !found || found === 'undefined' ? 'none' : found;
 }
+
+const getObjectsFromArray = (searchCriteria, objectArray) => {
+    if (objectArray.length === 0) return [];
+    const found = _.filter(objectArray, searchCriteria);
+    return found.length === 0 ? [] : found;
+}
+
 
 const objectIndexInArray = (searchCriteria, objectArray) => {
     return _.findIndex(objectArray, (obj) => {
