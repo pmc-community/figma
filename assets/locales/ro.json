@@ -58,7 +58,8 @@
             "is_saved": "Este salvat",
             "is_not_saved": "Nu este salvat"
 
-        }
+        },
+        "type_and_search_input_field_placeholder": "scrie, selecteaza, apasa enter ..."
     },
 
     "home_page_intro_section_buttons_sections": "Sectiuni",
@@ -210,19 +211,49 @@
     "dt_pages_col_details_summary_badge_title": "Documentul are sumar generat automat",
     "dt_pages_col_details_excerpt_badge_text": "Extras",
     "dt_pages_col_details_excerpt_badge_title": "Documentul are extras generat automat sau introdus manual",
-    "dt_pages_active_filter_details_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_details_text}}_container",
-    "dt_pages_active_filter_details_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_details_text}}",
-    "dt_pages_active_filter_related_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_related_text}}_container",
-    "dt_pages_active_filter_related_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_related_text}}","dt_pages_active_filter_similar_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_similar_text}}_container",
-    "dt_pages_active_filter_similar_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_similar_text}}",
-    "dt_pages_active_filter_tags_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}_container",
-    "dt_pages_active_filter_tags_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}",
-    "dt_pages_active_filter_cats_container_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}_container",
-    "dt_pages_active_filter_cats_label": "{{ common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}",
+    "dt_pages_active_filter_details_container_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_details_text}}_container",
+    "dt_pages_active_filter_details_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_details_text}}",
+    "dt_pages_active_filter_related_container_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_related_text}}_container",
+    "dt_pages_active_filter_related_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_related_text}}","dt_pages_active_filter_similar_container_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_similar_text}}_container",
+    "dt_pages_active_filter_similar_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_similar_text}}",
+    "dt_pages_active_filter_tags_container_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}_container",
+    "dt_pages_active_filter_tags_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_tags_text}}",
+    "dt_pages_active_filter_cats_container_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}_container",
+    "dt_pages_active_filter_cats_label": "{{common.active_filter.label_prefix}}{{dt_pages_col_cats_text}}",
     "dt_pages_active_filter_box_title_last_filter": "Ultimele filtre",
     "dt_pages_active_filter_box_title_active_filter": "Filtre active",
     "dt_pages_active_filter_box_open_filter_btn_text": "Deschide",
-    "dt_pages_active_filter_box_clear_filter_btn_text": "Sterge"
+    "dt_pages_active_filter_box_clear_filter_btn_text": "Sterge",
+    "pages_search_doc_documents_btn_text": "Documente",
+    "pages_search_doc_saved_docs_btn_text": "Doc. salvate",
+    "pages_search_doc_title_text": "Cauta document",
+    "pages_search_doc_documents_btn_title": "Lista documente",
+    "pages_search_doc_saved_docs_btn_title": "Detalii despre documentele salvate",
+    "pages_search_doc_search_input_placeholder": "{{common.type_and_search_input_field_placeholder}}",
+    "pages_docs_title_text": "Documente",
+    "pages_saved_docs_title_text": "Documente salvate",
+    "pages_saved_docs_save_to_file_btn_text": "Salveaza lista",
+    "pages_saved_docs_save_to_file_btn_title": "Salveaza configuratia documentelor salvate local",
+    "pages_saved_docs_saved_docs_btn_text": "Doc. salvate",
+    "pages_saved_docs_saved_docs_btn_title": "Afiseaza lista documentelor salvate local",
+    "pages_saved_docs_not_saved_docs_btn_text": "Doc. nesalvate",
+    "pages_saved_docs_not_saved_docs_btn_title": "Afiseaza lista documentelor care nu sunt salvate local",
+    "pages_saved_docs_explanation_1": "Alege un fisier de configurare pentru a incarca o configuratie a documentelor salvate.",
+    "pages_saved_docs_explanation_2": "Poti sa tragi un fisier in zona marcata.",
+    "pages_saved_docs_explanation_3": "Salvarea inaintea incarcarii",
+    "pages_saved_docs_explanation_4": "este activa.",
+    "pages_saved_docs_explanation_5": "Configuratia curenta va fi salvata local inainte de a incarca noua configuratie.",
+    "pages_saved_docs_explanation_6": "nu este activa.",
+    "pages_saved_docs_explanation_7": "Recomandam salvarea configuratiei curente inaintea incarcarii noii configuratii.",
+    "pages_saved_docs_drop_file_here": "Trage fisierul aici",
+    "pages_saved_docs_choose_file_btn_text": "Selecteaza fisier",
+
+
+    "cats_cat_search_cat_search_input_placeholder": "{{common.type_and_search_input_field_placeholder}}",
+    "cats_cat_table_page_search_input_placeholder": "{{common.type_and_search_input_field_placeholder}}",
+
+    "tags_tag_search_tag_search_input_placeholder": "{{common.type_and_search_input_field_placeholder}}",
+    "tags_tag_table_page_search_input_placeholder": "{{common.type_and_search_input_field_placeholder}}"
     
 
 }

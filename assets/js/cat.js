@@ -199,8 +199,9 @@ const setCatInfoPageSearchList = (cat) => {
                             type="text" 
                             autocomplete="off" 
                             class="form-control" 
-                            id="${cat.replace(/ /g, "_")}_pageSearchInput"  
-                            placeholder="type, select, hit enter ...">
+                            id="${cat.replace(/ /g, "_")}_pageSearchInput"
+                            data-i18n="[placeholder]cat_search_cat_search_input_placeholder"  
+                            placeholder="${i18next.t('cats_cat_table_page_search_input_placeholder')}">
                         <ul 
                             siteFunction="searchPageList" 
                             id="${cat.replace(/ /g, "_")}_pageSearchResults">

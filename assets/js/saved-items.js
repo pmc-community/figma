@@ -774,7 +774,14 @@ const updateTagForPage = (oldTag, newTag, pageInfo={}) => {
         return false;
     }
 
-    savedPageCustomTags = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomTags, oldTag, newTag));
+    //savedPageCustomTags = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomTags, oldTag, newTag));
+
+    let index = 0;
+    savedPageCustomTags.forEach(tag => {
+        if (tag.toLowerCase() === oldTag.toLowerCase()) savedPageCustomTags[index] = newTag;
+        index++;
+    });
+
     savedPage.customTags = savedPageCustomTags;
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));
@@ -812,7 +819,14 @@ const updateCatForPage = (oldCat, newCat, pageInfo={}) => {
         return false;
     }
 
-    savedPageCustomCats = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomCats, oldCat, newCat));
+    //savedPageCustomCats = _.uniq(replaceAllOccurrencesCaseInsensitive(savedPageCustomCats, oldCat, newCat));
+
+    let index = 0;
+    savedPageCustomCats.forEach(cat => {
+        if (cat.toLowerCase() === oldCat.toLowerCase()) savedPageCustomCats[index] = newCat;
+        index++;
+    });
+
     savedPage.customCategories = savedPageCustomCats;
     savedItems[pageIndex] = savedPage;
     localStorage.setItem('savedItems', JSON.stringify(savedItems));

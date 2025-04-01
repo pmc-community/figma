@@ -1060,7 +1060,8 @@ const setTagInfoPageSearchList = (tag) => {
                             autocomplete="off" 
                             class="form-control" 
                             id="${tag.replace(/ /g, "_")}_pageSearchInput"  
-                            placeholder="type, select, hit enter ...">
+                            placeholder="${i18next.t('tags_tag_table_page_search_input_placeholder')}"
+                            data-i18n="[placeholder]tags_tag_table_page_search_input_placeholder">
                         <ul 
                             siteFunction="searchPageList" 
                             id="${tag.replace(/ /g, "_")}_pageSearchResults">
