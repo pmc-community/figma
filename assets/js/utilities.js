@@ -1754,7 +1754,7 @@ const setElementCreatedByClassObserver = (elementClass, callback = () => {}) => 
     const targetNode = document.body;
     const observer = new MutationObserver(mutationCallback); 
     siteObservers.set(observer, `body (class=${elementClass})`); 
-    observer.observe(targetNode, observerOptions);
+    setTimeout(() => {observer.observe(targetNode, observerOptions)},100); //small delay to be sure that body is fully set in DOM
 
     // Return the observer so it can be disconnected if needed
     return observer;
