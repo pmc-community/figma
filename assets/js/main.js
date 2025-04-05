@@ -62,7 +62,7 @@ window.customiseTheme = (pageObj = null) => {
         setAnonymousUserToken();
         if (gData.gtm.enabled) pushInfoToGTM(pageInfo);
 
-        // do some corrections of JTD search, scrolling is not working well
+        // do some corrections of JTD search, because scrolling is not working well
         // do some translation of dynamic search elements
         // do some styling for better view (mostly on mobile)
         correctJTDSearch();
