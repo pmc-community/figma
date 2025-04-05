@@ -380,6 +380,42 @@
     "algolia_doc_search_modal_raise_issue_text": "Raporteaza",
     "algolia_doc_search_modal_footer_search_by_text": "",
     "algolia_doc_search_modal_error_no_results_text": "Eroare la gasirea rezultatelor",
-    "algolia_doc_search_modal_error_no_net_text": "Eroare de conexiune. Verifica legatura la internet!"
+    "algolia_doc_search_modal_error_no_net_text": "Eroare de conexiune. Verifica legatura la internet!",
+
+    "toast_algolia_integrate_js_search_error": "A aparut o eroare la aceasta cautare!<br><br>Poti incerca din nou mai tarziu. Daca eroarea persista, te rugam sa trimiti o sesizare catre suport.",
+    "toast_algolia_integrate_js_retrieve_all_results_error": "A aparut o eroare la incarcarea si paginarea rezultatelor!<br><br>Poti incerca din nou mai tarziu. Daca eroarea persista, te rugam sa trimiti o sesizare catre suport.",
+    "toast_algolia_integrate_js_retrieve_pagination_error": "Eroare la paginarea rezultatelor! Poti incerca din nou mai tarziu. Daca eroarea persista, te rugam sa trimiti o sesizare catre suport.",
+    "toast_algolia_integrate_js_hit_target_url_error": "Ceva nu este in regula cu destinatia %s! Nu pot ajunge acolo ... ",
+
+    "toast_cats_js_add_doc_to_iste_cat_error": "Nu se poate adauga un document la o categorie fixa",
+    "toast_cats_js_add_doc_to_site_cat_warning": "Selecteaza o categorie flexibila pentru a utiliza aceasta functionalitate!",
+    "toast_tags_js_add_doc_to_site_tag_error": "Nu se poate adauga un document la o eticheta fixa",
+    "toast_tags_js_add_doc_to_site_tag_warning": "Selecteaza o eticheta flexibila pentru a utiliza aceasta functionalitate!",
+
+    "toast_hs_integrate_js_jquery_error": "A aparut o eroare si nu se pot executa functiile necesare! Detalii in consola ...",
+    "toast_hs_integrate_js_wrong_format_error": "Te rog sa introduci informatia in formatul corect!",
+    "toast_hs_integrate_js_wrong_email_format_error": "Te rog sa introduci emailul in formatul corect!",
+
+    "toast_saved_items_js_empty_saved_items_error": "Nu se poate adauga nota! Nu este nimic salvat local ...",
+    "toast_saved_items_js_note_del_empty_saved_items_error": "Nu se poate sterge nota! Nu este nimic salvat local ...",
+    "toast_saved_items_js_doc_not_in_saved_items_error": "Nu se poate adauga nota! Datele documentului %s nu sunt salvate local...",
+    "toast_saved_items_js_note_del_doc_not_in_saved_items_error": "Nu se poate sterge nota! Datele documentului nu sunt salvate local...",
+    "toast_saved_items_js_empty_note_warning": "Nu am nimic de adaugat/modificat!",
+    "toast_saved_items_js_note_already_saved_warning": "Nota exista deja! Nu e necesar sa fie salvata din nou ...",
+    "toast_saved_items_js_note_not_found_error": "Nu pot modifica nota! Nota nu a fost gasita ...",
+
+    "toast_saved_items_js_comm_empty_saved_items_error": "Nu se poate adauga comentariul! Nu este nimic salvat local ...",
+    "toast_saved_items_js_del_comm_empty_saved_items_error": "Nu se poate sterge comentariul! Nu este nimic salvat local ...",
+    "toast_saved_items_js_del_comm_doc_not_in_saved_items_error": "Nu se poate sterge comentariul! Datele documentului nu sunt salvate local...",
+    "toast_saved_items_js_comm_doc_not_in_saved_items_error": "Nu se poate adauga comentariul! Datele documentului %s nu sunt salvate local...",
+    "toast_saved_items_js_comm_not_found_error": "Nu pot sterge comentariul! Comentariul nu a fost gasit ...",
+
+    "toast_saved_items_js_tag_empty_saved_items_error": "Nu pot adauga eticheta! Nu este nimic salvat local ...",
+    "toast_saved_items_js_tag_doc_not_in_saved_items_error": "Nu se poate adauga eticheta! Datele documentului %s nu sunt salvate local...",
+    "toast_saved_items_js_tag_is_site_tag_warning": "Nu se poate adauga eticheta! Eticheta %s este deja eticheta fixa ...",
+
+    "toast_saved_items_js_cat_empty_saved_items_error": "Nu pot adauga categoria! Nu este nimic salvat local ...",
+    "toast_saved_items_js_cat_doc_not_in_saved_items_error": "Nu se poate adauga categoria! Datele documentului %s nu sunt salvate local...",
+    "toast_saved_items_js_cat_is_site_cat_warning": "Nu se poate adauga categoria! Categoria %s este deja categorie fixa ..."
 
 }

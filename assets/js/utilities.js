@@ -2420,18 +2420,15 @@ const iframe__addI18ToIFrames = ($elementInsideIFrame) => {
     const $iframeHead = $($iframeDocument).find('head');
     const $iframeBody = $($iframeDocument).find('body');
     
-    const i18next = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18}"></script>`;
-    const i18HttpBackend = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18Backend}"></script>`;
-    const i18JQuery = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18JQuery}"></script>`;
-    const i18Jsprintf = `<script defer type="text/javascript" src="${settings.multilang.scripts.i18Sprintf}"></script>`;
+    const i18nextScript = `<script type="text/javascript" src="${settings.multilang.scripts.i18}"></script>`;
+    const i18HttpBackendScript = `<script type="text/javascript" src="${settings.multilang.scripts.i18Backend}"></script>`;
+    const i18JQueryScript = `<script type="text/javascript" src="${settings.multilang.scripts.i18JQuery}"></script>`;
+    const i18JsprintfScript = `<script type="text/javascript" src="${settings.multilang.scripts.i18Sprintf}"></script>`;
     $($iframeHead)
-        .append(i18next)
-        .append(i18HttpBackend)
-        .append(i18JQuery)
-        .append(i18Jsprintf);
-    
-    const check = '<script>console.log(i18next)</script>'
-    $($iframeBody).append(check)
+        .append(i18nextScript)
+        .append(i18HttpBackendScript)
+        .append(i18JQueryScript)
+        .append(i18JsprintfScript);    
 }
 
 const addCustomScriptsToIFrames = (cssScripts = [], jsScripts = []) => {
@@ -2472,16 +2469,16 @@ const iframe__addCustomScriptsToIFrames = ($elementInsideIFrame, cssScripts = []
     })
 }
 
-const iframe__utilities = () => {
+const iframe__utilities =  () => {
     return {
         settings: settings,
         pageSettings: pageSettings,
         hsSettings: hsSettings,
         anonymousUserToken: setAnonymousUserToken(),
+        i18next: i18next,
         func: {
             showToast: showToast,
             doTranslation: doTranslation,
-            waitForI18Next: waitForI18Next
         }
     }
 }
