@@ -1519,7 +1519,8 @@ const applyColorSchemaCorrectionsOnTD = () => {
     }
 }
 
-window.showToast = (message, type, textType) => {
+window.showToast = async (message, type, textType) => {
+    await waitForI18Next();
     toast = new bootstrap.Toast($('.toast'));
     $('.toast').removeClass('bg-warning').removeClass('bg-danger').removeClass('bg-success').removeClass('bg-info');
     $('.toast').addClass(type);
