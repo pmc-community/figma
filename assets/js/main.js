@@ -25,7 +25,6 @@ window.customiseTheme = (pageObj = null) => {
     clearTheUrl();
 
     $(document).ready(() => {
-
         setResizeObserver_height('body', () => adjustBodyHeight_mobile()); // keep site-footer at bottom of screen on mobile
         //setResizeObserver_height('main', () => adjustBodyHeight_desktop());
 
