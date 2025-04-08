@@ -1448,13 +1448,10 @@ const applyColorSchemaCorrections = (theme=null) => {
     // apply color corrections on mobile
     if (preFlight.envInfo.device.deviceType === 'mobile') {
         textColor = $(settings.layouts.leftSideBar.siteTitle).css('color');
-        setTimeout(() => {
-            $(settings.layouts.leftSideBar.sideNav)
+        $(settings.layouts.leftSideBar.sideNav)
                 .css('background', '')
                 .css('cssText', `background: ${$(settings.layouts.leftSideBar.header).css('background')} !important`);
-            $(settings.layouts.leftSideBar.link).css('cssText', `color: ${textColor} !important;`);
-        }, 100); // small delay is needed here otherwise the backgtound is not set correctly (mostly on firefox mobile)
-        
+        $(settings.layouts.leftSideBar.link).css('cssText', `color: ${textColor} !important;`);
         $(settings.layouts.leftSideBar.mobileMenuBtnIcon).css('cssText', `color: ${textColor} !important;`);
         $(settings.layouts.leftSideBar.mobileNavLinkExpander).css('cssText', `color: ${textColor} !important;`);
     }
