@@ -68,6 +68,9 @@
       "offsetWhenScroll": 20
     },
     "layouts": {
+      "headerArea": {
+        "mobileMenuButton": "#menu-button"
+      },
       "contentArea": {
         "mainContainer": ".main-content-wrap",
         "contentContainer": ".main-content main",
