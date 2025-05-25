@@ -1,3 +1,4 @@
+
 // just to be consistent with styles and have rounded (not circle) buttons
 // adding 'rounded' class to Algolia docSearch button in site header
 removeObservers('body (class=DocSearch DocSearch-Button)');
