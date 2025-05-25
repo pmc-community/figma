@@ -221,9 +221,9 @@
         "t a g 1",
         "tag2"
       ],
-      "excerpt": "lorem ipsum, latin, sections, cicero, finibus bonorum, malorum, standard chunk, rackham, translation, form",
-      "lastUpdate": "2025-04-28 20:47:32 +0300",
-      "lastUpdateUTC": 1745862452,
+      "excerpt": "lorem ipsum, latin, cicero, sections, malorum, finibus bonorum, rackham, translation, chunk, versions",
+      "lastUpdate": "2025-05-25 13:54:09 +0300",
+      "lastUpdateUTC": 1748170449,
       "createTime": "2025-04-28 20:47:32 +0300",
       "createTimeUTC": 1745862452,
       "relatedPages": [
@@ -240,7 +240,7 @@
           "permalink": "/collection-1/g1/"
         }
       ],
-      "autoSummary": "lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 of “de finibus bon ...",
+      "autoSummary": "lorem ipsum, lorem ipsum dolor sit amet., comes from sections 1.10.32 and 1.10.33 ...",
       "similarByContent": [
         {
           "permalink": "/collection-2/y/y/",
@@ -347,12 +347,12 @@
           "permalink": "/intro/"
         },
         {
-          "title": "Collection-2/Y",
-          "permalink": "/collection-2/y/y/"
-        },
-        {
           "title": "Collection-2/X",
           "permalink": "collection-2/X/x/"
+        },
+        {
+          "title": "Collection-2/Y",
+          "permalink": "/collection-2/y/y/"
         }
       ],
       "autoSummary": "markdown content direct included in the page. heads up!!!links to other site docs must be given using the permalinks, not the ...",
@@ -445,7 +445,7 @@
       "permalink": "/collection-1/g1/",
       "categories": [],
       "tags": [],
-      "excerpt": "content, services, lorem ipsum, innohub, registration, email, access, process, latin, ihsutilities",
+      "excerpt": "content, lorem ipsum, services, innohub, registration, email, access, process, latin, ihsutilities",
       "lastUpdate": "2025-04-28 20:47:32 +0300",
       "lastUpdateUTC": 1745862452,
       "createTime": "2025-04-28 20:47:32 +0300",
@@ -624,10 +624,6 @@
         {
           "permalink": "/pwc/",
           "title": "Play with content"
-        },
-        {
-          "permalink": "/collection-2/Z/z/",
-          "title": "Collection-2/Z"
         }
       ],
       "readingTime": 1,
@@ -739,7 +735,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "28-Apr-2025"
+          "lastUpdate": "25-May-2025"
         }
       ],
       "numPages": 1
@@ -774,7 +770,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "28-Apr-2025"
+          "lastUpdate": "25-May-2025"
         }
       ],
       "numPages": 1
@@ -853,7 +849,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "28-Apr-2025"
+          "lastUpdate": "25-May-2025"
         },
         {
           "title": "Play with content",
@@ -878,7 +874,7 @@
         {
           "title": "Introduction",
           "permalink": "/intro/",
-          "lastUpdate": "28-Apr-2025"
+          "lastUpdate": "25-May-2025"
         },
         {
           "title": "Collection-2/Z",
